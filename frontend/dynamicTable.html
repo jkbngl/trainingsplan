@@ -1,0 +1,379 @@
+<html>
+
+<!-- 
+TODO:
+
+[x] add placeholder
+[ ] make fix size for div
+[x] parse output to json
+[ ] build table from json
+[ ] get name from keycloak
+[ ] mobile friendly page
+[ ] sustainable method for size of cell
+
+-->
+
+<head>
+    <style>
+        table, th, td {
+            border: 1px solid black;
+        }
+
+        #container1, container2, container3, container4,  {
+            background-color: yellow;
+        }
+
+    </style>
+
+    <title>
+        trainigsplan.com
+    </title>
+
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" type="text/css" href="vendor/bootstrap/css/bootstrap.min.css">
+    <link rel="stylesheet" type="text/css" href="fonts/font-awesome-4.7.0/css/font-awesome.min.css">
+    <link rel="stylesheet" type="text/css" href="vendor/animate/animate.css">
+    <link rel="stylesheet" type="text/css" href="vendor/select2/select2.min.css">
+    <link rel="stylesheet" type="text/css" href="vendor/perfect-scrollbar/perfect-scrollbar.css">
+    <link rel="stylesheet" type="text/css" href="css/util.css">
+    <link rel="stylesheet" type="text/css" href="css/main.css">
+	
+	<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+	<script>
+	$(function(){
+		$('#btn').on('click', function()
+		{
+			alert('Clicked - jquery');
+		}
+	);
+});
+	</script>
+</head>
+<body>
+
+<button onclick="addTable()" class="button"  style="position: absolute; top: 10px; right: 85%;">Add new Day</button>
+<button onclick="receivePlanfromDB()" class="button" style="position: absolute; top: 10px; right: 61.6%;">Get Plan from  DB</button>
+<button onclick="loadPlanIntoDB()" class="button" style="position: absolute; top: 10px; right: 38.3%;">Send Plan into DB</button>
+<button onclick="getExercises()" class="button" style="position: absolute; top: 10px; right: 10px; position:fixed; right: 15%">Save</button>
+
+<div id="container1"></div>
+<div id="container2"></div>
+<div id="container3"></div>
+<div id="container4"></div>
+<div id="container5"></div>
+<script>
+
+    var numtables = 0;
+
+
+    // get the first button by it's ID, and listen to the click event
+    // add an empty table to the container div
+    function addTable()
+	{
+		// column 3 2 times, maybe change at a later point
+        var basicTable1 = '<div class="limiter"> <div class="container-table100"> <div class="wrap-table100"> <div class="table100 ver3 m-b-110"> <div class="table100-head"> <table> <thead> <tr class="row100 head"> <th class="cell100 column1" style="width:16.6%; text-align: center; text-align: center">Exercise</th> <th class="cell100 column2" style="width:16.6%; text-align: center">Weight</th> <th class="cell100 column3" style="width:16.6%; text-align: center">Repetitions</th> <th class="cell100 column3" style="width:16.6%; text-align: center">Sets</th> <th class="cell100 column4" style="width:16.6%; text-align: center">Max Rep weight</th> <th class="cell100 column5" style="width:16.6%; text-align: center">Pause</th> </tr> </thead> </table> </div> <div class="table100-body js-pscroll" id = "test"> <table> <tbody id="myTable1"> <tr class="row100 body"> </tbody> </table> </div> </div> </div> <button onclick="addRow(\'myTable1\')" class="button">Add new Exercise</button> </div> </div>';
+		var basicTable2 = '<div class="limiter"> <div class="container-table100"> <div class="wrap-table100"> <div class="table100 ver3 m-b-110"> <div class="table100-head"> <table> <thead> <tr class="row100 head"> <th class="cell100 column1" style="width:16.6%; text-align: center">Exercise</th> <th class="cell100 column2" style="width:16.6%; text-align: center">Weight</th> <th class="cell100 column3" style="width:16.6%; text-align: center">Repetitions</th> <th class="cell100 column3" style="width:16.6%; text-align: center">Sets</th> <th class="cell100 column4" style="width:16.6%; text-align: center">Max Rep weight</th> <th class="cell100 column5" style="width:16.6%; text-align: center">Pause</th> </tr> </thead> </table> </div> <div class="table100-body js-pscroll" id = "test"> <table> <tbody id="myTable2"> <tr class="row100 body"> </tbody> </table> </div> </div> </div> <button onclick="addRow(\'myTable2\')" class="button">Add new Exercise</button> </div> </div>';
+		var basicTable3 = '<div class="limiter"> <div class="container-table100"> <div class="wrap-table100"> <div class="table100 ver3 m-b-110"> <div class="table100-head"> <table> <thead> <tr class="row100 head"> <th class="cell100 column1" style="width:16.6%; text-align: center">Exercise</th> <th class="cell100 column2" style="width:16.6%; text-align: center">Weight</th> <th class="cell100 column3" style="width:16.6%; text-align: center">Repetitions</th> <th class="cell100 column3" style="width:16.6%; text-align: center">Sets</th> <th class="cell100 column4" style="width:16.6%; text-align: center">Max Rep weight</th> <th class="cell100 column5" style="width:16.6%; text-align: center">Pause</th> </tr> </thead> </table> </div> <div class="table100-body js-pscroll" id = "test"> <table> <tbody id="myTable3"> <tr class="row100 body"> </tbody> </table> </div> </div> </div> <button onclick="addRow(\'myTable3\')" class="button">Add new Exercise</button> </div> </div>';
+		var basicTable4 = '<div class="limiter"> <div class="container-table100"> <div class="wrap-table100"> <div class="table100 ver3 m-b-110"> <div class="table100-head"> <table> <thead> <tr class="row100 head"> <th class="cell100 column1" style="width:16.6%; text-align: center">Exercise</th> <th class="cell100 column2" style="width:16.6%; text-align: center">Weight</th> <th class="cell100 column3" style="width:16.6%; text-align: center">Repetitions</th> <th class="cell100 column3" style="width:16.6%; text-align: center">Sets</th> <th class="cell100 column4" style="width:16.6%; text-align: center">Max Rep weight</th> <th class="cell100 column5" style="width:16.6%; text-align: center">Pause</th> </tr> </thead> </table> </div> <div class="table100-body js-pscroll" id = "test"> <table> <tbody id="myTable4"> <tr class="row100 body"> </tbody> </table> </div> </div> </div> <button onclick="addRow(\'myTable4\')" class="button">Add new Exercise</button> </div> </div>';
+		var basicTable5 = '<div class="limiter"> <div class="container-table100"> <div class="wrap-table100"> <div class="table100 ver3 m-b-110"> <div class="table100-head"> <table> <thead> <tr class="row100 head"> <th class="cell100 column1" style="width:16.6%; text-align: center">Exercise</th> <th class="cell100 column2" style="width:16.6%; text-align: center">Weight</th> <th class="cell100 column3" style="width:16.6%; text-align: center">Repetitions</th> <th class="cell100 column3" style="width:16.6%; text-align: center">Sets</th> <th class="cell100 column4" style="width:16.6%; text-align: center">Max Rep weight</th> <th class="cell100 column5" style="width:16.6%; text-align: center">Pause</th> </tr> </thead> </table> </div> <div class="table100-body js-pscroll" id = "test"> <table> <tbody id="myTable5"> <tr class="row100 body"> </tbody> </table> </div> </div> </div> <button onclick="addRow(\'myTable5\')" class="button">Add new Exercise</button> </div> </div>';
+
+		
+		var id = numtables + 1;			// number of tables
+        numtables = numtables + 1;
+        var tablename = 'container';
+        var temptablename = tablename.concat(id);
+		var tmptabletocreate = 'basicTable';
+        var tabletocreate = tmptabletocreate.concat(id);
+		
+        /*
+		console.log(numtables);
+        console.log(id);
+        console.log(tablename);
+        console.log(temptablename);
+		console.log(tabletocreate);
+		*/
+
+		if(id == 1)
+		{
+			document.getElementById(temptablename).innerHTML = basicTable1;
+			addRow("myTable1");
+		}
+		else if(id == 2)
+		{
+			document.getElementById(temptablename).innerHTML = basicTable2;
+			addRow("myTable2");
+		}	
+		else if(id == 3)
+		{
+			document.getElementById(temptablename).innerHTML = basicTable3;
+			addRow("myTable3");
+		}	
+		else if(id == 4)
+		{
+			document.getElementById(temptablename).innerHTML = basicTable4;
+			addRow("myTable4");
+		}		
+		else if(id == 5)
+		{
+			document.getElementById(temptablename).innerHTML = basicTable5;
+			addRow("myTable5");
+		}	
+    }
+
+    function addRow(tableName)
+    {
+        var table = document.getElementById(tableName);
+        var rowCount = document.getElementById(tableName).rows.length;
+
+        // console.log(rowCount);
+		
+        var row = table.insertRow(rowCount);
+        var cell1 = row.insertCell(0);
+        var cell2 = row.insertCell(1);
+        var cell3 = row.insertCell(2);
+        var cell4 = row.insertCell(3);
+        var cell5 = row.insertCell(4);
+        var cell6 = row.insertCell(5);
+		
+		cell1.innerHTML = "<td class=\'tdinput\'> <div contenteditable='true' data-placeholder='name' class='title' style=\"background-color: transparent; color:#7F7F7F; width:100px; text-align: center\"/></div></td>";
+		cell2.innerHTML = "<td class=\'tdinput\'> <div contenteditable='true' data-placeholder='kilo' class='title' style=\"background-color: transparent; color:#7F7F7F; width:100px; text-align: center\"/></div></td>";
+        cell3.innerHTML = "<td class=\'tdinput\'> <div contenteditable='true' data-placeholder='reps' class='title' style=\"background-color: transparent; color:#7F7F7F; width:100px; text-align: center\"/></div></td>";
+        cell4.innerHTML = "<td class=\'tdinput\'> <div contenteditable='true' data-placeholder='sets' class='title' style=\"background-color: transparent; color:#7F7F7F; width:100px; text-align: center\"/></div></td>";
+        cell5.innerHTML = "<td class=\'tdinput\'> <div contenteditable='true' data-placeholder='maxs' class='title' style=\"background-color: transparent; color:#7F7F7F; width:100px; text-align: center\"/></div></td>";
+        cell6.innerHTML = "<td class=\'tdinput\'> <div contenteditable='true' data-placeholder='time' class='title' style=\"background-color: transparent; color:#7F7F7F; width:100px; text-align: center\"/></div></td>";
+		
+		row.setAttribute("id", "somerow", 0);
+    }
+
+	function save(tableName)
+    {
+		var text = '';
+		
+        for(var j = 1; j <= numtables; j++)		// For multiple Tables
+        {
+            //gets table
+            var defaulttablename = 'myTable';
+            var finaltablename = defaulttablename.concat(j);
+            var Table = document.getElementById(finaltablename);
+			
+            if ($('#' + finaltablename).length > 0)	// Check if Table exists
+            {
+                //gets rows of table
+                var rowLength = Table.rows.length;
+				
+                //loops through rows
+                for (k = 0; k < rowLength; k++)
+                {
+                    //gets cells of current row
+                    var Cells = Table.rows.item(k).cells;
+                    //gets amount of cells of current row
+                    var cellLength = Cells.length;
+
+                    //loops through each cell in current row
+                    for (var i = 0; i < cellLength; i++)
+                    {
+						/*
+						var cellVal = Cells.item(i).innerHTML.valueOf().substring(33);
+                        var finalVal = cellVal.substring(0, cellVal.indexOf("\""));
+                        console.log(finalVal); 
+						*/
+						
+						var cellVal = Cells.item(i).innerText;
+                        console.log(cellVal); 
+
+						text = text.concat(cellVal);
+                    }
+                }
+
+                // alert('Saved table: ' + j + 'error might be occuring because of escaping anfuehrungszeichen');
+            }   
+            else
+                alert('Nothing to save');
+        }
+		
+		
+		alert('' + text);
+    }
+	
+	function getValues() 
+	{
+		var defaulttablename = 'myTable';
+		var finaltablename;
+		var row = document.getElementById("somerow");
+		
+		alert(document.getElementById("myTable1").rows[1].innerHTML);
+		
+		for(var k = 1; k <= numtables; k++)		// For multiple Tables, num of table start at 1 not 0
+        {            
+            finaltablename = defaulttablename.concat(k);
+			console.log(finaltablename);
+			
+            if ($('#' + finaltablename).length > 0)	// Check if Table exists
+            {
+				var table = document.getElementById(finaltablename);
+				// var row = document.getElementById("somerow");
+				var cell = row.getElementsByTagName("td");
+				var rowlength = table.getElementsByTagName("tr").length - 1;		// number of rows in Table - minus the tables head
+				var celllength = row.getElementsByTagName("td").length;				// number of cells in one row
+				
+				console.log(rowlength);
+				
+				for(var j = 0; j < rowlength; j++)
+				{
+					for(var i = 0; i < celllength; i++)
+					{
+						console.log(cell[i].innerText);
+					}
+				
+					if(j < rowlength - 1)		// dont get next row, doesnt exist
+					{
+						if(row.nextElementSibling != null)
+							row = row.nextElementSibling;
+						else
+							console.log("catched");
+						
+						cell = row.getElementsByTagName("td");
+					}					
+				}
+			}
+			else
+				console.log('Nothing to save')
+		}
+	}
+	
+	function getExercises()
+	{
+		var defaulttablename = 'myTable';
+		var finaltablename;
+		var row = document.getElementById("somerow");
+		var filteredText = '{"plan":[';
+		
+		for(var k = 1; k <= numtables; k++)		// For multiple Tables, num of table start at 1 not 0
+        {
+            finaltablename = defaulttablename.concat(k);
+			//console.log(finaltablename);
+		
+			var table = document.getElementById(finaltablename);
+			var rowlength = table.getElementsByTagName("tr").length - 1;
+			
+			filteredText = filteredText + '{"day":[';
+			
+			for(var j = 1; j <= rowlength; j++)
+			{
+				
+					filteredText = filteredText + '{"exercise":{'
+				
+				//	filteredText = filteredText + '{"exercise": {'
+				
+				var rawText = document.getElementById(finaltablename).rows[j].innerHTML;
+				filteredText = filteredText + parse(rawText);
+				
+				if(j == rowlength)
+					filteredText = filteredText + '}';
+				else
+					filteredText = filteredText + '},';
+			}
+			
+			if(k < numtables)
+				filteredText = filteredText + ']},';
+			else // if(k == numtables)
+				filteredText = filteredText + ']}';
+			
+			
+			if(k < numtables)
+				filteredText = filteredText + '';
+			else // if(k == numtables)
+				filteredText = filteredText + ']}';
+		}
+		
+	
+		
+		console.log(filteredText);
+		
+		return filteredText;
+	}
+	
+	function parse(raw)
+	{
+		var parsed = '';
+		// console.log(raw);
+		// console.log(raw.substring(raw.indexOf('center">') +8, raw.indexOf('</div>')));
+		var res = raw.split("</td>")
+		//console.log(res[0]);
+		
+		for(var i = 0; i < 6; i++)
+		{
+			// console.log(res[i]);
+			if (i == 0)
+				parsed = parsed + "\"name\":\"" + res[i].substring(raw.indexOf('center">') + 8, res[i].indexOf('</div>')) + '",';
+			else if(i == 1)
+				parsed = parsed + "\"weight\":\"" + res[i].substring(raw.indexOf('center">') + 8, res[i].indexOf('</div>')) + '",';
+			else if(i == 2)
+				parsed = parsed + "\"reps\":\"" + res[i].substring(raw.indexOf('center">') + 8, res[i].indexOf('</div>')) + '",';
+			else if(i == 3)
+				parsed = parsed + "\"sets\":\"" + res[i].substring(raw.indexOf('center">') + 8, res[i].indexOf('</div>')) + '",';
+			else if(i == 4)
+				parsed = parsed + "\"maxrep\":\"" + res[i].substring(raw.indexOf('center">') + 8, res[i].indexOf('</div>')) + '",';
+			else if(i == 5)
+				parsed = parsed + "\"pause\":\"" + res[i].substring(raw.indexOf('center">') + 8, res[i].indexOf('</div>')) + '"}';
+			
+			// parsed = parsed + res[i].substring(raw.indexOf('center">') + 8, res[i].indexOf('</div>')) + ';';
+		}
+			
+		return parsed;
+	}
+	
+	function loadPlanIntoDB()
+    {
+		var jsondata = getExercises();
+		var xhr = new XMLHttpRequest();
+		var url = "http://localhost:50003/trainingsplan/receivesjson";
+		xhr.open("POST", url, true);
+		xhr.setRequestHeader("Content-Type", "application/json");
+		
+		// var data = JSON.stringify(jsondata);
+		xhr.send(jsondata);
+	}
+	
+	function receivePlanfromDB()
+    {
+		var request = new XMLHttpRequest();
+
+		request.open('GET', 'http://localhost:50003/trainingsplan/sendjson', true);
+		request.onload = function () 
+		{
+			// Begin accessing JSON data here
+			var data = JSON.parse(this.response);
+
+			if (request.status >= 200 && request.status < 400) 
+			{
+				console.log(data);
+			
+			}
+			else 
+			{
+				console.log('error');
+			}
+		}
+		request.send();
+	}
+	
+</script>
+<script src="vendor/jquery/jquery-3.2.1.min.js"></script>
+<script src="vendor/bootstrap/js/popper.js"></script>
+<script src="vendor/bootstrap/js/bootstrap.min.js"></script>
+<script src="vendor/select2/select2.min.js"></script>
+<script src="vendor/perfect-scrollbar/perfect-scrollbar.min.js"></script>
+<script>
+    $('.js-pscroll').each(function(){
+        var ps = new PerfectScrollbar(this);
+
+        $(window).on('resize', function(){
+            ps.update();
+        })
+    });
+</script>
+<script src="js/main.js"></script>
+</body>
+</html>

@@ -25,7 +25,7 @@ public class Starter
 		ResourceConfig config = new ResourceConfig(dbConnector.class);				// Klasse mit den Methoden
 		HttpServer server = JdkHttpServerFactory.createHttpServer(baseUri, config);		// Server starten mit den Informationen aus der URL des Servers und der Schnittstellen-Klasse
 		JOptionPane.showMessageDialog(null, "Server gestartet!");
-		JOptionPane.showMessageDialog(null, "Server beenden!");
+		JOptionPane.showMessageDialog(null, "Server beenden?");
 		server.stop(0);																	// Server beenden
 	}
 }

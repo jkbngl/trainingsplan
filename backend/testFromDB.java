@@ -4,67 +4,40 @@ import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
+import java.sql.ResultSetMetaData;
 import java.sql.SQLException;
+import java.sql.Statement;
+import java.util.ArrayList;
+import java.util.List;
 
 import org.json.JSONException;
 
-
-public class parserFromDB 
+public class testFromDB 
 {
-	String fullplan;
-	String username = "";
-	String planname = "";
-	String connectionString = "jdbc:postgresql://127.0.0.1:5432/";
-	String user = "postgres";
-	String password = "test";
-	
-	public parserFromDB()
+	public static void main(String[] args) throws JSONException, SQLException  
 	{
-	
-	}
-	
-	public parserFromDB(String username, String planname)
-	{
-		this.username = username;
-		this.planname = planname;
-	}
-	
-	public parserFromDB(String username)
-	{
-		this.username = username;
-	}
-	
-	public String parseUser() throws JSONException, SQLException 
-	{	
-		Connection connection = null;
-		int amountDays = 0;
-		String plan = "";
-		
-		connection = connectToDB(connectionString, user, password);
-
-		amountDays = getDaysFromMaxPlanID(username, connection, false , 0);
-		plan = getFullPlan(username, connection, amountDays, false, 0);
-		
-		return plan;
-	}
-	
-	public void parseUserPlan() throws JSONException, SQLException 
-	{	
 		Connection connection = null;
 		String connectionString = "jdbc:postgresql://127.0.0.1:5432/";
 		String user = "postgres";
 		String password = "test";
 		int amountDays = 0;
-		int plan_id = 0;
-		int day_id = 0;
-		String username = "nani";
+		String username = "nathalie pirgstaller";
 		String plan = "";
-		
 		
 		connection = connectToDB(connectionString, user, password);
 
-		amountDays = getDaysFromMaxPlanID(username, connection, false, 0);
+		// getPlansByUser("nathalie pirgstaller", connection);
+		
+		
+		amountDays = getDaysFromMaxPlanID(username, connection, false, 0);		
 		plan = getFullPlan(username, connection, amountDays, false, 0);
+		System.out.println(plan);
+		
+		/*
+		amountDays = getDaysFromMaxPlanID(null, connection, true, 25);
+		plan = getFullPlan(username, connection, amountDays, true, 25);
+		System.out.println(plan);
+		*/
 	}
 	
 	public static Connection connectToDB(String connectionString, String user, String password)
@@ -94,15 +67,9 @@ public class parserFromDB
 		plan = plan + "{\"username\": \"" + username + "\",";
 		
 		if(planIDgiven)
-		{
 			plan = plan + "\"planname\": \"" + getPlanNameByPlanID(planID, connection) + "\",";
-			plan = plan + "\"planid\": \"" + planID + "\",";
-		}
 		else
-		{
 			plan = plan + "\"planname\": \"" + getPlanNameByPlanID(Integer.parseInt(getMaxPlanID(username, connection)), connection) + "\",";
-			plan = plan + "\"planid\": \"" + getMaxPlanID(username, connection) + "\",";
-		}
 				
 		PreparedStatement pstmt = null;
 		
@@ -241,29 +208,6 @@ public class parserFromDB
 			return "no plan found for planid - " + planID;
 	}
 	
-	public static int getPlanIDByPlanName(String username, String planname, Connection connection) throws SQLException
-	{
-		int plan_id = -1;
-		
-		String query = "select  p.id "
-				+ "from  tp_plan p "
-				+ "join  tp_user u on u.id = p.userid_fk "
-				+ "where username = (?) "
-				+ "and p.name = (?)";
-  		
-		PreparedStatement pstmt = connection.prepareStatement(query);
-		pstmt.setString(1, username);
-		pstmt.setString(2, planname);
-		ResultSet resultset = pstmt.executeQuery();
-	
-		while (resultset.next()) 
-		{
-			plan_id = resultset.getInt(1);
-		}
-						
-		return plan_id;
-	}
-	
 	public static String getMaxPlanID(String username, Connection connection) throws SQLException
 	{
 		String maxplanid = "";
@@ -352,7 +296,6 @@ public class parserFromDB
 				+ "join tp_plan p      on u.id = p.userid_fk "
 				+ "join tp_day d       on p.id = d.plan_fk "
 				+ "where username = (?)";
-		
 		String jsonPlan = "{\"username\": \"" + username + "\",\"plans\": [";
 		
 		PreparedStatement pstmt = connection.prepareStatement(query);
@@ -368,7 +311,15 @@ public class parserFromDB
 		}
 		
 		jsonPlan = jsonPlan + "]}";
-				
+		
+		
+		System.out.println(jsonPlan);
+		
 		return jsonPlan;
+	}
+	
+	public static String getPlanByPlanId(String planid, Connection connection) throws SQLException
+	{		
+		return "";
 	}
 }

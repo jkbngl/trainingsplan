@@ -109,6 +109,7 @@ public class parserFromDB
 		if(!planIDgiven)
 		{
 				String query = "select  e.day_fk "
+					     + ", e.id"
 						 + ", e.name"
 						 + ", e.weight"
 						 + ", e.reps"
@@ -120,7 +121,8 @@ public class parserFromDB
 						 + "join tp_day d       on p.id = d.plan_fk "
 						 + "join tp_exercise e  on d.id = e.day_fk "
 						 + "where username = ?"
-						 + "and p.id = (?)";
+						 + "and p.id = (?)"
+						 + "and deprecated = 0";
 			
 			pstmt = connection.prepareStatement(query);
 			pstmt.setString(1, username);
@@ -128,31 +130,32 @@ public class parserFromDB
 		}
 		else
 		{
-			String query = "select  e.day_fk "
-					 + ", e.name"
-					 + ", e.weight"
-					 + ", e.reps"
-					 + ", e.sets"
-					 + ", e.max_rep"
-					 + ", e.pausetime "
-					 + "from tp_user u "
-					 + "join tp_plan p      on u.id = p.userid_fk "
-					 + "join tp_day d       on p.id = d.plan_fk "
-					 + "join tp_exercise e  on d.id = e.day_fk "
-					 + "where p.id = (?)";
-		
+			String query = "select  e.day_fk"
+							   + ", e.id"
+						       + ", e.name"
+						       + ", e.weight"
+						       + ", e.reps"
+						       + ", e.sets"
+						       + ", e.max_rep"
+						       + ", e.pausetime "
+						       + "from tp_user u "
+						  + "join tp_plan p      on u.id = p.userid_fk "
+						  + "join tp_day d       on p.id = d.plan_fk "
+						  + "join tp_exercise e  on d.id = e.day_fk "
+						 + "where p.id = (?)"
+						   + "and deprecated = 0";
 		
 			pstmt = connection.prepareStatement(query);
 			pstmt.setInt(1, planID);
 		}
 		
 		ResultSet resultset = pstmt.executeQuery();
-		
+				
 		while (resultset.next()) 
 		{
 			if(daytracker != Integer.parseInt(resultset.getString("day_fk")))
 			{
-					daychanged = true;
+				daychanged = true;
 				
 				daytracker = Integer.parseInt(resultset.getString("day_fk"));
 				daycounter++;
@@ -186,7 +189,8 @@ public class parserFromDB
                     + plan + "\"maxrep\":\"" + resultset.getString("max_rep") + "\","
                     + plan + "\"pause\":\"" + resultset.getString("pausetime") + "\"}");
             */
-			
+						
+			plan = plan + "\"id\":\"" + resultset.getString("id") + "\",";
             plan = plan + "\"name\":\"" + resultset.getString("name") + "\",";
             plan = plan + "\"weight\":\"" + resultset.getString("weight") + "\",";
             plan = plan + "\"reps\":\"" + resultset.getString("reps") + "\",";
@@ -210,6 +214,7 @@ public class parserFromDB
 		// System.out.println("Exercises: " + exercisecounter);
 		// System.out.println("Days: " + daycounter);
 		
+		System.out.println(plan);
 		
 		return plan;
 	}

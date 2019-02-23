@@ -79,7 +79,7 @@ public class dbConnector
 		// The Username would not be needed but makes it easier to program and understand
 		int amountDays = 0;
 		String plan = "";
-		System.out.println("worked: " + planid);
+		System.out.println("worked(getPlanByUserAndPlan): " + planid);
 		
 		parserFromDB p = new parserFromDB();
 		amountDays = parserFromDB.getDaysFromMaxPlanID(null, parserFromDB.connectToDB(p.connectionString, p.user, p.password), true, Integer.parseInt(planid));
@@ -89,17 +89,17 @@ public class dbConnector
 	}
 	
 	// http://localhost:50003/trainingsplan/getPlanByUserAndPlan/jakob%20engl/24
-		@Path("getPlanIdByUsernameAndPlanname/{username}/{planname}")
-		@GET
-		@Produces("text/plain")
-		public int getPlanIdByUsernameAndPlanname(@PathParam("username") String username, @PathParam("planname") String planname) throws JSONException, SQLException
-		{
-			int plan_id;
-			System.out.println("worked (getPlanIdByUsernameAndPlanname) - " + username + " | " + planname);
-			
-			parserFromDB p = new parserFromDB();
-			plan_id = parserFromDB.getPlanIDByPlanName(username, planname, parserFromDB.connectToDB(p.connectionString, p.user, p.password));
-					
-	        return plan_id;
-		}
+	@Path("getPlanIdByUsernameAndPlanname/{username}/{planname}")
+	@GET
+	@Produces("text/plain")
+	public int getPlanIdByUsernameAndPlanname(@PathParam("username") String username, @PathParam("planname") String planname) throws JSONException, SQLException
+	{
+		int plan_id;
+		System.out.println("worked (getPlanIdByUsernameAndPlanname) - " + username + " | " + planname);
+		
+		parserFromDB p = new parserFromDB();
+		plan_id = parserFromDB.getPlanIDByPlanName(username, planname, parserFromDB.connectToDB(p.connectionString, p.user, p.password));
+				
+        return plan_id;
+	}
 }

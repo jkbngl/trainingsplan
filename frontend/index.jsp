@@ -8,12 +8,12 @@
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <head>
     <style>
-        table, th, td {
-            border: 1px solid black;
+        td {
+            /*border: 1px solid #373737;*/
         }
 
-        #container1, container2, container3, container4,  {
-            background-color: yellow;
+        td {
+            background-color: hsl(89, 43%, 51%);
         }
 
     </style>
@@ -32,6 +32,7 @@
     <link rel="stylesheet" type="text/css" href="css/util.css">
     <link rel="stylesheet" type="text/css" href="css/main.css">
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.7.1/css/all.css" integrity="sha384-fnmOCqbTlWIlj8LyTjo7mOUStjsKC4pOpQbqyi7RrhN7udi9RwhKkMHpvLbHG9Sr" crossorigin="anonymous">
 
 
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
@@ -46,13 +47,19 @@
     </script>
 </head>
 <body>
+<div id="mySidenav" class="sidenav">
+    <a href="javascript:void(0)" class="closebtn" onclick="closeNav()"><i class="fas fa-bars"></i></a>
+    <!--<a href="#">About</a>-->
+    <button onclick="receivePlanfromDB(false)" class="button" style=" top: 10px; width:80%; margin-left: 10%;">Load Plan</button>
+    <button onclick="cleanUpTables()"class="button" style="top: 10px; width:80%; margin-left: 10%;">New Plan</button>
+    <button onclick="logout()"class="button" style="top: 10px; width:80%; margin-left: 10%;">Logout</button>
+</div>
 
-<div style="display: flex; justify-content: space-between; position:fixed; width:100%">
-    <button onclick="addTable(true)" class="button" style="top: 10px;">Add new Day</button>
-    <button onclick="receivePlanfromDB(false)" class="button" style=" top: 10px; ">Load Plan</button>
-    <button onclick="loadPlanIntoDB()" class="button" style="top: 10px;">Save Changes</button>
-    <button onclick="cleanUpTables()"class="button" style="top: 10px;">New Plan</button>
-    <button onclick="logout()"class="button" value="username ..." id="username" style="top: 10px;"></button>
+<div id = "headerforbuttons" style="display: flex; justify-content: space-between; position:fixed; width:100%">
+    <button onclick="openNav()" class="button" style="top: 10px;"><i class="fas fa-bars"></i></span>
+        <button onclick="addTable(true)" class="button" style="top: 10px;">Add new Day</button>
+        <button onclick="loadPlanIntoDB(); receivePlanfromDB(true)" class="button" style="top: 10px;"><i class="far fa-save"></i></button>
+        <button onclick="logout()"class="button" value="username ..." id="username" style="top: 10px;"></button>
 </div>​
 
 
@@ -77,7 +84,9 @@
     </output>
 </div>
 
-<div id="container1" style="width: 100%;"></div>
+<div id="container1" style="width: 100%;">
+    <div class="limiter" id="day1"> <div class="container-table100"> <div class="wrap-table100"> <div class="table100 ver3 m-b-110"> <div class="table100-head"> <table> <thead> <tr class="row100 head"> <th class="cell100 column1" style="width:16.6%; text-align: center">Exercise</th> <th class="cell100 column2" style="width:16.6%; text-align: center">Weight</th> <th class="cell100 column3" style="width:16.6%; text-align: center">Repetitions</th> <th class="cell100 column3" style="width:16.6%; text-align: center">Sets</th> <th class="cell100 column4" style="width:16.6%; text-align: center">Max Rep weight</th> <th class="cell100 column5" style="width:16.6%; text-align: center">Pause</th> </tr> </thead> </table> </div> <div class="table100-body js-pscroll" id="test"> <table> <tbody id="myTable1"> <tr class="row100 body"> </tr><tr id="somerow"><td> <div contenteditable="true" value="defaultvaluetoignore" class="title" data-placeholder="name" style="background-color: transparent; color:#7F7F7F; width:inherit; max-width: 200px; min-width: 200px; text-align: center"></div></td><td> <div contenteditable="true" value="defaultvaluetoignore" class="title" data-placeholder="kilo" style="background-color: transparent; color:#7F7F7F; width:inherit; max-width: 200px; min-width: 200px; text-align: center"></div></td><td> <div contenteditable="true" value="defaultvaluetoignore" class="title" data-placeholder="reps" style="background-color: transparent; color:#7F7F7F; width:inherit; max-width: 200px; min-width: 200px; text-align: center"></div></td><td> <div contenteditable="true" value="defaultvaluetoignore" class="title" data-placeholder="sets" style="background-color: transparent; color:#7F7F7F; width:inherit; max-width: 200px; min-width: 200px; text-align: center"></div></td><td> <div contenteditable="true" value="defaultvaluetoignore" class="title" data-placeholder="maxr" style="background-color: transparent; color:#7F7F7F; width:inherit; max-width: 200px; min-width: 200px; text-align: center"></div></td><td> <div contenteditable="true" value="defaultvaluetoignore" class="title" data-placeholder="time" style="background-color: transparent; color:#7F7F7F; width:inherit; max-width: 200px; min-width: 200px; text-align: center"></div></td></tr></tbody> </table> </div> </div> </div> <button onclick="addRow('myTable1')" class="button">Add new Exercise</button> <button onclick="deleteRow('myTable1')" class="button">Remove last Exercise</button> <button onclick="deleteTable('1')" class="button">Delete Day</button></div></div>
+</div>
 <div id="container2" style="width: 100%;"></div>
 <div id="container3" style="width: 100%;"></div>
 <div id="container4" style="width: 100%;"></div>
@@ -169,12 +178,12 @@
         var cell5 = row.insertCell(4);
         var cell6 = row.insertCell(5);
 
-        cell1.innerHTML = "<td class=\'tdinput\'> <div contenteditable='true' data-placeholder='name' class='title' style=\"background-color: transparent; color:#7F7F7F; width:100px; text-align: center\"/></div></td>";
-        cell2.innerHTML = "<td class=\'tdinput\'> <div contenteditable='true' data-placeholder='kilo' class='title' style=\"background-color: transparent; color:#7F7F7F; width:100px; text-align: center\"/></div></td>";
-        cell3.innerHTML = "<td class=\'tdinput\'> <div contenteditable='true' data-placeholder='reps' class='title' style=\"background-color: transparent; color:#7F7F7F; width:100px; text-align: center\"/></div></td>";
-        cell4.innerHTML = "<td class=\'tdinput\'> <div contenteditable='true' data-placeholder='sets' class='title' style=\"background-color: transparent; color:#7F7F7F; width:100px; text-align: center\"/></div></td>";
-        cell5.innerHTML = "<td class=\'tdinput\'> <div contenteditable='true' data-placeholder='maxs' class='title' style=\"background-color: transparent; color:#7F7F7F; width:100px; text-align: center\"/></div></td>";
-        cell6.innerHTML = "<td class=\'tdinput\'> <div contenteditable='true' data-placeholder='time' class='title' style=\"background-color: transparent; color:#7F7F7F; width:100px; text-align: center\"/></div></td>";
+        cell1.innerHTML = "<td class=\'tdinput\'> <div contenteditable='true'  value='defaultvaluetoignore' class='title' data-placeholder='name' style=\"background-color: transparent; color:#7F7F7F; width:inherit; max-width: 200px; min-width: 200px; text-align: center\"/></div></td>";
+        cell2.innerHTML = "<td class=\'tdinput\'> <div contenteditable='true'  value='defaultvaluetoignore' class='title' data-placeholder='kilo' style=\"background-color: transparent; color:#7F7F7F; width:inherit; max-width: 200px; min-width: 200px; text-align: center\"/></div></td>";
+        cell3.innerHTML = "<td class=\'tdinput\'> <div contenteditable='true'  value='defaultvaluetoignore' class='title' data-placeholder='reps' style=\"background-color: transparent; color:#7F7F7F; width:inherit; max-width: 200px; min-width: 200px; text-align: center\"/></div></td>";
+        cell4.innerHTML = "<td class=\'tdinput\'> <div contenteditable='true'  value='defaultvaluetoignore' class='title' data-placeholder='sets' style=\"background-color: transparent; color:#7F7F7F; width:inherit; max-width: 200px; min-width: 200px; text-align: center\"/></div></td>";
+        cell5.innerHTML = "<td class=\'tdinput\'> <div contenteditable='true'  value='defaultvaluetoignore' class='title' data-placeholder='maxr' style=\"background-color: transparent; color:#7F7F7F; width:inherit; max-width: 200px; min-width: 200px; text-align: center\"/></div></td>";
+        cell6.innerHTML = "<td class=\'tdinput\'> <div contenteditable='true'  value='defaultvaluetoignore' class='title' data-placeholder='time' style=\"background-color: transparent; color:#7F7F7F; width:inherit; max-width: 200px; min-width: 200px; text-align: center\"/></div></td>";
 
         row.setAttribute("id", "somerow", 0);
     }
@@ -188,7 +197,7 @@
     function deleteTable(id)
     {
         document.getElementById("day" + id).innerHTML = ' ';
-        console.log('deleted: day' + id);
+        // console.log('deleted: day' + id);
 
         for(var i = id; i <= numtables; i++)    // start at the position where the table has been deleted, no need to change id of earlier tables
         {
@@ -200,14 +209,14 @@
                 document.getElementById("day" + i).id = 'day' + (i - 1);
                 document.getElementById("myTable" + i).id = 'myTable' + (i - 1);
 
-                console.log('day' + i + ' will become: day' + (i - 1))
+                // console.log('day' + i + ' will become: day' + (i - 1))
             }
         }
 
         numtables = numtables - 1;
     }
 
-    function addRowWithEx(tableName, exname, exweight, exreps, exsets, exmaxreps, expause)
+    function addRowWithEx(tableName, exid, exname, exweight, exreps, exsets, exmaxreps, expause)
     {
         // console.log(tableName);
 
@@ -224,12 +233,15 @@
         var cell5 = row.insertCell(4);
         var cell6 = row.insertCell(5);
 
-        cell1.innerHTML = "<td class=\'tdinput\'> <div contenteditable='true' data-placeholder='name' class='title' style=\"background-color: transparent; color:#7F7F7F; width:100px; text-align: center\"/>" + exname + "</div></td>";
-        cell2.innerHTML = "<td class=\'tdinput\'> <div contenteditable='true' data-placeholder='kilo' class='title' style=\"background-color: transparent; color:#7F7F7F; width:100px; text-align: center\"/>" + exweight + "</div></td>";
-        cell3.innerHTML = "<td class=\'tdinput\'> <div contenteditable='true' data-placeholder='reps' class='title' style=\"background-color: transparent; color:#7F7F7F; width:100px; text-align: center\"/>" + exreps + "</div></td>";
-        cell4.innerHTML = "<td class=\'tdinput\'> <div contenteditable='true' data-placeholder='sets' class='title' style=\"background-color: transparent; color:#7F7F7F; width:100px; text-align: center\"/>" + exsets + "</div></td>";
-        cell5.innerHTML = "<td class=\'tdinput\'> <div contenteditable='true' data-placeholder='maxs' class='title' style=\"background-color: transparent; color:#7F7F7F; width:100px; text-align: center\"/>" + exmaxreps + "</div></td>";
-        cell6.innerHTML = "<td class=\'tdinput\'> <div contenteditable='true' data-placeholder='time' class='title' style=\"background-color: transparent; color:#7F7F7F; width:100px; text-align: center\"/>" + expause + "</div></td>";
+
+        cell1.val = exid;
+
+        cell1.innerHTML = "<td class=\'tdinput\'> <div contenteditable='true' data-placeholder='name' value=" + exid + " class='title' style=\"background-color: transparent; color:#7F7F7F; width:inherit; max-width: 200px; min-width: 200px; text-align: center\"/>" + exname + "</div></td>";
+        cell2.innerHTML = "<td class=\'tdinput\'> <div contenteditable='true' data-placeholder='kilo' value=" + exid + " class='title' style=\"background-color: transparent; color:#7F7F7F; width:inherit; max-width: 200px; min-width: 200px; text-align: center\"/>" + exweight + "</div></td>";
+        cell3.innerHTML = "<td class=\'tdinput\'> <div contenteditable='true' data-placeholder='reps' value=" + exid + " class='title' style=\"background-color: transparent; color:#7F7F7F; width:inherit; max-width: 200px; min-width: 200px; text-align: center\"/>" + exreps + "</div></td>";
+        cell4.innerHTML = "<td class=\'tdinput\'> <div contenteditable='true' data-placeholder='sets' value=" + exid + " class='title' style=\"background-color: transparent; color:#7F7F7F; width:inherit; max-width: 200px; min-width: 200px; text-align: center\"/>" + exsets + "</div></td>";
+        cell5.innerHTML = "<td class=\'tdinput\'> <div contenteditable='true' data-placeholder='maxr' value=" + exid + " class='title' style=\"background-color: transparent; color:#7F7F7F; width:inherit; max-width: 200px; min-width: 200px; text-align: center\"/>" + exmaxreps + "</div></td>";
+        cell6.innerHTML = "<td class=\'tdinput\'> <div contenteditable='true' data-placeholder='time' value=" + exid + " class='title' style=\"background-color: transparent; color:#7F7F7F; width:inherit; max-width: 200px; min-width: 200px; text-align: center\"/>" + expause + "</div></td>";
 
         row.setAttribute("id", "somerow", 0);
     }
@@ -278,12 +290,14 @@
             if(localplanid != -1)
                 currentPlanId = localplanid;
         }
-            filteredText = filteredText + '"planid": "' + currentPlanId + '",';
+        filteredText = filteredText + '"planid": "' + currentPlanId + '",';
 
 
         if(planname.length == 0)        // new plan, not updated plan
         {
             plannamelocal = EnterPlanName();
+
+            //if(plannamelocal != 'ERRORCODE 00003 - User cancelled the promRpt.')
 
             planname = plannamelocal;
 
@@ -294,6 +308,7 @@
             {
                 return 'ERRORCODE 00004';
             }
+
             filteredText = filteredText + '"planname": "' + plannamelocal + '",';
         }
         else
@@ -361,7 +376,10 @@
         for(var i = 0; i < 6; i++)
         {
             if (i == 0)
+            {
+                parsed = parsed + "\"id\":\""   + res[i].substring(raw.indexOf('value') + 7, raw.indexOf('class') - 2) + '",';
                 parsed = parsed + "\"name\":\"" + res[i].substring(raw.indexOf('center">') + 8, res[i].indexOf('</div>')) + '",';
+            }
             else if(i == 1)
                 parsed = parsed + "\"weight\":\"" + res[i].substring(raw.indexOf('center">') + 8, res[i].indexOf('</div>')) + '",';
             else if(i == 2)
@@ -391,7 +409,7 @@
         if(jsondata == 'ERRORCODE 00003' || jsondata == 'ERRORCODE 00004')
         {
             console.log("sending dummy plan");
-            console.log('{"plan":[{"username": "NoUser","planname": "NoPlan"}]}');
+            // console.log('{"plan":[{"username": "NoUser","planname": "NoPlan"}]}');
             xhr.send('{"plan":[{"username": "NoUser","planname": "NoPlan"}]}');
         }
         else
@@ -455,10 +473,17 @@
                 }
                 else
                 {
-                    plan = getPlan('http://jakob.ml:50003/trainingsplan/getNewestPlan/' + username);
-                    // console.log(plan);
-                    var data = JSON.parse(plan);
-                    printjson(data, plan);
+                    if(this.response != '{"username": "' + username + '","plans": []}')
+                    {
+                        plan = getPlan('http://jakob.ml:50003/trainingsplan/getNewestPlan/' + username);
+                        var data = JSON.parse(plan);
+                        printjson(data, plan);
+                    }
+                    else
+                    {
+                        addTable(true);
+                        console.log('No plans found for user, nothing to display - TODO e.g. show 1 day with no ex ');
+                    }
                 }
             }
             else
@@ -584,7 +609,7 @@
 
         cancelButton.addEventListener('click', function()
         {
-            console.log("CLOSED");
+            // console.log("CLOSED");
             document.getElementById('dialog').style.display = 'none';
         });
     }
@@ -616,11 +641,12 @@
             if(i == 0)
                 currentPlanId = json.plan[i].planid;
 
-            console.log(currentPlanId);
-
             for(var j = 0; j < excount; j++)
             {
-                addRowWithEx(table, json.plan[i].day[j].exercise.name
+                addRowWithEx(
+                    table
+                    , json.plan[i].day[j].exercise.id
+                    , json.plan[i].day[j].exercise.name
                     , json.plan[i].day[j].exercise.weight
                     , json.plan[i].day[j].exercise.reps
                     , json.plan[i].day[j].exercise.sets
@@ -637,7 +663,7 @@
 
         if (planname == null || planname == "")
         {
-            return "ERRORCODE 00003 - User cancelled the prompt.";
+            return "ERRORCODE 00003 - User cancelled the promRpt.";
         }
         else
         {
@@ -677,9 +703,12 @@
 
     document.addEventListener('DOMContentLoaded', function()
     {
+        addTable(false);
+
         var check = function()
         {
             if(getusername().length > 0){
+                cleanUpTables();
                 receivePlanfromDB(true);
             }
             else {
@@ -691,6 +720,15 @@
 
     }, false);
 
+    function openNav()
+    {
+        document.getElementById("mySidenav").style.width = "250px";
+    }
+
+    function closeNav()
+    {
+        document.getElementById("mySidenav").style.width = "0";
+    }
 
 </script>
 <script src="vendor/jquery/jquery-3.2.1.min.js"></script>
@@ -726,14 +764,24 @@
 
     function getusername()
     {
-        console.log(username);
+        // console.log(username);
         return username;
     }
 
     function logout()
     {
-        window.location.href = "http://jakob.ml:8081/auth/realms/trainingsplan/protocol/openid-connect/logout?redirect_uri=" +
-            "/auth/realms/trainingsplan/protocol/openid-connect/auth?response_type=code&client_id=trainingsplan&redirect_uri=http%3A%2F%2Fjakob.ml%3A50001%2Ftrainingsplan%2F&state=d6f2b29a-cd94-4d93-b1d0-ff9750b4e19c&login=true&scope=openid";
+        // window.location.href = "http://jakob.ml:8081/auth/realms/trainingsplan/protocol/openid-connect/logout?redirect_uri=/auth/realms/trainingsplan/protocol/openid-connect/auth?response_type=code&client_id=trainingsplan&redirect_uri=http%3A%2F%2Fjakob.ml%3A50001%2Ftrainingsplan%2F&state=d6f2b29a-cd94-4d93-b1d0-ff9750b4e19c&login=true&scope=openid";
+
+        // kc.logout('http://jakob.ml:8081/auth/realms/trainingsplan/protocol/openid-connect/logout?redirect_uri=/auth/realms/trainingsplan');
+        // window.location.href = "http://jakob.ml/";
+        // kc.onAuthSuccess = function() { alert('authenticated'); }
+
+        var logouturl = kc.createLogoutUrl();
+        console.log(logouturl);
+        // kc.logout(logouturl);
+        // request.authenticate(response);
+
+        window.location.assign('http://jakob.ml:8081/auth/realms/trainingsplan/protocol/openid-connect/logout?redirect_uri=/auth/realms/trainingsplan/protocol/openid-connect/auth?response_type=code&client_id=trainingsplan&redirect_uri=http%3A%2F%2Fjakob.ml%3A50001%2Ftrainingsplan%2F&state=d6f2b29a-cd94-4d93-b1d0-ff9750b4e19c&login=true&scope=openid');
     }
 </script>
 </body>

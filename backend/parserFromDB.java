@@ -122,7 +122,8 @@ public class parserFromDB
 						 + "join tp_exercise e  on d.id = e.day_fk "
 						 + "where username = ?"
 						 + "and p.id = (?)"
-						 + "and deprecated = 0";
+						 + "and deprecated = 0"
+						 + "order by day_fk";
 			
 			pstmt = connection.prepareStatement(query);
 			pstmt.setString(1, username);
@@ -143,7 +144,8 @@ public class parserFromDB
 						  + "join tp_day d       on p.id = d.plan_fk "
 						  + "join tp_exercise e  on d.id = e.day_fk "
 						 + "where p.id = (?)"
-						   + "and deprecated = 0";
+						   + "and deprecated = 0"
+						   + "order by day_fk";
 		
 			pstmt = connection.prepareStatement(query);
 			pstmt.setInt(1, planID);

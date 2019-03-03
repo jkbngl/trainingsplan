@@ -93,22 +93,12 @@
         var basicTable5 = '<div class="limiter" id="day5"> <div class="container-table100"> <div class="wrap-table100"> <div class="table100 ver3 m-b-110"> <div class="table100-head"> <table> <thead> <tr class="row100 head"> <th class="cell100 column1" style="width:16.6%; text-align: center">Exercise</th> <th class="cell100 column2" style="width:16.6%; text-align: center">Weight</th> <th class="cell100 column3" style="width:16.6%; text-align: center">Repetitions</th> <th class="cell100 column3" style="width:16.6%; text-align: center">Sets</th> <th class="cell100 column4" style="width:16.6%; text-align: center">Max Rep weight</th> <th class="cell100 column5" style="width:16.6%; text-align: center">Pause</th> </tr> </thead> </table> </div> <div class="table100-body js-pscroll" id = "test"> <table> <tbody id="myTable5"> <tr class="row100 body"> </tbody> </table> </div> </div> </div> <button id="add_Ex_Day_Day_5" onclick="addRow(\'myTable5\')" class="button">Add new Exercise</button> <button id="delete_Ex_Day_Day_5" onclick="deleteRow(\'myTable5\')" class="button">Remove last Exercise</button> <button id="delete_Day_Day_5" onclick="deleteTable(\'5\')" class="button">Delete Day</button></div> </div>';
 
 
-        var id = numtables + 1;			// number of tables
         numtables = numtables + 1;
+        var id = numtables;			// number of tables
         var tablename = 'container';
         var temptablename = tablename.concat(id);
         var tmptabletocreate = 'basicTable';
         var tabletocreate = tmptabletocreate.concat(id);
-
-        // console.log(id);
-
-        /*
-		console.log(numtables);
-        console.log(id);
-        console.log(tablename);
-        console.log(temptablename);
-		console.log(tabletocreate);
-		*/
 
         if(id == 1)
         {
@@ -145,6 +135,9 @@
             if(addRowByDefault)
                 addRow("myTable5");
         }
+
+        console.log("After adding: " + numtables);
+
     }
 
     function addRow(tableName)
@@ -186,8 +179,11 @@
 
     function deleteTable(id)
     {
-        document.getElementById("day" + id).innerHTML = ' ';
-        var parent = document.getElementById("day" + id).parentElement.id;
+        var newValue;
+        var elem = document.getElementById("day" + id);
+        
+        elem.innerHTML = ' ';
+        elem.parentNode.removeChild(elem);
 
         for(var i = id; i <= numtables; i++)    // start at the position where the table has been deleted, no need to change id of earlier tables
         {
@@ -199,8 +195,7 @@
                 document.getElementById("day" + i).id = 'day' + (i - 1);
                 document.getElementById("myTable" + i).id = 'myTable' + (i - 1);
                 
-
-                var newValue = 'deleteTable(\'' + (i - 1) + '\')';
+                newValue = 'deleteTable(\'' + (i - 1) + '\')';
                 document.getElementById('delete_Day_Day_' + i).setAttribute( "onClick", newValue);
 
                 newValue = 'addRow(\'myTable' + (i - 1) + '\')';
@@ -215,16 +210,25 @@
             }
             else if(numtables == 1)
             {
+                console.log("Detected ONLY 1 Table left!");
+
                 for(var i = 1; i < 6; i++)
                     document.getElementById("container" + i).innerHTML = '';
             }
         }
-        var element =  document.getElementById(parent)
+
+        if (typeof(document.getElementById("day" + id)) != 'undefined' && element != null)
+        {
+            var parent = document.getElementById("day" + id).parentElement.id;
+            var element =  document.getElementById(parent)
+        }
 
         if (typeof(element) != 'undefined' && element != null)
             document.getElementById(parent).innerHTML = ' ';
         
         numtables = numtables - 1;
+
+        console.log("After Deleting: " + numtables);
     }
 
     function addRowWithEx(tableName, exid, exname, exweight, exreps, exsets, exmaxreps, expause)

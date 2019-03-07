@@ -33,33 +33,28 @@
     <link rel="stylesheet" type="text/css" href="css/main.css">
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
     <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.7.1/css/all.css" integrity="sha384-fnmOCqbTlWIlj8LyTjo7mOUStjsKC4pOpQbqyi7RrhN7udi9RwhKkMHpvLbHG9Sr" crossorigin="anonymous">
+    <link rel="shortcut icon" href="./favicon.ico?">
+    <meta name="msapplication-TileColor" content="#ffffff">
+    <meta name="theme-color" content="#ffffff">
 
-
-    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
-    <script>
-        $(function(){
-            $('#btn').on('click', function()
-                {
-                    alert('Clicked - jquery');
-                }
-            );
-        });
-    </script>
 </head>
 <body>
+<div class="fixed-background blue-gradient-bg"></div>
+
 <div id="mySidenav" class="sidenav">
     <a href="javascript:void(0)" class="closebtn" onclick="closeNav()"><i class="fas fa-bars"></i></a>
     <!--<a href="#">About</a>-->
     <button onclick="receivePlanfromDB(false)" class="button" style=" top: 10px; width:80%; margin-left: 10%;">Load Plan</button>
     <button onclick="cleanUpTables()"class="button" style="top: 10px; width:80%; margin-left: 10%;">New Plan</button>
-    <button onclick="logout()"class="button" style="top: 10px; width:80%; margin-left: 10%;">Logout</button>
+    <button onclick="window.location.href='/trainingsplan/test_page.jsp'" class="button" style="top: 10px; width:80%; margin-left: 10%;">Stats</button>
+    <button onclick="kc.logout('/trainingsplanorwhateveritdoesntworkanyway'); kc.logout()"class="button" style="top: 10px; width:80%; margin-left: 10%;">Logout</button>
 </div>
 
 <div id = "headerforbuttons" style="display: flex; justify-content: space-between; position:fixed; width:100%">
     <button onclick="openNav()" class="button" style="top: 10px;"><i class="fas fa-bars"></i></span>
         <button onclick="addTable(true)" class="button" style="top: 10px;">Add new Day</button>
-        <button onclick="loadPlanIntoDB(); receivePlanfromDB(true)" class="button" style="top: 10px;"><i class="far fa-save"></i></button>
-        <button onclick="logout()"class="button" value="username ..." id="username" style="top: 10px;"></button>
+        <button onclick="loadPlanIntoDB(); onSave()" class="button" style="top: 10px;"><i class="far fa-save"></i></button>
+        <button class="button" value="username ..." id="username" style="top: 10px;"></button>
 </div>​
 
 
@@ -84,13 +79,12 @@
     </output>
 </div>
 
-<div id="container1" style="width: 100%;">
-    <div class="limiter" id="day1"> <div class="container-table100"> <div class="wrap-table100"> <div class="table100 ver3 m-b-110"> <div class="table100-head"> <table> <thead> <tr class="row100 head"> <th class="cell100 column1" style="width:16.6%; text-align: center">Exercise</th> <th class="cell100 column2" style="width:16.6%; text-align: center">Weight</th> <th class="cell100 column3" style="width:16.6%; text-align: center">Repetitions</th> <th class="cell100 column3" style="width:16.6%; text-align: center">Sets</th> <th class="cell100 column4" style="width:16.6%; text-align: center">Max Rep weight</th> <th class="cell100 column5" style="width:16.6%; text-align: center">Pause</th> </tr> </thead> </table> </div> <div class="table100-body js-pscroll" id="test"> <table> <tbody id="myTable1"> <tr class="row100 body"> </tr><tr id="somerow"><td> <div contenteditable="true" value="defaultvaluetoignore" class="title" data-placeholder="name" style="background-color: transparent; color:#7F7F7F; width:inherit; max-width: 200px; min-width: 200px; text-align: center"></div></td><td> <div contenteditable="true" value="defaultvaluetoignore" class="title" data-placeholder="kilo" style="background-color: transparent; color:#7F7F7F; width:inherit; max-width: 200px; min-width: 200px; text-align: center"></div></td><td> <div contenteditable="true" value="defaultvaluetoignore" class="title" data-placeholder="reps" style="background-color: transparent; color:#7F7F7F; width:inherit; max-width: 200px; min-width: 200px; text-align: center"></div></td><td> <div contenteditable="true" value="defaultvaluetoignore" class="title" data-placeholder="sets" style="background-color: transparent; color:#7F7F7F; width:inherit; max-width: 200px; min-width: 200px; text-align: center"></div></td><td> <div contenteditable="true" value="defaultvaluetoignore" class="title" data-placeholder="maxr" style="background-color: transparent; color:#7F7F7F; width:inherit; max-width: 200px; min-width: 200px; text-align: center"></div></td><td> <div contenteditable="true" value="defaultvaluetoignore" class="title" data-placeholder="time" style="background-color: transparent; color:#7F7F7F; width:inherit; max-width: 200px; min-width: 200px; text-align: center"></div></td></tr></tbody> </table> </div> </div> </div> <button onclick="addRow('myTable1')" class="button">Add new Exercise</button> <button onclick="deleteRow('myTable1')" class="button">Remove last Exercise</button> <button onclick="deleteTable('1')" class="button">Delete Day</button></div></div>
-</div>
+<div id="container1" style="width: 100%;"></div>
 <div id="container2" style="width: 100%;"></div>
 <div id="container3" style="width: 100%;"></div>
 <div id="container4" style="width: 100%;"></div>
 <div id="container5" style="width: 100%;"></div>
+</body>
 
 <script>
 
@@ -104,62 +98,85 @@
     function addTable(addRowByDefault)
     {
         // column 3 2 times, maybe change at a later point
-        var basicTable1 = '<div class="limiter" id="day1"> <div class="container-table100"> <div class="wrap-table100"> <div class="table100 ver3 m-b-110"> <div class="table100-head"> <table> <thead> <tr class="row100 head"> <th class="cell100 column1" style="width:16.6%; text-align: center">Exercise</th> <th class="cell100 column2" style="width:16.6%; text-align: center">Weight</th> <th class="cell100 column3" style="width:16.6%; text-align: center">Repetitions</th> <th class="cell100 column3" style="width:16.6%; text-align: center">Sets</th> <th class="cell100 column4" style="width:16.6%; text-align: center">Max Rep weight</th> <th class="cell100 column5" style="width:16.6%; text-align: center">Pause</th> </tr> </thead> </table> </div> <div class="table100-body js-pscroll" id = "test"> <table> <tbody id="myTable1"> <tr class="row100 body"> </tbody> </table> </div> </div> </div> <button onclick="addRow(\'myTable1\')" class="button">Add new Exercise</button> <button onclick="deleteRow(\'myTable1\')" class="button">Remove last Exercise</button> <button onclick="deleteTable(\'1\')" class="button">Delete Day</button></div></div>';
-        var basicTable2 = '<div class="limiter" id="day2"> <div class="container-table100"> <div class="wrap-table100"> <div class="table100 ver3 m-b-110"> <div class="table100-head"> <table> <thead> <tr class="row100 head"> <th class="cell100 column1" style="width:16.6%; text-align: center">Exercise</th> <th class="cell100 column2" style="width:16.6%; text-align: center">Weight</th> <th class="cell100 column3" style="width:16.6%; text-align: center">Repetitions</th> <th class="cell100 column3" style="width:16.6%; text-align: center">Sets</th> <th class="cell100 column4" style="width:16.6%; text-align: center">Max Rep weight</th> <th class="cell100 column5" style="width:16.6%; text-align: center">Pause</th> </tr> </thead> </table> </div> <div class="table100-body js-pscroll" id = "test"> <table> <tbody id="myTable2"> <tr class="row100 body"> </tbody> </table> </div> </div> </div> <button onclick="addRow(\'myTable2\')" class="button">Add new Exercise</button> <button onclick="deleteRow(\'myTable2\')" class="button">Remove last Exercise</button> <button onclick="deleteTable(\'2\')" class="button">Delete Day</button></div> </div>';
-        var basicTable3 = '<div class="limiter" id="day3"> <div class="container-table100"> <div class="wrap-table100"> <div class="table100 ver3 m-b-110"> <div class="table100-head"> <table> <thead> <tr class="row100 head"> <th class="cell100 column1" style="width:16.6%; text-align: center">Exercise</th> <th class="cell100 column2" style="width:16.6%; text-align: center">Weight</th> <th class="cell100 column3" style="width:16.6%; text-align: center">Repetitions</th> <th class="cell100 column3" style="width:16.6%; text-align: center">Sets</th> <th class="cell100 column4" style="width:16.6%; text-align: center">Max Rep weight</th> <th class="cell100 column5" style="width:16.6%; text-align: center">Pause</th> </tr> </thead> </table> </div> <div class="table100-body js-pscroll" id = "test"> <table> <tbody id="myTable3"> <tr class="row100 body"> </tbody> </table> </div> </div> </div> <button onclick="addRow(\'myTable3\')" class="button">Add new Exercise</button> <button onclick="deleteRow(\'myTable3\')" class="button">Remove last Exercise</button> <button onclick="deleteTable(\'3\')" class="button">Delete Day</button></div> </div>';
-        var basicTable4 = '<div class="limiter" id="day4"> <div class="container-table100"> <div class="wrap-table100"> <div class="table100 ver3 m-b-110"> <div class="table100-head"> <table> <thead> <tr class="row100 head"> <th class="cell100 column1" style="width:16.6%; text-align: center">Exercise</th> <th class="cell100 column2" style="width:16.6%; text-align: center">Weight</th> <th class="cell100 column3" style="width:16.6%; text-align: center">Repetitions</th> <th class="cell100 column3" style="width:16.6%; text-align: center">Sets</th> <th class="cell100 column4" style="width:16.6%; text-align: center">Max Rep weight</th> <th class="cell100 column5" style="width:16.6%; text-align: center">Pause</th> </tr> </thead> </table> </div> <div class="table100-body js-pscroll" id = "test"> <table> <tbody id="myTable4"> <tr class="row100 body"> </tbody> </table> </div> </div> </div> <button onclick="addRow(\'myTable4\')" class="button">Add new Exercise</button> <button onclick="deleteRow(\'myTable4\')" class="button">Remove last Exercise</button> <button onclick="deleteTable(\'4\')" class="button">Delete Day</button></div> </div>';
-        var basicTable5 = '<div class="limiter" id="day5"> <div class="container-table100"> <div class="wrap-table100"> <div class="table100 ver3 m-b-110"> <div class="table100-head"> <table> <thead> <tr class="row100 head"> <th class="cell100 column1" style="width:16.6%; text-align: center">Exercise</th> <th class="cell100 column2" style="width:16.6%; text-align: center">Weight</th> <th class="cell100 column3" style="width:16.6%; text-align: center">Repetitions</th> <th class="cell100 column3" style="width:16.6%; text-align: center">Sets</th> <th class="cell100 column4" style="width:16.6%; text-align: center">Max Rep weight</th> <th class="cell100 column5" style="width:16.6%; text-align: center">Pause</th> </tr> </thead> </table> </div> <div class="table100-body js-pscroll" id = "test"> <table> <tbody id="myTable5"> <tr class="row100 body"> </tbody> </table> </div> </div> </div> <button onclick="addRow(\'myTable5\')" class="button">Add new Exercise</button> <button onclick="deleteRow(\'myTable5\')" class="button">Remove last Exercise</button> <button onclick="deleteTable(\'5\')" class="button">Delete Day</button></div> </div>';
+        var basicTable1 = '<div class="limiter" id="day1"> <div class="container-table100"> <div class="wrap-table100"> <div class="table100 ver3 m-b-110"> <div class="table100-head"> <table> <thead> <tr class="row100 head"> <th class="cell100 column1" style="width:16.6%; text-align: center">Exercise</th> <th class="cell100 column2" style="width:16.6%; text-align: center">Weight</th> <th class="cell100 column3" style="width:16.6%; text-align: center">Repetitions</th> <th class="cell100 column3" style="width:16.6%; text-align: center">Sets</th> <th class="cell100 column4" style="width:16.6%; text-align: center">Max Rep weight</th> <th class="cell100 column5" style="width:16.6%; text-align: center">Pause</th> </tr> </thead> </table> </div> <div class="table100-body js-pscroll" id = "test"> <table> <tbody id="myTable1"> <tr class="row100 body"> </tbody> </table> </div> </div> </div> <button id="add_Ex_Day_Day_1" onclick="addRow(\'myTable1\')" class="button">Add new Exercise</button> <button id="delete_Ex_Day_Day_1" onclick="deleteRow(\'myTable1\')" class="button">Remove last Exercise</button> <button id="delete_Day_Day_1" onclick="deleteTable(\'1\')" class="button">Delete Day</button></div></div>';
+        var basicTable2 = '<div class="limiter" id="day2"> <div class="container-table100"> <div class="wrap-table100"> <div class="table100 ver3 m-b-110"> <div class="table100-head"> <table> <thead> <tr class="row100 head"> <th class="cell100 column1" style="width:16.6%; text-align: center">Exercise</th> <th class="cell100 column2" style="width:16.6%; text-align: center">Weight</th> <th class="cell100 column3" style="width:16.6%; text-align: center">Repetitions</th> <th class="cell100 column3" style="width:16.6%; text-align: center">Sets</th> <th class="cell100 column4" style="width:16.6%; text-align: center">Max Rep weight</th> <th class="cell100 column5" style="width:16.6%; text-align: center">Pause</th> </tr> </thead> </table> </div> <div class="table100-body js-pscroll" id = "test"> <table> <tbody id="myTable2"> <tr class="row100 body"> </tbody> </table> </div> </div> </div> <button id="add_Ex_Day_Day_2" onclick="addRow(\'myTable2\')" class="button">Add new Exercise</button> <button id="delete_Ex_Day_Day_2" onclick="deleteRow(\'myTable2\')" class="button">Remove last Exercise</button> <button id="delete_Day_Day_2" onclick="deleteTable(\'2\')" class="button">Delete Day</button></div> </div>';
+        var basicTable3 = '<div class="limiter" id="day3"> <div class="container-table100"> <div class="wrap-table100"> <div class="table100 ver3 m-b-110"> <div class="table100-head"> <table> <thead> <tr class="row100 head"> <th class="cell100 column1" style="width:16.6%; text-align: center">Exercise</th> <th class="cell100 column2" style="width:16.6%; text-align: center">Weight</th> <th class="cell100 column3" style="width:16.6%; text-align: center">Repetitions</th> <th class="cell100 column3" style="width:16.6%; text-align: center">Sets</th> <th class="cell100 column4" style="width:16.6%; text-align: center">Max Rep weight</th> <th class="cell100 column5" style="width:16.6%; text-align: center">Pause</th> </tr> </thead> </table> </div> <div class="table100-body js-pscroll" id = "test"> <table> <tbody id="myTable3"> <tr class="row100 body"> </tbody> </table> </div> </div> </div> <button id="add_Ex_Day_Day_3" onclick="addRow(\'myTable3\')" class="button">Add new Exercise</button> <button id="delete_Ex_Day_Day_3" onclick="deleteRow(\'myTable3\')" class="button">Remove last Exercise</button> <button id="delete_Day_Day_3" onclick="deleteTable(\'3\')" class="button">Delete Day</button></div> </div>';
+        var basicTable4 = '<div class="limiter" id="day4"> <div class="container-table100"> <div class="wrap-table100"> <div class="table100 ver3 m-b-110"> <div class="table100-head"> <table> <thead> <tr class="row100 head"> <th class="cell100 column1" style="width:16.6%; text-align: center">Exercise</th> <th class="cell100 column2" style="width:16.6%; text-align: center">Weight</th> <th class="cell100 column3" style="width:16.6%; text-align: center">Repetitions</th> <th class="cell100 column3" style="width:16.6%; text-align: center">Sets</th> <th class="cell100 column4" style="width:16.6%; text-align: center">Max Rep weight</th> <th class="cell100 column5" style="width:16.6%; text-align: center">Pause</th> </tr> </thead> </table> </div> <div class="table100-body js-pscroll" id = "test"> <table> <tbody id="myTable4"> <tr class="row100 body"> </tbody> </table> </div> </div> </div> <button id="add_Ex_Day_Day_4" onclick="addRow(\'myTable4\')" class="button">Add new Exercise</button> <button id="delete_Ex_Day_Day_4" onclick="deleteRow(\'myTable4\')" class="button">Remove last Exercise</button> <button id="delete_Day_Day_4" onclick="deleteTable(\'4\')" class="button">Delete Day</button></div> </div>';
+        var basicTable5 = '<div class="limiter" id="day5"> <div class="container-table100"> <div class="wrap-table100"> <div class="table100 ver3 m-b-110"> <div class="table100-head"> <table> <thead> <tr class="row100 head"> <th class="cell100 column1" style="width:16.6%; text-align: center">Exercise</th> <th class="cell100 column2" style="width:16.6%; text-align: center">Weight</th> <th class="cell100 column3" style="width:16.6%; text-align: center">Repetitions</th> <th class="cell100 column3" style="width:16.6%; text-align: center">Sets</th> <th class="cell100 column4" style="width:16.6%; text-align: center">Max Rep weight</th> <th class="cell100 column5" style="width:16.6%; text-align: center">Pause</th> </tr> </thead> </table> </div> <div class="table100-body js-pscroll" id = "test"> <table> <tbody id="myTable5"> <tr class="row100 body"> </tbody> </table> </div> </div> </div> <button id="add_Ex_Day_Day_5" onclick="addRow(\'myTable5\')" class="button">Add new Exercise</button> <button id="delete_Ex_Day_Day_5" onclick="deleteRow(\'myTable5\')" class="button">Remove last Exercise</button> <button id="delete_Day_Day_5" onclick="deleteTable(\'5\')" class="button">Delete Day</button></div> </div>';
 
+        repositionTables();
 
-        var id = numtables + 1;			// number of tables
-        numtables = numtables + 1;
-        var tablename = 'container';
-        var temptablename = tablename.concat(id);
-        var tmptabletocreate = 'basicTable';
-        var tabletocreate = tmptabletocreate.concat(id);
-
-        /*
-		console.log(numtables);
-        console.log(id);
-        console.log(tablename);
-        console.log(temptablename);
-		console.log(tabletocreate);
-		*/
-
-        if(id == 1)
+        if(numtables < 5)
         {
-            document.getElementById(temptablename).innerHTML = basicTable1;
+            numtables = numtables + 1;
+            var id = numtables;			// number of tables
+            var tablename = 'container';
+            var temptablename = tablename.concat(id);
+            var tmptabletocreate = 'basicTable';
+            var tabletocreate = tmptabletocreate.concat(id);
 
-            if(addRowByDefault)
-                addRow("myTable1");
+            if(id == 1)
+            {
+                document.getElementById(temptablename).innerHTML = basicTable1;
+
+                if(addRowByDefault)
+                    addRow("myTable1");
+            }
+            else if(id == 2)
+            {
+                document.getElementById(temptablename).innerHTML = basicTable2;
+
+                if(addRowByDefault)
+                    addRow("myTable2");
+            }
+            else if(id == 3)
+            {
+                document.getElementById(temptablename).innerHTML = basicTable3;
+
+                if(addRowByDefault)
+                    addRow("myTable3");
+            }
+            else if(id == 4)
+            {
+                document.getElementById(temptablename).innerHTML = basicTable4;
+
+                if(addRowByDefault)
+                    addRow("myTable4");
+            }
+            else if(id == 5)
+            {
+                document.getElementById(temptablename).innerHTML = basicTable5;
+
+                if(addRowByDefault)
+                    addRow("myTable5");
+            }
         }
-        else if(id == 2)
+        else
         {
-            document.getElementById(temptablename).innerHTML = basicTable2;
-
-            if(addRowByDefault)
-                addRow("myTable2");
+            alert("Only 5 Days are allowed at the moment");
         }
-        else if(id == 3)
-        {
-            document.getElementById(temptablename).innerHTML = basicTable3;
 
-            if(addRowByDefault)
-                addRow("myTable3");
-        }
-        else if(id == 4)
-        {
-            document.getElementById(temptablename).innerHTML = basicTable4;
 
-            if(addRowByDefault)
-                addRow("myTable4");
-        }
-        else if(id == 5)
-        {
-            document.getElementById(temptablename).innerHTML = basicTable5;
+        // console.log("After adding: " + numtables);
 
-            if(addRowByDefault)
-                addRow("myTable5");
+    }
+
+    function repositionTables()
+    {
+        for(var i = 1; i <= 5; i++)
+        {
+            var elem1 = document.getElementById("container" + i);
+            var elem2 = document.getElementById("container" + (i + 1));
+
+            // console.log("1 - " + elem1.innerHTML);
+            // console.log("2 - " + elem2);
+
+            if(document.getElementById("container" + i).innerHTML.length == 0 && document.getElementById("container" + i).innerHTML.length >= 0)
+            {
+                // console.log("div " + i + " must be replaced by div " + (i + 1));
+                if(typeof(document.getElementById("container" + (i + 1))) != undefined && document.getElementById("container" + (i + 1)) != null)
+                    document.getElementById("container" + i).innerHTML = document.getElementById("container" + (i + 1)).innerHTML;
+            }
         }
     }
 
@@ -178,12 +195,12 @@
         var cell5 = row.insertCell(4);
         var cell6 = row.insertCell(5);
 
-        cell1.innerHTML = "<td class=\'tdinput\'> <div contenteditable='true'  value='defaultvaluetoignore' class='title' data-placeholder='name' style=\"background-color: transparent; color:#7F7F7F; width:inherit; max-width: 200px; min-width: 200px; text-align: center\"/></div></td>";
-        cell2.innerHTML = "<td class=\'tdinput\'> <div contenteditable='true'  value='defaultvaluetoignore' class='title' data-placeholder='kilo' style=\"background-color: transparent; color:#7F7F7F; width:inherit; max-width: 200px; min-width: 200px; text-align: center\"/></div></td>";
-        cell3.innerHTML = "<td class=\'tdinput\'> <div contenteditable='true'  value='defaultvaluetoignore' class='title' data-placeholder='reps' style=\"background-color: transparent; color:#7F7F7F; width:inherit; max-width: 200px; min-width: 200px; text-align: center\"/></div></td>";
-        cell4.innerHTML = "<td class=\'tdinput\'> <div contenteditable='true'  value='defaultvaluetoignore' class='title' data-placeholder='sets' style=\"background-color: transparent; color:#7F7F7F; width:inherit; max-width: 200px; min-width: 200px; text-align: center\"/></div></td>";
-        cell5.innerHTML = "<td class=\'tdinput\'> <div contenteditable='true'  value='defaultvaluetoignore' class='title' data-placeholder='maxr' style=\"background-color: transparent; color:#7F7F7F; width:inherit; max-width: 200px; min-width: 200px; text-align: center\"/></div></td>";
-        cell6.innerHTML = "<td class=\'tdinput\'> <div contenteditable='true'  value='defaultvaluetoignore' class='title' data-placeholder='time' style=\"background-color: transparent; color:#7F7F7F; width:inherit; max-width: 200px; min-width: 200px; text-align: center\"/></div></td>";
+        cell1.innerHTML = "<td class=\'tdinput\'> <div contenteditable='true'  value='defaultvaluetoignore' class='title' data-placeholder='name' style=\"background-color: transparent; color:#7F7F7F; width:inherit; max-width: 180px; min-width: 180px; min-height: 25px; max-height: 25px; text-align: center\"/></div></td>";
+        cell2.innerHTML = "<td class=\'tdinput\'> <div contenteditable='true'  value='defaultvaluetoignore' class='title' data-placeholder='kilo' style=\"background-color: transparent; color:#7F7F7F; width:inherit; max-width: 180px; min-width: 180px; min-height: 25px; max-height: 25px; text-align: center\"/></div></td>";
+        cell3.innerHTML = "<td class=\'tdinput\'> <div contenteditable='true'  value='defaultvaluetoignore' class='title' data-placeholder='reps' style=\"background-color: transparent; color:#7F7F7F; width:inherit; max-width: 180px; min-width: 180px; min-height: 25px; max-height: 25px; text-align: center\"/></div></td>";
+        cell4.innerHTML = "<td class=\'tdinput\'> <div contenteditable='true'  value='defaultvaluetoignore' class='title' data-placeholder='sets' style=\"background-color: transparent; color:#7F7F7F; width:inherit; max-width: 180px; min-width: 180px; min-height: 25px; max-height: 25px; text-align: center\"/></div></td>";
+        cell5.innerHTML = "<td class=\'tdinput\'> <div contenteditable='true'  value='defaultvaluetoignore' class='title' data-placeholder='maxr' style=\"background-color: transparent; color:#7F7F7F; width:inherit; max-width: 180px; min-width: 180px; min-height: 25px; max-height: 25px; text-align: center\"/></div></td>";
+        cell6.innerHTML = "<td class=\'tdinput\'> <div contenteditable='true'  value='defaultvaluetoignore' class='title' data-placeholder='time' style=\"background-color: transparent; color:#7F7F7F; width:inherit; max-width: 180px; min-width: 180px; min-height: 25px; max-height: 25px; text-align: center\"/></div></td>";
 
         row.setAttribute("id", "somerow", 0);
     }
@@ -192,28 +209,70 @@
     {
         var x = document.getElementById(tableName).rows.length;
         document.getElementById(tableName).deleteRow(x - 1);
+
+        var numb = tableName.match(/\d/g);
+        numb = numb.join("");
+
+        if(x - 2 == 0)
+            deleteTable(numb);
     }
 
     function deleteTable(id)
     {
-        document.getElementById("day" + id).innerHTML = ' ';
-        // console.log('deleted: day' + id);
+        var newValue;
+        var elem = document.getElementById("day" + id);
+
+        elem.innerHTML = ' ';
+        elem.parentNode.removeChild(elem);
 
         for(var i = id; i <= numtables; i++)    // start at the position where the table has been deleted, no need to change id of earlier tables
         {
             // dont set the first day as the zeroest day - doesnt exist
-            // dont reset the table i wanted to delete
+            // dont reset the table I wanted to delete
             // if the last day has changed dont set all the others back
-            if(document.getElementById('day' + i).id != 'day1' && i != id && id != numtables)
+            if (typeof(document.getElementById("day" + i)) != 'undefined' && document.getElementById("day" + i) != null)
             {
-                document.getElementById("day" + i).id = 'day' + (i - 1);
-                document.getElementById("myTable" + i).id = 'myTable' + (i - 1);
+                if(document.getElementById('day' + i).id != 'day1' && i != id && id != numtables)
+                {
+                    document.getElementById("day" + i).id = 'day' + (i - 1);
+                    document.getElementById("myTable" + i).id = 'myTable' + (i - 1);
 
-                // console.log('day' + i + ' will become: day' + (i - 1))
+                    newValue = 'deleteTable(\'' + (i - 1) + '\')';
+                    document.getElementById('delete_Day_Day_' + i).setAttribute( "onClick", newValue);
+
+                    newValue = 'addRow(\'myTable' + (i - 1) + '\')';
+                    document.getElementById('add_Ex_Day_Day_' + i).setAttribute( "onClick", newValue);
+
+                    newValue = 'deleteRow(\'myTable' + (i - 1) + '\')';
+                    document.getElementById('delete_Ex_Day_Day_' + i).setAttribute( "onClick", newValue);
+
+                    document.getElementById('add_Ex_Day_Day_' + i).id = 'add_Ex_Day_Day_' + (i - 1);
+                    document.getElementById('delete_Day_Day_' + i).id = 'delete_Day_Day_' + (i - 1);
+                    document.getElementById('delete_Ex_Day_Day_' + i).id = 'delete_Ex_Day_Day_' + (i - 1);
+                }
+                else if(numtables == 1)
+                {
+                    console.log("Detected ONLY 1 Table left!");
+
+                    for(var i = 1; i < 6; i++)
+                        document.getElementById("container" + i).innerHTML = '';
+                }
             }
         }
 
+        /*
+        if (typeof(document.getElementById("day" + id)) != 'undefined' && element != null)
+        {
+            var parent = document.getElementById("day" + id).parentElement.id;
+            var element =  document.getElementById(parent)
+        }
+
+        if (typeof(element) != 'undefined' && element != null)
+            document.getElementById(parent).innerHTML = ' ';
+        */
+
         numtables = numtables - 1;
+        // console.log("After Deleting: " + numtables);
     }
 
     function addRowWithEx(tableName, exid, exname, exweight, exreps, exsets, exmaxreps, expause)
@@ -236,12 +295,12 @@
 
         cell1.val = exid;
 
-        cell1.innerHTML = "<td class=\'tdinput\'> <div contenteditable='true' data-placeholder='name' value=" + exid + " class='title' style=\"background-color: transparent; color:#7F7F7F; width:inherit; max-width: 200px; min-width: 200px; text-align: center\"/>" + exname + "</div></td>";
-        cell2.innerHTML = "<td class=\'tdinput\'> <div contenteditable='true' data-placeholder='kilo' value=" + exid + " class='title' style=\"background-color: transparent; color:#7F7F7F; width:inherit; max-width: 200px; min-width: 200px; text-align: center\"/>" + exweight + "</div></td>";
-        cell3.innerHTML = "<td class=\'tdinput\'> <div contenteditable='true' data-placeholder='reps' value=" + exid + " class='title' style=\"background-color: transparent; color:#7F7F7F; width:inherit; max-width: 200px; min-width: 200px; text-align: center\"/>" + exreps + "</div></td>";
-        cell4.innerHTML = "<td class=\'tdinput\'> <div contenteditable='true' data-placeholder='sets' value=" + exid + " class='title' style=\"background-color: transparent; color:#7F7F7F; width:inherit; max-width: 200px; min-width: 200px; text-align: center\"/>" + exsets + "</div></td>";
-        cell5.innerHTML = "<td class=\'tdinput\'> <div contenteditable='true' data-placeholder='maxr' value=" + exid + " class='title' style=\"background-color: transparent; color:#7F7F7F; width:inherit; max-width: 200px; min-width: 200px; text-align: center\"/>" + exmaxreps + "</div></td>";
-        cell6.innerHTML = "<td class=\'tdinput\'> <div contenteditable='true' data-placeholder='time' value=" + exid + " class='title' style=\"background-color: transparent; color:#7F7F7F; width:inherit; max-width: 200px; min-width: 200px; text-align: center\"/>" + expause + "</div></td>";
+        cell1.innerHTML = "<td class=\'tdinput\'> <div contenteditable='true' data-placeholder='name' value=" + exid + " class='title' style=\"background-color: transparent; color:#7F7F7F; width:inherit; max-width: 180px; min-width: 180px; min-height: 25px; max-height: 25px; text-align: center\"/>" + exname + "</div></td>";
+        cell2.innerHTML = "<td class=\'tdinput\'> <div contenteditable='true' data-placeholder='kilo' value=" + exid + " class='title' style=\"background-color: transparent; color:#7F7F7F; width:inherit; max-width: 180px; min-width: 180px; min-height: 25px; max-height: 25px; text-align: center\"/>" + exweight + "</div></td>";
+        cell3.innerHTML = "<td class=\'tdinput\'> <div contenteditable='true' data-placeholder='reps' value=" + exid + " class='title' style=\"background-color: transparent; color:#7F7F7F; width:inherit; max-width: 180px; min-width: 180px; min-height: 25px; max-height: 25px; text-align: center\"/>" + exreps + "</div></td>";
+        cell4.innerHTML = "<td class=\'tdinput\'> <div contenteditable='true' data-placeholder='sets' value=" + exid + " class='title' style=\"background-color: transparent; color:#7F7F7F; width:inherit; max-width: 180px; min-width: 180px; min-height: 25px; max-height: 25px; text-align: center\"/>" + exsets + "</div></td>";
+        cell5.innerHTML = "<td class=\'tdinput\'> <div contenteditable='true' data-placeholder='maxr' value=" + exid + " class='title' style=\"background-color: transparent; color:#7F7F7F; width:inherit; max-width: 180px; min-width: 180px; min-height: 25px; max-height: 25px; text-align: center\"/>" + exmaxreps + "</div></td>";
+        cell6.innerHTML = "<td class=\'tdinput\'> <div contenteditable='true' data-placeholder='time' value=" + exid + " class='title' style=\"background-color: transparent; color:#7F7F7F; width:inherit; max-width: 180px; min-width: 180px; min-height: 25px; max-height: 25px; text-align: center\"/>" + expause + "</div></td>";
 
         row.setAttribute("id", "somerow", 0);
     }
@@ -299,10 +358,12 @@
 
             //if(plannamelocal != 'ERRORCODE 00003 - User cancelled the promRpt.')
 
-            planname = plannamelocal;
+            if(!plannamelocal.includes("promRpt"))
+                planname = plannamelocal;
 
-            document.getElementById("username").innerHTML = planname + ' | '+ getusername() + ' ' + '<span class="glyphicon">&#xe163;</span>';
+            return "ERRORCODE 00003";
 
+            document.getElementById("username").innerHTML = planname + ' | '+ getusername();
 
             if(doesPlanNameExists(plannamelocal))
             {
@@ -586,6 +647,25 @@
         request.send();
     }
 
+    function onSave()
+    {
+        var request = new XMLHttpRequest();
+        var username = getusername();
+
+        if(currentPlanId != '')
+        {
+            var url = 'http://jakob.ml:50003/trainingsplan/getPlanByUserAndPlan/' + username + '/' + currentPlanId;
+
+            var xmlHttp = new XMLHttpRequest();
+            xmlHttp.open( "GET", url, false ); // false for synchronous request
+            xmlHttp.send( null );
+            plan = xmlHttp.responseText;
+
+            var data = JSON.parse(plan);
+            printjson(data, plan);
+        }
+    }
+
     function getPlanIdFromDialog(username)
     {
         var confirmButton = document.getElementById('confirm');
@@ -605,12 +685,14 @@
             printjson(data, plan);
             document.getElementById('dialog').style.display = 'none';
             // return x.options[x.selectedIndex].value;
+            closeNav();
         });
 
         cancelButton.addEventListener('click', function()
         {
             // console.log("CLOSED");
             document.getElementById('dialog').style.display = 'none';
+            console.log("cancelled");
         });
     }
 
@@ -634,7 +716,7 @@
 
             if(i == 0)
             {
-                document.getElementById("username").innerHTML = json.plan[i].planname + ' | '+ getusername() + ' ' + '<span class="glyphicon">&#xe163;</span>';
+                document.getElementById("username").innerHTML = json.plan[i].planname + ' | '+ getusername();
                 planname = json.plan[i].planname;
             }
 
@@ -683,27 +765,55 @@
 
             // console.log(day_name);
 
-            resetDays(day_name);
+            resetDays(i);
         }
     }
 
-    function resetDays(day_name)
+    function resetDays(i)
     {
-        var element =  document.getElementById(day_name);
+        var element =  document.getElementById('container' + i);
 
         if (typeof(element) != 'undefined' && element != null)
         {
-            var day = document.getElementById(day_name);
+            var day = document.getElementById('container' + i);
             day.innerHTML = '';
+
             numtables = 0;
         }
 
         currentPlanId = '';
     }
 
+    function openNav()
+    {
+        document.getElementById("mySidenav").style.width = "250px";
+    }
+
+    function closeNav()
+    {
+        document.getElementById("mySidenav").style.width = "0";
+    }
+
+    function zoomOutMobile() {
+        var viewport = document.querySelector('meta[name="viewport"]');
+
+        var w = window,
+            d = document,
+            e = d.documentElement,
+            g = d.getElementsByTagName('body')[0],
+            x = w.innerWidth || e.clientWidth || g.clientWidth,
+            y = w.innerHeight|| e.clientHeight|| g.clientHeight;
+
+
+        if ( viewport ) {
+            viewport.content = "initial-scale=0.1";
+            viewport.content = "width=" + x + "\"";
+        }
+    }
+
     document.addEventListener('DOMContentLoaded', function()
     {
-        addTable(false);
+        zoomOutMobile();
 
         var check = function()
         {
@@ -718,20 +828,11 @@
 
         check();
 
+        zoomOutMobile();
+
     }, false);
 
-    function openNav()
-    {
-        document.getElementById("mySidenav").style.width = "250px";
-    }
-
-    function closeNav()
-    {
-        document.getElementById("mySidenav").style.width = "0";
-    }
-
 </script>
-<script src="vendor/jquery/jquery-3.2.1.min.js"></script>
 <script src="vendor/bootstrap/js/popper.js"></script>
 <script src="vendor/bootstrap/js/bootstrap.min.js"></script>
 <script src="vendor/select2/select2.min.js"></script>
@@ -757,14 +858,22 @@
 
     kc.init({onLoad: 'check-sso', checkLoginIframe: false }).success(function () {            // login-required - check-sso
         username = kc.idTokenParsed.name
-        document.getElementById("username").innerHTML = username + '   ' + '<span class="glyphicon">&#xe163;</span>' ;
+        document.getElementById("username").innerHTML = username + '   ' + '<span class="glyphicon">&#xe163;</span>';
+        console.log("Login successfull");
     }).error(function () {
-        // window.location.reload();
+        console.log("Login error");
     });
+
+    /*
+    kc.init().success(function(authenticated) {
+        console.log(authenticated ? 'authenticated' : 'not authenticated');
+    }).error(function() {
+        console.log('failed to initialize');
+    });
+    */
 
     function getusername()
     {
-        // console.log(username);
         return username;
     }
 
@@ -781,7 +890,7 @@
         // kc.logout(logouturl);
         // request.authenticate(response);
 
-        window.location.assign('http://jakob.ml:8081/auth/realms/trainingsplan/protocol/openid-connect/logout?redirect_uri=/auth/realms/trainingsplan/protocol/openid-connect/auth?response_type=code&client_id=trainingsplan&redirect_uri=http%3A%2F%2Fjakob.ml%3A50001%2Ftrainingsplan%2F&state=d6f2b29a-cd94-4d93-b1d0-ff9750b4e19c&login=true&scope=openid');
+        window.location.assign(logouturl);
     }
 </script>
 </body>

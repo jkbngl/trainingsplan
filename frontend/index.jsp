@@ -25,13 +25,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <link rel="stylesheet" type="text/css" href="vendor/bootstrap/css/bootstrap.min.css">
-    <link rel="stylesheet" type="text/css" href="fonts/font-awesome-4.7.0/css/font-awesome.min.css">
-    <link rel="stylesheet" type="text/css" href="vendor/animate/animate.css">
-    <link rel="stylesheet" type="text/css" href="vendor/select2/select2.min.css">
-    <link rel="stylesheet" type="text/css" href="vendor/perfect-scrollbar/perfect-scrollbar.css">
-    <link rel="stylesheet" type="text/css" href="css/util.css">
     <link rel="stylesheet" type="text/css" href="css/main.css">
-    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
     <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.7.1/css/all.css" integrity="sha384-fnmOCqbTlWIlj8LyTjo7mOUStjsKC4pOpQbqyi7RrhN7udi9RwhKkMHpvLbHG9Sr" crossorigin="anonymous">
     <link rel="shortcut icon" href="./favicon.ico?">
     <meta name="msapplication-TileColor" content="#ffffff">
@@ -45,8 +39,8 @@
     <a href="javascript:void(0)" class="closebtn" onclick="closeNav()"><i class="fas fa-bars"></i></a>
     <!--<a href="#">About</a>-->
     <button onclick="receivePlanfromDB(false)" class="button" style=" top: 10px; width:80%; margin-left: 10%;">Load Plan</button>
-    <button onclick="cleanUpTables()"class="button" style="top: 10px; width:80%; margin-left: 10%;">New Plan</button>
-    <button onclick="window.location.href='/trainingsplan/test_page.jsp'" class="button" style="top: 10px; width:80%; margin-left: 10%;">Stats</button>
+    <button onclick="cleanUpTables(); addTable(true)"class="button" style="top: 10px; width:80%; margin-left: 10%;">New Plan</button>
+    <button onclick="window.location.href='stats.jsp'" class="button" style="top: 10px; width:80%; margin-left: 10%;">Stats</button>
     <button onclick="kc.logout('/trainingsplanorwhateveritdoesntworkanyway'); kc.logout()"class="button" style="top: 10px; width:80%; margin-left: 10%;">Logout</button>
 </div>
 
@@ -360,9 +354,9 @@
 
             if(!plannamelocal.includes("promRpt"))
                 planname = plannamelocal;
-
-            return "ERRORCODE 00003";
-
+            else
+                return "ERRORCODE 00003";
+            
             document.getElementById("username").innerHTML = planname + ' | '+ getusername();
 
             if(doesPlanNameExists(plannamelocal))
@@ -833,20 +827,6 @@
     }, false);
 
 </script>
-<script src="vendor/bootstrap/js/popper.js"></script>
-<script src="vendor/bootstrap/js/bootstrap.min.js"></script>
-<script src="vendor/select2/select2.min.js"></script>
-<script src="vendor/perfect-scrollbar/perfect-scrollbar.min.js"></script>
-<script>
-    $('.js-pscroll').each(function(){
-        var ps = new PerfectScrollbar(this);
-
-        $(window).on('resize', function(){
-            ps.update();
-        })
-    });
-</script>
-<script src="js/main.js"></script>
 <script src="http://jakob.ml:8081/auth/js/keycloak.js"></script>
 <script>
     var username = '';

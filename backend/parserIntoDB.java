@@ -51,6 +51,7 @@ public class parserIntoDB
 		int plan_id = -1;
 		int day_id = -1;
 		int ex_id = -1;
+		int old_ex_id = -1;
 		String planname = "";
 		String username = "";
 		
@@ -97,7 +98,6 @@ public class parserIntoDB
 			{
 				exercises = saveExercise(getExercisesPerDay(getDay(saveDays(input, days), i)), exercises);
 				
-				System.out.println(exercises.toString());
 				
 				send_day_ids = getIdsByList(exercises, send_day_ids, false, connection);
 				send_ex_ids = getIdsByList(exercises, send_ex_ids, true, connection);
@@ -124,8 +124,16 @@ public class parserIntoDB
 										
 					if(ex_id == -1)
 					{
-						addNewExercisesForDay(exercises, j, day_id, plan_id, username, connection);
-						setOldExerciseDeprecated(exercises, j, connection);
+						// TODO Test if it affects anything when these two functions are executed in different order
+						old_ex_id = setOldExerciseDeprecated(exercises, j, connection);
+						addNewExercisesForDay(exercises, j, day_id, plan_id, username, old_ex_id, connection);
+						
+						set_base_ex(exercises, j, old_ex_id, plan_id, username, connection);
+						
+						/*
+						 * ex:			max id corresponding to the current user (username) and day to avoid time critical problems with other users also adding exs
+						 */
+						
 					}
 					else
 						;
@@ -146,18 +154,11 @@ public class parserIntoDB
 		send_ex_ids = remove_doubles(send_ex_ids);
 		present_ex_ids = remove_doubles(present_ex_ids);
 		
-		System.out.println(send_day_ids.toString() + " | " + present_day_ids.toString());
-		System.out.println(send_ex_ids.toString() + " | " + present_ex_ids.toString());
-		
 		present_day_ids.removeAll(send_day_ids);
 		present_ex_ids.removeAll(send_ex_ids);
-		
-		System.out.println(send_day_ids.toString() + " | " + present_day_ids.toString());
-		System.out.println(send_ex_ids.toString() + " | " + present_ex_ids.toString());
-		
+				
 		for(int i = 0; i < present_ex_ids.size(); i++)
 		{
-			System.out.println("NEW FEATURE - " + Integer.parseInt(present_ex_ids.get(i)));
 			set_exercise_deleted_by_id(Integer.parseInt(present_ex_ids.get(i)), connection);
 		}		
 	}
@@ -362,7 +363,6 @@ public class parserIntoDB
 		}
 		else
 		{
-			// System.out.println("user: " + userName + " found");
 			return true;
 		}
 	}
@@ -538,28 +538,29 @@ public class parserIntoDB
 		return exercises;
 	}
 	
-	public static void addNewExercisesForDay(List<String> exercises, int index, int day_id, int plan_id, String username, Connection connection) throws JSONException, SQLException
-	{
+	public static void addNewExercisesForDay(List<String> exercises, int index, int day_id, int plan_id, String username, int old_ex_id, Connection connection) throws JSONException, SQLException
+	{		
         JSONObject jsonObject = new JSONObject(exercises.get(index));
-        PreparedStatement st = connection.prepareStatement("INSERT INTO tp_exercise(day_fk, name, weight, reps, sets, max_rep, pausetime) VALUES ((?), (?), (?), (?), (?), (?), (?));");
-		        
-        // System.out.println(checkIfExerciseExists(plan_id, day_id, username, jsonObject, connection));
+        PreparedStatement st = connection.prepareStatement("INSERT INTO tp_exercise(day_fk"
+        																	   + ", name"
+        																	   + ", weight"
+        																	   + ", reps"
+        																	   + ", sets"
+        																	   + ", max_rep"
+        																	   + ", pausetime"
+        																	   + ", referenced_ex) VALUES ((?), (?), (?), (?), (?), (?), (?), (?));");
         
-        /*
-        if(!checkIfExerciseExists(plan_id, day_id, username, jsonObject, connection))
-        {
-        */
-        	st.setInt(1, day_id);
-            st.setString(2, jsonObject.get("name").toString());
-    		st.setString(3, jsonObject.get("weight").toString());
-    		st.setString(4, jsonObject.get("reps").toString());
-    		st.setString(5, jsonObject.get("sets").toString());
-    		st.setString(6, jsonObject.get("maxrep").toString());
-    		st.setString(7, jsonObject.get("pause").toString());
+        st.setInt(1, day_id);
+        st.setString(2, jsonObject.get("name").toString());
+    	st.setString(3, jsonObject.get("weight").toString());
+    	st.setString(4, jsonObject.get("reps").toString());
+    	st.setString(5, jsonObject.get("sets").toString());
+    	st.setString(6, jsonObject.get("maxrep").toString());
+    	st.setString(7, jsonObject.get("pause").toString());
+    	st.setInt(8, old_ex_id);
     		
-    		st.executeUpdate();
-    		st.close();
-        // }
+    	st.executeUpdate();
+    	st.close();
 	}
 	
 	public static int doesDayExist(List<String> exercises, Connection connection) throws SQLException, JSONException 
@@ -569,8 +570,8 @@ public class parserIntoDB
         JSONObject jsonObject = new JSONObject(exercises.get(0));
 
 		PreparedStatement st = connection.prepareStatement("select d.id "
-														   + "from tp_day d "
-														   + "join tp_exercise e on d.id = e.day_fk "   
+														  +  "from tp_day d "
+														  +  "join tp_exercise e on d.id = e.day_fk "   
 													      + "where e.id = (?);");
 		
 		
@@ -638,31 +639,112 @@ public class parserIntoDB
 		return id;
 	}
 	
-	private void setOldExerciseDeprecated(List<String> exercises, int index, Connection connection) throws SQLException, NumberFormatException, JSONException 
+	private int setOldExerciseDeprecated(List<String> exercises, int index, Connection connection) throws SQLException, NumberFormatException, JSONException 
 	{
 		JSONObject jsonObject = new JSONObject(exercises.get(index));
-        PreparedStatement st = connection.prepareStatement("update tp_exercise set deprecated = 1 where id = (?)");
+        PreparedStatement st = connection.prepareStatement("update tp_exercise set deprecated = 1, changed = current_timestamp where id = (?)");
         
+        // exercise with defaultvaluetoignore has been newly added so it may not get set as deprecated just because it has no parent exercise
         if(jsonObject.get("id").toString().equals("defaultvaluetoignore"))
-			;
+			return -1;
         else
         {
         	st.setInt(1, Integer.parseInt(jsonObject.get("id").toString()));
     		
     		st.executeUpdate();
     		st.close();
+    		
+    		return Integer.parseInt(jsonObject.get("id").toString());
         }
+	}
+	
+	private void set_base_ex(List<String> exercises, int index, int old_ex_id, int plan_id, String username, Connection connection) throws JSONException, SQLException 
+	{	
+		int current_ex_id = -1;
+		int base_ex = -1;
+		
+		JSONObject jsonObject = new JSONObject(exercises.get(index));
+        PreparedStatement st = connection.prepareStatement("select   max(e.id)"
+										        	       + "from  tp_exercise e "
+										        	       + "join  tp_day d on e.day_fk = d.id "
+										        	       + "join  tp_plan p on d.plan_fk = p.id "
+										        	       + "join  tp_user u on p.userid_fk = u.id "
+										        	      + "where  u.username   = ? "
+										        	        + "and  e.name       = ? "
+										        	        + "and  e.weight     = ? "
+										        	        + "and  e.sets       = ?"
+										        	        + "and  e.reps       = ? "
+										        	        + "and  e.max_rep    = ? "
+										        	        + "and  e.pausetime  = ?"
+										        	        + "and  e.deprecated = 0; ");  
+        
+    	st.setString(1, username);
+    	st.setString(2, jsonObject.get("name").toString());
+    	st.setString(3, jsonObject.get("weight").toString());
+    	st.setString(4, jsonObject.get("sets").toString());
+    	st.setString(5, jsonObject.get("reps").toString());
+    	st.setString(6, jsonObject.get("maxrep").toString());
+    	st.setString(7, jsonObject.get("pause").toString());
+
+		System.out.println("New Feature -2");
+    	
+    	ResultSet rs = st.executeQuery();
+		
+    	System.out.println("New Feature -1");
+    	
+		while(rs.next())
+		{
+			System.out.println("New Feature 0");
+			// TODO check logic here
+			current_ex_id = Integer.parseInt(rs.getString(1)) > 0 ? Integer.parseInt(rs.getString(1)) : -1;
+		}
+		
+		System.out.println("New Feature 1");
+				
+		st = connection.prepareStatement("select base_ex from tp_exercise where id = ?");
+		
+		st.setInt(1, old_ex_id);
+		
+		rs = st.executeQuery();
+		
+		while(rs.next())
+		{
+			// TODO check logic here
+			base_ex = Integer.parseInt(rs.getString(1)) > 0 ? Integer.parseInt(rs.getString(1)) : -1;
+		}
+		
+		rs.close();
+		
+		System.out.println("New Feature 2");
+
+		
+		st = connection.prepareStatement("update  tp_exercise "
+										  + "set  base_ex = ?"
+										+ "		, changed = current_timestamp "
+										+ "where  id = ?"
+										+ "   or  id = ?");
+		
+		System.out.println(old_ex_id + " | " + current_ex_id);
+		
+		if(base_ex != -1)
+			st.setInt(1, base_ex);
+		else
+			st.setInt(1, old_ex_id);
+		
+		st.setInt(2, old_ex_id);
+		st.setInt(3, current_ex_id);
+		
+		st.executeUpdate();
+		st.close();        
 	}
 	
 	private void set_exercise_deleted_by_id(int id, Connection connection) throws SQLException, NumberFormatException, JSONException 
 	{
-        PreparedStatement st = connection.prepareStatement("update tp_exercise set deprecated = 2 where id = (?)");
+        PreparedStatement st = connection.prepareStatement("update tp_exercise set deprecated = 2, changed = current_timestamp where id = (?)");
         
         st.setInt(1, id);
     	
     	st.executeUpdate();
     	st.close();
 	}
-	
-	
 }

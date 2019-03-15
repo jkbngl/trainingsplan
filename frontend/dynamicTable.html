@@ -2,6 +2,7 @@
     <style>
         td {
             /*border: 1px solid #373737;*/
+            caret-color: #00ad5f;
         }
 
         td {
@@ -20,18 +21,88 @@
     <link rel="stylesheet" type="text/css" href="css/main.css">
     <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.7.1/css/all.css" integrity="sha384-fnmOCqbTlWIlj8LyTjo7mOUStjsKC4pOpQbqyi7RrhN7udi9RwhKkMHpvLbHG9Sr" crossorigin="anonymous">
     <link rel="shortcut icon" href="./favicon.ico?">
+
+    <link   href = "https://code.jquery.com/ui/1.10.4/themes/ui-lightness/jquery-ui.css" rel = "stylesheet">
+    <script src  = "https://code.jquery.com/jquery-1.10.2.js" ></script>
+    <script src  = "https://code.jquery.com/ui/1.10.4/jquery-ui.js"></script>
+      
+    <script>
+        var availableTutorials  =  [
+               "ActionScript",
+               "Bootstrap",
+               "C",
+               "C++",
+            ];
+        
+        $(function() {
+            $("#tags").autocomplete({
+               source: availableTutorials
+            });
+            console.log("FOUND");
+        });
+
+        $.myjQuery = function() {
+            $('#tags').autocomplete(availableTutorials);
+            //console.log("worked");
+         };
+      </script>
+
     <meta name="msapplication-TileColor" content="#ffffff">
     <meta name="theme-color" content="#ffffff">
 
+    <script src="http://jakob.ml:8081/auth/js/keycloak.js"></script> 
+    <script>
+        //var username = 'jakob engl';
+    
+        var keycloak = Keycloak();
+        
+        keycloak.init({ onLoad: 'login-required' })
+
+        keycloak.init().success(
+            function(authenticated) 
+            {
+                //alert(authenticated ? 'authenticated' : 'not authenticated');
+            }
+        ).error(function() 
+        {
+            // alert('failed to initialize');
+        }
+        );
+
+        keycloak.onAuthSuccess = function() 
+        { 
+            alert('Successfully authenticated'); 
+            username = keycloak.idTokenParsed.name;
+            document.getElementById("username").innerHTML = username + '   ' + '<span class="glyphicon">&#xe163;</span>';
+            console.log(username);  
+        }
+
+        function getusername()
+        {
+            console.log(username);
+            return username;
+        }
+        
+        function getusername()
+        {
+            return username;
+        }
+    </script>
 </head>
 <body>
+
+<!---
+<td class='tdinput'><div contenteditable='true' id='tags' value='defaultvaluetoignore' class='title ui-autocomplete-input' autocomplete='on' data-placeholder='name' style="background-color: transparent; color:#7F7F7F; width:inherit; max-width: 180px; min-width: 180px; min-height: 25px; max-height: 25px; text-align: center"></div></td>
+-->
+
+
 <div class="fixed-background blue-gradient-bg"></div>
 
 <div id="mySidenav" class="sidenav">
     <a href="javascript:void(0)" class="closebtn" onclick="closeNav()"><i class="fas fa-bars"></i></a>
     <!--<a href="#">About</a>-->
     <button onclick="receivePlanfromDB(false)" class="button" style=" top: 10px; width:80%; margin-left: 10%;">Load Plan</button>
-    <button onclick="cleanUpTables(); addTable(true)"class="button" style="top: 10px; width:80%; margin-left: 10%;">New Plan</button>
+    <button onclick="cleanUpTables(); addTable(true);  closeNav();"class="button" style="top: 10px; width:80%; margin-left: 10%;">New Plan</button>
     <button onclick="window.location.href='stats.jsp'" class="button" style="top: 10px; width:80%; margin-left: 10%;">Stats</button>
     <button onclick="kc.logout('/trainingsplanorwhateveritdoesntworkanyway'); kc.logout()"class="button" style="top: 10px; width:80%; margin-left: 10%;">Logout</button>
 </div>
@@ -141,7 +212,8 @@
         {
             alert("Only 5 Days are allowed at the moment");
         }
-
+        
+        $.myjQuery();
 
         // console.log("After adding: " + numtables);
 
@@ -181,14 +253,15 @@
         var cell5 = row.insertCell(4);
         var cell6 = row.insertCell(5);
 
-        cell1.innerHTML = "<td class=\'tdinput\'> <div contenteditable='true'  value='defaultvaluetoignore' class='title' data-placeholder='name' style=\"background-color: transparent; color:#7F7F7F; width:inherit; max-width: 180px; min-width: 180px; min-height: 25px; max-height: 25px; text-align: center\"/></div></td>";
-        cell2.innerHTML = "<td class=\'tdinput\'> <div contenteditable='true'  value='defaultvaluetoignore' class='title' data-placeholder='kilo' style=\"background-color: transparent; color:#7F7F7F; width:inherit; max-width: 180px; min-width: 180px; min-height: 25px; max-height: 25px; text-align: center\"/></div></td>";
-        cell3.innerHTML = "<td class=\'tdinput\'> <div contenteditable='true'  value='defaultvaluetoignore' class='title' data-placeholder='reps' style=\"background-color: transparent; color:#7F7F7F; width:inherit; max-width: 180px; min-width: 180px; min-height: 25px; max-height: 25px; text-align: center\"/></div></td>";
-        cell4.innerHTML = "<td class=\'tdinput\'> <div contenteditable='true'  value='defaultvaluetoignore' class='title' data-placeholder='sets' style=\"background-color: transparent; color:#7F7F7F; width:inherit; max-width: 180px; min-width: 180px; min-height: 25px; max-height: 25px; text-align: center\"/></div></td>";
-        cell5.innerHTML = "<td class=\'tdinput\'> <div contenteditable='true'  value='defaultvaluetoignore' class='title' data-placeholder='maxr' style=\"background-color: transparent; color:#7F7F7F; width:inherit; max-width: 180px; min-width: 180px; min-height: 25px; max-height: 25px; text-align: center\"/></div></td>";
-        cell6.innerHTML = "<td class=\'tdinput\'> <div contenteditable='true'  value='defaultvaluetoignore' class='title' data-placeholder='time' style=\"background-color: transparent; color:#7F7F7F; width:inherit; max-width: 180px; min-width: 180px; min-height: 25px; max-height: 25px; text-align: center\"/></div></td>";
+        cell1.innerHTML = "<td class=\'tdinput\'> <div contenteditable='true' id='tags' value='defaultvaluetoignore' class='title ui-autocomplete-input' autocomplete='on' data-placeholder='name' style=\"background-color: transparent; color:#7F7F7F; width:inherit; max-width: 180px; min-width: 180px; min-height: 25px; max-height: 25px; text-align: center\"/></div></td>";
+        cell2.innerHTML = "<td class=\'tdinput\'> <div contenteditable='true' id='tags' value='defaultvaluetoignore' class='title ui-autocomplete-input' autocomplete='on' data-placeholder='kilo' style=\"background-color: transparent; color:#7F7F7F; width:inherit; max-width: 180px; min-width: 180px; min-height: 25px; max-height: 25px; text-align: center\"/></div></td>";
+        cell3.innerHTML = "<td class=\'tdinput\'> <div contenteditable='true' id='tags' value='defaultvaluetoignore' class='title ui-autocomplete-input' autocomplete='on' data-placeholder='reps' style=\"background-color: transparent; color:#7F7F7F; width:inherit; max-width: 180px; min-width: 180px; min-height: 25px; max-height: 25px; text-align: center\"/></div></td>";
+        cell4.innerHTML = "<td class=\'tdinput\'> <div contenteditable='true' id='tags' value='defaultvaluetoignore' class='title ui-autocomplete-input' autocomplete='on' data-placeholder='sets' style=\"background-color: transparent; color:#7F7F7F; width:inherit; max-width: 180px; min-width: 180px; min-height: 25px; max-height: 25px; text-align: center\"/></div></td>";
+        cell5.innerHTML = "<td class=\'tdinput\'> <div contenteditable='true' id='tags' value='defaultvaluetoignore' class='title ui-autocomplete-input' autocomplete='on' data-placeholder='maxr' style=\"background-color: transparent; color:#7F7F7F; width:inherit; max-width: 180px; min-width: 180px; min-height: 25px; max-height: 25px; text-align: center\"/></div></td>";
+        cell6.innerHTML = "<td class=\'tdinput\'> <div contenteditable='true' id='tags' value='defaultvaluetoignore' class='title ui-autocomplete-input' autocomplete='on' data-placeholder='time' style=\"background-color: transparent; color:#7F7F7F; width:inherit; max-width: 180px; min-width: 180px; min-height: 25px; max-height: 25px; text-align: center\"/></div></td>";
 
         row.setAttribute("id", "somerow", 0);
+        $.myjQuery();
     }
 
     function deleteRow(tableName)
@@ -281,12 +354,12 @@
 
         cell1.val = exid;
 
-        cell1.innerHTML = "<td class=\'tdinput\'> <div contenteditable='true' data-placeholder='name' value=" + exid + " class='title' style=\"background-color: transparent; color:#7F7F7F; width:inherit; max-width: 180px; min-width: 180px; min-height: 25px; max-height: 25px; text-align: center\"/>" + exname + "</div></td>";
-        cell2.innerHTML = "<td class=\'tdinput\'> <div contenteditable='true' data-placeholder='kilo' value=" + exid + " class='title' style=\"background-color: transparent; color:#7F7F7F; width:inherit; max-width: 180px; min-width: 180px; min-height: 25px; max-height: 25px; text-align: center\"/>" + exweight + "</div></td>";
-        cell3.innerHTML = "<td class=\'tdinput\'> <div contenteditable='true' data-placeholder='reps' value=" + exid + " class='title' style=\"background-color: transparent; color:#7F7F7F; width:inherit; max-width: 180px; min-width: 180px; min-height: 25px; max-height: 25px; text-align: center\"/>" + exreps + "</div></td>";
-        cell4.innerHTML = "<td class=\'tdinput\'> <div contenteditable='true' data-placeholder='sets' value=" + exid + " class='title' style=\"background-color: transparent; color:#7F7F7F; width:inherit; max-width: 180px; min-width: 180px; min-height: 25px; max-height: 25px; text-align: center\"/>" + exsets + "</div></td>";
-        cell5.innerHTML = "<td class=\'tdinput\'> <div contenteditable='true' data-placeholder='maxr' value=" + exid + " class='title' style=\"background-color: transparent; color:#7F7F7F; width:inherit; max-width: 180px; min-width: 180px; min-height: 25px; max-height: 25px; text-align: center\"/>" + exmaxreps + "</div></td>";
-        cell6.innerHTML = "<td class=\'tdinput\'> <div contenteditable='true' data-placeholder='time' value=" + exid + " class='title' style=\"background-color: transparent; color:#7F7F7F; width:inherit; max-width: 180px; min-width: 180px; min-height: 25px; max-height: 25px; text-align: center\"/>" + expause + "</div></td>";
+        cell1.innerHTML = "<td class=\'tdinput\'> <div contenteditable='true' id='tags' data-placeholder='name' value=" + exid + " class='title ui-autocomplete-input' autocomplete='on' style=\"background-color: transparent; color:#7F7F7F; width:inherit; max-width: 180px; min-width: 180px; min-height: 25px; max-height: 25px; text-align: center\"/>" + exname + "</div></td>";
+        cell2.innerHTML = "<td class=\'tdinput\'> <div contenteditable='true' id='tags' data-placeholder='kilo' value=" + exid + " class='title ui-autocomplete-input' autocomplete='on' style=\"background-color: transparent; color:#7F7F7F; width:inherit; max-width: 180px; min-width: 180px; min-height: 25px; max-height: 25px; text-align: center\"/>" + exweight + "</div></td>";
+        cell3.innerHTML = "<td class=\'tdinput\'> <div contenteditable='true' id='tags' data-placeholder='reps' value=" + exid + " class='title ui-autocomplete-input' autocomplete='on' style=\"background-color: transparent; color:#7F7F7F; width:inherit; max-width: 180px; min-width: 180px; min-height: 25px; max-height: 25px; text-align: center\"/>" + exreps + "</div></td>";
+        cell4.innerHTML = "<td class=\'tdinput\'> <div contenteditable='true' id='tags' data-placeholder='sets' value=" + exid + " class='title ui-autocomplete-input' autocomplete='on' style=\"background-color: transparent; color:#7F7F7F; width:inherit; max-width: 180px; min-width: 180px; min-height: 25px; max-height: 25px; text-align: center\"/>" + exsets + "</div></td>";
+        cell5.innerHTML = "<td class=\'tdinput\'> <div contenteditable='true' id='tags' data-placeholder='maxr' value=" + exid + " class='title ui-autocomplete-input' autocomplete='on' style=\"background-color: transparent; color:#7F7F7F; width:inherit; max-width: 180px; min-width: 180px; min-height: 25px; max-height: 25px; text-align: center\"/>" + exmaxreps + "</div></td>";
+        cell6.innerHTML = "<td class=\'tdinput\'> <div contenteditable='true' id='tags' data-placeholder='time' value=" + exid + " class='title ui-autocomplete-input' autocomplete='on' style=\"background-color: transparent; color:#7F7F7F; width:inherit; max-width: 180px; min-width: 180px; min-height: 25px; max-height: 25px; text-align: center\"/>" + expause + "</div></td>";
 
         row.setAttribute("id", "somerow", 0);
     }
@@ -679,6 +752,7 @@
             // console.log("CLOSED");
             document.getElementById('dialog').style.display = 'none';
             console.log("cancelled");
+            closeNav();
         });
     }
 
@@ -818,39 +892,6 @@
 
     }, false);
 
-</script>
-<!-- <script src="http://jakob.ml:8081/auth/js/keycloak.js"></script> -->
-<script>
     
-	
-    
-	/*
-	var username = 'jakob engl';
-
-	var kc = Keycloak({
-        url: 'http://jakob.ml:8081/auth',
-        realm: 'trainingsplan',
-        clientId: 'trainingsplan'
-    });
-
-    kc.init({onLoad: 'check-sso', checkLoginIframe: false }).success(function () {            // login-required - check-sso
-        username = kc.idTokenParsed.name
-        document.getElementById("username").innerHTML = username;
-    }).error(function () {
-        // window.location.reload();
-    });
-
-    function getusername()
-    {
-        console.log(username);
-        return username;
-    }
-	*/
-	
-	function getusername()
-    {
-		var username = 'jakob engl';
-        return username;
-    }
 </script>
 </html>

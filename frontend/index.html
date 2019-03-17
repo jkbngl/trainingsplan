@@ -100,15 +100,15 @@
     <!--<a href="#">About</a>-->
     <button onclick="receivePlanfromDB(false)" class="button" style=" top: 10px; width:80%; margin-left: 10%;">Load Plan</button>
     <button onclick="cleanUpTables(); addTable(true);  closeNav();"class="button" style="top: 10px; width:80%; margin-left: 10%;">New Plan</button>
-    <button onclick="window.location.href='stats.jsp'" class="button" style="top: 10px; width:80%; margin-left: 10%;">Stats</button>
-    <button onclick="keycloak.logout('/trainingsplanorwhateveritdoesntworkanyway'); kc.logout()"class="button" style="top: 10px; width:80%; margin-left: 10%;">Logout</button>
+    <button onclick="window.location.href='stats.html'" class="button" style="top: 10px; width:80%; margin-left: 10%;">Stats</button>
+    <button onclick="keycloak.logout()"class="button" style="top: 10px; width:80%; margin-left: 10%;">Logout</button>
 </div>
 
 <div id = "headerforbuttons" style="display: flex; justify-content: space-between; position:fixed; width:100%">
     <button onclick="openNav()" class="button" style="top: 10px;"><i class="fas fa-bars"></i></span>
         <button onclick="addTable(true)" class="button" style="top: 10px;">Add new Day</button>
         <button onclick="loadPlanIntoDB(); onSave()" class="button" style="top: 10px;"><i class="far fa-save"></i></button>
-        <button class="button" value="username ..." id="username" style="top: 10px;"></button>
+        <button onclick="keycloak.logout()" class="button" value="username ..." id="username" style="top: 10px;"></button>
 </div>​
 
 
@@ -574,7 +574,7 @@
                     else
                     {
                         addTable(true);
-                        console.log('No plans found for user, nothing to display - TODO e.g. show 1 day with no ex ');
+                        console.log('No plans found for user, nothing to display');
                     }
                 }
             }
@@ -757,15 +757,14 @@
 
             for(var j = 0; j < excount; j++)
             {
-                addRowWithEx(
-                    table
-                    , json.plan[i].day[j].exercise.id
-                    , json.plan[i].day[j].exercise.name
-                    , json.plan[i].day[j].exercise.weight
-                    , json.plan[i].day[j].exercise.reps
-                    , json.plan[i].day[j].exercise.sets
-                    , json.plan[i].day[j].exercise.maxrep
-                    , json.plan[i].day[j].exercise.pause);
+                addRowWithEx(table
+                           , json.plan[i].day[j].exercise.id
+                           , json.plan[i].day[j].exercise.name
+                           , json.plan[i].day[j].exercise.weight
+                           , json.plan[i].day[j].exercise.reps
+                           , json.plan[i].day[j].exercise.sets
+                           , json.plan[i].day[j].exercise.maxrep
+                           , json.plan[i].day[j].exercise.pause);
             }
         }
     }

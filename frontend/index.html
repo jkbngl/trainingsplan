@@ -133,6 +133,11 @@
     </output>
 </div>
 
+
+<a onclick="topFunction()" id="topButton" style="display: none;" class="float">
+    <i class="fa fa-angle-up my-float"></i>
+</a>
+
 <div id="container1" style="width: 100%;"></div>
 <div id="container2" style="width: 100%;"></div>
 <div id="container3" style="width: 100%;"></div>
@@ -767,6 +772,8 @@
                            , json.plan[i].day[j].exercise.pause);
             }
         }
+
+        topFunction();
     }
 
     function EnterPlanName()
@@ -840,6 +847,23 @@
             viewport.content = "initial-scale=0.1";
             viewport.content = "width=" + x + "\"";
         }
+    }
+
+    // When the user scrolls down 20px from the top of the document, show the button
+    window.onscroll = function() {scrollFunction()};
+
+    function scrollFunction() {
+    if (document.body.scrollTop > 20 || document.documentElement.scrollTop > 20) {
+        document.getElementById("topButton").style.display = "block";
+    } else {
+        document.getElementById("topButton").style.display = "none";
+    }
+    }
+
+    // When the user clicks on the button, scroll to the top of the document
+    function topFunction() {
+    document.body.scrollTop = 0;
+    document.documentElement.scrollTop = 0;
     }
 
     document.addEventListener('DOMContentLoaded', function()

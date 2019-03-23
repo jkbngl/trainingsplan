@@ -1,0 +1,204 @@
+<html>
+<head>
+    <title>trainigsplan</title>
+
+    <link rel="stylesheet" type="text/css" href="css/main.css">
+    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.7.1/css/all.css" integrity="sha384-fnmOCqbTlWIlj8LyTjo7mOUStjsKC4pOpQbqyi7RrhN7udi9RwhKkMHpvLbHG9Sr" crossorigin="anonymous">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.5.0/Chart.min.js"></script>
+
+    <script src="http://jakob.ml:8081/auth/js/keycloak.js"></script> 
+    <script>
+        
+        var keycloak = Keycloak();
+
+        keycloak.init({ onLoad: 'login-required' })
+
+        keycloak.init().success(
+            function(authenticated) 
+            {
+                // alert(authenticated ? 'authenticated' : 'not authenticated');
+            }
+        ).error(function() 
+        {
+            // alert('failed to initialize');
+        }
+        );
+
+        keycloak.onAuthSuccess = function() 
+        { 
+            // alert('Successfully authenticated'); 
+            console.log('Successfully authenticated'); 
+
+            username = keycloak.idTokenParsed.name;
+            document.getElementById("username").innerHTML = username;
+            console.log(username);  
+        }
+
+        function getusername()
+        {
+            return username;
+        }
+    </script>
+</head>
+<body>
+    <div class="fixed-background blue-gradient-bg"></div>
+
+    <div id="mySidenav" class="sidenav">
+        <a href="javascript:void(0)" class="closebtn" onclick="closeNav()"><i class="fas fa-bars"></i></a>
+        <!--<a href="#">About</a>-->
+        <!--<button onclick="receivePlanfromDB(false)" class="button" style=" top: 10px; width:80%; margin-left: 10%;">Load Plan</button>
+        <button onclick="cleanUpTables(); addTable(true);  closeNav();"class="button" style="top: 10px; width:80%; margin-left: 10%;">New Plan</button>-->
+        <button onclick="window.location.href='index.html'" class="button" style="top: 10px; width:80%; margin-left: 10%;">Home</button>
+        <button onclick="keycloak.logout('/trainingsplanorwhateveritdoesntworkanyway'); kc.logout()"class="button" style="top: 10px; width:80%; margin-left: 10%;">Logout</button>
+    </div>
+
+    <div id = "headerforbuttons" style="display: flex; justify-content: space-between; position:fixed; width:100%">
+        <button onclick="openNav()" class="button" style="top: 10px;"><i class="fas fa-bars"></i></span>
+            <!-- <button onclick="addTable(true)" class="button" style="top: 10px;">Add new Day</button>-->
+            <button onclick="addData()" class="button" style="top: 10px;"><i class="far fa-save"></i></button>
+            <button onclick="keycloak.logout()" class="button" value="username ..." id="username" style="top: 10px;"></button>
+    </div>​
+
+    <div>
+        <canvas id="line-chart" height="100" ></canvas>
+    </div>
+
+	<div class="divOuter">
+        <div class="select divInner1">
+            <select id= "select" class="select-text" required>
+                <option value="" disabled selected></option>
+            </select>
+            <span class="select-highlight"></span>
+            <span class="select-bar"></span>
+            <label class="select-label">Select</label>
+        </div>
+
+        <div class="select divInner2">
+            <select id= "select" class="select-text" required>
+                <option value="" selected disabled hidden></option>
+            </select>
+            <span class="select-highlight"></span>
+            <span class="select-bar"></span>
+            <label class="select-label">Select</label>
+        </div>
+    </div>
+          
+    
+    
+</body>
+
+<script>
+    function get_available_ex()
+    {
+        var request = new XMLHttpRequest();
+        var url = 'http://jakob.ml:50003/trainingsplan/get_possible_base_exs/';
+        var username = getusername();
+        var xmlHttp = new XMLHttpRequest();
+
+        xmlHttp.open( "GET", url + username, false ); // false for synchronous request
+        xmlHttp.send( null );
+        available_ex = xmlHttp.responseText;
+
+        return available_ex;
+    }
+
+    function append_combo(json_base_exs)
+    {
+        var json = JSON.parse(json_base_exs);
+        var exercises = document.getElementById('select');
+
+        for(var i = 0; i < json.base_exs.length; i++) 
+        {
+            var opt = document.createElement('option');
+            opt.value = json.base_exs[i].base_ex;
+            opt.innerHTML = json.base_exs[i].name;
+            opt.id = 'option_element';
+            exercises.appendChild(opt);
+
+            console.log(json.base_exs[i].name + " | " + json.base_exs[i].base_ex);
+        }
+    }
+
+    function addData() 
+    {
+        chart.data.datasets.push({
+            data: [30,30,30,50,40,40,45,45],
+            label: ex_names[3],
+            borderColor: border_color_array[3],
+            fill: false
+        });
+
+
+        chart.update();
+        console.log("updated");
+    }
+
+    var labels = [1.1,1.2,1.3,1.4,2.1,2.2,2.3,2.4];
+    var border_color_array = ["#00ad5f","#0EB1D2", "#8980F5", "#102542", "#41658A"];
+    var ex_names = ["kniebeuge", "bankdruecken", "seitheben", "latzug"];
+
+    var chart = new Chart(document.getElementById("line-chart"), {
+        type: 'line',
+        data: {
+            labels: labels,
+            datasets: [
+                {
+                    data: [22,25,30,30,40,35,40,40],
+                    label: ex_names[0],
+                    borderColor: border_color_array[0],
+                    fill: false
+                },
+                {
+                    data: [20,20,20,25,25,30, 25, 25],
+                    label: ex_names[1],
+                    borderColor: border_color_array[1],
+                    fill: false
+                },
+                {
+                    data: [8,8,8,6,5,4,5,5],
+                    label: ex_names[2],
+                    borderColor: border_color_array[2],
+                    fill: false
+                }   
+            ]
+        },
+        options: {
+            title: {
+                display: true,
+                text: 'Trainingsplan'
+            }
+        }
+    });
+
+    function openNav()
+    {
+        document.getElementById("mySidenav").style.width = "250px";
+    }
+
+    function closeNav()
+    {
+        document.getElementById("mySidenav").style.width = "0";
+    }
+
+    document.addEventListener('DOMContentLoaded', function()
+    {
+        //zoomOutMobile();
+        var available_ex;
+        var check = function()
+        {
+            if(getusername().length > 0){
+                available_ex = get_available_ex();            
+                append_combo(available_ex);
+            }
+            else
+            {
+                setTimeout(check, 10); // check again in 10 ms
+            }
+        }
+        
+        check();
+
+        //zoomOutMobile();
+    }, false);
+</script>
+</html>

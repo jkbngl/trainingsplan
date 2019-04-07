@@ -8,6 +8,219 @@ select {
 
   /* webkit*/
 }
+
+/*
+P.S: if you like my content maybe you will become a donator and donate some money? That helps me to create new awesome materials. https://www.paypal.me/melnik909
+*/
+
+/*
+I've used nested span elements for creating an animation of square turn and creating an arrow animation. But if you know other a solution please email me
+melnik909@ya.ru
+*/
+
+/*
+=====
+LEVEL 1. CORE STYLES
+=====
+*/
+
+.param_top
+{
+  font-size: 20px; 
+  padding-bottom: 8px; 
+  border-right: 4px solid rgba(0,0,0, 0.12);
+}
+.param_bottom
+{
+  font-size: 20px; 
+  padding-bottom: 6px; 
+  border-bottom: 4px solid rgba(0,0,0, 0.12); 
+  border-right: 4px solid rgba(0,0,0, 0.12);
+}
+
+@media (max-width: 1200px) {
+  .divOuter{
+    display: block;
+    margin-left: auto;
+    margin-right: auto;
+    width: 40%;
+    margin-top:50px;
+  }
+}
+
+.toggle{
+  --uiToggleSize: var(--toggleSize, 20px);
+  --uiToggleIndent: var(--toggleIndent, .4em);
+  --uiToggleBorderWidth: var(--toggleBorderWidth, 2px);
+  --uiToggleColor: var(--toggleColor, #000);
+  --uiToggleDisabledColor: var(--toggleDisabledColor, #868e96);
+  --uiToggleBgColor: var(--toggleBgColor, #fff);
+  --uiToggleArrowWidth: var(--toggleArrowWidth, 2px);
+  --uiToggleArrowColor: var(--toggleArrowColor, #fff);
+
+  display: inline-block;
+  position: relative;
+}
+
+.toggle__input{
+  position: absolute;
+  left: -99999px;
+}
+
+.toggle__label{
+  display: inline-flex;
+  cursor: pointer;
+  min-height: var(--uiToggleSize);
+  padding-left: calc(var(--uiToggleSize) + var(--uiToggleIndent));
+}
+
+.toggle__label:before, .toggle__label:after{
+  content: "";
+  box-sizing: border-box;  
+  width: 1em;
+  height: 1em;
+  font-size: var(--uiToggleSize);
+
+  position: absolute;
+  left: 0;
+  top: 0;
+}
+
+.toggle__label:before{
+  border: var(--uiToggleBorderWidth) solid var(--uiToggleColor);
+  z-index: 2;
+}
+
+.toggle__input:disabled ~ .toggle__label:before{
+  border-color: var(--uiToggleDisabledColor);
+}
+
+.toggle__input:focus ~ .toggle__label:before{
+  box-shadow: 0 0 0 2px var(--uiToggleBgColor), 0 0 0px 4px var(--uiToggleColor);
+}
+
+.toggle__input:not(:disabled):checked:focus ~ .toggle__label:after{
+  box-shadow: 0 0 0 2px var(--uiToggleBgColor), 0 0 0px 4px var(--uiToggleColor);
+}
+
+.toggle__input:not(:disabled) ~ .toggle__label:after{
+  background-color: var(--uiToggleColor);
+  opacity: 0;
+}
+
+.toggle__input:not(:disabled):checked ~ .toggle__label:after{
+  opacity: 1;
+}
+
+.toggle__text{
+  margin-top: auto;
+  margin-bottom: auto;
+  color: #00ad5f;
+  font-size: 18px;
+}
+
+/*
+The arrow size and position depends from sizes of square because I needed an arrow correct positioning from the top left corner of the element toggle
+*/
+
+.toggle__text:before{
+  content: "";
+  box-sizing: border-box;
+  width: 0;
+  height: 0;
+  font-size: var(--uiToggleSize);
+
+  border-left-width: 0;
+  border-bottom-width: 0;
+  border-left-style: solid;
+  border-bottom-style: solid;
+  border-color: var(--uiToggleArrowColor);
+
+  position: absolute;
+  top: .5428em;
+  left: .2em;
+  z-index: 3;
+
+  transform-origin: left top;
+  transform: rotate(-40deg) skew(10deg);
+}
+
+.toggle__input:not(:disabled):checked ~ .toggle__label .toggle__text:before{
+  width: .5em;
+  height: .25em;
+  border-left-width: var(--uiToggleArrowWidth);
+  border-bottom-width: var(--uiToggleArrowWidth);
+  will-change: width, height;
+  transition: width .1s ease-out .2s, height .2s ease-out;
+}
+
+/*
+=====
+LEVEL 2. PRESENTATION STYLES
+=====
+*/
+
+/* 
+The demo skin
+*/
+
+.toggle__label:before, .toggle__label:after{
+  border-radius: 2px;
+}
+
+/* 
+The animation of switching states
+*/
+
+.toggle__input:not(:disabled) ~ .toggle__label:before,
+.toggle__input:not(:disabled) ~ .toggle__label:after{
+  opacity: 1;
+  transform-origin: center center;
+  will-change: transform;
+  transition: transform .2s ease-out;
+}
+
+.toggle__input:not(:disabled) ~ .toggle__label:before{
+  transform: rotateY(0deg);
+  transition-delay: .2s;
+}
+
+.toggle__input:not(:disabled) ~ .toggle__label:after{
+  transform: rotateY(90deg);
+}
+
+.toggle__input:not(:disabled):checked ~ .toggle__label:before{
+  transform: rotateY(-90deg);
+  transition-delay: 0s;
+}
+
+.toggle__input:not(:disabled):checked ~ .toggle__label:after{
+  transform: rotateY(0deg);
+  transition-delay: .2s;
+}
+
+.toggle__text:before{
+  opacity: 0;
+}
+
+.toggle__input:not(:disabled):checked ~ .toggle__label .toggle__text:before{
+  opacity: 1;
+  transition: opacity .1s ease-out .3s, width .1s ease-out .5s, height .2s ease-out .3s;
+}
+
+/*
+=====
+LEVEL 3. SETTINGS
+=====
+*/
+
+.toggle{
+  --toggleColor: #00ad5f;
+  --toggleBgColor: #222222;
+  --toggleSize: 30px;
+}
+
+
 .option_element {
   text-align-last: center;
   text-align: center;
@@ -18,16 +231,25 @@ select {
 .divOuter{
   display: block;
   margin-left: auto;
-  margin-right: auto;
-  width: 40%;
+  width: 70%;
   margin-top:50px;
 }
 
-.divInner1, .divInner2{
+.divInner1{
   float:left;
   margin-left:3px;
   margin-right:3px;
 }
+
+.divInner2{
+  float:left;
+  margin-left:3px;
+  margin-right:3px;
+  font-family: inherit;
+  color: #00ad5f; 
+}
+
+
 
 /* select starting stylings ------------------------------*/
 .select {
@@ -42,9 +264,11 @@ select {
 	width: 350px;
 	padding: 10px 10px 10px 0;
 	font-size: 18px;
-	border-radius: 0;
-	border: none;
-	border-bottom: 1px solid rgba(0,0,0, 0.12);
+	border-radius: 1;
+	border: #000;
+  border-bottom: 4px solid rgba(0,0,0, 0.12);
+  border-right: 4px solid rgba(0,0,0, 0.12);
+
 }
 
 /* Remove focus */
@@ -151,7 +375,7 @@ select {
 }
 
 select option {
-  background: #393939;
+  background: #4e4e4e;
   color: #00ad5f;
   text-indent: 50px;
   text-align: center;
@@ -196,12 +420,6 @@ select option {
 }
 
 
-
-
-
-
-
-
 .title:empty:not(:focus):before {
   content: attr(data-placeholder);
 }
@@ -217,6 +435,7 @@ select option {
   overflow-x: hidden;
   transition: 0.5s;
   padding-top: 60px;
+  border-right: 1px solid #28AD5F;
 }
 
 
@@ -499,7 +718,7 @@ canvas {
 	height:60px;
 	bottom:40px;
 	right:40px;
-	background-color: #00ad5f;
+	background-color: #28AD5F;
 	color:#393939;
 	border-radius:50px;
   text-align:center;
@@ -537,7 +756,7 @@ table {
 }
 
 th, td {
-  font-weight: unset;
+  /*font-weight: unset;*/
   padding-right: 10px;
 }
 
@@ -598,7 +817,7 @@ th, td {
 
 .table100.ver1 th {
 
-  font-size: 18px;
+  /*font-size: 18px;*/
   color: #fff;
   line-height: 1.4;
 
@@ -654,7 +873,7 @@ th, td {
 
 .table100.ver2 th {
 
-  font-size: 18px;
+  /*font-size: 18px;*/
   color: #fa4251;
   line-height: 1.4;
 
@@ -705,7 +924,8 @@ th, td {
 
 .table100.ver3 th {
 
-  font-size: 15px;
+  /*font-size: 15px;*/
+
   color: #00ad5f;
   line-height: 1.4;
   text-transform: uppercase;
@@ -758,7 +978,7 @@ th, td {
 
 .table100.ver4 th {
 
-  font-size: 18px;
+  /*font-size: 18px;*/
   color: #4272d7;
   line-height: 1.4;
 
@@ -816,7 +1036,7 @@ th, td {
 
 .table100.ver5 th {
 
-  font-size: 14px;
+  /*font-size: 14px;*/
   color: #555555;
   line-height: 1.4;
   text-transform: uppercase;

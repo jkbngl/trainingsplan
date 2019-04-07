@@ -2,6 +2,24 @@
 <head>
     <title>trainigsplan</title>
 
+    <style>
+        .mobile_size button.mobile_button,  button.mobile_button {
+           font-size: 30px;
+        }
+
+        .mobile_p p.mobile_p,  p.mobile_p {
+           font-size: 30px;
+        }
+
+        .mobile_span span.mobile_span,  span.mobile_span {
+           font-size: 30px;
+        }
+
+        .mobile_label label.mobile_label,  label.mobile_label {
+           font-size: 30px;
+        }
+    </style>
+
     <link rel="stylesheet" type="text/css" href="css/main.css">
     <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.7.1/css/all.css" integrity="sha384-fnmOCqbTlWIlj8LyTjo7mOUStjsKC4pOpQbqyi7RrhN7udi9RwhKkMHpvLbHG9Sr" crossorigin="anonymous">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.5.0/Chart.min.js"></script>
@@ -51,6 +69,8 @@
         <!--<button onclick="receivePlanfromDB(false)" class="button" style=" top: 10px; width:80%; margin-left: 10%;">Load Plan</button>
         <button onclick="cleanUpTables(); addTable(true);  closeNav();"class="button" style="top: 10px; width:80%; margin-left: 10%;">New Plan</button>-->
         <button onclick="window.location.href='index.html'" class="button" style="top: 10px; width:80%; margin-left: 10%;"><i class="fas fa-home"></i> Home</button>
+        <button onclick="closeNav();"class="button" style="top: 10px; width:80%; margin-left: 10%;"><i class="fas fa-cog"></i> Settings</button>
+        <button onclick="download();" class="button" style="top: 10px; width:80%; margin-left: 10%;"><i class="fas fa-file-export"></i> Export</button>
         <button onclick="keycloak.logout('/trainingsplanorwhateveritdoesntworkanyway'); kc.logout()"class="button" style="top: 10px; width:80%; margin-left: 10%;"><i class="fas fa-sign-out-alt"></i> Logout</button>
     </div>
 
@@ -58,7 +78,7 @@
         <button onclick="openNav()" class="button" style="top: 10px;"><i class="fas fa-bars"></i></span>
             <!-- <button onclick="addTable(true)" class="button" style="top: 10px;">Add new Day</button>-->
             <button onclick="window.location.href='index.html'" class="button" style="top: 10px;" ><i class="fas fa-home"></i> Home</button>
-            <button onclick="clear_chart()" class="button" style="top: 10px;" ><i class="fas fa-trash"></i> Clear</button>
+            <button onclick="closeNav(); clear_chart()" class="button" style="top: 10px;" ><i class="fas fa-trash"></i> Clear</button>
             <button onclick="keycloak.logout()" class="button" value="username ..." id="username" style="top: 10px;"></button>
     </div>​
 
@@ -67,26 +87,25 @@
     </div>
 
 	<div class="divOuter"  >
-        <div class="select divInner1"  style="margin-top: 50px; margin-right: 100px;">
-            <select id= "select" onchange="display_ex();" class="select-text" required>
+        <div class="select divInner1"  style="margin-top: 70px; margin-right: 100px;">
+            <select id= "select" onchange="closeNav(); display_ex();" class="select-text" required>
                 <option value="" selected></option>
             </select>
             <span class="select-highlight"></span>
             <span class="select-bar"></span>
-            <label class="select-label">Select an exercise to analyse</label>
+            <label class="select-label">Analyse an exercise</label>
         </div>
 
 
 
         <div class="divInner2">
-            <p style="font-size: large; 
-                      font-weight: bold; 
-                      padding-bottom: 8px; 
-                      border-bottom: 4px solid rgba(0,0,0, 0.12); 
-                      border-right: 4px solid rgba(0,0,0, 0.12);">&nbsp Choose the parameter/s &nbsp
+            <p class="param_top">Choose the &nbsp
+
+            <p class="param_bottom">parameter/s &nbsp
+                             
             <div class="page__toggle" style="margin-top: 10px;">
                 <label class="toggle">
-                  <input id="weight_box" class="toggle__input" type="checkbox" checked>
+                  <input id="weight_box" onchange="closeNav();" class="toggle__input" type="checkbox" checked>
                   <span class="toggle__label">
                     <span class="toggle__text">Weight</span>
                   </span>
@@ -94,7 +113,7 @@
             </div>
             <div class="page__toggle"  style="margin-top: 10px;">
                 <label class="toggle">
-                  <input id="reps_box" class="toggle__input" type="checkbox" checked>
+                  <input id="reps_box" onchange="closeNav();" class="toggle__input" type="checkbox" checked>
                   <span class="toggle__label">
                     <span class="toggle__text">Reps</span>
                   </span>
@@ -102,7 +121,7 @@
             </div>
             <div class="page__toggle"  style="margin-top: 10px;">
                 <label class="toggle">
-                  <input id="sets_box" class="toggle__input" type="checkbox" checked>
+                  <input id="sets_box" onchange="closeNav();" class="toggle__input" type="checkbox" checked>
                   <span class="toggle__label">
                     <span class="toggle__text">Sets</span>
                   </span>
@@ -110,7 +129,7 @@
             </div>
             <div class="page__toggle" style="margin-top: 10px;">
                 <label class="toggle">
-                  <input id="max_rep_box" class="toggle__input" type="checkbox">
+                  <input id="max_rep_box" onchange="closeNav();" class="toggle__input" type="checkbox">
                   <span class="toggle__label">
                     <span class="toggle__text">Max Rep</span>
                   </span>
@@ -125,6 +144,20 @@
 
 <script>
     var num_ex = 0;
+
+    function download() 
+    {
+        var url_base64 = document.getElementById('line-chart').toDataURL('image/png');
+        var element = document.createElement('a');
+        
+        element.setAttribute('href', url_base64);
+        element.setAttribute('download', 'chart.png');
+        element.style.display = 'none';
+        document.body.appendChild(element);
+        element.click();
+        document.body.removeChild(element);
+    }
+    
 
     function get_available_ex()
     {
@@ -178,8 +211,6 @@
 
         values = get_value(available_ex, weight_box.checked, reps_box.checked, sets_box.checked, max_rep_box.checked);
 
-        console.log(weight_box.checked + " | " + reps_box.checked + " | " + sets_box.checked + " | " + max_rep_box.checked);
-
         addData(values, text);
     }
 
@@ -201,8 +232,6 @@
                 values[i] *=  json.values[i].sets;
             if(max_rep && json.values[i].reps > 0)
                 values[i] *= json.values[i].max_rep;
-
-            console.log(values[i])
         }
 
         return values;
@@ -227,8 +256,8 @@
 
     function clear_chart()
     {
-        chart.destroy();
-
+        chart.reset();
+        chart.clear();
         chart = create_chart();
     }
 
@@ -251,7 +280,8 @@
             options: {
                 title: {
                     display: true,
-                    text: 'Trainingsplan'
+                    //text: 'Trainingsplan',
+                    responsive: true
                 }
             }
          });
@@ -269,9 +299,58 @@
         document.getElementById("mySidenav").style.width = "0";
     }
 
+    var isMobile = {
+        Android: function() {
+            return navigator.userAgent.match(/Android/i);
+        },
+        BlackBerry: function() {
+            return navigator.userAgent.match(/BlackBerry/i);
+        },
+        iOS: function() {
+            return navigator.userAgent.match(/iPhone|iPad|iPod/i);
+        },
+        Opera: function() {
+            return navigator.userAgent.match(/Opera Mini/i);
+        },
+        Windows: function() {
+            return navigator.userAgent.match(/IEMobile/i) || navigator.userAgent.match(/WPDesktop/i);
+        },
+        any: function() {
+            return (isMobile.Android() || isMobile.BlackBerry() || isMobile.iOS() || isMobile.Opera() || isMobile.Windows());
+        }
+    };
+
+    function customize_mobile()
+    {
+        document.getElementById("headerforbuttons").style.height = "75px";
+
+        var buttons = document.getElementsByTagName("button");
+        for(var i = 0, il = buttons.length; i < il; i++)
+        {
+            buttons[i].className += " mobile_button";
+        }
+
+        var spans = document.getElementsByTagName("span");
+        for(var i = 0, il = spans.length; i < il; i++)
+        {
+            spans[i].className += " mobile_span";
+        }
+
+        var ps = document.getElementsByTagName("p");
+        for(var i = 0, il = ps.length; i < il; i++)
+        {
+            ps[i].className += " mobile_p";
+        }
+
+        var labels = document.getElementsByTagName("label");
+        for(var i = 0, il = labels.length; i < il; i++)
+        {
+            labels[i].className += " mobile_label";
+        }
+    }
+
     document.addEventListener('DOMContentLoaded', function()
     {
-        //zoomOutMobile();
         var available_ex;
         var check = function()
         {
@@ -286,8 +365,16 @@
         }
         
         check();
-
-        //zoomOutMobile();
+        if( isMobile.any() ) 
+        {
+            console.log("MOBILE DETECTED AS DEVICE");
+            customize_mobile();
+        }
+        else
+        {
+            //customize_mobile();
+            console.log("PC DETECTED AS DEVICE");
+        }
     }, false);
 </script>
 </html>

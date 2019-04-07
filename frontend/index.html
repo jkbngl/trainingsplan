@@ -9,6 +9,25 @@
             background-color: hsl(89, 43%, 51%);
         }
 
+        .mobile_th th.mobile_th,  th.mobile_th {
+           font-size: 30px;
+        }
+
+        .mobile_button button.mobile_button,  button.mobile_button {
+           font-size: 35px;
+        }
+
+        .mobile_div div.mobile_div,  div.mobile_div {
+           font-size: 30px;
+        }
+
+        .mobile_i i.mobile_i,  i.mobile_i {
+            font-size: 40px;
+        }
+
+  
+
+
     </style>
 
     <title>
@@ -76,12 +95,13 @@
             console.log('Successfully authenticated'); 
 
             username = keycloak.idTokenParsed.name;
-            document.getElementById("username").innerHTML = username + '   ' + '<span class="glyphicon">&#xe163;</span>';
+            username = username.toLowerCase();
+            document.getElementById("username").innerHTML = username;
             console.log(username);  
         }
 
         function getusername()
-        {
+        {   
             return username;
         }
     </script>
@@ -89,26 +109,28 @@
 <body>
 
 <!---
-<td class='tdinput'><div contenteditable='true' id='tags' value='defaultvaluetoignore' class='title ui-autocomplete-input' autocomplete='on' data-placeholder='name' style="background-color: transparent; color:#7F7F7F; width:inherit; max-width: 180px; min-width: 180px; min-height: 25px; max-height: 25px; text-align: center"></div></td>
+<td class='tdinput'><div contenteditable='true' id='tags' value='defaultvaluetoignore' class='title ui-autocomplete-input' autocomplete='on' data-placeholder='name' style="background-color: transparent; color:#7F7F7F; width:inherit; max-width: 160px; min-width: 160px;  min-height: 25px; max-height: 25px; text-align: center"></div></td>
 -->
 
-
 <div class="fixed-background blue-gradient-bg"></div>
+
 
 <div id="mySidenav" class="sidenav">
     <a href="javascript:void(0)" class="closebtn" onclick="closeNav()"><i class="fas fa-bars"></i></a>
     <!--<a href="#">About</a>-->
-    <button onclick="receivePlanfromDB(false)" class="button" style=" top: 10px; width:80%; margin-left: 10%;"><i class="fas fa-spinner"></i> Load Plan</button>
-    <button onclick="cleanUpTables(); addTable(true);  closeNav();"class="button" style="top: 10px; width:80%; margin-left: 10%;"><i class="fas fa-plus-circle"></i> New Plan</button>
-    <button onclick="window.location.href='stats.html'" class="button" style="top: 10px; width:80%; margin-left: 10%;"><i class="fas fa-chart-line"></i>  Stats</button>
-    <button onclick="keycloak.logout()"class="button" style="top: 10px; width:80%; margin-left: 10%;"><i class="fas fa-sign-out-alt"></i> Logout</button>
+    <button onclick="receivePlanfromDB(false)"                      class="button" style="top: 10px; width:80%; margin-left: 10%; margin-top: 30px"><i class="fas fa-spinner">          </i> Load Plan</button>
+    <button onclick="cleanUpTables(); addTable(true);  closeNav();" class="button" style="top: 10px; width:80%; margin-left: 10%;">                 <i class="fas fa-plus-circle">      </i> New Plan</button>
+    <button onclick="window.location.href='stats.html'"             class="button" style="top: 10px; width:80%; margin-left: 10%;">                 <i class="fas fa-chart-line">       </i> Stats</button>
+    <button onclick="delete_plan(-1, false)"                        class="button" style="top: 10px; width:80%; margin-left: 10%; margin-top: 20%;"><i class="fas fa-trash">            </i> Delete Plans</button>
+    <button onclick="restore_plan(-1, false)"                       class="button" style="top: 10px; width:80%; margin-left: 10%;">                 <i class="fas fa-trash-restore-alt"></i> Restore Plans</button>
+    <button onclick="keycloak.logout()"                             class="button" style="top: 10px; width:80%; margin-left: 10%; margin-top: 20%;"><i class="fas fa-sign-out-alt">     </i> Logout</button>
 </div>
 
 <div id = "headerforbuttons" style="display: flex; justify-content: space-between; position:fixed; width:100%">
-    <button onclick="openNav()" class="button" style="top: 10px;"><i class="fas fa-bars"></i></span>
-        <button onclick="addTable(true)" class="button" style="top: 10px;"><i class="fas fa-plus-circle"></i> Add new Day</button>
-        <button onclick="loadPlanIntoDB(); onSave()" class="button" style="top: 10px;"><i class="far fa-save"></i></button>
-        <button onclick="keycloak.logout()" class="button" value="username ..." id="username" style="top: 10px;"></button>
+    <button onclick="openNav()"                  class="button" style="top: 10px;"><i class="fas fa-bars"></i></span></button>
+    <button onclick="addTable(true)"             class="button" style="top: 10px;"><i class="fas fa-plus-circle"></i> Add new Day</button>
+    <button onclick="loadPlanIntoDB(); onSave()" class="button" style="top: 10px;"><i class="far fa-save"></i></button>
+    <button onclick="keycloak.logout()"          class="button" value="username ..." id="username" style="top: 10px;"></button>
 </div>​
 
 
@@ -157,11 +179,11 @@
     function addTable(addRowByDefault)
     {
         // column 3 2 times, maybe change at a later point
-        var basicTable1 = '<div class="limiter" id="day1"> <div class="container-table100"> <div class="wrap-table100"> <div class="table100 ver3 m-b-110"> <div class="table100-head"> <table> <thead> <tr class="row100 head"> <th class="cell100 column1" style="width:16.6%; text-align: center">Exercise</th> <th class="cell100 column2" style="width:16.6%; text-align: center">Weight</th> <th class="cell100 column3" style="width:16.6%; text-align: center">Repetitions</th> <th class="cell100 column3" style="width:16.6%; text-align: center">Sets</th> <th class="cell100 column4" style="width:16.6%; text-align: center">Max Rep weight</th> <th class="cell100 column5" style="width:16.6%; text-align: center">Pause</th> </tr> </thead> </table> </div> <div class="table100-body js-pscroll" id = "test"> <table> <tbody id="myTable1"> <tr class="row100 body"> </tbody> </table> </div> </div> </div> <button id="add_Ex_Day_Day_1" onclick="addRow(\'myTable1\')" class="button"><i class="fas fa-plus-circle"></i> Add new Exercise</button> <button id="delete_Ex_Day_Day_1" onclick="deleteRow(\'myTable1\')" class="button"><i class="fas fa-minus-circle"></i> Remove last Exercise</button> <button id="delete_Day_Day_1" onclick="deleteTable(\'1\')" class="button"><i class="fas fa-trash-alt"></i> Delete Day</button></div></div>';
-        var basicTable2 = '<div class="limiter" id="day2"> <div class="container-table100"> <div class="wrap-table100"> <div class="table100 ver3 m-b-110"> <div class="table100-head"> <table> <thead> <tr class="row100 head"> <th class="cell100 column1" style="width:16.6%; text-align: center">Exercise</th> <th class="cell100 column2" style="width:16.6%; text-align: center">Weight</th> <th class="cell100 column3" style="width:16.6%; text-align: center">Repetitions</th> <th class="cell100 column3" style="width:16.6%; text-align: center">Sets</th> <th class="cell100 column4" style="width:16.6%; text-align: center">Max Rep weight</th> <th class="cell100 column5" style="width:16.6%; text-align: center">Pause</th> </tr> </thead> </table> </div> <div class="table100-body js-pscroll" id = "test"> <table> <tbody id="myTable2"> <tr class="row100 body"> </tbody> </table> </div> </div> </div> <button id="add_Ex_Day_Day_2" onclick="addRow(\'myTable2\')" class="button"><i class="fas fa-plus-circle"></i> Add new Exercise</button> <button id="delete_Ex_Day_Day_2" onclick="deleteRow(\'myTable2\')" class="button"><i class="fas fa-minus-circle"></i> Remove last Exercise</button> <button id="delete_Day_Day_2" onclick="deleteTable(\'2\')" class="button"><i class="fas fa-trash-alt"></i> Delete Day</button></div> </div>';
-        var basicTable3 = '<div class="limiter" id="day3"> <div class="container-table100"> <div class="wrap-table100"> <div class="table100 ver3 m-b-110"> <div class="table100-head"> <table> <thead> <tr class="row100 head"> <th class="cell100 column1" style="width:16.6%; text-align: center">Exercise</th> <th class="cell100 column2" style="width:16.6%; text-align: center">Weight</th> <th class="cell100 column3" style="width:16.6%; text-align: center">Repetitions</th> <th class="cell100 column3" style="width:16.6%; text-align: center">Sets</th> <th class="cell100 column4" style="width:16.6%; text-align: center">Max Rep weight</th> <th class="cell100 column5" style="width:16.6%; text-align: center">Pause</th> </tr> </thead> </table> </div> <div class="table100-body js-pscroll" id = "test"> <table> <tbody id="myTable3"> <tr class="row100 body"> </tbody> </table> </div> </div> </div> <button id="add_Ex_Day_Day_3" onclick="addRow(\'myTable3\')" class="button"><i class="fas fa-plus-circle"></i> Add new Exercise</button> <button id="delete_Ex_Day_Day_3" onclick="deleteRow(\'myTable3\')" class="button"><i class="fas fa-minus-circle"></i> Remove last Exercise</button> <button id="delete_Day_Day_3" onclick="deleteTable(\'3\')" class="button"><i class="fas fa-trash-alt"></i> Delete Day</button></div> </div>';
-        var basicTable4 = '<div class="limiter" id="day4"> <div class="container-table100"> <div class="wrap-table100"> <div class="table100 ver3 m-b-110"> <div class="table100-head"> <table> <thead> <tr class="row100 head"> <th class="cell100 column1" style="width:16.6%; text-align: center">Exercise</th> <th class="cell100 column2" style="width:16.6%; text-align: center">Weight</th> <th class="cell100 column3" style="width:16.6%; text-align: center">Repetitions</th> <th class="cell100 column3" style="width:16.6%; text-align: center">Sets</th> <th class="cell100 column4" style="width:16.6%; text-align: center">Max Rep weight</th> <th class="cell100 column5" style="width:16.6%; text-align: center">Pause</th> </tr> </thead> </table> </div> <div class="table100-body js-pscroll" id = "test"> <table> <tbody id="myTable4"> <tr class="row100 body"> </tbody> </table> </div> </div> </div> <button id="add_Ex_Day_Day_4" onclick="addRow(\'myTable4\')" class="button"><i class="fas fa-plus-circle"></i> Add new Exercise</button> <button id="delete_Ex_Day_Day_4" onclick="deleteRow(\'myTable4\')" class="button"><i class="fas fa-minus-circle"></i> Remove last Exercise</button> <button id="delete_Day_Day_4" onclick="deleteTable(\'4\')" class="button"><i class="fas fa-trash-alt"></i> Delete Day</button></div> </div>';
-        var basicTable5 = '<div class="limiter" id="day5"> <div class="container-table100"> <div class="wrap-table100"> <div class="table100 ver3 m-b-110"> <div class="table100-head"> <table> <thead> <tr class="row100 head"> <th class="cell100 column1" style="width:16.6%; text-align: center">Exercise</th> <th class="cell100 column2" style="width:16.6%; text-align: center">Weight</th> <th class="cell100 column3" style="width:16.6%; text-align: center">Repetitions</th> <th class="cell100 column3" style="width:16.6%; text-align: center">Sets</th> <th class="cell100 column4" style="width:16.6%; text-align: center">Max Rep weight</th> <th class="cell100 column5" style="width:16.6%; text-align: center">Pause</th> </tr> </thead> </table> </div> <div class="table100-body js-pscroll" id = "test"> <table> <tbody id="myTable5"> <tr class="row100 body"> </tbody> </table> </div> </div> </div> <button id="add_Ex_Day_Day_5" onclick="addRow(\'myTable5\')" class="button"><i class="fas fa-plus-circle"></i> Add new Exercise</button> <button id="delete_Ex_Day_Day_5" onclick="deleteRow(\'myTable5\')" class="button"><i class="fas fa-minus-circle"></i> Remove last Exercise</button> <button id="delete_Day_Day_5" onclick="deleteTable(\'5\')" class="button"><i class="fas fa-trash-alt"></i> Delete Day</button></div> </div>';
+        var basicTable1 = '<div class="limiter" id="day1"> <div class="container-table100"> <div class="wrap-table100"> <div class="table100 ver3 m-b-110"> <div class="table100-head"> <table> <thead> <tr class="row100 head"> <th class="cell100 column1" style="width:16.6%; text-align: center; vertical-align: text-top;">Exercise</th> <th class="cell100 column2" style="width:16.6%; text-align: center; vertical-align: text-top;">Weight</th> <th class="cell100 column3" style="width:16.6%; text-align: center;   vertical-align: text-top;">Repetitions</th> <th class="cell100 column3" style="width:16.6%; text-align: center;  vertical-align: text-top;">Sets</th> <th class="cell100 column4" style="width:16.6%; text-align: center; vertical-align: text-top;">Max Rep</th> <th class="cell100 column5" style="width:16.6%; text-align: center; vertical-align: text-top; ">Pause</th> </tr> </thead> </table> </div> <div class="table100-body js-pscroll" id = "test"> <table> <tbody id="myTable1"> <tr class="row100 body"> </tbody> </table> </div> </div> </div> <button id="add_Ex_Day_Day_1" onclick="addRow(\'myTable1\')" class="button"><i class="fas fa-plus-circle"></i> Add new Exercise</button> <button id="delete_Day_Day_1" onclick="deleteTable(\'1\')" class="button"><i class="fas fa-trash-alt"></i> Delete Day</button></div></div>';
+        var basicTable2 = '<div class="limiter" id="day2"> <div class="container-table100"> <div class="wrap-table100"> <div class="table100 ver3 m-b-110"> <div class="table100-head"> <table> <thead> <tr class="row100 head"> <th class="cell100 column1" style="width:16.6%; text-align: center; vertical-align: text-top;">Exercise</th> <th class="cell100 column2" style="width:16.6%; text-align: center; vertical-align: text-top;">Weight</th> <th class="cell100 column3" style="width:16.6%; text-align: center;   vertical-align: text-top;">Repetitions</th> <th class="cell100 column3" style="width:16.6%; text-align: center;  vertical-align: text-top;">Sets</th> <th class="cell100 column4" style="width:16.6%; text-align: center; vertical-align: text-top;">Max Rep</th> <th class="cell100 column5" style="width:16.6%; text-align: center; vertical-align: text-top;">Pause</th> </tr> </thead> </table> </div> <div class="table100-body js-pscroll" id = "test"> <table> <tbody id="myTable2"> <tr class="row100 body"> </tbody> </table> </div> </div> </div> <button id="add_Ex_Day_Day_2" onclick="addRow(\'myTable2\')" class="button"><i class="fas fa-plus-circle"></i> Add new Exercise</button> <button id="delete_Day_Day_2" onclick="deleteTable(\'2\')" class="button"><i class="fas fa-trash-alt"></i> Delete Day</button></div> </div>';
+        var basicTable3 = '<div class="limiter" id="day3"> <div class="container-table100"> <div class="wrap-table100"> <div class="table100 ver3 m-b-110"> <div class="table100-head"> <table> <thead> <tr class="row100 head"> <th class="cell100 column1" style="width:16.6%; text-align: center; vertical-align: text-top;">Exercise</th> <th class="cell100 column2" style="width:16.6%; text-align: center; vertical-align: text-top;">Weight</th> <th class="cell100 column3" style="width:16.6%; text-align: center;   vertical-align: text-top;">Repetitions</th> <th class="cell100 column3" style="width:16.6%; text-align: center;  vertical-align: text-top;">Sets</th> <th class="cell100 column4" style="width:16.6%; text-align: center; vertical-align: text-top;">Max Rep</th> <th class="cell100 column5" style="width:16.6%; text-align: center; vertical-align: text-top; ">Pause</th> </tr> </thead> </table> </div> <div class="table100-body js-pscroll" id = "test"> <table> <tbody id="myTable3"> <tr class="row100 body"> </tbody> </table> </div> </div> </div> <button id="add_Ex_Day_Day_3" onclick="addRow(\'myTable3\')" class="button"><i class="fas fa-plus-circle"></i> Add new Exercise</button> <button id="delete_Day_Day_3" onclick="deleteTable(\'3\')" class="button"><i class="fas fa-trash-alt"></i> Delete Day</button></div> </div>';
+        var basicTable4 = '<div class="limiter" id="day4"> <div class="container-table100"> <div class="wrap-table100"> <div class="table100 ver3 m-b-110"> <div class="table100-head"> <table> <thead> <tr class="row100 head"> <th class="cell100 column1" style="width:16.6%; text-align: center; vertical-align: text-top;">Exercise</th> <th class="cell100 column2" style="width:16.6%; text-align: center; vertical-align: text-top;">Weight</th> <th class="cell100 column3" style="width:16.6%; text-align: center;   vertical-align: text-top;">Repetitions</th> <th class="cell100 column3" style="width:16.6%; text-align: center;  vertical-align: text-top;">Sets</th> <th class="cell100 column4" style="width:16.6%; text-align: center; vertical-align: text-top;">Max Rep</th> <th class="cell100 column5" style="width:16.6%; text-align: center; vertical-align: text-top; ">Pause</th> </tr> </thead> </table> </div> <div class="table100-body js-pscroll" id = "test"> <table> <tbody id="myTable4"> <tr class="row100 body"> </tbody> </table> </div> </div> </div> <button id="add_Ex_Day_Day_4" onclick="addRow(\'myTable4\')" class="button"><i class="fas fa-plus-circle"></i> Add new Exercise</button> <button id="delete_Day_Day_4" onclick="deleteTable(\'4\')" class="button"><i class="fas fa-trash-alt"></i> Delete Day</button></div> </div>';
+        var basicTable5 = '<div class="limiter" id="day5"> <div class="container-table100"> <div class="wrap-table100"> <div class="table100 ver3 m-b-110"> <div class="table100-head"> <table> <thead> <tr class="row100 head"> <th class="cell100 column1" style="width:16.6%; text-align: center; vertical-align: text-top;">Exercise</th> <th class="cell100 column2" style="width:16.6%; text-align: center; vertical-align: text-top;">Weight</th> <th class="cell100 column3" style="width:16.6%; text-align: center;   vertical-align: text-top;">Repetitions</th> <th class="cell100 column3" style="width:16.6%; text-align: center;  vertical-align: text-top;">Sets</th> <th class="cell100 column4" style="width:16.6%; text-align: center; vertical-align: text-top;">Max Rep</th> <th class="cell100 column5" style="width:16.6%; text-align: center; vertical-align: text-top; ">Pause</th> </tr> </thead> </table> </div> <div class="table100-body js-pscroll" id = "test"> <table> <tbody id="myTable5"> <tr class="row100 body"> </tbody> </table> </div> </div> </div> <button id="add_Ex_Day_Day_5" onclick="addRow(\'myTable5\')" class="button"><i class="fas fa-plus-circle"></i> Add new Exercise</button> <button id="delete_Day_Day_5" onclick="deleteTable(\'5\')" class="button"><i class="fas fa-trash-alt"></i> Delete Day</button></div> </div>';
 
         repositionTables();
 
@@ -219,6 +241,17 @@
 
         // console.log("After adding: " + numtables);
 
+         // make changes for reordered buttons again active
+        if( isMobile.any() ) 
+        {
+            customize_mobile();
+        }
+        else
+        {
+            ;
+            // console.log("PC DETECTED AS DEVICE");
+        }
+
     }
 
     function repositionTables()
@@ -245,7 +278,7 @@
         var table = document.getElementById(tableName);
         var rowCount = document.getElementById(tableName).rows.length;
 
-        // console.log(rowCount);
+        //console.log(rowCount);
 
         var row = table.insertRow(rowCount);
         var cell1 = row.insertCell(0);
@@ -254,28 +287,95 @@
         var cell4 = row.insertCell(3);
         var cell5 = row.insertCell(4);
         var cell6 = row.insertCell(5);
+        var cell7 = row.insertCell(6);
 
-        cell1.innerHTML = "<td class=\'tdinput\'> <div contenteditable='true' id='tags' value='defaultvaluetoignore' class='title ui-autocomplete-input' autocomplete='on' data-placeholder='name' style=\"background-color: transparent; color:#7F7F7F; width:inherit; max-width: 180px; min-width: 180px; min-height: 25px; max-height: 25px; text-align: center\"/></div></td>";
-        cell2.innerHTML = "<td class=\'tdinput\'> <div contenteditable='true' id='tags' value='defaultvaluetoignore' class='title ui-autocomplete-input' autocomplete='on' data-placeholder='kilo' style=\"background-color: transparent; color:#7F7F7F; width:inherit; max-width: 180px; min-width: 180px; min-height: 25px; max-height: 25px; text-align: center\"/></div></td>";
-        cell3.innerHTML = "<td class=\'tdinput\'> <div contenteditable='true' id='tags' value='defaultvaluetoignore' class='title ui-autocomplete-input' autocomplete='on' data-placeholder='reps' style=\"background-color: transparent; color:#7F7F7F; width:inherit; max-width: 180px; min-width: 180px; min-height: 25px; max-height: 25px; text-align: center\"/></div></td>";
-        cell4.innerHTML = "<td class=\'tdinput\'> <div contenteditable='true' id='tags' value='defaultvaluetoignore' class='title ui-autocomplete-input' autocomplete='on' data-placeholder='sets' style=\"background-color: transparent; color:#7F7F7F; width:inherit; max-width: 180px; min-width: 180px; min-height: 25px; max-height: 25px; text-align: center\"/></div></td>";
-        cell5.innerHTML = "<td class=\'tdinput\'> <div contenteditable='true' id='tags' value='defaultvaluetoignore' class='title ui-autocomplete-input' autocomplete='on' data-placeholder='maxr' style=\"background-color: transparent; color:#7F7F7F; width:inherit; max-width: 180px; min-width: 180px; min-height: 25px; max-height: 25px; text-align: center\"/></div></td>";
-        cell6.innerHTML = "<td class=\'tdinput\'> <div contenteditable='true' id='tags' value='defaultvaluetoignore' class='title ui-autocomplete-input' autocomplete='on' data-placeholder='time' style=\"background-color: transparent; color:#7F7F7F; width:inherit; max-width: 180px; min-width: 180px; min-height: 25px; max-height: 25px; text-align: center\"/></div></td>";
+        cell1.innerHTML = "<td class=\'tdinput\'> <div contenteditable='true' id='tags' value='defaultvaluetoignore' class='title' autocomplete='on' data-placeholder='name' style=\"background-color: transparent; color:#7F7F7F; width:inherit; max-width: 160px; min-width: 160px;  min-height: 25px; max-height: 25px; text-align: center\"/></div></td>";
+        cell2.innerHTML = "<td class=\'tdinput\'> <div contenteditable='true' id='tags' value='defaultvaluetoignore' class='title' autocomplete='on' data-placeholder='kilo' style=\"background-color: transparent; color:#7F7F7F; width:inherit; max-width: 160px; min-width: 160px;  min-height: 25px; max-height: 25px; text-align: center\"/></div></td>";
+        cell3.innerHTML = "<td class=\'tdinput\'> <div contenteditable='true' id='tags' value='defaultvaluetoignore' class='title' autocomplete='on' data-placeholder='reps' style=\"background-color: transparent; color:#7F7F7F; width:inherit; max-width: 160px; min-width: 160px;  min-height: 25px; max-height: 25px; text-align: center\"/></div></td>";
+        cell4.innerHTML = "<td class=\'tdinput\'> <div contenteditable='true' id='tags' value='defaultvaluetoignore' class='title' autocomplete='on' data-placeholder='sets' style=\"background-color: transparent; color:#7F7F7F; width:inherit; max-width: 160px; min-width: 160px;  min-height: 25px; max-height: 25px; text-align: center\"/></div></td>";
+        cell5.innerHTML = "<td class=\'tdinput\'> <div contenteditable='true' id='tags' value='defaultvaluetoignore' class='title' autocomplete='on' data-placeholder='maxr' style=\"background-color: transparent; color:#7F7F7F; width:inherit; max-width: 160px; min-width: 160px;  min-height: 25px; max-height: 25px; text-align: center\"/></div></td>";
+        cell6.innerHTML = "<td class=\'tdinput\'> <div contenteditable='true' id='tags' value='defaultvaluetoignore' class='title' autocomplete='on' data-placeholder='time' style=\"background-color: transparent; color:#7F7F7F; width:inherit; max-width: 160px; min-width: 160px;  min-height: 25px; max-height: 25px; text-align: center\"/></div></td>";
+        cell7.innerHTML = "<button style='background: #222222; color: #28AD5F; font-style=bold; float: right' onclick='deleteRow(" + tableName + ", "+ rowCount + ")'>&nbsp<i class='fas fa-times-circle'></i></i></button>";
 
         row.setAttribute("id", "somerow", 0);
         // $.myjQuery();
+
+        // make changes for reordered buttons again active
+        if( isMobile.any() ) 
+        {
+            customize_mobile();
+        }
+        else
+        {
+            ;
+            // console.log("PC DETECTED AS DEVICE");
+        }
     }
 
-    function deleteRow(tableName)
+    function reorder_indexes(tableName, index)
     {
-        var x = document.getElementById(tableName).rows.length;
-        document.getElementById(tableName).deleteRow(x - 1);
+        console.log("indexes of " + tableName.id + " need to be reordered - row removed: " + index);
 
-        var numb = tableName.match(/\d/g);
-        numb = numb.join("");
+        var table = document.getElementById(tableName.id);
+        var num_rows = document.getElementById(tableName.id).rows.length;
 
-        if(x - 2 == 0)
-            deleteTable(numb);
+        if(num_rows != 1)
+        {
+            for (var i = index; i < num_rows; i++) 
+            {
+                console.log('-----------------------------------');
+                for (var j = 0, col; j < 7; j++) 
+                {
+                    // this is only done in the last cell because there is the button to delete with the corresponding onclick attribute
+                    if(j==6)
+                    {
+                        var cell = document.getElementById(tableName.id).rows[i].cells[6].innerHTML;
+                        var new_cell = '<button style="background: #222222; color: #28AD5F; font-style=bold; float: right" onclick="deleteRow(' + tableName.id + ', ' + i + ')">&nbsp;<i class="fas fa-times-circle"></i></button>'
+                        document.getElementById(tableName.id).rows[i].cells[6].innerHTML = new_cell;
+                    }
+                } 
+            }
+        }
+        else
+        {
+            var thenum = tableName.id.match(/\d+$/)[0];
+            deleteTable(thenum);
+        }
+
+        // make changes for reordered buttons again active
+        if( isMobile.any() ) 
+        {
+            customize_mobile();
+        }
+        else
+        {
+            ;
+            // console.log("PC DETECTED AS DEVICE");
+        }
+        
+    }
+
+    function deleteRow(tableName, index)
+    {
+        if(index != -1)
+        {
+            document.getElementById(tableName.id).deleteRow(index);
+
+            // TODO realign indexes of columns 
+            reorder_indexes(tableName, index);
+        }
+        else
+        {
+            var x = document.getElementById(tableName).rows.length;
+            document.getElementById(tableName).deleteRow(x - 1);
+
+            // Get the number out of String because deletetable needs the id of the table not the name e.g. 1 out of myTable1
+            var numb = tableName.match(/\d/g);
+            numb = numb.join("");
+
+            if(x - 2 == 0)
+                deleteTable(numb);
+        }
     }
 
     function deleteTable(id)
@@ -304,12 +404,12 @@
                     newValue = 'addRow(\'myTable' + (i - 1) + '\')';
                     document.getElementById('add_Ex_Day_Day_' + i).setAttribute( "onClick", newValue);
 
-                    newValue = 'deleteRow(\'myTable' + (i - 1) + '\')';
-                    document.getElementById('delete_Ex_Day_Day_' + i).setAttribute( "onClick", newValue);
+                    newValue = 'deleteRow(\'myTable' + (i - 1) + '\', -1)';
+                    //document.getElementById('delete_Ex_Day_Day_' + i).setAttribute( "onClick", newValue);
 
                     document.getElementById('add_Ex_Day_Day_' + i).id = 'add_Ex_Day_Day_' + (i - 1);
                     document.getElementById('delete_Day_Day_' + i).id = 'delete_Day_Day_' + (i - 1);
-                    document.getElementById('delete_Ex_Day_Day_' + i).id = 'delete_Ex_Day_Day_' + (i - 1);
+                    //document.getElementById('delete_Ex_Day_Day_' + i).id = 'delete_Ex_Day_Day_' + (i - 1);
                 }
                 else if(numtables == 1)
                 {
@@ -343,7 +443,7 @@
         var table = document.getElementById(tableName);
         var rowCount = document.getElementById(tableName).rows.length;
 
-        // console.log(rowCount);
+        //console.log(rowCount);
 
         var row = table.insertRow(rowCount);
         var cell1 = row.insertCell(0);
@@ -352,16 +452,17 @@
         var cell4 = row.insertCell(3);
         var cell5 = row.insertCell(4);
         var cell6 = row.insertCell(5);
-
+        var cell7 = row.insertCell(6);
 
         cell1.val = exid;
 
-        cell1.innerHTML = "<td class=\'tdinput\'> <div contenteditable='true' id='tags' data-placeholder='name' value=" + exid + " class='title ui-autocomplete-input' autocomplete='on' style=\"background-color: transparent; color:#7F7F7F; width:inherit; max-width: 180px; min-width: 180px; min-height: 25px; max-height: 25px; text-align: center\"/>" + exname + "</div></td>";
-        cell2.innerHTML = "<td class=\'tdinput\'> <div contenteditable='true' id='tags' data-placeholder='kilo' value=" + exid + " class='title ui-autocomplete-input' autocomplete='on' style=\"background-color: transparent; color:#7F7F7F; width:inherit; max-width: 180px; min-width: 180px; min-height: 25px; max-height: 25px; text-align: center\"/>" + exweight + "</div></td>";
-        cell3.innerHTML = "<td class=\'tdinput\'> <div contenteditable='true' id='tags' data-placeholder='reps' value=" + exid + " class='title ui-autocomplete-input' autocomplete='on' style=\"background-color: transparent; color:#7F7F7F; width:inherit; max-width: 180px; min-width: 180px; min-height: 25px; max-height: 25px; text-align: center\"/>" + exreps + "</div></td>";
-        cell4.innerHTML = "<td class=\'tdinput\'> <div contenteditable='true' id='tags' data-placeholder='sets' value=" + exid + " class='title ui-autocomplete-input' autocomplete='on' style=\"background-color: transparent; color:#7F7F7F; width:inherit; max-width: 180px; min-width: 180px; min-height: 25px; max-height: 25px; text-align: center\"/>" + exsets + "</div></td>";
-        cell5.innerHTML = "<td class=\'tdinput\'> <div contenteditable='true' id='tags' data-placeholder='maxr' value=" + exid + " class='title ui-autocomplete-input' autocomplete='on' style=\"background-color: transparent; color:#7F7F7F; width:inherit; max-width: 180px; min-width: 180px; min-height: 25px; max-height: 25px; text-align: center\"/>" + exmaxreps + "</div></td>";
-        cell6.innerHTML = "<td class=\'tdinput\'> <div contenteditable='true' id='tags' data-placeholder='time' value=" + exid + " class='title ui-autocomplete-input' autocomplete='on' style=\"background-color: transparent; color:#7F7F7F; width:inherit; max-width: 180px; min-width: 180px; min-height: 25px; max-height: 25px; text-align: center\"/>" + expause + "</div></td>";
+        cell1.innerHTML = "<td class=\'tdinput\'> <div contenteditable='true' id='tags' data-placeholder='name' value=" + exid + " class='title' autocomplete='on' style=\"background-color: transparent; color:#7F7F7F; width:inherit; max-width: 160px; min-width: 160px;  min-height: 25px; max-height: 25px; text-align: center\"/>" + exname    + "</div></td>";
+        cell2.innerHTML = "<td class=\'tdinput\'> <div contenteditable='true' id='tags' data-placeholder='kilo' value=" + exid + " class='title' autocomplete='on' style=\"background-color: transparent; color:#7F7F7F; width:inherit; max-width: 160px; min-width: 160px;  min-height: 25px; max-height: 25px; text-align: center\"/>" + exweight  + "</div></td>";
+        cell3.innerHTML = "<td class=\'tdinput\'> <div contenteditable='true' id='tags' data-placeholder='reps' value=" + exid + " class='title' autocomplete='on' style=\"background-color: transparent; color:#7F7F7F; width:inherit; max-width: 160px; min-width: 160px;  min-height: 25px; max-height: 25px; text-align: center\"/>" + exreps    + "</div></td>";
+        cell4.innerHTML = "<td class=\'tdinput\'> <div contenteditable='true' id='tags' data-placeholder='sets' value=" + exid + " class='title' autocomplete='on' style=\"background-color: transparent; color:#7F7F7F; width:inherit; max-width: 160px; min-width: 160px;  min-height: 25px; max-height: 25px; text-align: center\"/>" + exsets    + "</div></td>";
+        cell5.innerHTML = "<td class=\'tdinput\'> <div contenteditable='true' id='tags' data-placeholder='maxr' value=" + exid + " class='title' autocomplete='on' style=\"background-color: transparent; color:#7F7F7F; width:inherit; max-width: 160px; min-width: 160px;  min-height: 25px; max-height: 25px; text-align: center\"/>" + exmaxreps + "</div></td>";
+        cell6.innerHTML = "<td class=\'tdinput\'> <div contenteditable='true' id='tags' data-placeholder='time' value=" + exid + " class='title' autocomplete='on' style=\"background-color: transparent; color:#7F7F7F; width:inherit; max-width: 160px; min-width: 160px;  min-height: 25px; max-height: 25px; text-align: center\"/>" + expause   + "</div></td>";
+        cell7.innerHTML = "<button style='background: #222222; color: #28AD5F; font-style=bold; float: right' onclick='deleteRow(" + tableName + ", "+ rowCount + ")'>&nbsp<i class='fas fa-times-circle'></i></i></button>";
 
         row.setAttribute("id", "somerow", 0);
     }
@@ -374,16 +475,14 @@
         var username = getusername();
 
         var xmlHttp = new XMLHttpRequest();
-        xmlHttp.open("GET", url + username, false);     // false for synchronous request
+        xmlHttp.open("GET", url + username + '/2', false);     // false for synchronous request
         xmlHttp.send(null);
         plans = xmlHttp.responseText;
 
-
         var json = JSON.parse(plans);
+        var amountdays = json.plans.length
 
-        var amountdays = (plans.match(/name/g) || []).length;
-
-        for(var i = 0; i < amountdays - 1; i++)
+        for(var i = 0; i < amountdays; i++)
         {
             if(plannamelocal == json.plans[i].name)
             {
@@ -391,6 +490,8 @@
                 return true;
             }
         }
+
+        return false;
     }
 
     function getExercises()
@@ -417,7 +518,10 @@
         {
             plannamelocal = EnterPlanName();
 
-            //if(plannamelocal != 'ERRORCODE 00003 - User cancelled the promRpt.')
+            if(doesPlanNameExists(plannamelocal))
+            {
+                return 'ERRORCODE 00004';
+            }   
 
             if(!plannamelocal.includes("promRpt"))
                 planname = plannamelocal;
@@ -426,10 +530,7 @@
 
             document.getElementById("username").innerHTML = planname + ' | '+ getusername();
 
-            if(doesPlanNameExists(plannamelocal))
-            {
-                return 'ERRORCODE 00004';
-            }
+            
 
             filteredText = filteredText + '"planname": "' + plannamelocal + '",';
         }
@@ -519,6 +620,46 @@
         return parsed;
     }
 
+    function delete_plan(value_to_del, delete_bool)
+    {
+        if(delete_bool)
+        {
+            var xhr = new XMLHttpRequest();
+            var url = "http://jakob.ml:50003/trainingsplan/delete_plan";
+            xhr.open("POST", url, true);
+            xhr.setRequestHeader("Content-Type", "text/plain");
+
+            xhr.send(value_to_del);
+        }
+        else
+        {
+            document.getElementById('dialog').style.display = 'inline';
+            showDialog('http://jakob.ml:50003/trainingsplan/getPlansByUser/', 0);
+            getPlanIdFromDialog(getusername(), false, true);
+        }
+    }
+
+    function restore_plan(value_to_restore, delete_bool)
+    {
+        
+        if(delete_bool)
+        {
+            var xhr = new XMLHttpRequest();
+            var url = "http://jakob.ml:50003/trainingsplan/restore_plan";
+            xhr.open("POST", url, true);
+            xhr.setRequestHeader("Content-Type", "text/plain");
+
+            xhr.send(value_to_restore);
+        }
+        else
+        {
+            // when choosing which plan to restore
+            document.getElementById('dialog').style.display = 'inline';
+            showDialog('http://jakob.ml:50003/trainingsplan/getPlansByUser/', 1);
+            getPlanIdFromDialog(getusername(), false, false);
+        }
+    }
+
     function loadPlanIntoDB()
     {
         var jsondata = getExercises();
@@ -528,10 +669,10 @@
         xhr.setRequestHeader("Content-Type", "text/plain");
 
         var data = JSON.stringify(jsondata);
+
         if(jsondata == 'ERRORCODE 00003' || jsondata == 'ERRORCODE 00004')
         {
             console.log("sending dummy plan");
-            // console.log('{"plan":[{"username": "NoUser","planname": "NoPlan"}]}');
             xhr.send('{"plan":[{"username": "NoUser","planname": "NoPlan"}]}');
         }
         else
@@ -540,9 +681,7 @@
             console.log(jsondata);
             xhr.send(jsondata);
 
-
             alert("Plan - " + planname +  " successfully Saved!");
-
         }
     }
 
@@ -556,17 +695,19 @@
 
         var plan;
 
-        request.open('GET', url + username, true);
+        request.open('GET', url + username + '/2', true);
         request.onload = function ()
         {
             // Begin accessing JSON data here
             if (request.status >= 200 && request.status < 400)
             {
-                if((this.response.match(/name/g) || []).length > 2 && onlogon == false) // if more than 1 day (2 because name is also in username) than load all plans
+                var json = JSON.parse(this.response);
+
+                if(json.plans.length > 2 && onlogon == false) // if more than 1 day (2 because name is also in username) than load all plans
                 {
                     document.getElementById('dialog').style.display = 'inline';
-                    showDialog('http://jakob.ml:50003/trainingsplan/getPlansByUser/');
-                    getPlanIdFromDialog(username);
+                    showDialog('http://jakob.ml:50003/trainingsplan/getPlansByUser/', 0);
+                    getPlanIdFromDialog(username, true, null);
                 }
                 else
                 {
@@ -624,52 +765,38 @@
         return plan;
     }
 
-    function showDialog(urlToCall)
+    function showDialog(urlToCall, active)
     {
+        /*
+        document.getElementById('dialog').style.display = 'none';
+        document.getElementById('dialog').style.display = 'inline';
+        */
+
+        console.log(active);
+
         var confirmButton = document.getElementById('confirm');
         var request = new XMLHttpRequest();
         var url = urlToCall;
 
         var username = getusername();
 
-        request.open('GET', url + username, true);
+        clear_select();
+
+        request.open('GET', url + username + '/' + active, true);
         request.onload = function ()
         {
             // Begin accessing JSON data here
             if (request.status >= 200 && request.status < 400)
             {
                 var json = JSON.parse(this.response);
+                var amountdays = get_num_plan(active);
+                
+                daySelect = document.getElementById('test-dropdown');
 
-                // console.log(json["username"]);
-
-                var amountdays = (this.response.match(/name/g) || []).length;
-
-                /*
-                var select = document.getElementById("test-dropdown");
-                var length = select.options.length;
-
-                for (var i = 0; i < length; i++)
+                for(var i = 0; i < amountdays; i++)
                 {
-                    select.options[i] = null;
-                }
-                */
-
-                for(var i = 0; i < amountdays - 1; i++)
-                {
-                    /*
-                    console.log(json.plans[i].name);
-                    console.log(json.plans[i].date);
-                    console.log(json.plans[i].id);
-                    */
-
                     daySelect = document.getElementById('test-dropdown');
-
-                    // console.log(loaded);
-
-                    if(!loaded)
-                    {
-                        daySelect.options[daySelect.options.length] = new Option(json.plans[i].date + ' - ' +  json.plans[i].name, json.plans[i].id);
-                    }
+                    daySelect.options[i] = new Option(json.plans[i].date + ' - ' +  json.plans[i].name, json.plans[i].id);
                 }
 
                 loaded = true;      // loaded is true - which means all plans are loaded and dont add them AGAIN to dialog
@@ -681,6 +808,19 @@
         }
 
         request.send();
+    }
+
+    function clear_select()
+    {
+        var select = document.getElementById("test-dropdown");
+        var length = select.options.length;
+
+        // make sure everything is deleted
+        for(j = 0; j < 5; j++)
+            for (i = 0; i < length; i++) 
+            {
+                select.options[i] = null;
+            }
     }
 
     function onSave()
@@ -702,7 +842,24 @@
         }
     }
 
-    function getPlanIdFromDialog(username)
+    function get_num_plan(num)
+    {
+        var request = new XMLHttpRequest();
+        var username = getusername();
+
+        var url = 'http://jakob.ml:50003/trainingsplan/getAmountOfPlans/' + username + '/' + num;
+
+        var xmlHttp = new XMLHttpRequest();
+        xmlHttp.open( "GET", url, false ); // false for synchronous request
+        xmlHttp.send( null );
+        num = xmlHttp.responseText;
+
+        console.log(num);
+
+        return num;
+    }
+
+    function getPlanIdFromDialog(username, display_plan, delete_or_restore)
     {
         var confirmButton = document.getElementById('confirm');
         var cancelButton = document.getElementById('cancel');
@@ -718,10 +875,22 @@
             plan = getPlan('http://jakob.ml:50003/trainingsplan/getPlanByUserAndPlan/' + username + '/' + x.options[x.selectedIndex].value);
             var data = JSON.parse(plan);
 
-            printjson(data, plan);
+            closeNav();
+
+            if(display_plan)
+                printjson(data, plan);
+            else
+            {
+                if(delete_or_restore)
+                    delete_plan(x.options[x.selectedIndex].value, true);
+                else
+                    restore_plan(x.options[x.selectedIndex].value, true);
+
+            }
+                 
+            
             document.getElementById('dialog').style.display = 'none';
             // return x.options[x.selectedIndex].value;
-            closeNav();
         });
 
         cancelButton.addEventListener('click', function()
@@ -735,7 +904,8 @@
 
     function printjson(json, plaintext)
     {
-        var daycount = (plaintext.match(/day/g) || []).length;
+        var json = JSON.parse(plaintext);
+        var daycount = json.plan.length
 
         // console.log(json);
 
@@ -743,9 +913,8 @@
 
         for(var i = 0; i < daycount; i++)
         {
-            var str = JSON.stringify(json.plan[i]);
-            var excount = (str.match(/exercise/g) || []).length;
-
+            var excount = json.plan[i].day.length;
+            
             var tablenum = i + 1;
             var table = 'myTable' + tablenum;
 
@@ -793,7 +962,7 @@
 
     function cleanUpTables()
     {
-        document.getElementById("username").innerHTML = getusername() + ' ' + '<span class="glyphicon">&#xe163;</span>';
+        document.getElementById("username").innerHTML = getusername() + ' ';
         planname = '';
 
         for(var i = 1; i < 6; i++)
@@ -862,8 +1031,70 @@
 
     // When the user clicks on the button, scroll to the top of the document
     function topFunction() {
-    document.body.scrollTop = 0;
-    document.documentElement.scrollTop = 0;
+        document.body.scrollTop = 0;
+        document.documentElement.scrollTop = 0;
+
+        if( isMobile.any() ) 
+        {
+            console.log("MOBILE DETECTED AS DEVICE");
+            customize_mobile();
+        }
+        else
+        {
+            //customize_mobile();
+            console.log("PC DETECTED AS DEVICE");
+        }
+    }
+
+    var isMobile = {
+        Android: function() {
+            return navigator.userAgent.match(/Android/i);
+        },
+        BlackBerry: function() {
+            return navigator.userAgent.match(/BlackBerry/i);
+        },
+        iOS: function() {
+            return navigator.userAgent.match(/iPhone|iPad|iPod/i);
+        },
+        Opera: function() {
+            return navigator.userAgent.match(/Opera Mini/i);
+        },
+        Windows: function() {
+            return navigator.userAgent.match(/IEMobile/i) || navigator.userAgent.match(/WPDesktop/i);
+        },
+        any: function() {
+            return (isMobile.Android() || isMobile.BlackBerry() || isMobile.iOS() || isMobile.Opera() || isMobile.Windows());
+        }
+    };
+
+    function customize_mobile()
+    {
+        document.getElementById("headerforbuttons").style.height = "120px";
+        document.getElementById("container1").style.marginTop = "100px";
+        
+        var buttons = document.getElementsByTagName("button");
+        for(var i = 0, il = buttons.length; i < il; i++)
+        {
+            buttons[i].className += " mobile_button";
+        }
+
+        var divs = document.getElementsByTagName("div");
+        for(var i = 0, il = divs.length; i < il; i++)
+        {
+            divs[i].className += " mobile_div";
+        }
+
+        var ths = document.getElementsByTagName("th");
+        for(var i = 0, il = ths.length; i < il; i++)
+        {
+            ths[i].className += " mobile_th";
+        }
+
+        var is = document.getElementsByTagName("i");
+        for(var i = 0, il = is.length; i < il; i++)
+        {
+            is[i].className += " mobile_i";
+        }
     }
 
     document.addEventListener('DOMContentLoaded', function()
@@ -872,6 +1103,8 @@
 
         var check = function()
         {
+            zoomOutMobile();
+
             if(getusername().length > 0){
                 cleanUpTables();
                 receivePlanfromDB(true);
@@ -884,7 +1117,6 @@
         check();
 
         zoomOutMobile();
-
     }, false);
 </script>
 </html>

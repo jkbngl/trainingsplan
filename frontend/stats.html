@@ -4,7 +4,7 @@
 
     <style>
         .mobile_size button.mobile_button,  button.mobile_button {
-           font-size: 30px;
+           font-size: 35px;
         }
 
         .mobile_p p.mobile_p,  p.mobile_p {
@@ -69,7 +69,7 @@
         <!--<button onclick="receivePlanfromDB(false)" class="button" style=" top: 10px; width:80%; margin-left: 10%;">Load Plan</button>
         <button onclick="cleanUpTables(); addTable(true);  closeNav();"class="button" style="top: 10px; width:80%; margin-left: 10%;">New Plan</button>-->
         <button onclick="window.location.href='index.html'" class="button" style="top: 10px; width:80%; margin-left: 10%;"><i class="fas fa-home"></i> Home</button>
-        <button onclick="closeNav();"class="button" style="top: 10px; width:80%; margin-left: 10%;"><i class="fas fa-cog"></i> Settings</button>
+        <button onclick="display_settings();"class="button" style="top: 10px; width:80%; margin-left: 10%;"><i class="fas fa-cog"></i> Settings</button>
         <button onclick="download();" class="button" style="top: 10px; width:80%; margin-left: 10%;"><i class="fas fa-file-export"></i> Export</button>
         <button onclick="keycloak.logout('/trainingsplanorwhateveritdoesntworkanyway'); kc.logout()"class="button" style="top: 10px; width:80%; margin-left: 10%;"><i class="fas fa-sign-out-alt"></i> Logout</button>
     </div>
@@ -82,9 +82,9 @@
             <button onclick="keycloak.logout()" class="button" value="username ..." id="username" style="top: 10px;"></button>
     </div>​
 
-    <div>
-        <canvas id="line-chart" height="100" ></canvas>
-    </div>
+    <div style="position: relative; height: 60vh">
+            <canvas id="line-chart" height="100" ></canvas>
+        </div>
 
 	<div class="divOuter"  >
         <div class="select divInner1"  style="margin-top: 70px; margin-right: 100px;">
@@ -137,8 +137,13 @@
             </div>
         </div>
     </div>
-          
     
+    <!--
+    <div class="slidecontainer">
+            <p>Custom range slider:</p>
+            <input type="range" min="1" max="100" value="50" class="slider" id="myRange">
+    </div>
+    -->
     
 </body>
 
@@ -279,15 +284,23 @@
             },
             options: {
                 title: {
+                    display: false,
+                    text: 'Trainingsplan'
+                },
+                legend: {
                     display: true,
-                    //text: 'Trainingsplan',
-                    responsive: true
-                }
+                    labels: {
+                        fontSize: 20
+                    }
+                },
+                responsive: true,
+                maintainAspectRatio: false
+
             }
          });
 
          return chart;
-    }
+        }
 
     function openNav()
     {
@@ -297,6 +310,11 @@
     function closeNav()
     {
         document.getElementById("mySidenav").style.width = "0";
+    }
+
+    function display_settings()
+    {
+        document.getElementById('dialog').style.display = 'inline';
     }
 
     var isMobile = {
@@ -323,6 +341,7 @@
     function customize_mobile()
     {
         document.getElementById("headerforbuttons").style.height = "75px";
+        chart.options.legend.labels.fontSize = 30;
 
         var buttons = document.getElementsByTagName("button");
         for(var i = 0, il = buttons.length; i < il; i++)
@@ -357,6 +376,17 @@
             if(getusername().length > 0){
                 available_ex = get_available_ex();            
                 append_combo(available_ex);
+
+                if( isMobile.any() ) 
+                {
+                    console.log("MOBILE DETECTED AS DEVICE");
+                    customize_mobile();
+                }
+                else
+                {
+                    //customize_mobile();
+                    console.log("PC DETECTED AS DEVICE");
+                }
             }
             else
             {
@@ -365,16 +395,8 @@
         }
         
         check();
-        if( isMobile.any() ) 
-        {
-            console.log("MOBILE DETECTED AS DEVICE");
-            customize_mobile();
-        }
-        else
-        {
-            //customize_mobile();
-            console.log("PC DETECTED AS DEVICE");
-        }
+
+        
     }, false);
 </script>
 </html>

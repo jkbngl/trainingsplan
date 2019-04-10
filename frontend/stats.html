@@ -69,7 +69,7 @@
         <!--<button onclick="receivePlanfromDB(false)" class="button" style=" top: 10px; width:80%; margin-left: 10%;">Load Plan</button>
         <button onclick="cleanUpTables(); addTable(true);  closeNav();"class="button" style="top: 10px; width:80%; margin-left: 10%;">New Plan</button>-->
         <button onclick="window.location.href='index.html'" class="button" style="top: 10px; width:80%; margin-left: 10%;"><i class="fas fa-home"></i> Home</button>
-        <button onclick="display_settings();"class="button" style="top: 10px; width:80%; margin-left: 10%;"><i class="fas fa-cog"></i> Settings</button>
+        <button onclick="display_settings();"class="button" style="top: 10px; width:80%; margin-left: 10%;"><i class="far fa-save"></i> Save Preferences</button>
         <button onclick="download();" class="button" style="top: 10px; width:80%; margin-left: 10%;"><i class="fas fa-file-export"></i> Export</button>
         <button onclick="keycloak.logout('/trainingsplanorwhateveritdoesntworkanyway'); kc.logout()"class="button" style="top: 10px; width:80%; margin-left: 10%;"><i class="fas fa-sign-out-alt"></i> Logout</button>
     </div>
@@ -82,69 +82,100 @@
             <button onclick="keycloak.logout()" class="button" value="username ..." id="username" style="top: 10px;"></button>
     </div>​
 
-    <div style="position: relative; height: 60vh">
+    <div style="position: relative; margin-top: 30px; height: 60vh">
             <canvas id="line-chart" height="100" ></canvas>
         </div>
 
+    <!--
 	<div class="divOuter"  >
-        <div class="select divInner1"  style="margin-top: 70px; margin-right: 100px;">
-            <select id= "select" onchange="closeNav(); display_ex();" class="select-text" required>
-                <option value="" selected></option>
-            </select>
-            <span class="select-highlight"></span>
-            <span class="select-bar"></span>
-            <label class="select-label">Analyse an exercise</label>
+        <div class="select divInner1"  style="margin-top: 70px; margin-right: 100px; ">
+            
         </div>
 
 
 
         <div class="divInner2">
-            <p class="param_top">Choose the &nbsp
-
-            <p class="param_bottom">parameter/s &nbsp
-                             
-            <div class="page__toggle" style="margin-top: 10px;">
-                <label class="toggle">
-                  <input id="weight_box" onchange="closeNav();" class="toggle__input" type="checkbox" checked>
-                  <span class="toggle__label">
-                    <span class="toggle__text">Weight</span>
-                  </span>
-                </label>
-            </div>
-            <div class="page__toggle"  style="margin-top: 10px;">
-                <label class="toggle">
-                  <input id="reps_box" onchange="closeNav();" class="toggle__input" type="checkbox" checked>
-                  <span class="toggle__label">
-                    <span class="toggle__text">Reps</span>
-                  </span>
-                </label>
-            </div>
-            <div class="page__toggle"  style="margin-top: 10px;">
-                <label class="toggle">
-                  <input id="sets_box" onchange="closeNav();" class="toggle__input" type="checkbox" checked>
-                  <span class="toggle__label">
-                    <span class="toggle__text">Sets</span>
-                  </span>
-                </label>
-            </div>
-            <div class="page__toggle" style="margin-top: 10px;">
-                <label class="toggle">
-                  <input id="max_rep_box" onchange="closeNav();" class="toggle__input" type="checkbox">
-                  <span class="toggle__label">
-                    <span class="toggle__text">Max Rep</span>
-                  </span>
-                </label>
-            </div>
+            
         </div>
     </div>
-    
-    <!--
-    <div class="slidecontainer">
-            <p>Custom range slider:</p>
-            <input type="range" min="1" max="100" value="50" class="slider" id="myRange">
-    </div>
     -->
-    
+    <div id="container">
+        <div style="margin-left:7%;">
+            <div class="select" style="width: 80%; border-bottom: 4px solid rgba(0,0,0, 0.12); border-right: 4px solid rgba(0,0,0, 0.12);">
+                <select id= "select" onchange="closeNav(); display_ex();" class="select-text" required >
+                    <option value="" selected></option>
+                </select>
+                <span class="select-highlight"></span>
+                <span class="select-bar"></span>
+                <label class="select-label">Analyse an exercise</label>
+            </div>
+        </div>
+
+        <!------------------->
+        <div>
+            <div style="float:left; margin-left:3px; margin-right:3px; font-family: inherit;color: #00ad5f; text-align:center; width: 20vw">
+                <p style="font-size: 20px; padding-bottom: 8px; border-right: 4px solid rgba(0,0,0, 0.12); text-align:center; ">Choose the &nbsp
+                <p style="font-size: 20px; padding-bottom: 6px; border-bottom: 4px solid rgba(0,0,0, 0.12); border-right: 4px solid rgba(0,0,0, 0.12); text-align:center; ">parameter/s &nbsp
+            </div>                                            
+
+            <div class="page__toggle" style="margin-top: 100px;">
+                <label class="toggle">
+                <input id="weight_box" onchange="closeNav();" class="toggle__input" type="checkbox" checked>
+                <span class="toggle__label">
+                <span class="toggle__text">Weight</span>
+                </span>
+                </label>
+            </div>
+            <div class="page__toggle"  style="margin-top: 10px;">
+                <label class="toggle">
+                <input id="reps_box" onchange="closeNav();" class="toggle__input" type="checkbox" checked>
+                <span class="toggle__label">
+                <span class="toggle__text">Reps</span>
+                </span>
+                </label>
+            </div>
+            <div class="page__toggle"  style="margin-top: 10px;">
+                <label class="toggle">
+                <input id="sets_box" onchange="closeNav();" class="toggle__input" type="checkbox" checked>
+                <span class="toggle__label">
+                <span class="toggle__text">Sets</span>
+                </span>
+                </label>
+            </div>
+            <div class="page__toggle" style="margin-top: 10px;">
+                <label class="toggle">
+                <input id="max_rep_box" onchange="closeNav();" class="toggle__input" type="checkbox">
+                <span class="toggle__label">
+                <span class="toggle__text">Max Rep</span>
+                </span>
+                </label>
+                </div>
+            </div>
+             <!------------------->
+            <div>
+                <div style="margin-right:7%;">
+                    <div class="slidecontainer"  style="color: #28AD5F; font-size: 14px; font-weight: bold; text-align: center" >
+                        <p class="button" id="weight-slider-button">Weight Multiplicator: 50</p>
+                        <input type="range" id="weight-slider"  min="1" max="100" value="50" class="slider" id="myRange" style="margin-top: 5px;" oninput=slider_change_w(this.value)>
+                    </div>
+                
+                    <div class="slidecontainer"  style="margin-top: 20px; color: #28AD5F; font-size: 14px; font-weight: bold; text-align: center">
+                        <p class="button" id="reps-slider-button">Reps Multiplicator: 50</p>
+                        <input type="range" id="sets-slider" min="1" max="100" value="50" class="slider" id="myRange" style="margin-top: 5px;" oninput=slider_change_r(this.value)>
+                    </div>
+                
+                    <div class="slidecontainer"  style="margin-top: 20px; color: #28AD5F; font-size: 14px; font-weight: bold; text-align: center">
+                        <p class="button" id="sets-slider-button">Sets Multiplicator: 50</p>
+                        <input type="range" id="sets-slider" min="1" max="100" value="50" class="slider" id="myRange" style="margin-top: 5px;" oninput=slider_change_s(this.value)>
+                    </div>
+                
+                    <div class="slidecontainer"  style="margin-top: 20px; color: #28AD5F; font-size: 14px; font-weight: bold; text-align: center">
+                        <p class="button" id="maxrep-slider-button">Max Rep Multiplicator: 50</p>
+                        <input type="range" id="maxrep-slider" min="1" max="100" value="50" class="slider" id="myRange" style="margin-top: 5px;" oninput=slider_change_m(this.value)>
+                    </div>
+                </div>
+            </div>
+        </div>
 </body>
 
 <script>
@@ -161,6 +192,26 @@
         document.body.appendChild(element);
         element.click();
         document.body.removeChild(element);
+    }
+
+    function slider_change_w(value)
+    {
+        document.getElementById("weight-slider-button").innerHTML = "Weight Multiplicator: " + value;
+    }
+
+    function slider_change_r(value)
+    {
+        document.getElementById("reps-slider-button").innerHTML = "Reps Multiplicator: " + value;
+    }
+
+    function slider_change_s(value)
+    {
+        document.getElementById("sets-slider-button").innerHTML = "Sets Multiplicator: " + value;
+    }
+
+    function slider_change_m(value)
+    {
+        document.getElementById("maxrep-slider-button").innerHTML = "Max Rep Multiplicator: " + value;
     }
     
 
@@ -304,7 +355,14 @@
 
     function openNav()
     {
-        document.getElementById("mySidenav").style.width = "250px";
+        if( isMobile.any() ) 
+        {
+            document.getElementById("mySidenav").style.width = "300px";
+        }
+        else
+        {
+            document.getElementById("mySidenav").style.width = "250px";
+        }   
     }
 
     function closeNav()
@@ -343,6 +401,12 @@
         document.getElementById("headerforbuttons").style.height = "75px";
         chart.options.legend.labels.fontSize = 30;
 
+        document.getElementById("reps-slider").style.height = "50px";
+        document.getElementById("sets-slider").style.height = "50px";
+        document.getElementById("weight-slider").style.height = "50px";
+        document.getElementById("maxrep-slider").style.height = "50px";
+
+
         var buttons = document.getElementsByTagName("button");
         for(var i = 0, il = buttons.length; i < il; i++)
         {
@@ -379,13 +443,14 @@
 
                 if( isMobile.any() ) 
                 {
-                    console.log("MOBILE DETECTED AS DEVICE");
+                    // console.log("MOBILE DETECTED AS DEVICE");
                     customize_mobile();
                 }
                 else
                 {
                     //customize_mobile();
-                    console.log("PC DETECTED AS DEVICE");
+                    //console.log("PC DETECTED AS DEVICE");
+                    ;
                 }
             }
             else

@@ -32,8 +32,7 @@ create table tp_exercise(
 
 create table tp_preferences 
 (
-     id    SERIAL PRIMARY KEY ,
-     userid_FK   INT        NOT NULL    REFERENCES tp_user (id),
+     userid_FK   INT        NOT NULL    REFERENCES tp_user (id) PRIMARY KEY,
      mul_weight INT default 1,
      mul_reps INT default 1,
      mul_sets INT default 1,

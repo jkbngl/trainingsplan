@@ -22,12 +22,16 @@
         }
 
         .mobile_i i.mobile_i,  i.mobile_i {
-            font-size: 40px;
+            font-size: 30px;
         }
 
-  
+        .mobile_select select.mobile_select,  select.mobile_select {
+            font-size: 30px;
+        }
 
-
+        .mobile_label label.mobile_label,  label.mobile_label {
+           font-size: 30px;
+        }
     </style>
 
     <title>
@@ -289,12 +293,12 @@
         var cell6 = row.insertCell(5);
         var cell7 = row.insertCell(6);
 
-        cell1.innerHTML = "<td class=\'tdinput\'> <div contenteditable='true' id='tags' value='defaultvaluetoignore' class='title' autocomplete='on' data-placeholder='name' style=\"background-color: transparent; color:#7F7F7F; width:inherit; max-width: 160px; min-width: 160px;  min-height: 25px; max-height: 25px; text-align: center\"/></div></td>";
-        cell2.innerHTML = "<td class=\'tdinput\'> <div contenteditable='true' id='tags' value='defaultvaluetoignore' class='title' autocomplete='on' data-placeholder='kilo' style=\"background-color: transparent; color:#7F7F7F; width:inherit; max-width: 160px; min-width: 160px;  min-height: 25px; max-height: 25px; text-align: center\"/></div></td>";
-        cell3.innerHTML = "<td class=\'tdinput\'> <div contenteditable='true' id='tags' value='defaultvaluetoignore' class='title' autocomplete='on' data-placeholder='reps' style=\"background-color: transparent; color:#7F7F7F; width:inherit; max-width: 160px; min-width: 160px;  min-height: 25px; max-height: 25px; text-align: center\"/></div></td>";
-        cell4.innerHTML = "<td class=\'tdinput\'> <div contenteditable='true' id='tags' value='defaultvaluetoignore' class='title' autocomplete='on' data-placeholder='sets' style=\"background-color: transparent; color:#7F7F7F; width:inherit; max-width: 160px; min-width: 160px;  min-height: 25px; max-height: 25px; text-align: center\"/></div></td>";
-        cell5.innerHTML = "<td class=\'tdinput\'> <div contenteditable='true' id='tags' value='defaultvaluetoignore' class='title' autocomplete='on' data-placeholder='maxr' style=\"background-color: transparent; color:#7F7F7F; width:inherit; max-width: 160px; min-width: 160px;  min-height: 25px; max-height: 25px; text-align: center\"/></div></td>";
-        cell6.innerHTML = "<td class=\'tdinput\'> <div contenteditable='true' id='tags' value='defaultvaluetoignore' class='title' autocomplete='on' data-placeholder='time' style=\"background-color: transparent; color:#7F7F7F; width:inherit; max-width: 160px; min-width: 160px;  min-height: 25px; max-height: 25px; text-align: center\"/></div></td>";
+        cell1.innerHTML = "<td class=\'tdinput\'> <div contenteditable='true' id='tags' value='defaultvaluetoignore' class='title' autocomplete='on' data-placeholder='name' style=\"background-color: transparent; color:#7F7F7F; width:inherit; max-width: 160px; min-width: 160px;  min-height: 25px; max-height: 25px;max-height: 25px; text-align: center\"/></div></td>";
+        cell2.innerHTML = "<td class=\'tdinput\'> <div contenteditable='true' id='tags' value='defaultvaluetoignore' class='title' autocomplete='on' data-placeholder='kilo' style=\"background-color: transparent; color:#7F7F7F; width:inherit; max-width: 160px; min-width: 160px;  min-height: 25px; max-height: 25px;max-height: 25px; text-align: center\"/></div></td>";
+        cell3.innerHTML = "<td class=\'tdinput\'> <div contenteditable='true' id='tags' value='defaultvaluetoignore' class='title' autocomplete='on' data-placeholder='reps' style=\"background-color: transparent; color:#7F7F7F; width:inherit; max-width: 160px; min-width: 160px;  min-height: 25px; max-height: 25px;max-height: 25px; text-align: center\"/></div></td>";
+        cell4.innerHTML = "<td class=\'tdinput\'> <div contenteditable='true' id='tags' value='defaultvaluetoignore' class='title' autocomplete='on' data-placeholder='sets' style=\"background-color: transparent; color:#7F7F7F; width:inherit; max-width: 160px; min-width: 160px;  min-height: 25px; max-height: 25px;max-height: 25px; text-align: center\"/></div></td>";
+        cell5.innerHTML = "<td class=\'tdinput\'> <div contenteditable='true' id='tags' value='defaultvaluetoignore' class='title' autocomplete='on' data-placeholder='maxr' style=\"background-color: transparent; color:#7F7F7F; width:inherit; max-width: 160px; min-width: 160px;  min-height: 25px; max-height: 25px;max-height: 25px; text-align: center\"/></div></td>";
+        cell6.innerHTML = "<td class=\'tdinput\'> <div contenteditable='true' id='tags' value='defaultvaluetoignore' class='title' autocomplete='on' data-placeholder='time' style=\"background-color: transparent; color:#7F7F7F; width:inherit; max-width: 160px; min-width: 160px;  min-height: 25px; max-height: 25px;max-height: 25px; text-align: center\"/></div></td>";
         cell7.innerHTML = "<button style='background: #222222; color: #28AD5F; font-style=bold; float: right' onclick='deleteRow(" + tableName + ", "+ rowCount + ")'>&nbsp<i class='fas fa-times-circle'></i></i></button>";
 
         row.setAttribute("id", "somerow", 0);
@@ -434,6 +438,9 @@
 
         numtables = numtables - 1;
         // console.log("After Deleting: " + numtables);
+
+        if(numtables == 0)
+            addTable(true);
     }
 
     function addRowWithEx(tableName, exid, exname, exweight, exreps, exsets, exmaxreps, expause)
@@ -732,6 +739,17 @@
 
         request.send();
 
+        if( isMobile.any() ) 
+        {
+            console.log("MOBILE DETECTED AS DEVICE");
+            customize_mobile();
+        }
+        else
+        {
+            //customize_mobile();
+            console.log("PC DETECTED AS DEVICE");
+        }
+
     }
 
     function getPlan(urlToCall)
@@ -993,7 +1011,14 @@
 
     function openNav()
     {
-        document.getElementById("mySidenav").style.width = "250px";
+        if( isMobile.any() ) 
+        {
+            document.getElementById("mySidenav").style.width = "400px";
+        }
+        else
+        {
+            document.getElementById("mySidenav").style.width = "250px";
+        }
     }
 
     function closeNav()
@@ -1022,11 +1047,11 @@
     window.onscroll = function() {scrollFunction()};
 
     function scrollFunction() {
-    if (document.body.scrollTop > 20 || document.documentElement.scrollTop > 20) {
-        document.getElementById("topButton").style.display = "block";
-    } else {
-        document.getElementById("topButton").style.display = "none";
-    }
+        if (document.body.scrollTop > 20 || document.documentElement.scrollTop > 20) {
+            document.getElementById("topButton").style.display = "block";
+        } else {
+            document.getElementById("topButton").style.display = "none";
+        }
     }
 
     // When the user clicks on the button, scroll to the top of the document
@@ -1069,7 +1094,7 @@
 
     function customize_mobile()
     {
-        document.getElementById("headerforbuttons").style.height = "120px";
+        document.getElementById("headerforbuttons").style.height = "90px";
         document.getElementById("container1").style.marginTop = "100px";
         
         var buttons = document.getElementsByTagName("button");
@@ -1094,6 +1119,18 @@
         for(var i = 0, il = is.length; i < il; i++)
         {
             is[i].className += " mobile_i";
+        }
+
+        var selects = document.getElementsByTagName("select");
+        for(var i = 0, il = selects.length; i < il; i++)
+        {
+            selects[i].className += " mobile_select";
+        }
+
+        var labels = document.getElementsByTagName("label");
+        for(var i = 0, il = labels.length; i < il; i++)
+        {
+            labels[i].className += " mobile_label";
         }
     }
 

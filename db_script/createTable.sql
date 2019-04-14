@@ -40,7 +40,7 @@ create table tp_preferences
      check_weight  BOOLEAN DEFAULT TRUE NOT NULL ,
      check_reps  BOOLEAN DEFAULT TRUE NOT NULL ,
      check_sets  BOOLEAN DEFAULT TRUE NOT NULL ,
-     check_max_rep BOOLEAN DEFAULT FALSE NOT NULL ,
+     check_maxrep BOOLEAN DEFAULT FALSE NOT NULL ,
      created timestamp DEFAULT now(),
      changes timestamp DEFAULT now()
 );

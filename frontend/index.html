@@ -32,6 +32,10 @@
         .mobile_label label.mobile_label,  label.mobile_label {
            font-size: 30px;
         }
+
+        .mobile_td td.mobile_td,  td.mobile_td {
+            border: 1px solid #373737;
+        }
     </style>
 
     <title>
@@ -124,10 +128,10 @@
     <!--<a href="#">About</a>-->
     <button onclick="receivePlanfromDB(false)"                      class="button" style="top: 10px; width:80%; margin-left: 10%; margin-top: 30px"><i class="fas fa-spinner">          </i> Load Plan</button>
     <button onclick="cleanUpTables(); addTable(true);  closeNav();" class="button" style="top: 10px; width:80%; margin-left: 10%;">                 <i class="fas fa-plus-circle">      </i> New Plan</button>
-    <button onclick="window.location.href='stats.html'"             class="button" style="top: 10px; width:80%; margin-left: 10%;">                 <i class="fas fa-chart-line">       </i> Stats</button>
     <button onclick="delete_plan(-1, false)"                        class="button" style="top: 10px; width:80%; margin-left: 10%; margin-top: 20%;"><i class="fas fa-trash">            </i> Delete Plans</button>
     <button onclick="restore_plan(-1, false)"                       class="button" style="top: 10px; width:80%; margin-left: 10%;">                 <i class="fas fa-trash-restore-alt"></i> Restore Plans</button>
-    <button onclick="keycloak.logout()"                             class="button" style="top: 10px; width:80%; margin-left: 10%; margin-top: 20%;"><i class="fas fa-sign-out-alt">     </i> Logout</button>
+    <button onclick="window.location.href='stats.html'"             class="button" style="top: 10px; width:80%; margin-left: 10%; margin-top: 20%;"><i class="fas fa-chart-line">       </i> Stats</button>
+    <button onclick="keycloak.logout()"                             class="button" style="top: 10px; width:80%; margin-left: 10%;">                 <i class="fas fa-sign-out-alt">     </i> Logout</button>
 </div>
 
 <div id = "headerforbuttons" style="display: flex; justify-content: space-between; position:fixed; width:100%">
@@ -177,6 +181,7 @@
     var loaded = false;     // dont reload all plans by user again
     var planname = '';      // needed to determine wheter a plan should be completely stored in db or only updated, if planname.length = 0 - new plan else update
     var currentPlanId = ''; // Needed to send to backend which planid should be replace - going to be deprecated when no new plan is created anymore
+    var empty_values = 0;
 
     // get the first button by it's ID, and listen to the click event
     // add an empty table to the container div
@@ -621,7 +626,8 @@
             else if(i == 5)
                 parsed = parsed + "\"pause\":\"" + res[i].substring(raw.indexOf('center">') + 8, res[i].indexOf('</div>')) + '"}';
 
-            // parsed = parsed + res[i].substring(raw.indexOf('center">') + 8, res[i].indexOf('</div>')) + ';';
+            if(res[i].substring(raw.indexOf('center">') + 8, res[i].indexOf('</div>')).length == 0)
+                empty_values++;
         }
 
         return parsed;
@@ -669,6 +675,7 @@
 
     function loadPlanIntoDB()
     {
+        var alert_text;
         var jsondata = getExercises();
         var xhr = new XMLHttpRequest();
         var url = "http://jakob.ml:50003/trainingsplan/sendPlan";
@@ -680,16 +687,34 @@
         if(jsondata == 'ERRORCODE 00003' || jsondata == 'ERRORCODE 00004')
         {
             console.log("sending dummy plan");
-            xhr.send('{"plan":[{"username": "NoUser","planname": "NoPlan"}]}');
+            //xhr.send('{"plan":[{"username": "NoUser","planname": "NoPlan"}]}');
         }
         else
         {
+            if(empty_values <= 3 && empty_values > 0)
+                alert_text = "Single fields are empty, are you sure you wanna save this values, this might cause problems when later analysing your data";
+            else if(empty_values < 10)
+                alert_text = "Some fields are empty, are you sure you wanna save this values, this might cause problems when later analysing your data";
+            else
+                alert_text = "A lot of fields are empty, are you sure you wanna save this values, this might cause problems when later analysing your data";
+
+            if(confirm(alert_text))
+            {
+                xhr.send(jsondata);
+                alert("Plan - " + planname +  " successfully Saved!");
+            }
+            else
+                console.log("not sending data");
+            
             console.log("no error found - sending normal plan");
             console.log(jsondata);
-            xhr.send(jsondata);
 
-            alert("Plan - " + planname +  " successfully Saved!");
+            
         }
+
+        // after saving set it back to zero, for next save
+        empty_values = 0;
+
     }
 
     function receivePlanfromDB(onlogon)
@@ -747,7 +772,7 @@
         else
         {
             //customize_mobile();
-            console.log("PC DETECTED AS DEVICE");
+            // console.log("PC DETECTED AS DEVICE");
         }
 
     }
@@ -1067,7 +1092,7 @@
         else
         {
             //customize_mobile();
-            console.log("PC DETECTED AS DEVICE");
+            // console.log("PC DETECTED AS DEVICE");
         }
     }
 
@@ -1132,6 +1157,12 @@
         {
             labels[i].className += " mobile_label";
         }
+        
+        var tds = document.getElementsByTagName("td");
+        for(var i = 0, il = tds.length; i < il; i++)
+        {
+            tds[i].className += " mobile_td";
+        }
     }
 
     document.addEventListener('DOMContentLoaded', function()
@@ -1147,7 +1178,7 @@
                 receivePlanfromDB(true);
             }
             else {
-                setTimeout(check, 1000); // check again in a second
+                setTimeout(check, 10); // check again in 10 ms
             }
         }
 

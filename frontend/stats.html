@@ -50,8 +50,11 @@
             console.log('Successfully authenticated'); 
 
             username = keycloak.idTokenParsed.name;
+
+            console.log(keycloak.idTokenParsed.name);
+            check_roles(keycloak.realmAccess.roles);
+
             document.getElementById("username").innerHTML = username + ' <i class="fas fa-sign-out-alt"></i>';
-            console.log(username);  
         }
 
         function getusername()
@@ -233,6 +236,15 @@
     function slider_change_m(value)
     {
         document.getElementById("maxrep-slider-button").innerHTML = "MaxRep Faktor: " + value + " &nbsp";
+    }
+
+    function check_roles(roles)
+    {
+        for(var i = 0; i < roles.length; i++)
+        {
+            if(roles[i] == 'paid_account' || roles[i] == 'friend_account')
+                console.log(roles[i]);
+        }
     }
     
 
@@ -536,7 +548,7 @@
         document.getElementById("sets-slider").style.height = "2.5%";
         document.getElementById("maxrep-slider").style.height = "2.5%";
         */
-        
+
         document.getElementById("weight-slider").style.float = "left";
         document.getElementById("reps-slider").style.float = "left";
         document.getElementById("sets-slider").style.float = "left";

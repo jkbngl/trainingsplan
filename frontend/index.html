@@ -105,6 +105,9 @@
             username = keycloak.idTokenParsed.name;
             username = username.toLowerCase();
             document.getElementById("username").innerHTML = username;
+            
+            check_roles(keycloak.realmAccess.roles);
+            
             console.log(username);  
         }
 
@@ -130,7 +133,7 @@
     <button onclick="cleanUpTables(); addTable(true);  closeNav();" class="button" style="top: 10px; width:80%; margin-left: 10%;">                 <i class="fas fa-plus-circle">      </i> New Plan</button>
     <button onclick="delete_plan(-1, false)"                        class="button" style="top: 10px; width:80%; margin-left: 10%; margin-top: 20%;"><i class="fas fa-trash">            </i> Delete Plans</button>
     <button onclick="restore_plan(-1, false)"                       class="button" style="top: 10px; width:80%; margin-left: 10%;">                 <i class="fas fa-trash-restore-alt"></i> Restore Plans</button>
-    <button onclick="window.location.href='stats.html'"             class="button" style="top: 10px; width:80%; margin-left: 10%; margin-top: 20%;"><i class="fas fa-chart-line">       </i> Stats</button>
+    <button id="stats-button" onclick="window.location.href='stats.html'"             class="button" style="top: 10px; width:80%; margin-left: 10%; margin-top: 20%;"><i class="fas fa-chart-line">       </i> Stats</button>
     <button onclick="keycloak.logout()"                             class="button" style="top: 10px; width:80%; margin-left: 10%;">                 <i class="fas fa-sign-out-alt">     </i> Logout</button>
 </div>
 
@@ -318,6 +321,17 @@
         {
             ;
             // console.log("PC DETECTED AS DEVICE");
+        }
+    }
+
+    function check_roles(roles)
+    {
+        for(var i = 0; i < roles.length; i++)
+        {
+            if(roles[i] == 'paid_account' || roles[i] == 'friend_account')
+                console.log(roles[i]);
+
+            //document.getElementById("stats-button").style.display = "none";
         }
     }
 

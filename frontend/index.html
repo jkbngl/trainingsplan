@@ -134,7 +134,7 @@
     <button onclick="delete_plan(-1, false)"                        class="button" style="top: 10px; width:80%; margin-left: 10%; margin-top: 20%;"><i class="fas fa-trash">            </i> Delete Plans</button>
     <button onclick="restore_plan(-1, false)"                       class="button" style="top: 10px; width:80%; margin-left: 10%;">                 <i class="fas fa-trash-restore-alt"></i> Restore Plans</button>
     <button id="stats-button" onclick="window.location.href='stats.html'"             class="button" style="top: 10px; width:80%; margin-left: 10%; margin-top: 20%;"><i class="fas fa-chart-line">       </i> Stats</button>
-    <button onclick="keycloak.logout()"                             class="button" style="top: 10px; width:80%; margin-left: 10%;">                 <i class="fas fa-sign-out-alt">     </i> Logout</button>
+    <button id="logout-button" onclick="keycloak.logout()"                            class="button" style="top: 10px; width:80%; margin-left: 10%;">                 <i class="fas fa-sign-out-alt">     </i> Logout</button>
 </div>
 
 <div id = "headerforbuttons" style="display: flex; justify-content: space-between; position:fixed; width:100%">
@@ -324,15 +324,24 @@
         }
     }
 
-    function check_roles(roles)
+    function check_roles(assigned_roles)
     {
-        for(var i = 0; i < roles.length; i++)
-        {
-            if(roles[i] == 'paid_account' || roles[i] == 'friend_account')
-                console.log(roles[i]);
+        var roles = [];
 
-            //document.getElementById("stats-button").style.display = "none";
+        for(var i = 0; i < assigned_roles.length; i++)
+        {
+            if(assigned_roles[i] == 'paid_account' || assigned_roles[i] == 'friend_account')
+                roles[0] = assigned_roles[i];
         }
+
+        var superaccount = (roles.indexOf("friend_account") > -1) || (roles.indexOf("paid_account") > -1);
+
+        if(!superaccount)
+        {
+            document.getElementById("stats-button").style.display = "none";
+            document.getElementById("logout-button").style.marginTop = "20%";
+        }
+
     }
 
     function reorder_indexes(tableName, index)

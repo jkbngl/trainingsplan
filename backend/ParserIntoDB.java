@@ -786,30 +786,27 @@ public class ParserIntoDB
 		
 		int user_id = getUserid(obj.get("username").toString(), connection);
 
-        PreparedStatement st = connection.prepareStatement("    MERGE INTO tp_preferences p "
-											        		+ " USING (VALUES( ?, ?, ?, ?, ? "
-											        		+ "				 , ?, ?, ?, ?)) v "
-											        		+ " ON T.userid_fk = v.1 "
-											        		+ " WHEN MATCHED "
-											        		+ " UPDATE SET mul_weight = v.2 "
-											        		+ "			 , mul_reps   = v.3 "
-											        		+ "          , mul_sets   = v.4 "
-											        		+ "          , mul_maxrep = v.5 "
-											        		+ "          , check_weight  = v.6 "
-											        		+ "          , check_sets    = v.7 " 
-											        		+ "          , check_reps    = v.8 "
-											        		+ "          , check_max_rep = v.9 "
-											        		+ " WHEN NOT MATCHED "
-											        		+ " INSERT (p.userid_fk, p.mul_weight, p.mul_reps, p.mul_sets, p.mul_maxrep"
-											        		+ "		  , p.check_weight, p.check_reps, p.check_sets, p.check_maxrep) "
-											        		+ " VALUES (v.1, v.2, v.3, v.4, v.5 "
-											        		+ "		  , v.6, v.7, v.8, v.9 ); ");
-
+        PreparedStatement st = connection.prepareStatement("    INSERT INTO tp_preferences (userid_fk,    mul_weight, mul_reps,   mul_sets, mul_maxrep "
+        													 + "                          , check_weight, check_reps, check_sets, check_maxrep, changed) "
+        													 + "VALUES ( ?, ?, ?, ?, ?, ?, ?, ?, ?, now())"
+        													 + "ON CONFLICT (userid_fk) DO UPDATE "
+        													 + "SET "
+        													 + " mul_weight = EXCLUDED.mul_weight, "
+        													 + " mul_reps = EXCLUDED.mul_reps, "
+        													 + " mul_sets = EXCLUDED.mul_sets, "
+        													 + " mul_maxrep = EXCLUDED.mul_maxrep, "
+        													 + " check_weight = EXCLUDED.check_weight, "
+        													 + " check_reps = EXCLUDED.check_reps, "
+        													 + " check_sets = EXCLUDED.check_sets, "
+        													 + " check_maxrep = EXCLUDED.check_maxrep, "
+        													 + " changed = now()"
+        													 + ";");
+        
         st.setInt(1, user_id);
-        st.setString(2, obj.get("mul_weight").toString());
-        st.setString(3, obj.get("mul_reps").toString());
-        st.setString(4, obj.get("mul_sets").toString());
-        st.setString(5, obj.get("mul_maxrep").toString());
+        st.setInt(2,Integer.parseInt(obj.get("mul_weight").toString()));
+        st.setInt(3, Integer.parseInt(obj.get("mul_reps").toString()));
+        st.setInt(4, Integer.parseInt(obj.get("mul_sets").toString()));
+        st.setInt(5, Integer.parseInt(obj.get("mul_maxrep").toString()));
 
         if(obj.getBoolean("check_weight"))
         	st.setBoolean(6, true);
@@ -831,23 +828,16 @@ public class ParserIntoDB
         else
         	st.setBoolean(9, false);
         
-		System.out.println(st);
+		System.out.println("test - " + st);
 
-    	st.executeUpdate();
+		try 
+		{
+			st.executeUpdate();
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+
     	st.close();
-
-
-		System.out.println(obj.get("username"));
-		System.out.println(user_id);
-		System.out.println(obj.get("check_weight"));
-		System.out.println(obj.get("check_reps"));
-		System.out.println(obj.get("check_sets"));
-		System.out.println(obj.get("check_maxrep"));
-		System.out.println(obj.get("mul_weight"));
-		System.out.println(obj.get("mul_reps"));
-		System.out.println(obj.get("mul_sets"));
-		System.out.println(obj.get("mul_maxrep"));
-
 	}
 	
 }

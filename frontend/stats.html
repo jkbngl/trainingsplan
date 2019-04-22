@@ -103,6 +103,8 @@
         </div>
     </div>
     -->
+    
+
     <div id="container">
         <div style="margin-left:7%;">
             <div class="select" style="width: 80%; border-bottom: 4px solid rgba(0,0,0, 0.12); border-right: 4px solid rgba(0,0,0, 0.12);">
@@ -179,10 +181,21 @@
                     </div>
                 </div>
             </div>
+
+            <div id="additional-info" style="width: 0%">
+                <!--
+                    <button onclick="window.location.href='index.html'" class="button" style="top: 10px; width:80%; margin-left: 10%;"><i class="fas fa-home"></i> Home</button>
+                -->
+            </div>
         </div>
+
+        
 </body>
 
 <script>
+    // Used to determine which color the line should have, gets set to 0 after all numbers are used and starts again at zero
+    var num_ex_color = 0;
+    // Used to get an overview how many exexercises are displayed and close or open the div in which additional info about the exercises can be get
     var num_ex = 0;
 
     function download() 
@@ -257,7 +270,7 @@
         }
         else
         {
-            alert("Access granted!");
+            //alert("Access granted!");
         }
     }
     
@@ -369,7 +382,9 @@
 
         values = get_value(available_ex, weight_box.checked, reps_box.checked, sets_box.checked, max_rep_box.checked);
 
-        addData(values, text);
+        addData(values, text, available_ex);
+
+
     }
 
     function get_value(json_ex, weight, reps, sets, max_rep) {
@@ -407,23 +422,41 @@
         return values;
     }
 
-    function addData(values, ex_name)
+    function addData(values, ex_name, all_ex)
     {
         console.log(values);
 
         chart.data.datasets.push({
             data: values,
             label: ex_name,
-            borderColor: border_color_array[num_ex],
+            borderColor: border_color_array[num_ex_color],
             fill: false
         });
 
-        if(num_ex == border_color_array.length - 1)
-            num_ex = 0;
+        if(num_ex_color == border_color_array.length - 1)
+            num_ex_color = 0;
         else
-            num_ex++;
+            num_ex_color++;
+
+
+        // needs to be checked before numbers gets increased
+        change_div(num_ex, all_ex, false);
+        num_ex++;
 
         chart.update();
+    }
+
+    function change_div(num_ex, values, reset)
+    {
+        if(reset)
+            document.getElementById("additional-info").style.width = "0%";
+        else
+        {
+            if(num_ex == 0)
+                document.getElementById("additional-info").style.width = "25%";
+            
+            
+        }
     }
 
     function clear_chart()
@@ -431,6 +464,10 @@
         chart.reset();
         chart.clear();
         chart = create_chart();
+        
+        change_div(0,0, true);
+        num_ex = 0;
+        console.log(num_ex);
     }
 
     var labels = [1,2,3,4,5,6,7,8];

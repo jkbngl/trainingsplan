@@ -238,12 +238,26 @@
         document.getElementById("maxrep-slider-button").innerHTML = "MaxRep Faktor: " + value + " &nbsp";
     }
 
-    function check_roles(roles)
+    function check_roles(assigned_roles)
     {
-        for(var i = 0; i < roles.length; i++)
+        var roles = [];
+
+        for(var i = 0; i < assigned_roles.length; i++)
         {
-            if(roles[i] == 'paid_account' || roles[i] == 'friend_account')
-                console.log(roles[i]);
+            if(assigned_roles[i] == 'paid_account' || assigned_roles[i] == 'friend_account')
+                roles[0] = assigned_roles[i];
+        }
+
+        var superaccount = (roles.indexOf("friend_account") > -1) || (roles.indexOf("paid_account") > -1);
+
+        if(!superaccount)
+        {
+            alert("Access denied!");
+            window.location.href='index.html'
+        }
+        else
+        {
+            alert("Access granted!");
         }
     }
     

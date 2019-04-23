@@ -111,4 +111,4 @@ Get all plans by a user: http://jakob.ml:50003/trainingsplan/getPlansByUser/ < u
 
 > @GET
 
-Get the stats of a exercise: http://jakob.ml:50003/trainingsplan/get_stats/ <base_ex_id>
+Get the stats of a exercise: http://jakob.ml:50003/trainingsplan/get_stats/ < base_ex_id >

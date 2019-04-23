@@ -4,7 +4,7 @@ JAVA BACKEND <br/>
 SECURED WITH KEYCLOAK<br/>
 USING VISUAL STUDIO CODE<br/>
 FRONTEND SERVED BY NGINX<br/>
-WILDFLY RUNNING ON DOCKER<br/>
+RUNNING ON DOCKER<br/>
 
 <div style="display:table-cell; vertical-align:middle; text-align:center">
 	<p>

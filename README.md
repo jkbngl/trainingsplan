@@ -2,11 +2,11 @@
 
 ## Infrastructure ##
 
-JAVA BACKEND <br/>
-SECURED WITH KEYCLOAK<br/>
-USING VISUAL STUDIO CODE<br/>
-FRONTEND SERVED BY NGINX<br/>
-RUNNING ON DOCKER<br/>
+* JAVA BACKEND <br/>
+* SECURED WITH KEYCLOAK<br/>
+* USING VISUAL STUDIO CODE<br/>
+* FRONTEND SERVED BY NGINX<br/>
+* RUNNING ON DOCKER<br/>
 
 <div style="display:table-cell; vertical-align:middle; text-align:center">
 	<p>
@@ -20,6 +20,15 @@ RUNNING ON DOCKER<br/>
 </div>
 
 - - - -
+## Get access to stats ##
+
+
+- - - -
 
 ## Usage ##
 
+### Index ###
+
+### Stats ###
+
+## API ##

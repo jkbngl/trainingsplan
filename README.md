@@ -101,9 +101,13 @@ Send the preferences for analyzing exercises into the DB to following url: http:
 }
 ```
 > GET
-Get current plan by a user: http://jakob.ml:50003/trainingsplan/getNewestPlan/<username>
+
+Get current plan by a user: http://jakob.ml:50003/trainingsplan/getNewestPlan/ <username>
+
 > GET
-Get all plans by a user: http://jakob.ml:50003/trainingsplan/getPlansByUser/<username>
+
+Get all plans by a user: http://jakob.ml:50003/trainingsplan/getPlansByUser/ <username>
+
 > GET
-Get the stats of a exercise: http://jakob.ml:50003/trainingsplan/get_stats/<base_ex_id>
-> GET
+
+Get the stats of a exercise: http://jakob.ml:50003/trainingsplan/get_stats/ <base_ex_id>

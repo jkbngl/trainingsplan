@@ -36,7 +36,7 @@
 Send data in json format with following format as POST to following url: http://jakob.ml:50003/trainingsplan/sendPlan
 
 ```javascript
-    {
+{
   "plan": [
     {
       "username": "jakob engl",

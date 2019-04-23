@@ -34,7 +34,7 @@
 ## API ##
 
 Send data in json format with following format as POST to following url: http://jakob.ml:50003/trainingsplan/sendPlan
-
+> POST
 ```javascript
 {
   "plan": [
@@ -85,3 +85,25 @@ Send data in json format with following format as POST to following url: http://
   ]
 }
 ```
+> POST
+Send the preferences for analyzing exercises into the DB to following url: http://jakob.ml:50003/trainingsplan/send_preferences
+```javascript
+{
+  "username": "jakob engl",
+  "check_weight": true,
+  "check_reps": true,
+  "check_sets": false,
+  "check_maxrep": false,
+  "mul_weight": "11",
+  "mul_reps": "16",
+  "mul_sets": "7",
+  "mul_maxrep": "18"
+}
+```
+> GET
+Get current plan by a user: http://jakob.ml:50003/trainingsplan/getNewestPlan/<username>
+> GET
+Get all plans by a user: http://jakob.ml:50003/trainingsplan/getPlansByUser/<username>
+> GET
+Get the stats of a exercise: http://jakob.ml:50003/trainingsplan/get_stats/<base_ex_id>
+> GET

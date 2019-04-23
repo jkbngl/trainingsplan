@@ -32,3 +32,61 @@
 ### Stats ###
 
 ## API ##
+
+Send data in json format with following format as POST to following url: http://jakob.ml:50003/trainingsplan/sendPlan
+
+Markup :  `code()`
+
+```javascript
+    {
+  "plan": [
+    {
+      "username": "jakob engl",
+      "planname": "chestday",
+      "planid": "141",
+      "day": [
+        {
+          "exercise": {
+            "id": "470",
+            "name": "chest press",
+            "weight": "100",
+            "reps": "15",
+            "sets": "5",
+            "maxrep": "100",
+            "pause": "2"
+          }
+        },
+        {
+          "exercise": {
+            "id": "471",
+            "name": "bench press",
+            "weight": "120",
+            "reps": "5",
+            "sets": "5",
+            "maxrep": "5",
+            "pause": "4"
+          }
+        }
+      ]
+    },
+    {
+      "day": [
+        {
+          "exercise": {
+            "id": "487",
+            "name": "decline bench press",
+            "weight": "90",
+            "reps": "10",
+            "sets": "5",
+            "maxrep": "110",
+            "pause": "3"
+          }
+        }
+      ]
+    }
+  ]
+}
+```
+
+    Markup : ```javascript
+             ```

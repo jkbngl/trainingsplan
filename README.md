@@ -45,7 +45,7 @@ Send data in json format with following format as POST to following url: http://
       "day": [
         {
           "exercise": {
-            "id": "470",
+            "id": "defaultvaluetoignore",
             "name": "chest press",
             "weight": "100",
             "reps": "15",
@@ -56,7 +56,7 @@ Send data in json format with following format as POST to following url: http://
         },
         {
           "exercise": {
-            "id": "471",
+            "id": "defaultvaluetoignore",
             "name": "bench press",
             "weight": "120",
             "reps": "5",
@@ -71,7 +71,7 @@ Send data in json format with following format as POST to following url: http://
       "day": [
         {
           "exercise": {
-            "id": "487",
+            "id": "defaultvaluetoignore",
             "name": "decline bench press",
             "weight": "90",
             "reps": "10",

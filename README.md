@@ -1,5 +1,7 @@
 # Trainingsplan
 
+## Infrastructure ##
+
 JAVA BACKEND <br/>
 SECURED WITH KEYCLOAK<br/>
 USING VISUAL STUDIO CODE<br/>
@@ -17,4 +19,7 @@ RUNNING ON DOCKER<br/>
 	</p>
 </div>
 
+- - - -
+
+## Usage ##
 

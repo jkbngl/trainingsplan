@@ -172,23 +172,23 @@
 
                 <div style="margin-right:7%;">
                     <div class="slidecontainer" id="weight-slider-div" style="color: #28AD5F; font-size: 14px;" >
-                        <p id="weight-slider-button" style="font-size: 22px; padding-bottom: 6px; border-bottom: 6px solid rgba(0,0,0, 0.12); border-right: 4px solid rgba(0,0,0, 0.12); text-align:center; float:left; padding-top: 2%;">Weight Faktor: 5 &nbsp</p>
-                        <input type="range" id="weight-slider" min="1" max="20" value="5" class="slider" id="myRange" style="margin-top: 5px; float:right;" ontouchend="save_settings(); update_chart();" onmouseup="save_settings(); update_chart();" oninput=slider_change_w(this.value)>
+                        <p id="weight-slider-button" style="font-size: 22px; padding-bottom: 6px; border-bottom: 6px solid rgba(0,0,0, 0.12); border-right: 4px solid rgba(0,0,0, 0.12); text-align:center; float:left; padding-top: 2%;">Weight Faktor: 1 &nbsp</p>
+                        <input type="range" id="weight-slider" min="1" max="20" value="1" class="slider" id="myRange" style="margin-top: 5px; float:right;" ontouchend="save_settings(); update_chart();" onmouseup="save_settings(); update_chart();" oninput=slider_change_w(this.value)>
                     </div>
                     <br><br>
                     <div class="slidecontainer" id="reps-slider-div" style="margin-top: 30px; color: #28AD5F; font-size: 14px;text-align: center; padding-top: 7%;">
-                            <p id="reps-slider-button" style="font-size: 22px; padding-bottom: 6px; border-bottom: 6px solid rgba(0,0,0, 0.12); border-right: 4px solid rgba(0,0,0, 0.12); text-align:center; float:left; ">Reps Faktor: 5 &nbsp</p>
-                            <input type="range" id="reps-slider" min="1" max="20" value="5" class="slider" id="myRange" style="margin-top: 5px; float:right; " ontouchend="save_settings(); update_chart();" onmouseup="save_settings(); update_chart();" oninput=slider_change_r(this.value)>
+                            <p id="reps-slider-button" style="font-size: 22px; padding-bottom: 6px; border-bottom: 6px solid rgba(0,0,0, 0.12); border-right: 4px solid rgba(0,0,0, 0.12); text-align:center; float:left; ">Reps Faktor: 1 &nbsp</p>
+                            <input type="range" id="reps-slider" min="1" max="20" value="1" class="slider" id="myRange" style="margin-top: 5px; float:right; " ontouchend="save_settings(); update_chart();" onmouseup="save_settings(); update_chart();" oninput=slider_change_r(this.value)>
                     </div>
                     <br><br>
                     <div class="slidecontainer" id="sets-slider-div" style="margin-top: 30px;  color: #28AD5F; font-size: 14px;text-align: center;">
-                        <p id="sets-slider-button" style="font-size: 22px; padding-bottom: 6px; border-bottom: 6px solid rgba(0,0,0, 0.12); border-right: 4px solid rgba(0,0,0, 0.12); text-align:center; float:left;">Sets Faktor: 5 &nbsp</p>
-                        <input type="range" id="sets-slider" min="1" max="20" value="5" class="slider" id="myRange" style="margin-top: 5px; float:right; " ontouchend="save_settings(); update_chart();" onmouseup="save_settings(); update_chart();" oninput=slider_change_s(this.value)>
+                        <p id="sets-slider-button" style="font-size: 22px; padding-bottom: 6px; border-bottom: 6px solid rgba(0,0,0, 0.12); border-right: 4px solid rgba(0,0,0, 0.12); text-align:center; float:left;">Sets Faktor: 1 &nbsp</p>
+                        <input type="range" id="sets-slider" min="1" max="20" value="1" class="slider" id="myRange" style="margin-top: 5px; float:right; " ontouchend="save_settings(); update_chart();" onmouseup="save_settings(); update_chart();" oninput=slider_change_s(this.value)>
                     </div> 
                     <br><br>
                     <div class="slidecontainer" id="max-slider-div" style="margin-top: 30px; color: #28AD5F; font-size: 14px; text-align: center;">
-                        <p id="maxrep-slider-button" style="font-size: 22px; padding-bottom: 6px; padding-bottom: 6px; border-bottom: 6px solid rgba(0,0,0, 0.12); border-right: 4px solid rgba(0,0,0, 0.12); text-align:center; float:left;">MaxRep Faktor: 5 &nbsp</p>
-                        <input type="range" id="maxrep-slider" min="1" max="20" value="5" class="slider" id="myRange" style="margin-top: 5px; float:right; " ontouchend="save_settings(); update_chart();" onmouseup="save_settings(); update_chart();" oninput=slider_change_m(this.value)>
+                        <p id="maxrep-slider-button" style="font-size: 22px; padding-bottom: 6px; padding-bottom: 6px; border-bottom: 6px solid rgba(0,0,0, 0.12); border-right: 4px solid rgba(0,0,0, 0.12); text-align:center; float:left;">MaxRep Faktor: 1 &nbsp</p>
+                        <input type="range" id="maxrep-slider" min="1" max="20" value="1" class="slider" id="myRange" style="margin-top: 5px; float:right; " ontouchend="save_settings(); update_chart();" onmouseup="save_settings(); update_chart();" oninput=slider_change_m(this.value)>
                     </div>
                 </div>
             </div>
@@ -280,15 +280,15 @@
 
     function reset_settings()
     {
-        document.getElementById("weight-slider").value = 2;
-        document.getElementById("reps-slider").value = 2;
-        document.getElementById("sets-slider").value = 2;
-        document.getElementById("maxrep-slider").value = 2;
+        document.getElementById("weight-slider").value = 1;
+        document.getElementById("reps-slider").value = 1;
+        document.getElementById("sets-slider").value = 1;
+        document.getElementById("maxrep-slider").value = 1;
 
-        document.getElementById("weight-slider-button").innerHTML = "Weight Faktor: " + 2 + " &nbsp";
-        document.getElementById("reps-slider-button").innerHTML = "Reps Faktor: " + 2 + " &nbsp";
-        document.getElementById("sets-slider-button").innerHTML = "Sets Faktor: " + 2 + " &nbsp";
-        document.getElementById("maxrep-slider-button").innerHTML = "MaxRep Faktor: " + 2 + " &nbsp";
+        document.getElementById("weight-slider-button").innerHTML = "Weight Faktor: " + 1 + " &nbsp";
+        document.getElementById("reps-slider-button").innerHTML = "Reps Faktor: " + 1 + " &nbsp";
+        document.getElementById("sets-slider-button").innerHTML = "Sets Faktor: " + 1 + " &nbsp";
+        document.getElementById("maxrep-slider-button").innerHTML = "MaxRep Faktor: " + 1 + " &nbsp";
 
         document.getElementById("weight_box").checked = true;
         document.getElementById("reps_box").checked = true;
@@ -409,18 +409,30 @@
             document.getElementById("max_rep_box").checked = false;
 
 
-        document.getElementById("weight-slider-button").innerHTML = 'Weight Faktor: ' + json.mul_weight + ' &nbsp';
-        document.getElementById("sets-slider-button").innerHTML = 'Reps Faktor: ' + json.mul_reps + ' &nbsp';
-        document.getElementById("reps-slider-button").innerHTML = 'Sets Faktor: ' + json.mul_sets + ' &nbsp';
-        document.getElementById("maxrep-slider-button").innerHTML = 'MaxRep Faktor: ' + json.mul_maxrep + ' &nbsp';
+        if(is_json_empty(json))
+        {
+            document.getElementById("weight-slider-button").innerHTML = 'Weight Faktor: ' + json.mul_weight + ' &nbsp';
+            document.getElementById("reps-slider-button").innerHTML = 'Reps Faktor: ' + json.mul_reps + ' &nbsp';
+            document.getElementById("sets-slider-button").innerHTML = 'Sets Faktor: ' + json.mul_sets + ' &nbsp';
+            document.getElementById("maxrep-slider-button").innerHTML = 'MaxRep Faktor: ' + json.mul_maxrep + ' &nbsp';
 
-        document.getElementById("weight-slider").value = json.mul_weight;
-        document.getElementById("reps-slider").value = json.mul_reps;
-        document.getElementById("sets-slider").value = json.mul_sets;
-        document.getElementById("maxrep-slider").value = json.mul_maxrep;
-
+            document.getElementById("weight-slider").value = json.mul_weight;
+            document.getElementById("reps-slider").value = json.mul_reps;
+            document.getElementById("sets-slider").value = json.mul_sets;
+            document.getElementById("maxrep-slider").value = json.mul_maxrep;
+        }
 
     }
+
+    function is_json_empty(object) 
+    {
+        for(var i in object)
+        {
+            return true;
+        }
+        
+        return false; 
+    } 
 
     function display_ex() {
         var values = [];

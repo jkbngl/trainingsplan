@@ -72,7 +72,7 @@
         <!--<button onclick="receivePlanfromDB(false)" class="button" style=" top: 10px; width:80%; margin-left: 10%;">Load Plan</button>
         <button onclick="cleanUpTables(); addTable(true);  closeNav();"class="button" style="top: 10px; width:80%; margin-left: 10%;">New Plan</button>-->
         <button onclick="window.location.href='index.html'" class="button" style="top: 10px; width:80%; margin-left: 10%;"><i class="fas fa-home"></i> Home</button>
-        <!--<button onclick="save_settings();"                  class="button" style="top: 10px; width:80%; margin-left: 10%; margin-top: 20%;"><i class="far fa-save"></i> Save Preferences</button>-->
+        <!--<button onclick="save_settings(); update_chart();"                  class="button" style="top: 10px; width:80%; margin-left: 10%; margin-top: 20%;"><i class="far fa-save"></i> Save Preferences</button>-->
         
                 
        
@@ -131,9 +131,9 @@
                 <p style="font-size: 22px; padding-bottom: 6px; border-bottom: 4px solid rgba(0,0,0, 0.12); border-right: 4px solid rgba(0,0,0, 0.12); text-align:center; "> 2. Choose the parameter/s &nbsp
             </div>                                            
 
-            <div class="page__toggle" style="margin-top: 10%;">
+            <div class="page__toggle" style="margin-top: 12%;">
                 <label class="toggle">
-                <input id="weight_box" onchange="closeNav();" onclick="save_settings();" class="toggle__input" type="checkbox" checked>
+                <input id="weight_box" onchange="closeNav();" onclick="save_settings(); update_chart();" class="toggle__input" type="checkbox" checked>
                 <span class="toggle__label">
                 <span class="toggle__text">Weight</span>
                 </span>
@@ -141,7 +141,7 @@
             </div>
             <div class="page__toggle"  style="margin-top: 10px;">
                 <label class="toggle">
-                <input id="reps_box" onchange="closeNav();" onclick="save_settings();"  class="toggle__input" type="checkbox" checked>
+                <input id="reps_box" onchange="closeNav();" onclick="save_settings(); update_chart();"  class="toggle__input" type="checkbox" checked>
                 <span class="toggle__label">
                 <span class="toggle__text">Reps</span>
                 </span>
@@ -149,7 +149,7 @@
             </div>
             <div class="page__toggle"  style="margin-top: 10px;">
                 <label class="toggle">
-                <input id="sets_box" onchange="closeNav();" onclick="save_settings();"  class="toggle__input" type="checkbox" checked>
+                <input id="sets_box" onchange="closeNav();" onclick="save_settings(); update_chart();"  class="toggle__input" type="checkbox" checked>
                 <span class="toggle__label">
                 <span class="toggle__text">Sets</span>
                 </span>
@@ -157,7 +157,7 @@
             </div>
             <div class="page__toggle" style="margin-top: 10px;">
                 <label class="toggle">
-                <input id="max_rep_box" onchange="closeNav();" onclick="save_settings();" class="toggle__input" type="checkbox">
+                <input id="max_rep_box" onchange="closeNav();" onclick="save_settings(); update_chart();" class="toggle__input" type="checkbox">
                 <span class="toggle__label">
                 <span class="toggle__text">Max Rep</span>
                 </span>
@@ -173,22 +173,22 @@
                 <div style="margin-right:7%;">
                     <div class="slidecontainer" id="weight-slider-div" style="color: #28AD5F; font-size: 14px;" >
                         <p id="weight-slider-button" style="font-size: 22px; padding-bottom: 6px; border-bottom: 6px solid rgba(0,0,0, 0.12); border-right: 4px solid rgba(0,0,0, 0.12); text-align:center; float:left; padding-top: 2%;">Weight Faktor: 5 &nbsp</p>
-                        <input type="range" id="weight-slider" min="1" max="20" value="5" class="slider" id="myRange" style="margin-top: 5px; float:right;" ontouchend="save_settings()" onmouseup="save_settings()" oninput=slider_change_w(this.value)>
+                        <input type="range" id="weight-slider" min="1" max="20" value="5" class="slider" id="myRange" style="margin-top: 5px; float:right;" ontouchend="save_settings(); update_chart();" onmouseup="save_settings(); update_chart();" oninput=slider_change_w(this.value)>
                     </div>
                     <br><br>
                     <div class="slidecontainer" id="reps-slider-div" style="margin-top: 30px; color: #28AD5F; font-size: 14px;text-align: center; padding-top: 7%;">
                             <p id="reps-slider-button" style="font-size: 22px; padding-bottom: 6px; border-bottom: 6px solid rgba(0,0,0, 0.12); border-right: 4px solid rgba(0,0,0, 0.12); text-align:center; float:left; ">Reps Faktor: 5 &nbsp</p>
-                            <input type="range" id="reps-slider" min="1" max="20" value="5" class="slider" id="myRange" style="margin-top: 5px; float:right; " ontouchend="save_settings()" onmouseup="save_settings()" oninput=slider_change_r(this.value)>
+                            <input type="range" id="reps-slider" min="1" max="20" value="5" class="slider" id="myRange" style="margin-top: 5px; float:right; " ontouchend="save_settings(); update_chart();" onmouseup="save_settings(); update_chart();" oninput=slider_change_r(this.value)>
                     </div>
                     <br><br>
                     <div class="slidecontainer" id="sets-slider-div" style="margin-top: 30px;  color: #28AD5F; font-size: 14px;text-align: center;">
                         <p id="sets-slider-button" style="font-size: 22px; padding-bottom: 6px; border-bottom: 6px solid rgba(0,0,0, 0.12); border-right: 4px solid rgba(0,0,0, 0.12); text-align:center; float:left;">Sets Faktor: 5 &nbsp</p>
-                        <input type="range" id="sets-slider" min="1" max="20" value="5" class="slider" id="myRange" style="margin-top: 5px; float:right; " ontouchend="save_settings()" onmouseup="save_settings()" oninput=slider_change_s(this.value)>
+                        <input type="range" id="sets-slider" min="1" max="20" value="5" class="slider" id="myRange" style="margin-top: 5px; float:right; " ontouchend="save_settings(); update_chart();" onmouseup="save_settings(); update_chart();" oninput=slider_change_s(this.value)>
                     </div> 
                     <br><br>
                     <div class="slidecontainer" id="max-slider-div" style="margin-top: 30px; color: #28AD5F; font-size: 14px; text-align: center;">
                         <p id="maxrep-slider-button" style="font-size: 22px; padding-bottom: 6px; padding-bottom: 6px; border-bottom: 6px solid rgba(0,0,0, 0.12); border-right: 4px solid rgba(0,0,0, 0.12); text-align:center; float:left;">MaxRep Faktor: 5 &nbsp</p>
-                        <input type="range" id="maxrep-slider" min="1" max="20" value="5" class="slider" id="myRange" style="margin-top: 5px; float:right; " ontouchend="save_settings()" onmouseup="save_settings()" oninput=slider_change_m(this.value)>
+                        <input type="range" id="maxrep-slider" min="1" max="20" value="5" class="slider" id="myRange" style="margin-top: 5px; float:right; " ontouchend="save_settings(); update_chart();" onmouseup="save_settings(); update_chart();" oninput=slider_change_m(this.value)>
                     </div>
                 </div>
             </div>
@@ -216,53 +216,66 @@
 
     function download() 
     {
-        var url_base64 = document.getElementById('line-chart').toDataURL('image/png');
-        var element = document.createElement('a');
-        
-        element.setAttribute('href', url_base64);
-        element.setAttribute('download', 'chart.png');
-        element.style.display = 'none';
-        document.body.appendChild(element);
-        element.click();
-        document.body.removeChild(element);
+        if(num_ex > 0)
+        {
+            // Get the data to save the file with different names #
+            // TODO read active_ex_in_chart and add ex names
+            
+            var url_base64 = document.getElementById('line-chart').toDataURL('image/png');
+            var element = document.createElement('a');
+            
+            element.setAttribute('href', url_base64);
+            element.setAttribute('download', 'chart_' + get_date() + '.png');
+            element.style.display = 'none';
+            document.body.appendChild(element);
+            element.click();
+            document.body.removeChild(element);
+        }
+        else
+        {
+            alert("Nothing to export!");
+        }
+    }
+
+    function get_date()
+    {
+        var today = new Date();
+        var dd = String(today.getDate()).padStart(2, '0');
+        var mm = String(today.getMonth() + 1).padStart(2, '0'); //January is 0!
+        var yyyy = today.getFullYear();
+
+        return mm + '_' + dd + '_' + yyyy;
     }
 
     // Changing is only possible with the last choosen ex so use this number
     // TODO: will maybe be changed later - add value to buttons of ex and return the value to this function
     function update_chart()
     {
-        var values = [];
-
-        var chart_to_change = num_ex - 1;
-        var length_of_chart = chart.data.datasets[chart_to_change].data.length;
-        
-        // Get amount of acitve exercises in chart
-        var length_of_ex_object = active_ex_in_chart.length - 1;
-        var data = active_ex_in_chart[length_of_ex_object];
-
-        var weight_box = document.getElementById("weight_box");
-        var reps_box = document.getElementById("reps_box");
-        var sets_box = document.getElementById("sets_box");
-        var max_rep_box = document.getElementById("max_rep_box");
-
-        console.log(document.getElementById("weight_box").checked);
-        console.log(document.getElementById("reps_box").checked);
-        console.log(document.getElementById("sets_box").checked);
-        console.log(document.getElementById("max_rep_box").checked);
-
-        values = get_value(data,  document.getElementById("weight_box").checked
-                                , document.getElementById("reps_box").checked
-                                , document.getElementById("sets_box").checked
-                                , document.getElementById("max_rep_box").checked);
-
-        console.log(values);    
-        
-        for(var i = 0; i < length_of_chart; i++)
+        if(num_ex > 0)
         {
-            chart.data.datasets[chart_to_change].data[i] = values[i];
-        }
+            var values = [];
 
-        chart.update();
+            var chart_to_change = num_ex - 1;
+            var length_of_chart = chart.data.datasets[chart_to_change].data.length;
+
+            // Get the last added exercise
+            var data = active_ex_in_chart[num_ex - 1];
+
+            values = get_value(data,  document.getElementById("weight_box").checked
+                                    , document.getElementById("reps_box").checked
+                                    , document.getElementById("sets_box").checked
+                                    , document.getElementById("max_rep_box").checked);
+
+            console.log(values);    
+
+            for(var i = 0; i < length_of_chart; i++)
+            {
+                chart.data.datasets[chart_to_change].data[i] = values[i];
+            }
+
+            chart.update();
+        }
+        
     }
 
     function reset_settings()
@@ -445,6 +458,7 @@
 
         var json = JSON.parse(json_ex);
         var values = [];
+
         var mul_weight = document.getElementById("weight-slider").value;
         var mul_reps   = document.getElementById("reps-slider").value;
         var mul_sets   = document.getElementById("sets-slider").value;
@@ -458,19 +472,19 @@
             // Dont use else if because multiple checkboxes can be checked
             if(weight && typeof(json.values[i].weight) != 'undefined' && json.values[i].weight != null && json.values[i].weight.length > 0)
                 if(json.values[i].weight.match(/\d/g).join("") > 0)
-                    values[i] *= json.values[i].weight.match(/\d/g).join("");
+                    values[i] *= json.values[i].weight.match(/\d/g).join("") * mul_weight;
             
-            if(weight && typeof(json.values[i].reps) != 'undefined' && json.values[i].reps != null && json.values[i].reps.length > 0)
+            if(reps && typeof(json.values[i].reps) != 'undefined' && json.values[i].reps != null && json.values[i].reps.length > 0)
                 if(json.values[i].reps.match(/\d/g).join("") > 0)
-                    values[i] *= json.values[i].reps.match(/\d/g).join("");
+                    values[i] *= json.values[i].reps.match(/\d/g).join("") * mul_reps;
             
-            if(weight && typeof(json.values[i].sets) != 'undefined' && json.values[i].sets != null && json.values[i].sets.length > 0)
+            if(sets && typeof(json.values[i].sets) != 'undefined' && json.values[i].sets != null && json.values[i].sets.length > 0)
                 if(json.values[i].sets.match(/\d/g).join("") > 0)
-                    values[i] *= json.values[i].sets.match(/\d/g).join("");
+                    values[i] *= json.values[i].sets.match(/\d/g).join("") * mul_sets;
             
-            if(weight && typeof(json.values[i].max_rep) != 'undefined' && json.values[i].max_rep != null && json.values[i].max_rep.length > 0)
+            if(max_rep && typeof(json.values[i].max_rep) != 'undefined' && json.values[i].max_rep != null && json.values[i].max_rep.length > 0)
                 if(json.values[i].max_rep.match(/\d/g).join("") > 0)
-                    values[i] *= json.values[i].max_rep.match(/\d/g).join("");
+                    values[i] *= json.values[i].max_rep.match(/\d/g).join("") * mul_max_rep;
         }
 
         return values;
@@ -494,7 +508,7 @@
 
 
         // needs to be checked before numbers gets increased
-        change_div( all_ex, ex_name, false);
+        change_div(all_ex, ex_name, false);
         num_ex++;
 
         chart.update();

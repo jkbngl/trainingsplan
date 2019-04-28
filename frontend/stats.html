@@ -72,7 +72,7 @@
         <!--<button onclick="receivePlanfromDB(false)" class="button" style=" top: 10px; width:80%; margin-left: 10%;">Load Plan</button>
         <button onclick="cleanUpTables(); addTable(true);  closeNav();"class="button" style="top: 10px; width:80%; margin-left: 10%;">New Plan</button>-->
         <button onclick="window.location.href='index.html'" class="button" style="top: 10px; width:80%; margin-left: 10%;"><i class="fas fa-home"></i> Home</button>
-        <button onclick="save_settings();"class="button" style="top: 10px; width:80%; margin-left: 10%; margin-top: 20%;"><i class="far fa-save"></i> Save Preferences</button>
+        <!--<button onclick="save_settings();"                  class="button" style="top: 10px; width:80%; margin-left: 10%; margin-top: 20%;"><i class="far fa-save"></i> Save Preferences</button>-->
         
                 
        
@@ -133,7 +133,7 @@
 
             <div class="page__toggle" style="margin-top: 10%;">
                 <label class="toggle">
-                <input id="weight_box" onchange="closeNav();" class="toggle__input" type="checkbox" checked>
+                <input id="weight_box" onchange="closeNav();" onclick="save_settings();" class="toggle__input" type="checkbox" checked>
                 <span class="toggle__label">
                 <span class="toggle__text">Weight</span>
                 </span>
@@ -141,7 +141,7 @@
             </div>
             <div class="page__toggle"  style="margin-top: 10px;">
                 <label class="toggle">
-                <input id="reps_box" onchange="closeNav();" class="toggle__input" type="checkbox" checked>
+                <input id="reps_box" onchange="closeNav();" onclick="save_settings();"  class="toggle__input" type="checkbox" checked>
                 <span class="toggle__label">
                 <span class="toggle__text">Reps</span>
                 </span>
@@ -149,7 +149,7 @@
             </div>
             <div class="page__toggle"  style="margin-top: 10px;">
                 <label class="toggle">
-                <input id="sets_box" onchange="closeNav();" class="toggle__input" type="checkbox" checked>
+                <input id="sets_box" onchange="closeNav();" onclick="save_settings();"  class="toggle__input" type="checkbox" checked>
                 <span class="toggle__label">
                 <span class="toggle__text">Sets</span>
                 </span>
@@ -157,7 +157,7 @@
             </div>
             <div class="page__toggle" style="margin-top: 10px;">
                 <label class="toggle">
-                <input id="max_rep_box" onchange="closeNav();" class="toggle__input" type="checkbox">
+                <input id="max_rep_box" onchange="closeNav();" onclick="save_settings();" class="toggle__input" type="checkbox">
                 <span class="toggle__label">
                 <span class="toggle__text">Max Rep</span>
                 </span>
@@ -173,22 +173,22 @@
                 <div style="margin-right:7%;">
                     <div class="slidecontainer" id="weight-slider-div" style="color: #28AD5F; font-size: 14px;" >
                         <p id="weight-slider-button" style="font-size: 22px; padding-bottom: 6px; border-bottom: 6px solid rgba(0,0,0, 0.12); border-right: 4px solid rgba(0,0,0, 0.12); text-align:center; float:left; padding-top: 2%;">Weight Faktor: 5 &nbsp</p>
-                        <input type="range" id="weight-slider" min="1" max="20" value="5" class="slider" id="myRange" style="margin-top: 5px; float:right;" oninput=slider_change_w(this.value)>
+                        <input type="range" id="weight-slider" min="1" max="20" value="5" class="slider" id="myRange" style="margin-top: 5px; float:right;" ontouchend="save_settings()" onmouseup="save_settings()" oninput=slider_change_w(this.value)>
                     </div>
                     <br><br>
                     <div class="slidecontainer" id="reps-slider-div" style="margin-top: 30px; color: #28AD5F; font-size: 14px;text-align: center; padding-top: 7%;">
                             <p id="reps-slider-button" style="font-size: 22px; padding-bottom: 6px; border-bottom: 6px solid rgba(0,0,0, 0.12); border-right: 4px solid rgba(0,0,0, 0.12); text-align:center; float:left; ">Reps Faktor: 5 &nbsp</p>
-                            <input type="range" id="reps-slider" min="1" max="20" value="5" class="slider" id="myRange" style="margin-top: 5px; float:right; " oninput=slider_change_r(this.value)>
+                            <input type="range" id="reps-slider" min="1" max="20" value="5" class="slider" id="myRange" style="margin-top: 5px; float:right; " ontouchend="save_settings()" onmouseup="save_settings()" oninput=slider_change_r(this.value)>
                     </div>
                     <br><br>
                     <div class="slidecontainer" id="sets-slider-div" style="margin-top: 30px;  color: #28AD5F; font-size: 14px;text-align: center;">
                         <p id="sets-slider-button" style="font-size: 22px; padding-bottom: 6px; border-bottom: 6px solid rgba(0,0,0, 0.12); border-right: 4px solid rgba(0,0,0, 0.12); text-align:center; float:left;">Sets Faktor: 5 &nbsp</p>
-                        <input type="range" id="sets-slider" min="1" max="20" value="5" class="slider" id="myRange" style="margin-top: 5px; float:right; " oninput=slider_change_s(this.value)>
+                        <input type="range" id="sets-slider" min="1" max="20" value="5" class="slider" id="myRange" style="margin-top: 5px; float:right; " ontouchend="save_settings()" onmouseup="save_settings()" oninput=slider_change_s(this.value)>
                     </div> 
                     <br><br>
                     <div class="slidecontainer" id="max-slider-div" style="margin-top: 30px; color: #28AD5F; font-size: 14px; text-align: center;">
                         <p id="maxrep-slider-button" style="font-size: 22px; padding-bottom: 6px; padding-bottom: 6px; border-bottom: 6px solid rgba(0,0,0, 0.12); border-right: 4px solid rgba(0,0,0, 0.12); text-align:center; float:left;">MaxRep Faktor: 5 &nbsp</p>
-                        <input type="range" id="maxrep-slider" min="1" max="20" value="5" class="slider" id="myRange" style="margin-top: 5px; float:right; " oninput=slider_change_m(this.value)>
+                        <input type="range" id="maxrep-slider" min="1" max="20" value="5" class="slider" id="myRange" style="margin-top: 5px; float:right; " ontouchend="save_settings()" onmouseup="save_settings()" oninput=slider_change_m(this.value)>
                     </div>
                 </div>
             </div>
@@ -204,10 +204,10 @@
 </body>
 
 <script>
-    /*
-        chart.data.datasets[0].data[1] = 55555;
-        chart.update();
-    */
+    // Object to store data for all actively displayed data in chart
+    var active_ex_in_chart = {
+       
+    };
 
     // Used to determine which color the line should have, gets set to 0 after all numbers are used and starts again at zero
     var num_ex_color = 0;
@@ -227,6 +227,22 @@
         document.body.removeChild(element);
     }
 
+    function update_chart()
+    {
+        // Changing is only possible with the last choosen ex so use this number
+        // TODO: will maybe be changed later - add value to buttons of ex and return the value to this function
+        var chart_to_change = num_ex - 1;
+        var length_of_chart = chart.data.datasets[chart_to_change].data.length;
+
+        for(var i = 0; i < length_of_chart; i++)
+        {
+            console.log(chart.data.datasets[chart_to_change].data[i]);
+            chart.data.datasets[chart_to_change].data[i] = 55555;
+        }
+
+        chart.update();
+    }
+
     function reset_settings()
     {
         document.getElementById("weight-slider").value = 2;
@@ -234,12 +250,10 @@
         document.getElementById("sets-slider").value = 2;
         document.getElementById("maxrep-slider").value = 2;
 
-
         document.getElementById("weight-slider-button").innerHTML = "Weight Faktor: " + 2 + " &nbsp";
         document.getElementById("reps-slider-button").innerHTML = "Reps Faktor: " + 2 + " &nbsp";
         document.getElementById("sets-slider-button").innerHTML = "Sets Faktor: " + 2 + " &nbsp";
         document.getElementById("maxrep-slider-button").innerHTML = "MaxRep Faktor: " + 2 + " &nbsp";
-
 
         document.getElementById("weight_box").checked = true;
         document.getElementById("reps_box").checked = true;
@@ -456,13 +470,16 @@
 
 
         // needs to be checked before numbers gets increased
-        change_div(num_ex, all_ex, ex_name, false);
+        change_div( all_ex, ex_name, false);
         num_ex++;
+
+        active_ex_in_chart.push(values);
+
 
         chart.update();
     }
 
-    function change_div(num_ex, values, ex_name, reset)
+    function change_div(values, ex_name, reset)
     {
         if(reset)
         {
@@ -507,7 +524,7 @@
         chart.clear();
         chart = create_chart();
 
-        change_div(0, 0, 0, true);
+        change_div(0, 0, true);
         num_ex = 0;
         console.log(num_ex);
     }
@@ -604,7 +621,7 @@
         console.log()
 
         xhr.send(string);
-        alert("Preferences saved!");
+        //alert("Preferences saved!");
     }
 
     var isMobile = {

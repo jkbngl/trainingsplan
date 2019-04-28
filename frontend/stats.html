@@ -205,9 +205,9 @@
 
 <script>
     // Object to store data for all actively displayed data in chart
-    var active_ex_in_chart = {
-       
-    };
+    var active_ex_in_chart = [
+
+    ];
 
     // Used to determine which color the line should have, gets set to 0 after all numbers are used and starts again at zero
     var num_ex_color = 0;
@@ -227,17 +227,39 @@
         document.body.removeChild(element);
     }
 
+    // Changing is only possible with the last choosen ex so use this number
+    // TODO: will maybe be changed later - add value to buttons of ex and return the value to this function
     function update_chart()
     {
-        // Changing is only possible with the last choosen ex so use this number
-        // TODO: will maybe be changed later - add value to buttons of ex and return the value to this function
+        var values = [];
+
         var chart_to_change = num_ex - 1;
         var length_of_chart = chart.data.datasets[chart_to_change].data.length;
+        
+        // Get amount of acitve exercises in chart
+        var length_of_ex_object = active_ex_in_chart.length - 1;
+        var data = active_ex_in_chart[length_of_ex_object];
 
+        var weight_box = document.getElementById("weight_box");
+        var reps_box = document.getElementById("reps_box");
+        var sets_box = document.getElementById("sets_box");
+        var max_rep_box = document.getElementById("max_rep_box");
+
+        console.log(document.getElementById("weight_box").checked);
+        console.log(document.getElementById("reps_box").checked);
+        console.log(document.getElementById("sets_box").checked);
+        console.log(document.getElementById("max_rep_box").checked);
+
+        values = get_value(data,  document.getElementById("weight_box").checked
+                                , document.getElementById("reps_box").checked
+                                , document.getElementById("sets_box").checked
+                                , document.getElementById("max_rep_box").checked);
+
+        console.log(values);    
+        
         for(var i = 0; i < length_of_chart; i++)
         {
-            console.log(chart.data.datasets[chart_to_change].data[i]);
-            chart.data.datasets[chart_to_change].data[i] = 55555;
+            chart.data.datasets[chart_to_change].data[i] = values[i];
         }
 
         chart.update();
@@ -393,7 +415,7 @@
         var value = e.options[e.selectedIndex].value;
         var text = e.options[e.selectedIndex].text;
 
-        console.log(text + " | " + value)
+        console.log(" exercise name + plan name: " + text)
 
         var request = new XMLHttpRequest();
         var url = 'http://jakob.ml:50003/trainingsplan/get_stats/';
@@ -412,9 +434,11 @@
 
         values = get_value(available_ex, weight_box.checked, reps_box.checked, sets_box.checked, max_rep_box.checked);
 
+
+        // push the data into a global object which is accessible for the function which updates the chart dynamically
+        active_ex_in_chart.push(available_ex);
+
         addData(values, text, available_ex);
-
-
     }
 
     function get_value(json_ex, weight, reps, sets, max_rep) {
@@ -473,9 +497,6 @@
         change_div( all_ex, ex_name, false);
         num_ex++;
 
-        active_ex_in_chart.push(values);
-
-
         chart.update();
     }
 
@@ -524,7 +545,10 @@
         chart.clear();
         chart = create_chart();
 
+        document.getElementById("select").selectedIndex = -1;
+
         change_div(0, 0, true);
+        active_ex_in_chart = [];
         num_ex = 0;
         console.log(num_ex);
     }

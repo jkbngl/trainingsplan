@@ -11,6 +11,7 @@
 
 <div style="display:table-cell; vertical-align:middle; text-align:center">
 	<p>
+ 	<img src="https://cdn-images-1.medium.com/max/2600/1*l4xICbIIYlz1OTymWCoUTw.jpeg" width="150" title="hover text">
   	<img src="https://www.cbronline.com/wp-content/uploads/2016/06/Java.png" width="150" title="hover text">
 	<img src="https://avatars2.githubusercontent.com/u/4921466?s=400&v=4" width="150" title="hover text">
 	<img src="https://avocode.com/static/icons/integrations/visual-studio-code.svg?ver=1" width="150" title="hover text">

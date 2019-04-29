@@ -256,10 +256,11 @@
             var values = [];
 
             var chart_to_change = num_ex - 1;
-            var length_of_chart = chart.data.datasets[chart_to_change].data.length;
+           
 
             for(var j = 0; j <= chart_to_change; j++)
             {
+                var length_of_chart = chart.data.datasets[j].data.length;
                 // Get the last added exercise
                 var data = active_ex_in_chart[j];
 
@@ -618,7 +619,7 @@
                         label: function(tooltipItems, data) { 
                             var label = data.datasets[tooltipItems.datasetIndex].label || '';
                             get_data_per_exercise_and_step(tooltipItems.xLabel, label);
-                            return tooltipItems.xLabel + " | " + label + "<br>" + "-";
+                            return tooltipItems.xLabel + " | " + label;
                         }
                     }
                 },            

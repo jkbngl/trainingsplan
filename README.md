@@ -13,9 +13,9 @@
 	<p>
  	<img src="https://cdn-images-1.medium.com/max/2600/1*l4xICbIIYlz1OTymWCoUTw.jpeg" width="150" title="hover text">
   	<img src="https://www.cbronline.com/wp-content/uploads/2016/06/Java.png" width="150" title="hover text">
-	<img src="https://avatars2.githubusercontent.com/u/4921466?s=400&v=4" width="150" title="hover text">
-	<img src="https://pbs.twimg.com/profile_images/922911523328081920/jEKFRPKV_400x400.jpg" width="150" title="hover text">
-		<img src="https://assets.t3n.sc/news/wp-content/uploads/2016/03/nginx-hoster-featured-620x349.jpg?auto=format&h=349&ixlib=php-2.1.1&w=620" 
+	<img src="https://cdn-images-1.medium.com/max/1600/1*fK7U56Q-MRzEkuWHmMRn1Q.png" width="150" title="hover text">
+	<img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTtQSGh0yCrRRhfzku93O-RQeTF7Ey3WEB60cFUlUVxqSwEWF_A" width="150" title="hover text">
+	<img src="https://assets.t3n.sc/news/wp-content/uploads/2016/03/nginx-hoster-featured-620x349.jpg?auto=format&h=349&ixlib=php-2.1.1&w=620" 
 			width="150" title="hover text">
 		<img src="https://www.docker.com/sites/default/files/social/docker_facebook_share.png" width="150" title="hover text">
 	</p>

@@ -258,20 +258,26 @@
             var chart_to_change = num_ex - 1;
             var length_of_chart = chart.data.datasets[chart_to_change].data.length;
 
-            // Get the last added exercise
-            var data = active_ex_in_chart[num_ex - 1];
-
-            values = get_value(data,  document.getElementById("weight_box").checked
-                                    , document.getElementById("reps_box").checked
-                                    , document.getElementById("sets_box").checked
-                                    , document.getElementById("max_rep_box").checked);
-
-            console.log(values);    
-
-            for(var i = 0; i < length_of_chart; i++)
+            for(var j = 0; j <= chart_to_change; j++)
             {
-                chart.data.datasets[chart_to_change].data[i] = values[i];
+                // Get the last added exercise
+                var data = active_ex_in_chart[j];
+
+                values = get_value(data,  document.getElementById("weight_box").checked
+                                        , document.getElementById("reps_box").checked
+                                        , document.getElementById("sets_box").checked
+                                        , document.getElementById("max_rep_box").checked);
+
+                console.log(data);    
+            
+                for(var i = 0; i < length_of_chart; i++)
+                {
+                    chart.data.datasets[j].data[i] = values[i];
+                }
             }
+
+            console.log("---------------------------"); 
+            
 
             chart.update();
         }
@@ -408,8 +414,7 @@
         else
             document.getElementById("max_rep_box").checked = false;
 
-
-        if(is_json_empty(json))
+        if(does_json_contain_data(json))
         {
             document.getElementById("weight-slider-button").innerHTML = 'Weight Faktor: ' + json.mul_weight + ' &nbsp';
             document.getElementById("reps-slider-button").innerHTML = 'Reps Faktor: ' + json.mul_reps + ' &nbsp';
@@ -424,7 +429,7 @@
 
     }
 
-    function is_json_empty(object) 
+    function does_json_contain_data(object) 
     {
         for(var i in object)
         {

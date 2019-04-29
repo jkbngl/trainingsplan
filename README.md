@@ -3,6 +3,7 @@
 ## Infrastructure ##
 
 * JAVA BACKEND <br/>
+* Frontend designed with html, css3 and js<br/>
 * SECURED WITH KEYCLOAK<br/>
 * USING VISUAL STUDIO CODE<br/>
 * FRONTEND SERVED BY NGINX<br/>

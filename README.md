@@ -22,6 +22,8 @@
 - - - -
 ## Get access to stats ##
 
+Contact me to ask for access for educational purposed or buy an access via:
+* TODO
 
 - - - -
 

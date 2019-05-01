@@ -106,7 +106,7 @@
             username = username.toLowerCase();
             document.getElementById("username").innerHTML = username;
             
-            check_roles(keycloak.realmAccess.roles);
+            check_roles(keycloak.realmAccess.roles, true);
             
             console.log(username);  
         }
@@ -130,7 +130,7 @@
     <a href="javascript:void(0)" class="closebtn" onclick="closeNav()"><i class="fas fa-bars"></i></a>
     <!--<a href="#">About</a>-->
     <button onclick="receivePlanfromDB(false)"                      class="button" style="top: 10px; width:80%; margin-left: 10%; margin-top: 30px"><i class="fas fa-spinner">          </i> Load Plan</button>
-    <button onclick="cleanUpTables(); addTable(true);  closeNav();" class="button" style="top: 10px; width:80%; margin-left: 10%;">                 <i class="fas fa-plus-circle">      </i> New Plan</button>
+    <button onclick="check_allowed_to_add_plan()" class="button" style="top: 10px; width:80%; margin-left: 10%;">                 <i class="fas fa-plus-circle">      </i> New Plan</button>
     <button onclick="delete_plan(-1, false)"                        class="button" style="top: 10px; width:80%; margin-left: 10%; margin-top: 20%;"><i class="fas fa-trash">            </i> Delete Plans</button>
     <button onclick="restore_plan(-1, false)"                       class="button" style="top: 10px; width:80%; margin-left: 10%;">                 <i class="fas fa-trash-restore-alt"></i> Restore Plans</button>
     <button id="stats-button" onclick="window.location.href='stats.html'"             class="button" style="top: 10px; width:80%; margin-left: 10%; margin-top: 20%;"><i class="fas fa-chart-line">       </i> Stats</button>
@@ -181,10 +181,12 @@
 <script>
 
     var numtables = 0;
-    var loaded = false;     // dont reload all plans by user again
-    var planname = '';      // needed to determine wheter a plan should be completely stored in db or only updated, if planname.length = 0 - new plan else update
+    var loaded = false;       // dont reload all plans by user again
+    var planname = '';       // needed to determine wheter a plan should be completely stored in db or only updated, if planname.length = 0 - new plan else update
     var currentPlanId = ''; // Needed to send to backend which planid should be replace - going to be deprecated when no new plan is created anymore
     var empty_values = 0;
+    var amount_plans = ''             // Needed to check the amount of plans already existent for user
+    var maximum_allowed_plans = -1;  // Needed to check if user without super account is allowed to add another plan
 
     // get the first button by it's ID, and listen to the click event
     // add an empty table to the container div
@@ -285,6 +287,25 @@
         }
     }
 
+    function check_allowed_to_add_plan()
+    {
+        check_roles(null, false);
+        if(maximum_allowed_plans == -1)
+        {
+            console.log("Allowed because superuser");
+            cleanUpTables(); addTable(true);  closeNav();
+        }
+        else if(amount_plans < maximum_allowed_plans)
+        {
+            console.log("Allowed because maximum amount of plans not overstepped");
+            cleanUpTables(); addTable(true);  closeNav();
+        }
+        else
+        {
+            alert("You are not allowed to add another plan, for that you need to buy PREMIUM - current plans:" + amount_plans + " maximum allowed: " + maximum_allowed_plans);
+        }
+    }
+
     function addRow(tableName)
     {
         var table = document.getElementById(tableName);
@@ -301,12 +322,12 @@
         var cell6 = row.insertCell(5);
         var cell7 = row.insertCell(6);
 
-        cell1.innerHTML = "<td class=\'tdinput\'> <div contenteditable='true' id='tags' value='defaultvaluetoignore' class='title' autocomplete='on' data-placeholder='name' style=\"background-color: transparent; color:#7F7F7F; width:inherit; max-width: 160px; min-width: 160px;  min-height: 25px; max-height: 25px;max-height: 25px; text-align: center\"/></div></td>";
-        cell2.innerHTML = "<td class=\'tdinput\'> <div contenteditable='true' id='tags' value='defaultvaluetoignore' class='title' autocomplete='on' data-placeholder='kilo' style=\"background-color: transparent; color:#7F7F7F; width:inherit; max-width: 160px; min-width: 160px;  min-height: 25px; max-height: 25px;max-height: 25px; text-align: center\"/></div></td>";
-        cell3.innerHTML = "<td class=\'tdinput\'> <div contenteditable='true' id='tags' value='defaultvaluetoignore' class='title' autocomplete='on' data-placeholder='reps' style=\"background-color: transparent; color:#7F7F7F; width:inherit; max-width: 160px; min-width: 160px;  min-height: 25px; max-height: 25px;max-height: 25px; text-align: center\"/></div></td>";
-        cell4.innerHTML = "<td class=\'tdinput\'> <div contenteditable='true' id='tags' value='defaultvaluetoignore' class='title' autocomplete='on' data-placeholder='sets' style=\"background-color: transparent; color:#7F7F7F; width:inherit; max-width: 160px; min-width: 160px;  min-height: 25px; max-height: 25px;max-height: 25px; text-align: center\"/></div></td>";
-        cell5.innerHTML = "<td class=\'tdinput\'> <div contenteditable='true' id='tags' value='defaultvaluetoignore' class='title' autocomplete='on' data-placeholder='maxr' style=\"background-color: transparent; color:#7F7F7F; width:inherit; max-width: 160px; min-width: 160px;  min-height: 25px; max-height: 25px;max-height: 25px; text-align: center\"/></div></td>";
-        cell6.innerHTML = "<td class=\'tdinput\'> <div contenteditable='true' id='tags' value='defaultvaluetoignore' class='title' autocomplete='on' data-placeholder='time' style=\"background-color: transparent; color:#7F7F7F; width:inherit; max-width: 160px; min-width: 160px;  min-height: 25px; max-height: 25px;max-height: 25px; text-align: center\"/></div></td>";
+        cell1.innerHTML = "<td class=\'tdinput\'> <div contenteditable='true' id='tags' value='defaultvaluetoignore' class='title' autocomplete='on' data-placeholder='name' style=\"background-color: transparent; color:#7F7F7F; width:inherit; max-width: 160px; min-width: 160px;  min-height: 25px; text-align: center\"/></div></td>";
+        cell2.innerHTML = "<td class=\'tdinput\'> <div contenteditable='true' id='tags' value='defaultvaluetoignore' class='title' autocomplete='on' data-placeholder='kilo' style=\"background-color: transparent; color:#7F7F7F; width:inherit; max-width: 160px; min-width: 160px;  min-height: 25px; text-align: center\"/></div></td>";
+        cell3.innerHTML = "<td class=\'tdinput\'> <div contenteditable='true' id='tags' value='defaultvaluetoignore' class='title' autocomplete='on' data-placeholder='reps' style=\"background-color: transparent; color:#7F7F7F; width:inherit; max-width: 160px; min-width: 160px;  min-height: 25px; text-align: center\"/></div></td>";
+        cell4.innerHTML = "<td class=\'tdinput\'> <div contenteditable='true' id='tags' value='defaultvaluetoignore' class='title' autocomplete='on' data-placeholder='sets' style=\"background-color: transparent; color:#7F7F7F; width:inherit; max-width: 160px; min-width: 160px;  min-height: 25px; text-align: center\"/></div></td>";
+        cell5.innerHTML = "<td class=\'tdinput\'> <div contenteditable='true' id='tags' value='defaultvaluetoignore' class='title' autocomplete='on' data-placeholder='maxr' style=\"background-color: transparent; color:#7F7F7F; width:inherit; max-width: 160px; min-width: 160px;  min-height: 25px; text-align: center\"/></div></td>";
+        cell6.innerHTML = "<td class=\'tdinput\'> <div contenteditable='true' id='tags' value='defaultvaluetoignore' class='title' autocomplete='on' data-placeholder='time' style=\"background-color: transparent; color:#7F7F7F; width:inherit; max-width: 160px; min-width: 160px;  min-height: 25px; text-align: center\"/></div></td>";
         cell7.innerHTML = "<button style='background: #222222; color: #28AD5F; font-style=bold; float: right' onclick='deleteRow(" + tableName + ", "+ rowCount + ")'>&nbsp<i class='fas fa-times-circle'></i></i></button>";
 
         row.setAttribute("id", "somerow", 0);
@@ -324,24 +345,36 @@
         }
     }
 
-    function check_roles(assigned_roles)
+    function check_roles(assigned_roles, full_check)
     {
-        var roles = [];
-
-        for(var i = 0; i < assigned_roles.length; i++)
+        if(full_check)
         {
-            if(assigned_roles[i] == 'paid_account' || assigned_roles[i] == 'friend_account')
-                roles[0] = assigned_roles[i];
+            var roles = [];
+
+            for(var i = 0; i < assigned_roles.length; i++)
+            {
+                if(assigned_roles[i] == 'paid_account' || assigned_roles[i] == 'friend_account')
+                    roles[0] = assigned_roles[i];
+            }
+
+            var superaccount = (roles.indexOf("friend_account") > -1) || (roles.indexOf("paid_account") > -1);
+
+            if(!superaccount)
+            {
+                document.getElementById("stats-button").style.display = "none";         // Remove the stats button
+                document.getElementById("logout-button").style.marginTop = "20%";       // Add a matching margin to the button instead of stats which is not existent
+                maximum_allowed_plans = 2;                                              // Allow only two plans per not super user
+            }
         }
+        
+        var request = new XMLHttpRequest();
+        var url = 'http://jakob.ml:50003/trainingsplan/getAmountOfPlans/';
+        var username = getusername();
 
-        var superaccount = (roles.indexOf("friend_account") > -1) || (roles.indexOf("paid_account") > -1);
-
-        if(!superaccount)
-        {
-            document.getElementById("stats-button").style.display = "none";
-            document.getElementById("logout-button").style.marginTop = "20%";
-        }
-
+        var xmlHttp = new XMLHttpRequest();
+        xmlHttp.open("GET", url + username + '/2', false);     // false for synchronous request
+        xmlHttp.send(null);
+        amount_plans = xmlHttp.responseText;
     }
 
     function reorder_indexes(tableName, index)
@@ -491,12 +524,12 @@
 
         cell1.val = exid;
 
-        cell1.innerHTML = "<td class=\'tdinput\'> <div contenteditable='true' id='tags' data-placeholder='name' value=" + exid + " class='title' autocomplete='on' style=\"background-color: transparent; color:#7F7F7F; width:inherit; max-width: 160px; min-width: 160px;  min-height: 25px; max-height: 25px; text-align: center\"/>" + exname    + "</div></td>";
-        cell2.innerHTML = "<td class=\'tdinput\'> <div contenteditable='true' id='tags' data-placeholder='kilo' value=" + exid + " class='title' autocomplete='on' style=\"background-color: transparent; color:#7F7F7F; width:inherit; max-width: 160px; min-width: 160px;  min-height: 25px; max-height: 25px; text-align: center\"/>" + exweight  + "</div></td>";
-        cell3.innerHTML = "<td class=\'tdinput\'> <div contenteditable='true' id='tags' data-placeholder='reps' value=" + exid + " class='title' autocomplete='on' style=\"background-color: transparent; color:#7F7F7F; width:inherit; max-width: 160px; min-width: 160px;  min-height: 25px; max-height: 25px; text-align: center\"/>" + exreps    + "</div></td>";
-        cell4.innerHTML = "<td class=\'tdinput\'> <div contenteditable='true' id='tags' data-placeholder='sets' value=" + exid + " class='title' autocomplete='on' style=\"background-color: transparent; color:#7F7F7F; width:inherit; max-width: 160px; min-width: 160px;  min-height: 25px; max-height: 25px; text-align: center\"/>" + exsets    + "</div></td>";
-        cell5.innerHTML = "<td class=\'tdinput\'> <div contenteditable='true' id='tags' data-placeholder='maxr' value=" + exid + " class='title' autocomplete='on' style=\"background-color: transparent; color:#7F7F7F; width:inherit; max-width: 160px; min-width: 160px;  min-height: 25px; max-height: 25px; text-align: center\"/>" + exmaxreps + "</div></td>";
-        cell6.innerHTML = "<td class=\'tdinput\'> <div contenteditable='true' id='tags' data-placeholder='time' value=" + exid + " class='title' autocomplete='on' style=\"background-color: transparent; color:#7F7F7F; width:inherit; max-width: 160px; min-width: 160px;  min-height: 25px; max-height: 25px; text-align: center\"/>" + expause   + "</div></td>";
+        cell1.innerHTML = "<td class=\'tdinput\'> <div contenteditable='true' id='tags' data-placeholder='name' value=" + exid + " class='title' autocomplete='on' style=\"background-color: transparent; color:#7F7F7F; width:inherit; max-width: 160px; min-width: 160px;  min-height: 25px; text-align: center\"/>" + exname    + "</div></td>";
+        cell2.innerHTML = "<td class=\'tdinput\'> <div contenteditable='true' id='tags' data-placeholder='kilo' value=" + exid + " class='title' autocomplete='on' style=\"background-color: transparent; color:#7F7F7F; width:inherit; max-width: 160px; min-width: 160px;  min-height: 25px; text-align: center\"/>" + exweight  + "</div></td>";
+        cell3.innerHTML = "<td class=\'tdinput\'> <div contenteditable='true' id='tags' data-placeholder='reps' value=" + exid + " class='title' autocomplete='on' style=\"background-color: transparent; color:#7F7F7F; width:inherit; max-width: 160px; min-width: 160px;  min-height: 25px; text-align: center\"/>" + exreps    + "</div></td>";
+        cell4.innerHTML = "<td class=\'tdinput\'> <div contenteditable='true' id='tags' data-placeholder='sets' value=" + exid + " class='title' autocomplete='on' style=\"background-color: transparent; color:#7F7F7F; width:inherit; max-width: 160px; min-width: 160px;  min-height: 25px; text-align: center\"/>" + exsets    + "</div></td>";
+        cell5.innerHTML = "<td class=\'tdinput\'> <div contenteditable='true' id='tags' data-placeholder='maxr' value=" + exid + " class='title' autocomplete='on' style=\"background-color: transparent; color:#7F7F7F; width:inherit; max-width: 160px; min-width: 160px;  min-height: 25px; text-align: center\"/>" + exmaxreps + "</div></td>";
+        cell6.innerHTML = "<td class=\'tdinput\'> <div contenteditable='true' id='tags' data-placeholder='time' value=" + exid + " class='title' autocomplete='on' style=\"background-color: transparent; color:#7F7F7F; width:inherit; max-width: 160px; min-width: 160px;  min-height: 25px; text-align: center\"/>" + expause   + "</div></td>";
         cell7.innerHTML = "<button style='background: #222222; color: #28AD5F; font-style=bold; float: right' onclick='deleteRow(" + tableName + ", "+ rowCount + ")'>&nbsp<i class='fas fa-times-circle'></i></i></button>";
 
         row.setAttribute("id", "somerow", 0);
@@ -649,6 +682,7 @@
             else if(i == 5)
                 parsed = parsed + "\"pause\":\"" + res[i].substring(raw.indexOf('center">') + 8, res[i].indexOf('</div>')) + '"}';
 
+            // Count how many entries are empty to display warning message
             if(res[i].substring(raw.indexOf('center">') + 8, res[i].indexOf('</div>')).length == 0)
                 empty_values++;
         }
@@ -1181,11 +1215,13 @@
             labels[i].className += " mobile_label";
         }
         
-        var tds = document.getElementsByTagName("td");
+        /*var tds = document.getElementsByTagName("td");
         for(var i = 0, il = tds.length; i < il; i++)
         {
             tds[i].className += " mobile_td";
         }
+        */
+        
     }
 
     document.addEventListener('DOMContentLoaded', function()

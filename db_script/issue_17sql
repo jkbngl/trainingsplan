@@ -1,0 +1,1 @@
+ALTER TABLE tp_preferences add check_simple_view BOOLEAN DEFAULT FALSE NOT NULL;

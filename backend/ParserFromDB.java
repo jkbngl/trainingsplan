@@ -276,19 +276,32 @@ public class ParserFromDB
 	public static String getMaxPlanID(String username, Connection connection) throws SQLException
 	{
 		String maxplanid = "";
+		ResultSet resultset = null;
 		
-		String query = "select p.id "
-				+ "from tp_user u "
-				+ "join tp_plan p "
-				+ "on u.id = p.userid_fk "
-				+ "where username = (?) "
-				+ "and p.id = (select max(p.id) from tp_user u join tp_plan p on u.id = p.userid_fk where username = (?))";
+		String query =	"select  p.id "
+					  + "from    tp_user u "
+					  + "join 	 tp_plan p on u.id = p.userid_fk "
+					  + "where username = (?) "
+					  + "and p.id = (select  max(p.id) "
+					  + "			 from 	 tp_user u join tp_plan p on u.id = p.userid_fk "
+					  + "			 where username = (?) "
+					  + "			 and p.deleted = 0); ";
 		
 		
 		PreparedStatement pstmt = connection.prepareStatement(query);
 		pstmt.setString(1, username);
 		pstmt.setString(2, username);
-		ResultSet resultset = pstmt.executeQuery();
+		
+		System.out.println(pstmt.toString());
+		
+		try
+		{
+			resultset = pstmt.executeQuery();
+		}
+		catch(SQLException e)
+		{
+			e.printStackTrace();
+		}
 	
 		while (resultset.next()) 
 		{
@@ -428,18 +441,19 @@ public class ParserFromDB
 		String possible_base_ex = "{\"base_ex\": \"" + base_ex + "\",\"values\": [";
 
 		
-		String query = "select  date(e.created) "
-				     + "      , e.weight "
-				     + "      , e.reps "
-				     + "      , e.sets "
-				     + "      , e.max_rep "
-				     + "      , e.id "
-				     + "      , p.name "
-				     + "  from  tp_exercise e "
-				     + "  join  tp_day  d on e.day_fk = d.id "
-				     + "  join  tp_plan p on d.plan_fk = p.id"
-				     + " where  base_ex in (select base_ex from tp_exercise where  base_ex = (?)) "
-				     + "order by e.id; ";
+		String query = "select  date(e.created) trimmed_date "
+			         + "      , max(CAST(e.weight AS int)) "
+			         + "      , max(CAST(e.reps AS int)) "
+			         + "      , max(CAST(e.sets AS int)) "
+			         + "      , max(CAST(e.max_rep AS int)) "
+			         + "      , max(e.id)  "
+			         // + "      --, p.name  "
+			         + "  from  tp_exercise e  "
+			         + "  join  tp_day  d on e.day_fk = d.id  "
+			         + "  join  tp_plan p on d.plan_fk = p.id "
+			         + " where  base_ex in (select base_ex from tp_exercise where  base_ex = (?))  "
+			         + "group by trimmed_date "
+			         + "order by max(e.id); ";
 				
 		System.out.println(query);
 		

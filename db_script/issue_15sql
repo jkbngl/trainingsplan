@@ -1,0 +1,27 @@
+select  date(e.created) trimmed_date
+      , max(CAST(e.weight AS int))
+      , max(CAST(e.reps AS int))
+      , max(CAST(e.sets AS int))
+      , max(CAST(e.max_rep AS int))
+      , max(e.id) 
+      --, p.name 
+  from  tp_exercise e 
+  join  tp_day  d on e.day_fk = d.id 
+  join  tp_plan p on d.plan_fk = p.id
+ where  base_ex in (select base_ex from tp_exercise where  base_ex = 550) 
+group by trimmed_date
+order by max(e.id)
+;
+
+select  date(e.created) 
+      , e.weight 
+      , e.reps 
+      , e.sets 
+      , e.max_rep 
+      , e.id 
+      , p.name 
+  from  tp_exercise e 
+  join  tp_day  d on e.day_fk = d.id 
+  join  tp_plan p on d.plan_fk = p.id
+ where  base_ex in (select base_ex from tp_exercise where  base_ex = 550) 
+order by e.id;

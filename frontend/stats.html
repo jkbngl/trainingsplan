@@ -82,7 +82,7 @@
 
         <div class="page__toggle" style="margin-left: 10%; margin-top: 12%;">
                 <label class="toggle">
-                <input id="simplify-ui" onchange="closeNav();" onclick="simplify_ui()" class="toggle__input" type="checkbox">
+                <input id="simplify-ui" onchange="closeNav();" onclick="simplify_ui(); save_settings();" class="toggle__input" type="checkbox">
                 <span class="toggle__label">
                 <span class="toggle__text">Simplified interface</span>
                 </span>
@@ -436,6 +436,17 @@
         else
             document.getElementById("max_rep_box").checked = false;
 
+        // if undefined dont set because default is unselected
+        if(json.check_simple_view == 't')
+        {
+            document.getElementById("simplify-ui").checked = true;
+            simplify_ui();
+        }
+        else if(typeof json.check_sets == 'undefined')
+            document.getElementById("simplify-ui").checked = false;
+        else
+            document.getElementById("simplify-ui").checked = false;
+
         if(does_json_contain_data(json))
         {
             document.getElementById("weight-slider-button").innerHTML = 'Weight Faktor: ' + json.mul_weight + ' &nbsp';
@@ -698,10 +709,13 @@
         preferences.check_reps = document.getElementById("reps_box").checked;
         preferences.check_sets = document.getElementById("sets_box").checked;
         preferences.check_maxrep = document.getElementById("max_rep_box").checked;
+        preferences.check_simple_view = document.getElementById('simplify-ui').checked;
+
         preferences.mul_weight = document.getElementById('weight-slider').value;
         preferences.mul_reps = document.getElementById('reps-slider').value;
         preferences.mul_sets = document.getElementById('sets-slider').value;
-        preferences.mul_maxrep = document.getElementById('maxrep-slider').value
+        preferences.mul_maxrep = document.getElementById('maxrep-slider').value;
+
         
         var xhr = new XMLHttpRequest();
         var url = "http://jakob.ml:50003/trainingsplan/send_preferences";

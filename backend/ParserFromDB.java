@@ -442,31 +442,39 @@ public class ParserFromDB
 
 		
 		String query = "select  date(e.created) trimmed_date "
-			         + "      , max(CAST(e.weight AS int)) "
-			         + "      , max(CAST(e.reps AS int)) "
-			         + "      , max(CAST(e.sets AS int)) "
-			         + "      , max(CAST(e.max_rep AS int)) "
-			         + "      , max(e.id)  "
+					 + "       , max(CAST((CASE WHEN e.weight  = '' THEN '-1' ELSE e.weight  END) AS int)) "
+					 + "       , max(CAST((CASE WHEN e.reps    = '' THEN '-1' ELSE e.reps    END) AS int)) "
+					 + "       , max(CAST((CASE WHEN e.sets    = '' THEN '-1' ELSE e.sets    END) AS int)) "
+					 + "       , max(CAST((CASE WHEN e.max_rep = '' THEN '-1' ELSE e.max_rep END) AS int)) "
+				     + "      , max(e.id)  "
 			         // + "      --, p.name  "
-			         + "  from  tp_exercise e  "
-			         + "  join  tp_day  d on e.day_fk = d.id  "
-			         + "  join  tp_plan p on d.plan_fk = p.id "
-			         + " where  base_ex in (select base_ex from tp_exercise where  base_ex = (?))  "
-			         + "group by trimmed_date "
-			         + "order by max(e.id); ";
+				     + "  from  tp_exercise e  "
+				     + "  join  tp_day  d on e.day_fk = d.id  "
+				     + "  join  tp_plan p on d.plan_fk = p.id "
+				     + " where  base_ex in (select base_ex from tp_exercise where  base_ex = (?))  "
+				     + "group by trimmed_date "
+				     + "order by max(e.id); ";
 				
 		System.out.println(query);
 		
-		PreparedStatement pstmt = connection.prepareStatement(query);
-		pstmt.setInt(1, base_ex);
-		ResultSet resultset = pstmt.executeQuery();
-				
-		while (resultset.next()) 
+		try 
 		{
-			if(resultset.isLast())
-				possible_base_ex = possible_base_ex +"{ \"id\":\"" + resultset.getString(6) + "\", \"created\" : \"" + resultset.getString(1) + "\", \"weight\" : \"" + resultset.getString(2) + "\", \"reps\" : \"" + resultset.getString(3) + "\", \"sets\" : \"" + resultset.getString(4) + "\", \"max_rep\": \"" + resultset.getString(5) + "\"}";
-			else 				
-				possible_base_ex = possible_base_ex +"{ \"id\":\"" + resultset.getString(6) + "\", \"created\" : \"" + resultset.getString(1) + "\", \"weight\" : \"" + resultset.getString(2) + "\", \"reps\" : \"" + resultset.getString(3) + "\", \"sets\" : \"" + resultset.getString(4) + "\", \"max_rep\": \"" + resultset.getString(5) + "\"},";
+			PreparedStatement pstmt = connection.prepareStatement(query);
+			pstmt.setInt(1, base_ex);
+			ResultSet resultset = pstmt.executeQuery();
+					
+			while (resultset.next()) 
+			{
+				if(resultset.isLast())
+					possible_base_ex = possible_base_ex +"{ \"id\":\"" + resultset.getString(6) + "\", \"created\" : \"" + resultset.getString(1) + "\", \"weight\" : \"" + resultset.getString(2) + "\", \"reps\" : \"" + resultset.getString(3) + "\", \"sets\" : \"" + resultset.getString(4) + "\", \"max_rep\": \"" + resultset.getString(5) + "\"}";
+				else 				
+					possible_base_ex = possible_base_ex +"{ \"id\":\"" + resultset.getString(6) + "\", \"created\" : \"" + resultset.getString(1) + "\", \"weight\" : \"" + resultset.getString(2) + "\", \"reps\" : \"" + resultset.getString(3) + "\", \"sets\" : \"" + resultset.getString(4) + "\", \"max_rep\": \"" + resultset.getString(5) + "\"},";
+			}
+		}
+		catch (SQLException e) 
+		{
+			System.out.println("Error on retrieving stats data!");
+			e.printStackTrace();
 		}
 		
 		possible_base_ex = possible_base_ex + "]}";

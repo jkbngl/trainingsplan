@@ -76,7 +76,7 @@
         
                 
        
-        <button onclick="reset_settings();"class="button" style="top: 10px; width:80%; margin-left: 10%;"><i class="fas fa-hammer"></i> Reset Settings</button>
+        <button onclick="reset_settings(); save_settings()"class="button" style="top: 10px; width:80%; margin-left: 10%;"><i class="fas fa-hammer"></i> Reset Settings</button>
         <button onclick="download();" class="button" style="top: 10px; width:80%; margin-left: 10%; margin-top: 20%;"><i class="fas fa-file-export"></i> Export</button>
         <button onclick="keycloak.logout('/trainingsplanorwhateveritdoesntworkanyway'); kc.logout()"class="button" style="top: 10px; width:80%; margin-left: 10%; "><i class="fas fa-sign-out-alt"></i> Logout</button>
 
@@ -84,7 +84,10 @@
                 <label class="toggle">
                 <input id="simplify-ui" onchange="closeNav();" onclick="simplify_ui(); save_settings();" class="toggle__input" type="checkbox">
                 <span class="toggle__label">
-                <span class="toggle__text">Simplified interface</span>
+                <span class="toggle__text">Simple interface 
+                    <i class="fas fa-info-circle" rel="tooltip" title="If simple Interface is turned on, the website will use the default values (check what the default settings are by clicking reset settings above, Attention: old settings will be lost) and in addition make the interface simpler by not showing the advanced settings" id="info-step-2"></i>
+                </span>
+                
                 </span>
                 </label>
             </div>

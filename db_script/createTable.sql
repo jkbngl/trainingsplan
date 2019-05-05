@@ -1,3 +1,6 @@
+-- Get the data from linux command line, log onto container as postgres user and execute following command per table
+-- postgres@localhost:/$ pg_dump postgres -t public.tp_user --schema-only
+
 drop table tp_exercise;
 drop table tp_day;
 drop table tp_plan;

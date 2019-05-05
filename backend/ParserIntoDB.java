@@ -787,8 +787,8 @@ public class ParserIntoDB
 		int user_id = getUserid(obj.get("username").toString(), connection);
 
         PreparedStatement st = connection.prepareStatement("    INSERT INTO tp_preferences (userid_fk,    mul_weight, mul_reps,   mul_sets, mul_maxrep "
-        													 + "                          , check_weight, check_reps, check_sets, check_maxrep, changed) "
-        													 + "VALUES ( ?, ?, ?, ?, ?, ?, ?, ?, ?, now())"
+        													 + "                          , check_weight, check_reps, check_sets, check_maxrep, check_simple_view, changed) "
+        													 + "VALUES ( ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, now())"
         													 + "ON CONFLICT (userid_fk) DO UPDATE "
         													 + "SET "
         													 + " mul_weight = EXCLUDED.mul_weight, "
@@ -799,39 +799,45 @@ public class ParserIntoDB
         													 + " check_reps = EXCLUDED.check_reps, "
         													 + " check_sets = EXCLUDED.check_sets, "
         													 + " check_maxrep = EXCLUDED.check_maxrep, "
+        													 + " check_simple_view = EXCLUDED.check_simple_view, "
         													 + " changed = now()"
         													 + ";");
         
-        st.setInt(1, user_id);
-        st.setInt(2,Integer.parseInt(obj.get("mul_weight").toString()));
-        st.setInt(3, Integer.parseInt(obj.get("mul_reps").toString()));
-        st.setInt(4, Integer.parseInt(obj.get("mul_sets").toString()));
-        st.setInt(5, Integer.parseInt(obj.get("mul_maxrep").toString()));
-
-        if(obj.getBoolean("check_weight"))
-        	st.setBoolean(6, true);
-        else
-        	st.setBoolean(6, false);
-        
-        if(obj.getBoolean("check_reps"))
-        	st.setBoolean(7, true);
-        else
-        	st.setBoolean(7, false);
-        
-        if(obj.getBoolean("check_sets"))
-        	st.setBoolean(8, true);
-        else
-        	st.setBoolean(8, false);
-        
-        if(obj.getBoolean("check_maxrep"))
-        	st.setBoolean(9, true);
-        else
-        	st.setBoolean(9, false);
-        
-		System.out.println("test - " + st);
-
-		try 
+        try 
 		{
+	        st.setInt(1, user_id);
+	        st.setInt(2,Integer.parseInt(obj.get("mul_weight").toString()));
+	        st.setInt(3, Integer.parseInt(obj.get("mul_reps").toString()));
+	        st.setInt(4, Integer.parseInt(obj.get("mul_sets").toString()));
+	        st.setInt(5, Integer.parseInt(obj.get("mul_maxrep").toString()));
+	
+	        if(obj.getBoolean("check_weight"))
+	        	st.setBoolean(6, true);
+	        else
+	        	st.setBoolean(6, false);
+	        
+	        if(obj.getBoolean("check_reps"))
+	        	st.setBoolean(7, true);
+	        else
+	        	st.setBoolean(7, false);
+	        
+	        if(obj.getBoolean("check_sets"))
+	        	st.setBoolean(8, true);
+	        else
+	        	st.setBoolean(8, false);
+	        
+	        if(obj.getBoolean("check_maxrep"))
+	        	st.setBoolean(9, true);
+	        else
+	        	st.setBoolean(9, false);
+	                
+	        if(obj.getBoolean("check_simple_view"))
+	        	st.setBoolean(10, true);
+	        else
+	        	st.setBoolean(10, false);
+	                
+			System.out.println("test - " + st);
+
 			st.executeUpdate();
 		} catch (Exception e) {
 			e.printStackTrace();

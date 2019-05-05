@@ -531,6 +531,7 @@ public class ParserFromDB
 				     + "      , check_reps "
 				     + "      , check_sets  "
 				     + "      , check_maxrep "
+				     + "      , check_simple_view "
 				     + "from    tp_preferences p "
 				     + "join    tp_user u on p.userid_fk = u.id "
 				     + "where   u.username = ? "
@@ -554,7 +555,7 @@ public class ParserFromDB
 			json.put ("check_reps", resultset.getString(6));
 			json.put ("check_sets", resultset.getString(7));
 			json.put ("check_maxrep", resultset.getString(8));
-	
+			json.put ("check_simple_view", resultset.getString(9));
 			
 			System.out.println(json.toString());
 	

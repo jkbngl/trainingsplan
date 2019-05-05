@@ -3,44 +3,54 @@ drop table tp_day;
 drop table tp_plan;
 drop table tp_user;
 
-create table tp_user(
-       ID  SERIAL PRIMARY KEY,
-       username    varchar(80)   NOT NULL UNIQUE
+CREATE TABLE public.tp_user (
+    id integer NOT NULL,
+    username character varying(80) NOT NULL,
+    created timestamp without time zone DEFAULT now()
 );
 
 
-create table tp_plan(
-        ID  SERIAL PRIMARY KEY,
-        userid_FK   INT        NOT NULL    REFERENCES tp_user (id)
+CREATE TABLE public.tp_plan (
+    id integer NOT NULL,
+    userid_fk integer NOT NULL,
+    name character varying(80),
+    created timestamp without time zone DEFAULT now(),
+    deleted integer DEFAULT 0,
+    changed timestamp without time zone DEFAULT now()
 );
 
-create table tp_day(
-        ID  SERIAL PRIMARY KEY,
-        plan_FK     INT        NOT NULL    REFERENCES tp_plan(id)
+CREATE TABLE public.tp_day (
+    id integer NOT NULL,
+    plan_fk integer NOT NULL
 );
 
-create table tp_exercise(
-        ID  SERIAL PRIMARY KEY,
-        day_FK      INT        NOT NULL    REFERENCES tp_day(id),
-        weight      INT,
-        reps        INT,
-        sets        INT,
-        name        varchar(80),
-        pausetime   INT,
-        MAX_REP     INT
+CREATE TABLE public.tp_exercise (
+    id integer NOT NULL,
+    day_fk integer NOT NULL,
+    weight character varying(80) DEFAULT '0'::character varying,
+    reps character varying(80) DEFAULT '0'::character varying,
+    sets character varying(80) DEFAULT '0'::character varying,
+    name character varying(80) DEFAULT '0'::character varying,
+    pausetime character varying(80) DEFAULT '0'::character varying,
+    max_rep character varying(80) DEFAULT '0'::character varying,
+    deprecated integer DEFAULT 0,
+    created timestamp without time zone DEFAULT now(),
+    changed timestamp without time zone,
+    base_ex integer DEFAULT 0,
+    referenced_ex integer DEFAULT 0
 );
 
-create table tp_preferences 
-(
-     userid_FK   INT        NOT NULL    REFERENCES tp_user (id) PRIMARY KEY,
-     mul_weight INT default 1,
-     mul_reps INT default 1,
-     mul_sets INT default 1,
-     mul_maxrep INT default 1,
-     check_weight  BOOLEAN DEFAULT TRUE NOT NULL ,
-     check_reps  BOOLEAN DEFAULT TRUE NOT NULL ,
-     check_sets  BOOLEAN DEFAULT TRUE NOT NULL ,
-     check_maxrep BOOLEAN DEFAULT FALSE NOT NULL ,
-     created timestamp DEFAULT now(),
-     changes timestamp DEFAULT now()
+CREATE TABLE public.tp_preferences (
+    userid_fk integer NOT NULL,
+    mul_weight integer DEFAULT 1,
+    mul_reps integer DEFAULT 1,
+    mul_sets integer DEFAULT 1,
+    mul_maxrep integer DEFAULT 1,
+    check_weight boolean DEFAULT true NOT NULL,
+    check_reps boolean DEFAULT true NOT NULL,
+    check_sets boolean DEFAULT true NOT NULL,
+    check_maxrep boolean DEFAULT false NOT NULL,
+    created timestamp without time zone DEFAULT now(),
+    changed timestamp without time zone DEFAULT now(),
+    check_simple_view boolean DEFAULT false NOT NULL
 );

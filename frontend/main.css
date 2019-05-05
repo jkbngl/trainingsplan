@@ -491,7 +491,8 @@ select option {
 .title:empty:not(:focus):before {
   content: attr(data-placeholder);
   color: #4e4e4e;
-  font-weight: bold; 
+  /*color: #29a259;*/
+  /*font-weight: bold; */
 }
 
 .sidenav {

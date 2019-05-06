@@ -20,6 +20,14 @@
 	</p>
 </div>
 
+## Screenshots ##
+Data Input
+<img src="https://imgur.com/oOLGYnu" width="140" title="hover text">
+
+Stats
+
+<img src="https://imgur.com/O0G6eGP" width="140" title="hover text">
+<img src="https://imgur.com/MocvfjR" width="140" title="hover text">
 - - - -
 ## Get access to stats ##
 

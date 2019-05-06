@@ -442,10 +442,10 @@ public class ParserFromDB
 
 		
 		String query = "select  date(e.created) trimmed_date "
-					 + "       , max(CAST((CASE WHEN e.weight  = '' THEN '-1' ELSE e.weight  END) AS int)) "
-					 + "       , max(CAST((CASE WHEN e.reps    = '' THEN '-1' ELSE e.reps    END) AS int)) "
-					 + "       , max(CAST((CASE WHEN e.sets    = '' THEN '-1' ELSE e.sets    END) AS int)) "
-					 + "       , max(CAST((CASE WHEN e.max_rep = '' THEN '-1' ELSE e.max_rep END) AS int)) "
+					 + "       , max(CAST((CASE WHEN e.weight  = '' THEN '1' ELSE e.weight  END) AS int)) "
+					 + "       , max(CAST((CASE WHEN e.reps    = '' THEN '1' ELSE e.reps    END) AS int)) "
+					 + "       , max(CAST((CASE WHEN e.sets    = '' THEN '1' ELSE e.sets    END) AS int)) "
+					 + "       , max(CAST((CASE WHEN e.max_rep = '' THEN '1' ELSE e.max_rep END) AS int)) "
 				     + "      , max(e.id)  "
 			         // + "      --, p.name  "
 				     + "  from  tp_exercise e  "

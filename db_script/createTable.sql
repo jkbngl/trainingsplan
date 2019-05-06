@@ -1,4 +1,5 @@
 -- Get the data from linux command line, log onto container as postgres user and execute following command per table
+-- docker exec -it --user postgres postgresTP bash
 -- postgres@localhost:/$ pg_dump postgres -t public.tp_user --schema-only
 
 drop table tp_exercise;

@@ -22,7 +22,7 @@
 
 ## Screenshots ##
 Data Input
-<img src="https://imgur.com/oOLGYnu" width="140" title="hover text">
+<blockquote class="imgur-embed-pub" lang="en" data-id="oOLGYnu"><a href="//imgur.com/oOLGYnu"></a></blockquote><script async src="//s.imgur.com/min/embed.js" charset="utf-8"></script>
 
 Stats
 

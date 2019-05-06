@@ -22,12 +22,14 @@
 
 ## Screenshots ##
 Data Input
-<blockquote class="imgur-embed-pub" lang="en" data-id="oOLGYnu"><a href="//imgur.com/oOLGYnu"></a></blockquote><script async src="//s.imgur.com/min/embed.js" charset="utf-8"></script>
+![alt text](https://raw.githubusercontent.com/jkbngl/trainingsplan/master/pictures/oOLGYnu%20-%20Imgur.png)
+
 
 Stats
 
-<img src="https://imgur.com/O0G6eGP" width="140" title="hover text">
-<img src="https://imgur.com/MocvfjR" width="140" title="hover text">
+![alt text](https://raw.githubusercontent.com/jkbngl/trainingsplan/master/pictures/MocvfjR%20-%20Imgur.png)
+![alt text](https://raw.githubusercontent.com/jkbngl/trainingsplan/master/pictures/O0G6eGP%20-%20Imgur.png)
+
 - - - -
 ## Get access to stats ##
 

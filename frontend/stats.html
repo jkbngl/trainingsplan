@@ -538,20 +538,20 @@
 
             // Dont use else if because multiple checkboxes can be checked
             if(weight && typeof(json.values[i].weight) != 'undefined' && json.values[i].weight != null && json.values[i].weight.length > 0)
-                if(json.values[i].weight.match(/\d/g).join("") > 0)
-                    values[i] *= json.values[i].weight.match(/\d/g).join("") * mul_weight;
+                if(parseFloat(json.values[i].weight.match(/[\d\.]+/)) > 0)
+                    values[i] *= parseFloat(json.values[i].weight.match(/[\d\.]+/)) * mul_weight;
             
             if(reps && typeof(json.values[i].reps) != 'undefined' && json.values[i].reps != null && json.values[i].reps.length > 0)
-                if(json.values[i].reps.match(/\d/g).join("") > 0)
-                    values[i] *= json.values[i].reps.match(/\d/g).join("") * mul_reps;
+                if(parseFloat(json.values[i].reps.match(/[\d\.]+/)) > 0)
+                    values[i] *= parseFloat(json.values[i].reps.match(/[\d\.]+/)) * mul_reps;
             
             if(sets && typeof(json.values[i].sets) != 'undefined' && json.values[i].sets != null && json.values[i].sets.length > 0)
-                if(json.values[i].sets.match(/\d/g).join("") > 0)
-                    values[i] *= json.values[i].sets.match(/\d/g).join("") * mul_sets;
+                if(parseFloat(json.values[i].sets.match(/[\d\.]+/)) > 0)
+                    values[i] *= parseFloat(json.values[i].sets.match(/[\d\.]+/)) * mul_sets;
             
             if(max_rep && typeof(json.values[i].max_rep) != 'undefined' && json.values[i].max_rep != null && json.values[i].max_rep.length > 0)
-                if(json.values[i].max_rep.match(/\d/g).join("") > 0)
-                    values[i] *= json.values[i].max_rep.match(/\d/g).join("") * mul_max_rep;
+                if(parseFloat(json.values[i].max_rep.match(/[\d\.]+/)) > 0)
+                    values[i] *= parseFloat(json.values[i].max_rep.match(/[\d\.]+/)) * mul_max_rep;
         }
 
         return values;

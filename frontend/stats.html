@@ -91,7 +91,7 @@
             </label>
         </div>
 
-        <div class="page__toggle" style="margin-left: 20%; margin-top: 12%;">
+        <div class="page__toggle" style="margin-left: 20%; margin-top: 7%;">
             <label class="toggle">
             <input id="factors-checkbox-ui" onclick="simplify_ui_partly(); save_settings();" class="toggle__input" type="checkbox">
             <span class="toggle__label">
@@ -101,12 +101,27 @@
             </span>
             </label>
         </div>
-        <div class="page__toggle" style="margin-left: 20%; margin-top: 12%;">
+        <div class="page__toggle" style="margin-left: 20%; margin-top: 5%;">
             <label class="toggle">
             <input id="checks-checkbox-ui" onclick="simplify_ui_partly(); save_settings();" class="toggle__input" type="checkbox">
             <span class="toggle__label">
                 <span class="toggle__text">Show Checks
                     <i class="fas fa-info-circle" rel="tooltip" title="If this checkbox is active you can access the part of the advanced ui where you can change the attributes that should be used to calc the data in the chart" id="info-step-2"></i>
+                </span>
+            </span>
+            </label>
+        </div>
+
+
+
+
+
+        <div class="page__toggle" style="margin-left: 10%; margin-top: 25%;">
+            <label class="toggle">
+            <input id="chart-type" onchange="closeNav();" onclick="change_chart(); save_settings();" class="toggle__input" type="checkbox">
+            <span class="toggle__label">
+                <span class="toggle__text">Bar Chart 
+                    <i class="fas fa-info-circle" rel="tooltip" title="If simple Interface is turned on, the website will use the default values (check what the default settings are by clicking reset settings above, Attention: old settings will be lost) and in addition make the interface simpler by not showing the advanced settings" id="info-step-2"></i>
                 </span>
             </span>
             </label>
@@ -121,9 +136,10 @@
             <button onclick="keycloak.logout()" class="button" value="username ..." id="username" style="top: 10px;"></button>
     </div>​
 
-    <div style="position: relative; margin-top: 30px; height: 60vh">
-            <canvas id="line-chart" height="100" ></canvas>
-        </div>
+    <div id="div-line-chart" style="position: relative; margin-top: 30px; height: 60vh;">
+        <canvas id="line-chart" height="100"></canvas>
+        <canvas id="line-chart" height="100"></canvas>        
+    </div>
 
     <div id="container">
         
@@ -233,6 +249,11 @@
     var num_ex_color = 0;
     // Used to get an overview how many exexercises are displayed and close or open the div in which additional info about the exercises can be get
     var num_ex = 0;
+
+    // global variable to handle the creation and destruction of chart easily
+    var chart;
+    // global variable to handle the creation and destruction of different chart easily, line = default
+    var chart_type = 'line';
 
     function download() 
     {
@@ -459,18 +480,28 @@
         else
             document.getElementById("max_rep_box").checked = false;
 
-        // if undefined dont set because default is unselected
+        // if undefined dont set because default is unselected -
         if(json.check_simple_view == 't')
         {
             document.getElementById("simplify-ui").checked = true;
             simplify_ui();
         }
-        else if(typeof json.check_sets == 'undefined')
-            document.getElementById("simplify-ui").checked = false;
         else
         {
             document.getElementById("simplify-ui").checked = false;
             simplify_ui();
+        }
+
+        // if undefined dont set because default is unselected
+        if(json.check_chart_type == 't')
+        {
+            document.getElementById("chart-type").checked = true;
+            create_chart("bar");
+        }
+        else
+        {
+            document.getElementById("chart-type").checked = false;
+            create_chart("line");
         }
 
         if(does_json_contain_data(json))
@@ -486,6 +517,7 @@
             document.getElementById("maxrep-slider").value = json.mul_maxrep;
         }
 
+        return json;
     }
 
     function does_json_contain_data(object) 
@@ -647,26 +679,43 @@
     {
         chart.reset();
         chart.clear();
-        chart = create_chart();
-
+        chart = create_chart(chart_type);
+        
         document.getElementById("select").selectedIndex = -1;
 
         change_div(0, 0, true);
         active_ex_in_chart = [];
         num_ex = 0;
-        console.log(num_ex);
+        // console.log(num_ex);
     }
 
     var labels = [1,2,3,4,5,6,7,8];
     var border_color_array = ["#00ad5f", "#E3170A", "#F7B32B", "#8980F5", "#102542", "#0EB1D2", "#41658A", "#A9E5BB", "#1A3A3A", "#0EB1D2"];
     var ex_names = ["kniebeuge", "bankdruecken", "seitheben", "latzug"];
 
-    var chart = create_chart();
-
-    function create_chart()
+    function get_chart_type()
     {
+
+        return "line";
+    }
+
+    function change_chart()
+    {
+        if(document.getElementById("chart-type").checked)
+            chart_type = "bar";
+        else
+            chart_type = "line";
+
+        clear_chart();
+    }
+
+    function create_chart(chart_type)
+    {
+        // Make sure it is created from a clean start
+        // clear_chart();
+
         var chart = new Chart(document.getElementById("line-chart"), {
-            type: 'line',
+            type: chart_type,
             data: {
                 labels: labels,
                 datasets: [
@@ -751,6 +800,8 @@
         preferences.check_sets = document.getElementById("sets_box").checked;
         preferences.check_maxrep = document.getElementById("max_rep_box").checked;
         preferences.check_simple_view = document.getElementById('simplify-ui').checked;
+        preferences.check_chart_type  = document.getElementById('chart-type').checked;;
+        
 
         preferences.mul_weight = document.getElementById('weight-slider').value;
         preferences.mul_reps = document.getElementById('reps-slider').value;
@@ -921,7 +972,20 @@
                 
                 available_ex = get_available_ex();            
                 append_combo(available_ex);
-                append_preferences();
+                data = append_preferences();
+                console.log(data.check_chart_type);
+
+                if(data.check_chart_type == 'f')
+                {
+                    chart_type = 'line';
+                    chart = create_chart(chart_type);
+                }    
+                else
+                {
+                    chart_type = 'bar';
+                    chart = create_chart(chart_type);
+                }
+
 
                 if( isMobile.any() ) 
                 {

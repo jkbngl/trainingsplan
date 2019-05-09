@@ -57,5 +57,5 @@ CREATE TABLE public.tp_preferences (
     created timestamp without time zone DEFAULT now(),
     changed timestamp without time zone DEFAULT now(),
     check_simple_view boolean DEFAULT false NOT NULL,
-    check_chart_type integer DEFAULT 0
+    check_chart_type boolean DEFAULT false NOT NULL
 );

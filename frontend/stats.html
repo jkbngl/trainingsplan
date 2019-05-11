@@ -619,12 +619,22 @@
         if(document.getElementById("chart-type").checked == true)
             clear_chart(clear_chart);
 
-        chart.data.datasets.push({
-            data: values,
-            label: ex_name,
-            borderColor: border_color_array[num_ex_color],
-            fill: false
-        });
+        if(document.getElementById("chart-type").checked == false)
+            chart.data.datasets.push({
+                data: values,
+                label: ex_name,
+                borderColor: border_color_array[num_ex_color],
+                fill: false
+            });
+        else
+        {
+            chart.data.datasets.push({
+                data: values,
+                label: ex_name,
+                backgroundColor: border_color_array,
+            });
+        }
+            
 
         if(num_ex_color == border_color_array.length - 1)
             num_ex_color = 0;

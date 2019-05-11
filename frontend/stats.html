@@ -729,19 +729,19 @@
             },
             options: {
                 ticks: {
-              beginAtZero: false,
-              min: 0,
-              max: 5.03,
-              stepSize: 1,
-              padding: 10,
-              fontFamily: 'Karla, sans-serif',
-              maxRotation: 0,
-              callback: function(value, index, values) {
-                if (value !== 5.03) {
-                  return values[index]
-                }
-              }
-            },
+                    beginAtZero: false,
+                    min: 0,
+                    max: 5.03,
+                    stepSize: 1,
+                    padding: 10,
+                    fontFamily: 'Karla, sans-serif',
+                    maxRotation: 0,
+                    callback: function(value, index, values) {
+                        if (value !== 5.03) {
+                            return values[index]
+                        }
+                    }
+                },
                 title: {
                     display: false,
                     text: 'Trainingsplan'
@@ -752,6 +752,13 @@
                     labels: {
                         fontSize: 20
                     }
+                },
+                scales: {
+                    yAxes: [{
+                        ticks: {
+                            beginAtZero: true
+                        }
+                    }]
                 },
                 tooltips: {
                     enabled: true,

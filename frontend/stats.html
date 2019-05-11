@@ -616,6 +616,9 @@
     {
         console.log(values);
 
+        if(document.getElementById("chart-type").checked == true)
+            clear_chart(clear_chart);
+
         chart.data.datasets.push({
             data: values,
             label: ex_name,
@@ -632,6 +635,8 @@
         // needs to be checked before numbers gets increased
         change_div(all_ex, ex_name, false);
         num_ex++;
+
+        
 
         chart.update();
     }

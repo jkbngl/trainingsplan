@@ -132,7 +132,7 @@
         <button onclick="openNav()" class="button" style="top: 10px;"><i class="fas fa-bars"></i></span>
             <!-- <button onclick="addTable(true)" class="button" style="top: 10px;">Add new Day</button>-->
             <button onclick="window.location.href='index.html'" class="button" style="top: 10px;" ><i class="fas fa-home"></i> Home</button>
-            <button onclick="closeNav(); clear_chart()" class="button" style="top: 10px;" ><i class="fas fa-trash"></i> Clear</button>
+            <button onclick="closeNav(); clear_chart(true)" class="button" style="top: 10px;" ><i class="fas fa-trash"></i> Clear</button>
             <button onclick="keycloak.logout()" class="button" value="username ..." id="username" style="top: 10px;"></button>
     </div>​
 
@@ -617,12 +617,13 @@
         console.log(values);
 
         if(document.getElementById("chart-type").checked == true)
-            clear_chart(clear_chart);
+            clear_chart(false);
 
         if(document.getElementById("chart-type").checked == false)
             chart.data.datasets.push({
                 data: values,
                 label: ex_name,
+                labels: [5,4,3,2,1],
                 borderColor: border_color_array[num_ex_color],
                 fill: false
             });
@@ -631,6 +632,8 @@
             chart.data.datasets.push({
                 data: values,
                 label: ex_name,
+                labels: [5,4,3,2,1],
+
                 backgroundColor: border_color_array,
             });
         }
@@ -690,13 +693,14 @@
         return parse;
     }
 
-    function clear_chart()
+    function clear_chart(clearSelect)
     {
         chart.reset();
         chart.clear();
         chart = create_chart(chart_type);
         
-        document.getElementById("select").selectedIndex = -1;
+        if(clearSelect)
+            document.getElementById("select").selectedIndex = -1;
 
         change_div(0, 0, true);
         active_ex_in_chart = [];
@@ -716,12 +720,13 @@
 
     function change_chart()
     {
+        // Used to change between the two chart types
         if(document.getElementById("chart-type").checked)
             chart_type = "bar";
         else
             chart_type = "line";
 
-        clear_chart();
+        clear_chart(true);
     }
 
     function create_chart(chart_type)

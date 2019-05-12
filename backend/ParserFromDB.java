@@ -447,7 +447,6 @@ public class ParserFromDB
 				     + "       , max(CAST((CASE WHEN e.sets    = '' THEN '1' ELSE replace(e.sets,    ',', '.') END) AS numeric)) "
 				     + "       , max(CAST((CASE WHEN e.max_rep = '' THEN '1' ELSE replace(e.max_rep, ',', '.') END) AS numeric)) "
 				     + "      , max(e.id)  "
-				     // + "      --, p.name  "
 				     + "  from  tp_exercise e  "
 				     + "  join  tp_day  d on e.day_fk = d.id  "
 				     + "  join  tp_plan p on d.plan_fk = p.id "
@@ -475,6 +474,7 @@ public class ParserFromDB
 		{
 			System.out.println("Error on retrieving stats data!");
 			e.printStackTrace();
+			return "error on retrieving stats data";
 		}
 		
 		possible_base_ex = possible_base_ex + "]}";

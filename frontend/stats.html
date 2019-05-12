@@ -63,11 +63,30 @@
             console.log('Successfully authenticated'); 
 
             username = keycloak.idTokenParsed.name;
-
-            console.log(keycloak.idTokenParsed.name);
             check_roles(keycloak.realmAccess.roles);
 
             document.getElementById("username").innerHTML = username + ' <i class="fas fa-sign-out-alt"></i>';
+
+            var available_ex = get_available_ex();            
+            append_combo(available_ex);
+            data = append_preferences();
+
+            if(data.check_chart_type == 'f')
+            {
+                chart_type = 'line';
+                chart = create_chart(chart_type);
+            }    
+            else
+            {
+                chart_type = 'bar';
+                chart = create_chart(chart_type);
+            }
+
+
+            if( isMobile.any() ) 
+                customize_mobile();
+            else
+                ;
         }
 
         function getusername()
@@ -1030,13 +1049,13 @@
         } 
     }
 
+    /*
     document.addEventListener('DOMContentLoaded', function()
     {
         var available_ex;
         var check = function()
         {
             if(getusername().length > 0){
-                
                 
                 available_ex = get_available_ex();            
                 append_combo(available_ex);
@@ -1055,16 +1074,9 @@
 
 
                 if( isMobile.any() ) 
-                {
-                    // console.log("MOBILE DETECTED AS DEVICE");
                     customize_mobile();
-                }
                 else
-                {
-                    //customize_mobile();
-                    //console.log("PC DETECTED AS DEVICE");
                     ;
-                }
             }
             else
             {
@@ -1076,5 +1088,6 @@
 
         
     }, false);
+    */
 </script>
 </html>

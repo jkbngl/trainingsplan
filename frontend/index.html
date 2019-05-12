@@ -119,9 +119,12 @@
             username = username.toLowerCase();
             document.getElementById("username").innerHTML = username;
             
+            zoomOutMobile();
+            cleanUpTables();
+            receivePlanfromDB(true);
             check_roles(keycloak.realmAccess.roles, true);
             
-            console.log(username);  
+            // console.log(username);  
         }
 
         function getusername()
@@ -1260,6 +1263,7 @@
         
     }
 
+    /*
     document.addEventListener('DOMContentLoaded', function()
     {
         zoomOutMobile();
@@ -1281,5 +1285,6 @@
 
         zoomOutMobile();
     }, false);
+    */
 </script>
 </html>

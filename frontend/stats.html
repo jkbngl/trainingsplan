@@ -23,13 +23,26 @@
     <link rel="stylesheet" type="text/css" href="css/main.css">
     <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.7.1/css/all.css" integrity="sha384-fnmOCqbTlWIlj8LyTjo7mOUStjsKC4pOpQbqyi7RrhN7udi9RwhKkMHpvLbHG9Sr" crossorigin="anonymous">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.8.0/Chart.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@8"></script>
 
 
 
     <script src="http://jakob.ml:8081/auth/js/keycloak.js"></script> 
     <script>
         
-        var keycloak = Keycloak();
+        var keycloak;
+        try
+        {
+            keycloak = Keycloak();
+        }
+        catch(err)
+        {
+            console.log("error");
+            alert("Error with Authenfication, please try again at a later point");
+            window.stop() 
+
+            // display_error();
+        }
 
         keycloak.init({ onLoad: 'login-required' })
 
@@ -121,7 +134,7 @@
             <input id="chart-type" onchange="closeNav();" onclick="change_chart(); save_settings();" class="toggle__input" type="checkbox">
             <span class="toggle__label">
                 <span class="toggle__text">Bar Chart 
-                    <i class="fas fa-info-circle" rel="tooltip" title="If simple Interface is turned on, the website will use the default values (check what the default settings are by clicking reset settings above, Attention: old settings will be lost) and in addition make the interface simpler by not showing the advanced settings" id="info-step-2"></i>
+                    <i class="fas fa-info-circle" rel="tooltip" title="Change between the normal line chart and the bar chart to analyze your data" id="info-step-2"></i>
                 </span>
             </span>
             </label>
@@ -417,13 +430,27 @@
         var request = new XMLHttpRequest();
         var url = 'http://jakob.ml:50003/trainingsplan/get_possible_base_exs/';
         var username = getusername();
-        var xmlHttp = new XMLHttpRequest();
 
-        xmlHttp.open( "GET", url + username, false ); // false for synchronous request
-        xmlHttp.send( null );
-        available_ex = xmlHttp.responseText;
+        try
+        {
+            var xmlHttp = new XMLHttpRequest();
 
-        return available_ex;
+            xmlHttp.open( "GET", url + username, false ); // false for synchronous request
+            xmlHttp.send( null );
+            available_ex = xmlHttp.responseText;
+
+            return available_ex;
+        }
+        catch(err)
+        {
+            Swal.fire({
+              type: 'error',
+              title: 'Oops...',
+              text: 'The backend seems to be unavailable!'
+              /*,
+              footer: '<a href>Why do I have this issue?</a>'*/
+            })
+        }
     }
 
     function append_combo(json_base_exs)
@@ -538,28 +565,42 @@
 
         console.log(" exercise name + plan name: " + text)
 
-        var request = new XMLHttpRequest();
-        var url = 'http://jakob.ml:50003/trainingsplan/get_stats/';
-        var xmlHttp = new XMLHttpRequest();
+        try
+        {
+            var request = new XMLHttpRequest();
+            var url = 'http://jakob.ml:50003/trainingsplan/get_stats/';
+            var xmlHttp = new XMLHttpRequest();
 
-        xmlHttp.open( "GET", url + value, false ); // false for synchronous request
-        xmlHttp.send( null );
-        available_ex = xmlHttp.responseText;
+            xmlHttp.open( "GET", url + value, false ); // false for synchronous request
+            xmlHttp.send( null );
+            available_ex = xmlHttp.responseText;
 
-        console.log(available_ex);
+            console.log(available_ex);
 
-        var weight_box = document.getElementById("weight_box");
-        var reps_box = document.getElementById("reps_box");
-        var sets_box = document.getElementById("sets_box");
-        var max_rep_box = document.getElementById("max_rep_box");
+            var weight_box = document.getElementById("weight_box");
+            var reps_box = document.getElementById("reps_box");
+            var sets_box = document.getElementById("sets_box");
+            var max_rep_box = document.getElementById("max_rep_box");
 
-        values = get_value(available_ex, weight_box.checked, reps_box.checked, sets_box.checked, max_rep_box.checked);
+            values = get_value(available_ex, weight_box.checked, reps_box.checked, sets_box.checked, max_rep_box.checked);
 
 
-        // push the data into a global object which is accessible for the function which updates the chart dynamically
-        active_ex_in_chart.push(available_ex);
+            // push the data into a global object which is accessible for the function which updates the chart dynamically
+            active_ex_in_chart.push(available_ex);
 
-        addData(values, text, available_ex);
+            addData(values, text, available_ex);
+        }
+        catch(err)
+        {
+            Swal.fire({
+              type: 'error',
+              title: 'Oops...',
+              text: 'There seems to be a problem with your data, maybe try another exercise!'
+              /*,
+              footer: '<a href>Why do I have this issue?</a>'*/
+            })
+        }
+        
     }
 
     function get_value(json_ex, weight, reps, sets, max_rep) 
@@ -750,12 +791,12 @@
                     stepSize: 1,
                     padding: 10,
                     fontFamily: 'Karla, sans-serif',
-                    maxRotation: 0,
+                    maxRotation: 0/*,
                     callback: function(value, index, values) {
                         if (value !== 5.03) {
                             return values[index]
                         }
-                    }
+                    }*/
                 },
                 title: {
                     display: false,
@@ -1000,7 +1041,6 @@
                 available_ex = get_available_ex();            
                 append_combo(available_ex);
                 data = append_preferences();
-                console.log(data.check_chart_type);
 
                 if(data.check_chart_type == 'f')
                 {

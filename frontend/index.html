@@ -79,10 +79,23 @@
     <meta name="msapplication-TileColor" content="#ffffff">
     <meta name="theme-color" content="#ffffff">
 
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@8"></script>
     <script src="http://jakob.ml:8081/auth/js/keycloak.js"></script> 
     <script>
         
-        var keycloak = Keycloak();
+        var keycloak;
+        try
+        {
+            keycloak = Keycloak();
+        }
+        catch(err)
+        {
+            console.log("error");
+            alert("Error with Authenfication, please try again at a later point");
+            window.stop() 
+
+            // display_error();
+        }
 
         keycloak.init({ onLoad: 'login-required' })
 
@@ -135,6 +148,7 @@
     <button onclick="restore_plan(-1, false)"                       class="button" style="top: 10px; width:80%; margin-left: 10%;">                 <i class="fas fa-trash-restore-alt"></i> Restore Plans</button>
     <button id="stats-button" onclick="window.location.href='stats.html'"             class="button" style="top: 10px; width:80%; margin-left: 10%; margin-top: 20%;"><i class="fas fa-chart-line">       </i> Stats</button>
     <button id="logout-button" onclick="keycloak.logout()"                            class="button" style="top: 10px; width:80%; margin-left: 10%;">                 <i class="fas fa-sign-out-alt">     </i> Logout</button>
+    
 </div>
 
 <div id = "headerforbuttons" style="display: flex; justify-content: space-between; position:fixed; width:100%">
@@ -290,6 +304,7 @@
     function check_allowed_to_add_plan()
     {
         check_roles(null, false);
+
         if(maximum_allowed_plans == -1)
         {
             console.log("Allowed because superuser");
@@ -371,10 +386,24 @@
         var url = 'http://jakob.ml:50003/trainingsplan/getAmountOfPlans/';
         var username = getusername();
 
-        var xmlHttp = new XMLHttpRequest();
-        xmlHttp.open("GET", url + username + '/2', false);     // false for synchronous request
-        xmlHttp.send(null);
-        amount_plans = xmlHttp.responseText;
+        try 
+        {
+            var xmlHttp = new XMLHttpRequest();
+        
+            xmlHttp.open("GET", url + username + '/2', false);     // false for synchronous request
+            xmlHttp.send(null);
+            amount_plans = xmlHttp.responseText;
+        }
+        catch(err) {
+            console.log("error");
+            Swal.fire({
+              type: 'error',
+              title: 'Oops...',
+              text: 'The backend seems to be unavailable!'
+              /*,
+              footer: '<a href>Why do I have this issue?</a>'*/
+            })
+        }
     }
 
     function reorder_indexes(tableName, index)
@@ -738,9 +767,7 @@
         var url = "http://jakob.ml:50003/trainingsplan/sendPlan";
         xhr.open("POST", url, true);
         xhr.setRequestHeader("Content-Type", "text/plain");
-
         var data = JSON.stringify(jsondata);
-
         if(jsondata == 'ERRORCODE 00003' || jsondata == 'ERRORCODE 00004')
         {
             console.log("sending dummy plan");
@@ -754,7 +781,6 @@
                 alert_text = "Some fields are empty, are you sure you wanna save this values, this might cause problems when later analysing your data";
             else
                 alert_text = "A lot of fields are empty, are you sure you wanna save this values, this might cause problems when later analysing your data";
-
             if(confirm(alert_text))
             {
                 xhr.send(jsondata);
@@ -765,13 +791,10 @@
             
             console.log("no error found - sending normal plan");
             console.log(jsondata);
-
             
         }
-
         // after saving set it back to zero, for next save
         empty_values = 0;
-
     }
 
     function receivePlanfromDB(onlogon)
@@ -930,15 +953,28 @@
 
         if(currentPlanId != '')
         {
-            var url = 'http://jakob.ml:50003/trainingsplan/getPlanByUserAndPlan/' + username + '/' + currentPlanId;
+            try{
+                var url = 'http://jakob.ml:50003/trainingsplan/getPlanByUserAndPlan/' + username + '/' + currentPlanId;
 
-            var xmlHttp = new XMLHttpRequest();
-            xmlHttp.open( "GET", url, false ); // false for synchronous request
-            xmlHttp.send( null );
-            plan = xmlHttp.responseText;
+                var xmlHttp = new XMLHttpRequest();
+                xmlHttp.open( "GET", url, false ); // false for synchronous request
+                xmlHttp.send( null );
+                plan = xmlHttp.responseText;
 
-            var data = JSON.parse(plan);
-            printjson(data, plan);
+                var data = JSON.parse(plan);
+                printjson(data, plan);
+            }
+            catch(err) {
+                console.log("error when sending data");
+
+                Swal.fire({
+                  type: 'error',
+                  title: 'Oops...',
+                  text: 'Error when saving your changes, please backup the fields you changed, reload the page and try again!'
+                  /*,
+                  footer: '<a href>Why do I have this issue?</a>'*/
+                })
+            }
         }
     }
 

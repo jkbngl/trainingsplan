@@ -614,7 +614,7 @@
             Swal.fire({
               type: 'error',
               title: 'Oops...',
-              text: 'There seems to be a problem with your data, maybe try another exercise!'
+              text: 'There seems to be a problem with your data (this might happen if you type text into the weight, reps, sets or maxrep fields), maybe try another exercise!'
               /*,
               footer: '<a href>Why do I have this issue?</a>'*/
             })
@@ -680,22 +680,34 @@
             clear_chart(false);
 
         if(document.getElementById("chart-type").checked == false)
+        {    
             chart.data.datasets.push({
                 data: values,
                 label: ex_name,
-                labels: [5,4,3,2,1],
                 borderColor: border_color_array[num_ex_color],
                 fill: false
             });
+
+            chart.data.labels = labels;
+        }
         else
         {
+            var local_labels = [];
+
             chart.data.datasets.push({
                 data: values,
                 label: ex_name,
-                labels: [5,4,3,2,1],
-
                 backgroundColor: border_color_array,
             });
+
+            var json_ex = JSON.parse(all_ex);
+
+            for(var i = 0; i < json_ex.values.length; i++)
+            {
+                local_labels.push(json_ex.values[i].created);
+            }
+
+            chart.data.labels = local_labels;
         }
             
 
@@ -793,6 +805,8 @@
     {
         // Make sure it is created from a clean start
         // clear_chart();
+
+        
 
         var chart = new Chart(document.getElementById("line-chart"), {
             type: chart_type,

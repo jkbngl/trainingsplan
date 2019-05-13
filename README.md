@@ -27,9 +27,14 @@ Data Input
 
 Stats
 
+![alt text](https://raw.githubusercontent.com/jkbngl/trainingsplan/master/pictures/2019-05-13 21_50_11-Window.png)
 ![alt text](https://raw.githubusercontent.com/jkbngl/trainingsplan/master/pictures/MocvfjR%20-%20Imgur.png)
 ![alt text](https://raw.githubusercontent.com/jkbngl/trainingsplan/master/pictures/O0G6eGP%20-%20Imgur.png)
 
+
+Login
+
+![alt text](https://raw.githubusercontent.com/jkbngl/trainingsplan/master/pictures/login.png)
 - - - -
 ## Get access to stats ##
 

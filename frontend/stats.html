@@ -462,13 +462,7 @@
         }
         catch(err)
         {
-            Swal.fire({
-              type: 'error',
-              title: 'Oops...',
-              text: 'The backend seems to be unavailable!'
-              /*,
-              footer: '<a href>Why do I have this issue?</a>'*/
-            })
+            display_error('error', 'Oops...', 'The backend seems to be unavailable!')
         }
     }
 
@@ -611,15 +605,8 @@
         }
         catch(err)
         {
-            Swal.fire({
-              type: 'error',
-              title: 'Oops...',
-              text: 'There seems to be a problem with your data (this might happen if you type text into the weight, reps, sets or maxrep fields), maybe try another exercise!'
-              /*,
-              footer: '<a href>Why do I have this issue?</a>'*/
-            })
+            display_error('error', 'Oops...', 'There seems to be a problem with your data (this might happen if you type text into the weight, reps, sets or maxrep fields), maybe try another exercise!')
         }
-        
     }
 
     function get_value(json_ex, weight, reps, sets, max_rep) 
@@ -1061,6 +1048,21 @@
             document.getElementById("factors").style.display = "inline";
             document.getElementById("additional-info").style.display = "inline";
         } 
+    }
+
+    function display_error(type, title, message)
+    {
+        var footer = '';
+
+        if(type == 'error')
+            footer = '<a href="https://github.com/jkbngl/trainingsplan/issues/new">If you think this is not correct please open a github issue!</a>'
+        
+        Swal.fire({
+          type: type,
+          title: title,
+          text: message,
+          footer: footer
+        })
     }
 
     /*

@@ -399,13 +399,8 @@
         }
         catch(err) {
             console.log("error");
-            Swal.fire({
-              type: 'error',
-              title: 'Oops...',
-              text: 'The backend seems to be unavailable!'
-              /*,
-              footer: '<a href>Why do I have this issue?</a>'*/
-            })
+            
+            display_error('error', 'The backend seems to be unavailable!');
         }
     }
 
@@ -970,13 +965,7 @@
             catch(err) {
                 console.log("error when sending data");
 
-                Swal.fire({
-                  type: 'error',
-                  title: 'Oops...',
-                  text: 'Error when saving your changes, please backup the fields you changed, reload the page and try again!'
-                  /*,
-                  footer: '<a href>Why do I have this issue?</a>'*/
-                })
+                display_error('error', 'Oops...', 'Error when saving your changes, please backup the fields you changed, reload the page and try again!')
             }
         }
     }
@@ -1261,6 +1250,21 @@
         }
         */
         
+    }
+
+    function display_error(type, title, message)
+    {
+        var footer = '';
+
+        if(type == 'error')
+            footer = '<a href="https://github.com/jkbngl/trainingsplan/issues/new">If you think this is not correct please open a github issue!</a>'
+        
+        Swal.fire({
+          type: type,
+          title: title,
+          text: message,
+          footer: footer
+        })
     }
 
     /*

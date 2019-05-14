@@ -79,7 +79,7 @@
     <meta name="msapplication-TileColor" content="#ffffff">
     <meta name="theme-color" content="#ffffff">
 
-    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@8"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@7"></script>
     <script src="http://jakob.ml:8081/auth/js/keycloak.js"></script> 
     <script>
         
@@ -760,6 +760,7 @@
     function loadPlanIntoDB()
     {
         var alert_text;
+        var info = 'This might cause problems when later analysing your data';
         var jsondata = getExercises();
         var xhr = new XMLHttpRequest();
         var url = "http://jakob.ml:50003/trainingsplan/sendPlan";
@@ -774,18 +775,53 @@
         else
         {
             if(empty_values <= 3 && empty_values > 0)
-                alert_text = "Single fields are empty, are you sure you wanna save this values, this might cause problems when later analysing your data";
+                alert_text = "Single fields are empty, are you sure you wanna save this values";
             else if(empty_values < 10)
-                alert_text = "Some fields are empty, are you sure you wanna save this values, this might cause problems when later analysing your data";
+                alert_text = "Some fields are empty, are you sure you wanna save this values";
             else
-                alert_text = "A lot of fields are empty, are you sure you wanna save this values, this might cause problems when later analysing your data";
-            if(confirm(alert_text))
+                alert_text = "A lot of fields are empty, are you sure you wanna save this valudes";
+            
+            Swal.fire({
+                title: alert_text,
+                input: 'checkbox',
+                inputValue: 1,
+                inputPlaceholder: 'Dont show again',
+                text: info,
+                type: 'warning',
+                showCancelButton: true,
+                confirmButtonColor: '#3085d6',
+                cancelButtonColor: '#d33'
+            }).then((accept) => {
+                // if(accept == 1)
+                console.log(accept.value)
+
+                // 1 is accept and checkbox active, 0 is accept and checkbox inactive, undefined in cancelled, no need to save checkbox data
+                if(accept.value == 1 || accept.value == 0)
+                {
+                    xhr.send(jsondata);
+                    alert("Plan - " + planname +  " successfully Saved!");
+
+                    if(accept.value == 0)
+                    {
+                        // TODO save preferences here
+                    }
+                }
+                else
+                {
+                    alert("Plan - " + planname +  " not Saved!");
+                    //console.log("not sending data");
+                }    
+            });
+
+            /*
+            if(accept)
             {
                 xhr.send(jsondata);
                 alert("Plan - " + planname +  " successfully Saved!");
             }
             else
                 console.log("not sending data");
+            */
             
             console.log("no error found - sending normal plan");
             console.log(jsondata);

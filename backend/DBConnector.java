@@ -6,7 +6,11 @@ import java.sql.SQLException;
 import javax.ws.rs.*;
 
 import org.json.JSONException;
+import org.json.JSONObject;
 
+import com.eclipsesource.json.Json;
+import com.eclipsesource.json.JsonArray;
+import com.eclipsesource.json.JsonObject;
 
 
 @Path("trainingsplan")
@@ -39,7 +43,15 @@ public class DBConnector
 
 		System.out.println(msg.toString());
 		
-		p.save_preferences(msg, connection);
+		JSONObject jsonObject;
+		jsonObject = new JSONObject(msg);
+		
+		// If some preferences where send, null are send from stats
+		if(!(jsonObject.getBoolean("check_dialog_save")) || jsonObject.getBoolean("check_dialog_save"))
+			p.save_preferences_index(msg, connection);
+		else
+			p.save_preferences(msg, connection);
+		
         return "ok";
     }
 	
@@ -132,28 +144,28 @@ public class DBConnector
 	}
 	
 	// http://localhost:50003/trainingsplan/getPlansByUser/jakob%20engl/2
-		@Path("getAmountOfPlans/{username}/{active}")
-		@GET
-		@Produces("text/plain")
-		public int getAmountOfPlans(@PathParam("username") String username, @PathParam("active") int active) throws JSONException, SQLException
-		{
-			/*
-			 * 0 = active plans
-			 * 1 = inactive plans
-			 * 2 = both
-			 */
-			
-			System.out.println("connected - " + username);
-			Connection connection = null;		
-			ParserFromDB p = new ParserFromDB(username);
-			connection = ParserFromDB.connectToDB(p.connectionString, p.user, p.password);
-			int plans = -1;
-			plans = ParserFromDB.getAmountOfPlans(username, active, connection);
-			
-			System.out.println("worked (getAmountOfPlans) - " + active + " - " + plans);
-			
-	        return plans;
-		}
+	@Path("getAmountOfPlans/{username}/{active}")
+	@GET
+	@Produces("text/plain")
+	public int getAmountOfPlans(@PathParam("username") String username, @PathParam("active") int active) throws JSONException, SQLException
+	{
+		/*
+		 * 0 = active plans
+		 * 1 = inactive plans
+		 * 2 = both
+		 */
+		
+		System.out.println("connected - " + username);
+		Connection connection = null;		
+		ParserFromDB p = new ParserFromDB(username);
+		connection = ParserFromDB.connectToDB(p.connectionString, p.user, p.password);
+		int plans = -1;
+		plans = ParserFromDB.getAmountOfPlans(username, active, connection);
+		
+		System.out.println("worked (getAmountOfPlans) - " + active + " - " + plans);
+		
+        return plans;
+	}
 	
 	
 	// http://localhost:50003/trainingsplan/getPlanByUserAndPlan/jakob%20engl/24

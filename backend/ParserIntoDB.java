@@ -851,5 +851,36 @@ public class ParserIntoDB
 
     	st.close();
 	}
+
+	public void save_preferences_index(String msg, Connection connection) throws SQLException, JSONException {
+		JSONObject obj = new JSONObject(msg);
+		
+		int user_id = getUserid(obj.get("username").toString(), connection);
+
+        PreparedStatement st = connection.prepareStatement("    INSERT INTO tp_preferences (userid_fk, check_dialog_save, changed) "
+        													 + "VALUES ( ?, ?, now()) "
+        													 + "ON CONFLICT (userid_fk) DO UPDATE "
+        													 + "SET "
+        													 + " check_dialog_save = EXCLUDED.check_dialog_save, "
+        													 + " changed = now() "
+        													 + ";");
+        
+        try 
+		{
+	        st.setInt(1, user_id);
 	
+	        if(obj.getBoolean("check_dialog_save"))
+	        	st.setBoolean(2, true);
+	        else
+	        	st.setBoolean(2, false);
+	                
+			System.out.println("test - " + st);
+
+			st.executeUpdate();
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+
+    	st.close();
+	}
 }

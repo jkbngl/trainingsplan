@@ -533,6 +533,7 @@ public class ParserFromDB
 				     + "      , check_maxrep "
 				     + "      , check_simple_view "
 				     + "      , check_chart_type "
+				     + "      , check_dialog_save "
 				     + "from    tp_preferences p "
 				     + "join    tp_user u on p.userid_fk = u.id "
 				     + "where   u.username = ? "
@@ -558,8 +559,9 @@ public class ParserFromDB
 			json.put ("check_maxrep", resultset.getString(8));
 			json.put ("check_simple_view", resultset.getString(9));
 			json.put ("check_chart_type", resultset.getString(10));
+			json.put ("check_dialog_save", resultset.getString(11));
 			
-			System.out.println(json.toString());
+			System.out.println("NEW FEATURE - " + resultset.getBoolean(11));
 	
 			// possible_base_ex = possible_base_ex +"{ \"id\":\"" + resultset.getString(6) + "\", \"created\" : \"" + resultset.getString(1) + "\", \"weight\" : \"" + resultset.getString(2) + "\", \"reps\" : \"" + resultset.getString(3) + "\", \"sets\" : \"" + resultset.getString(4) + "\", \"max_rep\": \"" + resultset.getString(5) + "\"},";
 		}

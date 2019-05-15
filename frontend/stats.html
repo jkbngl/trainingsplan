@@ -666,46 +666,49 @@
         if(document.getElementById("chart-type").checked == true)
             clear_chart(false);
 
+        var local_labels = [];
+        var json_ex = JSON.parse(all_ex);
+
+        for(var i = 0; i < json_ex.values.length; i++)
+        {
+            local_labels.push(json_ex.values[i].created);
+        }
+
+        chart.data.labels = local_labels;
+
         if(document.getElementById("chart-type").checked == false)
         {    
             chart.data.datasets.push({
                 data: values,
-                label: ex_name,
+                //label: ex_name,
                 borderColor: border_color_array[num_ex_color],
                 fill: false
             });
 
-            chart.data.labels = labels;
+            chart.data.labels = local_labels;
         }
         else
         {
-            var local_labels = [];
-
             chart.data.datasets.push({
                 data: values,
                 label: ex_name,
                 backgroundColor: border_color_array,
             });
-
-            var json_ex = JSON.parse(all_ex);
-
-            for(var i = 0; i < json_ex.values.length; i++)
-            {
-                local_labels.push(json_ex.values[i].created);
-            }
-
-            chart.data.labels = local_labels;
-        }
-            
+        }   
 
         if(num_ex_color == border_color_array.length - 1)
             num_ex_color = 0;
         else
             num_ex_color++;
 
-
         // needs to be checked before numbers gets increased
         change_div(all_ex, ex_name, false);
+    
+        // show date of ex in line chart as well but only if only one exercise is in line chart
+        // needs to be checked before numbers gets increased
+        if(document.getElementById("chart-type").checked == false && num_ex >= 1)
+            chart.data.labels = labels;
+
         num_ex++;
 
         

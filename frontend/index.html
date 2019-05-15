@@ -123,6 +123,7 @@
             cleanUpTables();
             receivePlanfromDB(true);
             check_roles(keycloak.realmAccess.roles, true);
+            append_preferences();
             
             // console.log(username);  
         }
@@ -204,6 +205,7 @@
     var empty_values = 0;
     var amount_plans = ''             // Needed to check the amount of plans already existent for user
     var maximum_allowed_plans = -1;  // Needed to check if user without super account is allowed to add another plan
+    var show_warning = true;
 
     // get the first button by it's ID, and listen to the click event
     // add an empty table to the container div
@@ -283,6 +285,21 @@
             // console.log("PC DETECTED AS DEVICE");
         }
 
+    }
+
+    function append_preferences()
+    {
+        var request = new XMLHttpRequest();
+        var url = 'http://jakob.ml:50003/trainingsplan/get_preferences/';
+        var xmlHttp = new XMLHttpRequest();
+
+        xmlHttp.open( "GET", url + getusername(), false ); // false for synchronous request
+        xmlHttp.send( null );
+        preferences = xmlHttp.responseText;
+
+        var json = JSON.parse(preferences);
+
+        show_warning = json.check_dialog_save;
     }
 
     function repositionTables()
@@ -781,37 +798,74 @@
             else
                 alert_text = "A lot of fields are empty, are you sure you wanna save this valudes";
             
-            Swal.fire({
-                title: alert_text,
-                input: 'checkbox',
-                inputValue: 1,
-                inputPlaceholder: 'Dont show again',
-                text: info,
-                type: 'warning',
-                showCancelButton: true,
-                confirmButtonColor: '#3085d6',
-                cancelButtonColor: '#d33'
-            }).then((accept) => {
-                // if(accept == 1)
-                console.log(accept.value)
+            
+            if(show_warning)
+            {
+                Swal.fire({
+                  title: alert_text,
+                  input: 'checkbox',
+                  inputValue: show_warning,
+                  inputPlaceholder: 'Dont show again',
+                  text: info,
+                  type: 'warning',
+                  showCancelButton: true,
+                  confirmButtonColor: '#3085d6',
+                  cancelButtonColor: '#d33'
+                }).then((accept) => {
+                    // if(accept == 1)
+                    console.log(accept.value + ' | ' + show_warning);
 
-                // 1 is accept and checkbox active, 0 is accept and checkbox inactive, undefined in cancelled, no need to save checkbox data
-                if(accept.value == 1 || accept.value == 0)
-                {
-                    xhr.send(jsondata);
-                    alert("Plan - " + planname +  " successfully Saved!");
-
-                    if(accept.value == 0)
+                    // 1 is accept and checkbox active, 0 is accept and checkbox inactive, undefined in cancelled, no need to save checkbox data
+                    if(accept.value == 1 || accept.value == 0)
                     {
-                        // TODO save preferences here
+                        // alert("Plan - " + planname +  " successfully Saved!");
+
+                        // check will always be true
+                        // TODO check if something changed and only if yes send e.g. id selected_value != stored_value_from_db
+                        // ^ not needed because if unchecked it is not shown again ^
+                        if(accept.value != show_warning) // Can be done as 1 == true and 0 == false - this means when something was changed
+                        {
+                            console.log("changed")
+
+                            var preferences = {}; 
+
+                            preferences.username = getusername(); 
+                            if(accept.value == 0)
+                                preferences.check_dialog_save  = false;
+                            else
+                                preferences.check_dialog_save  = true;
+                        
+                            var xhr = new XMLHttpRequest();
+                            var url = "http://jakob.ml:50003/trainingsplan/send_preferences";
+                            xhr.open("POST", url, true);
+                            xhr.setRequestHeader("Content-Type", "text/plain");
+                            var string = JSON.stringify(preferences);
+
+                            xhr.send(string);
+
+                            if(accept.value == 1)
+                                show_warning = true;
+                            else
+                                show_warning = false;
+                        }
+                        else
+                        {
+                            console.log("not changed")
+
+                            if(accept.value == 1)
+                                show_warning = true;
+                            else
+                                show_warning = false;
+                        }    
                     }
-                }
-                else
-                {
-                    alert("Plan - " + planname +  " not Saved!");
-                    //console.log("not sending data");
-                }    
-            });
+                    else
+                    {
+                        alert("Plan - " + planname +  " not Saved!");
+                        //console.log("not sending data");
+                    }    
+                });
+            }
+           
 
             /*
             if(accept)

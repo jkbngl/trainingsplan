@@ -560,9 +560,7 @@ public class ParserFromDB
 			json.put ("check_simple_view", resultset.getString(9));
 			json.put ("check_chart_type", resultset.getString(10));
 			json.put ("check_dialog_save", resultset.getString(11));
-			
-			System.out.println("NEW FEATURE - " + resultset.getBoolean(11));
-	
+				
 			// possible_base_ex = possible_base_ex +"{ \"id\":\"" + resultset.getString(6) + "\", \"created\" : \"" + resultset.getString(1) + "\", \"weight\" : \"" + resultset.getString(2) + "\", \"reps\" : \"" + resultset.getString(3) + "\", \"sets\" : \"" + resultset.getString(4) + "\", \"max_rep\": \"" + resultset.getString(5) + "\"},";
 		}
 		

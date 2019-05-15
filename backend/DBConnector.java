@@ -36,21 +36,30 @@ public class DBConnector
     @Path("/send_preferences")
     public String send_preferences(String msg) throws JSONException, SQLException
 	{
+
 		ParserIntoDB p = new ParserIntoDB(msg);
 		Connection connection = null;
 
 		connection = ParserFromDB.connectToDB(p.connectionString, p.user, p.password);
 
-		System.out.println(msg.toString());
+		JSONObject jsonObject = new JSONObject(msg.toString());
 		
-		JSONObject jsonObject;
-		jsonObject = new JSONObject(msg);
-		
-		// If some preferences where send, null are send from stats
-		if(!(jsonObject.getBoolean("check_dialog_save")) || jsonObject.getBoolean("check_dialog_save"))
-			p.save_preferences_index(msg, connection);
-		else
+		try {
+		if(jsonObject.getString("check_dialog_save").equals("ignore"))
+		{
+			System.out.println("stats");
 			p.save_preferences(msg, connection);
+		}
+		else {
+			System.out.println("index");
+			p.save_preferences_index(msg, connection);
+		}
+		}
+		catch (Exception e) 
+		{
+			System.out.println("Connection Failed! Check output console");
+			e.printStackTrace();
+		}
 		
         return "ok";
     }

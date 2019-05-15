@@ -780,7 +780,7 @@ public class ParserIntoDB
 	}
 
 	public void save_preferences(String msg, Connection connection) throws JSONException, SQLException
-	{
+	{		
 		JSONObject obj = new JSONObject(msg);
 		
 		int user_id = getUserid(obj.get("username").toString(), connection);

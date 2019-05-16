@@ -666,7 +666,7 @@
         console.log(values);
 
         if(document.getElementById("chart-type").checked == true)
-            clear_chart(false);
+            ; //clear_chart(false);
 
         var local_labels = [];
         var json_ex = JSON.parse(all_ex);
@@ -682,7 +682,7 @@
         {    
             chart.data.datasets.push({
                 data: values,
-                //label: ex_name,
+                label: ex_name,
                 borderColor: border_color_array[num_ex_color],
                 fill: false
             });
@@ -694,7 +694,7 @@
             chart.data.datasets.push({
                 data: values,
                 label: ex_name,
-                backgroundColor: border_color_array,
+                backgroundColor: border_color_array[num_ex_color],
             });
         }   
 
@@ -708,7 +708,7 @@
     
         // show date of ex in line chart as well but only if only one exercise is in line chart
         // needs to be checked before numbers gets increased
-        if(document.getElementById("chart-type").checked == false && num_ex >= 1)
+        if(num_ex >= 1)
             chart.data.labels = labels;
 
         num_ex++;

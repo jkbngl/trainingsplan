@@ -158,7 +158,7 @@
 <div id = "headerforbuttons" style="display: flex; justify-content: space-between; position:fixed; width:100%">
     <button onclick="openNav()"                  class="button" style="top: 10px;"><i class="fas fa-bars"></i></span></button>
     <button onclick="addTable(true)"             class="button" style="top: 10px;"><i class="fas fa-plus-circle"></i> Add new Day</button>
-    <button onclick="loadPlanIntoDB(); onSave()" class="button" style="top: 10px;"><i class="far fa-save"></i></button>
+    <button onclick="loadPlanIntoDB();" class="button" style="top: 10px;"><i class="far fa-save"></i></button>
     <button onclick="keycloak.logout()"          class="button" value="username ..." id="username" style="top: 10px;"></button>
 </div>​
 
@@ -298,8 +298,11 @@
         preferences = xmlHttp.responseText;
 
         var json = JSON.parse(preferences);
-
-        show_warning = json.check_dialog_save;
+        
+        if(json.check_dialog_save == "f")
+            show_warning = false;
+        else
+            show_warning = true;
     }
 
     function repositionTables()
@@ -776,14 +779,9 @@
 
     function loadPlanIntoDB()
     {
-        var alert_text;
         var info = 'This might cause problems when later analysing your data';
-        var jsondata = getExercises();
-        var xhr = new XMLHttpRequest();
-        var url = "http://jakob.ml:50003/trainingsplan/sendPlan";
-        xhr.open("POST", url, true);
-        xhr.setRequestHeader("Content-Type", "text/plain");
-        var data = JSON.stringify(jsondata);
+
+
         if(jsondata == 'ERRORCODE 00003' || jsondata == 'ERRORCODE 00004')
         {
             console.log("sending dummy plan");
@@ -834,19 +832,18 @@
                                 preferences.check_dialog_save  = false;
                             else
                                 preferences.check_dialog_save  = true;
-                        
-                            var xhr = new XMLHttpRequest();
-                            var url = "http://jakob.ml:50003/trainingsplan/send_preferences";
-                            xhr.open("POST", url, true);
-                            xhr.setRequestHeader("Content-Type", "text/plain");
-                            var string = JSON.stringify(preferences);
-
-                            xhr.send(string);
 
                             if(accept.value == 1)
                                 show_warning = true;
                             else
                                 show_warning = false;
+
+                            var xhr = new XMLHttpRequest();
+                            var url = "http://jakob.ml:50003/trainingsplan/send_preferences";
+                            xhr.open("POST", url, true);
+                            xhr.setRequestHeader("Content-Type", "text/plain");
+                            var string = JSON.stringify(preferences);
+                            xhr.send(string);
                         }
                         else
                         {
@@ -856,30 +853,56 @@
                                 show_warning = true;
                             else
                                 show_warning = false;
-                        }    
+                        }
+
+                        // OK was clicked so send it anyway what with the checkbox happened
+                        var jsondata = getExercises();
+                        var xhr = new XMLHttpRequest();
+                        var url = "http://jakob.ml:50003/trainingsplan/sendPlan";
+                        xhr.open("POST", url, true);
+                        xhr.setRequestHeader("Content-Type", "text/plain");
+                        //var data = JSON.stringify(jsondata);
+                        xhr.send(jsondata);
+
+                        console.log("sending - " + jsondata);
+
+                        console.log("DATA SEND with warning");
+                        
+                        // After all is done, reload the page with the new ids
+                        onSave();
                     }
                     else
                     {
                         alert("Plan - " + planname +  " not Saved!");
                         //console.log("not sending data");
-                    }    
+                    }
                 });
             }
-           
 
-            /*
-            if(accept)
+            // Warning was not shown so send it here
+            if(!show_warning)
             {
+                /*
+                    var xhr = new XMLHttpRequest();
+                    var url = "http://jakob.ml:50003/trainingsplan/send_preferences";
+                    xhr.open("POST", url, true);
+                    xhr.setRequestHeader("Content-Type", "text/plain");
+                    var string = JSON.stringify(preferences);
+                    xhr.send(string);
+                */
+                var jsondata = getExercises();
+                var xhr = new XMLHttpRequest();
+                var url = "http://jakob.ml:50003/trainingsplan/sendPlan";
+                xhr.open("POST", url, true);
+                xhr.setRequestHeader("Content-Type", "text/plain");
+                var data = JSON.stringify(jsondata);
                 xhr.send(jsondata);
-                alert("Plan - " + planname +  " successfully Saved!");
+                console.log("no error found - sending normal plan");
+                console.log(jsondata);
+
+                console.log("DATA SEND, no warning displayed");
+                onSave();
             }
-            else
-                console.log("not sending data");
-            */
-            
-            console.log("no error found - sending normal plan");
-            console.log(jsondata);
-            
         }
         // after saving set it back to zero, for next save
         empty_values = 0;
@@ -1042,15 +1065,18 @@
         if(currentPlanId != '')
         {
             try{
-                var url = 'http://jakob.ml:50003/trainingsplan/getPlanByUserAndPlan/' + username + '/' + currentPlanId;
+                setTimeout(function(){
+                    var url = 'http://jakob.ml:50003/trainingsplan/getPlanByUserAndPlan/' + username + '/' + currentPlanId;
 
-                var xmlHttp = new XMLHttpRequest();
-                xmlHttp.open( "GET", url, false ); // false for synchronous request
-                xmlHttp.send( null );
-                plan = xmlHttp.responseText;
+                    var xmlHttp = new XMLHttpRequest();
+                    xmlHttp.open( "GET", url, false ); // false for synchronous request
+                    xmlHttp.send( null );
+                    plan = xmlHttp.responseText;
 
-                var data = JSON.parse(plan);
-                printjson(data, plan);
+                    var data = JSON.parse(plan);
+                    printjson(data, plan);
+                }, 500);
+
             }
             catch(err) {
                 console.log("error when sending data");

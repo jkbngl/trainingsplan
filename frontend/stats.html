@@ -668,15 +668,16 @@
         if(document.getElementById("chart-type").checked == true)
             ; //clear_chart(false);
 
-        var local_labels = [];
+        var local_labels_date = [];
+        var local_labels_numbers = [];
         var json_ex = JSON.parse(all_ex);
 
         for(var i = 0; i < json_ex.values.length; i++)
         {
-            local_labels.push(json_ex.values[i].created);
+            local_labels_date.push(json_ex.values[i].created);
         }
 
-        chart.data.labels = local_labels;
+        chart.data.labels = local_labels_date;
 
         if(document.getElementById("chart-type").checked == false)
         {    
@@ -687,7 +688,7 @@
                 fill: false
             });
 
-            chart.data.labels = local_labels;
+            chart.data.labels = local_labels_date;
         }
         else
         {
@@ -706,10 +707,29 @@
         // needs to be checked before numbers gets increased
         change_div(all_ex, ex_name, false);
     
-        // show date of ex in line chart as well but only if only one exercise is in line chart
+        
         // needs to be checked before numbers gets increased
         if(num_ex >= 1)
-            chart.data.labels = labels;
+        {
+            // Get longest exercise with most entries from chart and store it in a variable
+            for(var i = 0; i <= num_ex; i++)
+            {
+                var data = active_ex_in_chart[i];
+                var json = JSON.parse(data);
+
+                local_labels_numbers.push(json.values.length);
+            }
+
+            console.log(local_labels_numbers);
+            var max_num = Math.max.apply(Math, local_labels_numbers); 
+
+            local_labels_numbers = [];
+
+            for(var i = 1; i <= max_num; i++)
+                local_labels_numbers.push(i);
+
+            chart.data.labels = local_labels_numbers;
+        }    
 
         num_ex++;
 

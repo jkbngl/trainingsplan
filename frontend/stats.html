@@ -50,11 +50,10 @@
             function(authenticated) 
             {
                 // alert(authenticated ? 'authenticated' : 'not authenticated');
+            }).error(function() 
+            {
+                // alert('failed to initialize');
             }
-        ).error(function() 
-        {
-            // alert('failed to initialize');
-        }
         );
 
         keycloak.onAuthSuccess = function() 
@@ -769,8 +768,8 @@
         {
             parse += (i + 1) + ". Entry on: " + json.values[i].created + "\\n";
             parse += "weight: " + json.values[i].weight + "\\n";
-            parse += "Sets: " + json.values[i].sets + "\\n";
             parse += "Reps: " + json.values[i].reps + "\\n";
+            parse += "Sets: " + json.values[i].sets + "\\n";
             parse += "Max Rep: " + json.values[i].max_rep + "\\n\\n";
         }
 

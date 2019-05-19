@@ -394,9 +394,15 @@ public class ParserFromDB
 		while (resultset.next()) 
 		{
 			if(resultset.isLast())
+			{
+				System.out.println("last - " + resultset.getString(1));
 				jsonPlan = jsonPlan +"{ \"name\":\"" + resultset.getString(1) + "\", \"date\" : \"" + resultset.getString(2) + "\", \"id\": \"" + resultset.getString(3) + "\"}";
-			else 				
+			}
+			else 
+			{ 	
+				System.out.println("not last - " + resultset.getString(1));
 				jsonPlan = jsonPlan +"{ \"name\":\"" + resultset.getString(1) + "\", \"date\" : \"" + resultset.getString(2) + "\", \"id\": \"" + resultset.getString(3) + "\"},";
+			}
 		}
 		
 		jsonPlan = jsonPlan + "]}";
@@ -419,12 +425,13 @@ public class ParserFromDB
 				       + "order by base_ex ";
 		
 		PreparedStatement pstmt = connection.prepareStatement(query);
-		pstmt.setString(1, username);
+		pstmt.setString(1, username.toLowerCase());
 		ResultSet resultset = pstmt.executeQuery();
-
 		
 		while (resultset.next()) 
 		{
+			System.out.println("NEW BUG - " + resultset.getString(1));
+			
 			if(resultset.isLast())
 				possible_base_ex = possible_base_ex +"{ \"base_ex\":\"" + resultset.getString(1) + "\", \"name\" : \"" + resultset.getString(2) + "\", \"id\": \"" + resultset.getString(3) + "\", \"planname\": \"" + resultset.getString(4) + "\"}";
 			else 				

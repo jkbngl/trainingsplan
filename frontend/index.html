@@ -80,6 +80,7 @@
     <meta name="theme-color" content="#ffffff">
 
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@7"></script>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@sweetalert2/theme-dark@1/dark.css">
     <script src="http://jakob.ml:8081/auth/js/keycloak.js"></script> 
     <script>
         
@@ -926,7 +927,7 @@
             {
                 var json = JSON.parse(this.response);
 
-                if(json.plans.length > 2 && onlogon == false) // if more than 1 day (2 because name is also in username) than load all plans
+                if(json.plans.length > 1 && onlogon == false) // if more than 1 day than load all plans
                 {
                     document.getElementById('dialog').style.display = 'inline';
                     showDialog('http://jakob.ml:50003/trainingsplan/getPlansByUser/', 0);

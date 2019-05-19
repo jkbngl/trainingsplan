@@ -664,9 +664,6 @@
     {
         console.log(values);
 
-        if(document.getElementById("chart-type").checked == true)
-            ; //clear_chart(false);
-
         var local_labels_date = [];
         var local_labels_numbers = [];
         var json_ex = JSON.parse(all_ex);
@@ -684,6 +681,7 @@
                 data: values,
                 label: ex_name,
                 borderColor: border_color_array[num_ex_color],
+                backgroundColor: border_color_array[num_ex_color],
                 fill: false
             });
 
@@ -719,7 +717,6 @@
                 local_labels_numbers.push(json.values.length);
             }
 
-            console.log(local_labels_numbers);
             var max_num = Math.max.apply(Math, local_labels_numbers); 
 
             local_labels_numbers = [];

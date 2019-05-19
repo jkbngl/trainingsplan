@@ -757,7 +757,7 @@
             var json = JSON.parse(values);
 
             document.getElementById("additional-info").innerHTML = document.getElementById("additional-info").innerHTML + '<button id="' + json.base_ex + '" class="button" style="top: 10px; width:80%; margin-left: 10%;">' + ex_name + '</button>'
-            document.getElementById(json.base_ex).setAttribute( "onClick", "alert('" + parse_base_ex(values, ex_name) + "')");
+            document.getElementById(json.base_ex).setAttribute( "onClick", "Swal.fire('" + parse_base_ex(values, ex_name) + "')");
         }
     }
 

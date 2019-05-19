@@ -62,6 +62,7 @@
             console.log('Successfully authenticated'); 
 
             username = keycloak.idTokenParsed.name;
+            username = username.toLowerCase();
             check_roles(keycloak.realmAccess.roles);
 
             document.getElementById("username").innerHTML = username + ' <i class="fas fa-sign-out-alt"></i>';

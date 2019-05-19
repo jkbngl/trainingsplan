@@ -70,13 +70,17 @@
             append_combo(available_ex);
             data = append_preferences();
 
-            if(data.check_chart_type == 'f')
+            console.log(data);
+
+            if(data.check_chart_type == 'f' /* || typeof data.check_chart_type == 'undefined'*/)
             {
                 chart_type = 'line';
                 chart = create_chart(chart_type);
             }    
             else
             {
+                // if undefined as above, make bar chart default and make it checked
+                //document.getElementById("chart-type").checked = true;
                 chart_type = 'bar';
                 chart = create_chart(chart_type);
             }

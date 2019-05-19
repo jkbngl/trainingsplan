@@ -549,7 +549,7 @@ public class ParserFromDB
 		System.out.println(query);
 		
 		PreparedStatement pstmt = connection.prepareStatement(query);
-		pstmt.setString(1, username);
+		pstmt.setString(1, username.toLowerCase());
 		ResultSet resultset = pstmt.executeQuery();
 				
 		while (resultset.next()) 

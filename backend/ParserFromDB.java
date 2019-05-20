@@ -448,18 +448,30 @@ public class ParserFromDB
 		String possible_base_ex = "{\"base_ex\": \"" + base_ex + "\",\"values\": [";
 
 		
-		String query = "select  date(e.created) trimmed_date "
-				     + "       , max(CAST((CASE WHEN e.weight  = '' THEN '1' ELSE replace(e.weight,  ',', '.') END) AS numeric)) "
-				     + "       , max(CAST((CASE WHEN e.reps    = '' THEN '1' ELSE replace(e.reps,    ',', '.') END) AS numeric)) "
-				     + "       , max(CAST((CASE WHEN e.sets    = '' THEN '1' ELSE replace(e.sets,    ',', '.') END) AS numeric)) "
-				     + "       , max(CAST((CASE WHEN e.max_rep = '' THEN '1' ELSE replace(e.max_rep, ',', '.') END) AS numeric)) "
-				     + "      , max(e.id)  "
-				     + "  from  tp_exercise e  "
-				     + "  join  tp_day  d on e.day_fk = d.id  "
-				     + "  join  tp_plan p on d.plan_fk = p.id "
-				     + " where  base_ex in (select base_ex from tp_exercise where  base_ex = (?))  "
-				     + "group by trimmed_date "
-				     + "order by max(e.id); ";
+		String query = "select  date(e.trimmed_date) "
+				+ "       , max(e.weight_c) "
+				+ "       , max(e.reps_c) "
+				+ "       , max(e.sets_c) "
+				+ "       , max(e.max_rep_c) "
+				+ "      , max(e.id)  "
+				+ "  from  (select  date(e.created) trimmed_date "
+				+ "             , (regexp_matches((CASE WHEN e.weight  = '' THEN '1' ELSE replace(e.weight,  ',', '.') END), '[0-9]+\\.?[0-9]*'))[1] weight_c "
+				+ "             , (regexp_matches((CASE WHEN e.reps    = '' THEN '1' ELSE replace(e.reps,    ',', '.') END), '[0-9]+\\.?[0-9]*'))[1] reps_c "
+				+ "             , (regexp_matches((CASE WHEN e.sets    = '' THEN '1' ELSE replace(e.sets,    ',', '.') END), '[0-9]+\\.?[0-9]*'))[1] sets_c "
+				+ "             , (regexp_matches((CASE WHEN e.max_rep = '' THEN '1' ELSE replace(e.max_rep, ',', '.') END), '[0-9]+\\.?[0-9]*'))[1] max_rep_c "
+				+ "             ,  e.id "
+				+ "             ,  e.base_ex "
+				+ "             ,  e.day_fk "
+				+ "         from   tp_exercise e  "
+				+ "         join   tp_day  d on e.day_fk = d.id  "
+				+ "         join   tp_plan p on d.plan_fk = p.id "
+				+ "    ) e  "
+				+ "  join  tp_day  d on e.day_fk = d.id  "
+				+ "  join  tp_plan p on d.plan_fk = p.id "
+				+ " where  base_ex in (select base_ex from tp_exercise where  base_ex = (?))  "
+				+ "group by trimmed_date "
+				+ "order by max(e.id) "
+				+ "; ";
 				
 		System.out.println(query);
 		

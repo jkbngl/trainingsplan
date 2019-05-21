@@ -29,7 +29,7 @@ Stats
 
 ![alt text](https://raw.githubusercontent.com/jkbngl/trainingsplan/master/pictures/barchart.png)
 ![alt text](https://raw.githubusercontent.com/jkbngl/trainingsplan/master/pictures/MocvfjR%20-%20Imgur.png)
-![alt text](https://raw.githubusercontent.com/jkbngl/trainingsplan/master/pictures/O0G6eGP%20-%20Imgur.png)
+![alt text](https://raw.githubusercontent.com/jkbngl/trainingsplan/master/pictures/barchart_with_check_progess_dialog.png)
 ![alt text](https://raw.githubusercontent.com/jkbngl/trainingsplan/master/pictures/barchart_multiple_ex_in_chart.png)
 
 

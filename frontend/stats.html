@@ -40,7 +40,7 @@
             console.log(message);
 
             if(message.includes('backend') && message.includes('unavailable') || message.includes('Authentification'))
-                footer += '<a href onclick="location.reload()">Reload the Page!</button><br>';
+                footer += message + '<br><br><a href onclick="location.reload()">Reload the Page!</button><br>';
 
             if(type == 'error')
                 footer += '<a href="https://github.com/jkbngl/trainingsplan/issues/new">If you think this is not correct please open a github issue!</a>'
@@ -52,7 +52,6 @@
             Swal.fire({
               type: type,
               title: title,
-              text: message,
               html: footer
             })
         }

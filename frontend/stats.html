@@ -39,7 +39,7 @@
 
             console.log(message);
 
-            if(message.includes('backend') && message.includes('unavailable'))
+            if(message.includes('backend') && message.includes('unavailable') || message.includes('Authentification'))
                 footer += '<a href onclick="location.reload()">Reload the Page!</button><br>';
 
             if(type == 'error')
@@ -57,64 +57,64 @@
             })
         }
 
-        try
-        {
-            keycloak = Keycloak();
+        document.addEventListener('DOMContentLoaded',function(){
+            try
+            {
+                keycloak = Keycloak();
 
-            keycloak.init({ onLoad: 'login-required' })
+                keycloak.init({ onLoad: 'login-required' })
 
-            keycloak.init().success(
-                function(authenticated) 
-                {
-                    // alert(authenticated ? 'authenticated' : 'not authenticated');
+                keycloak.init().success(
+                    function(authenticated) 
+                    {
+                        // alert(authenticated ? 'authenticated' : 'not authenticated');
+                    }
+                ).error(function() {
+                    // alert('failed to initialize');
+                });
+
+                keycloak.onAuthSuccess = function() 
+                { 
+                    // alert('Successfully authenticated'); 
+                    console.log('Successfully authenticated'); 
+                
+                    username = keycloak.idTokenParsed.name;
+                    username = username.toLowerCase();
+                    check_roles(keycloak.realmAccess.roles);
+                
+                    document.getElementById("username").innerHTML = username + ' <i class="fas fa-sign-out-alt"></i>';
+                
+                    var available_ex = get_available_ex();            
+                    append_combo(available_ex);
+                    data = append_preferences();
+                
+                    if(data.check_chart_type == 'f' /* || typeof data.check_chart_type == 'undefined'*/)
+                    {
+                        chart_type = 'line';
+                        chart = create_chart(chart_type);
+                    }    
+                    else
+                    {
+                        // if undefined as above, make bar chart default and make it checked
+                        //document.getElementById("chart-type").checked = true;
+                        chart_type = 'bar';
+                        chart = create_chart(chart_type);
+                    }
+                
+                
+                    if( isMobile.any() ) 
+                        customize_mobile();
+                    else
+                        ;
                 }
-            ).error(function() {
-                // alert('failed to initialize');
-            });
-        }
-        catch(err)
-        {
-            console.log("error");
-            alert("Error with Authenfication, please try again at a later point");
-            window.stop() 
-
-            // display_error();
-        }
-
-        keycloak.onAuthSuccess = function() 
-        { 
-            // alert('Successfully authenticated'); 
-            console.log('Successfully authenticated'); 
-
-            username = keycloak.idTokenParsed.name;
-            username = username.toLowerCase();
-            check_roles(keycloak.realmAccess.roles);
-
-            document.getElementById("username").innerHTML = username + ' <i class="fas fa-sign-out-alt"></i>';
-
-            var available_ex = get_available_ex();            
-            append_combo(available_ex);
-            data = append_preferences();
-
-            if(data.check_chart_type == 'f' /* || typeof data.check_chart_type == 'undefined'*/)
-            {
-                chart_type = 'line';
-                chart = create_chart(chart_type);
-            }    
-            else
-            {
-                // if undefined as above, make bar chart default and make it checked
-                //document.getElementById("chart-type").checked = true;
-                chart_type = 'bar';
-                chart = create_chart(chart_type);
             }
-
-
-            if( isMobile.any() ) 
-                customize_mobile();
-            else
-                ;
-        }
+            catch(err)
+            {
+                console.log("error");
+                display_error("error", "Ooops...", "Error with Authentification, please try again at a later point");
+                window.stop() 
+            }
+        });
 
         function getusername()
         {

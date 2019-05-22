@@ -47,8 +47,6 @@
                 
             footer += '<br><br><hr style="height: 2px; background-color:#666;"><br>';
 
-            console.log(footer);
-
             Swal.fire({
               type: type,
               title: title,
@@ -644,7 +642,7 @@
             values[i] = 1;
 
             // Dont use else if because multiple checkboxes can be checked
-            if(weight && typeof(json.values[i].weight) != 'undefined' && json.values[i].weight != null && json.values[i].weight.length > 0) // FMI: .length references lengt of string not of an json array
+            /*if(weight && typeof(json.values[i].weight) != 'undefined' && json.values[i].weight != null && json.values[i].weight.length > 0) // FMI: .length references lengt of string not of an json array
                 if(parseFloat(json.values[i].weight.match(/[\d\.]+/)) > 0)
                     values[i] *= parseFloat(json.values[i].weight.match(/[\d\.]+/)) * mul_weight;
             
@@ -659,7 +657,22 @@
             if(max_rep && typeof(json.values[i].max_rep) != 'undefined' && json.values[i].max_rep != null && json.values[i].max_rep.length > 0)
                 if(parseFloat(json.values[i].max_rep.match(/[\d\.]+/)) > 0)
                     values[i] *= parseFloat(json.values[i].max_rep.match(/[\d\.]+/)) * mul_max_rep;
+            */
+
+            if(weight)
+                values[i] *= json.values[i].weight * mul_weight;
+            
+            if(reps)
+                values[i] *= json.values[i].reps * mul_reps;
+            
+            if(sets)
+                values[i] *= json.values[i].sets * mul_sets;
+            
+            if(max_rep)
+                values[i] *= json.values[i].max_rep * mul_max_rep;
         }
+
+
 
         return values;
     }
@@ -757,8 +770,6 @@
 
             document.getElementById("additional-info").innerHTML = document.getElementById("additional-info").innerHTML + '<button id="' + json.base_ex + '" class="button" style="top: 10px; width:80%; margin-left: 10%;">' + ex_name + '</button>'
             document.getElementById(json.base_ex).setAttribute( "onClick", "Swal.fire({html: '" + parse_base_ex(values, ex_name) + "'});");
-
-            console.log("Swal.fire({html:" + parse_base_ex(values, ex_name) + ");");
         }
     }
 
@@ -773,7 +784,7 @@
         {
             parse += (i + 1) + ". Entry on: " + json.values[i].created + "<br>";
             
-            if(i > 0)
+            /*if(i > 0)
                 if(typeof(json.values[i].weight) != 'undefined' && json.values[i].weight != null)
                     if(parseFloat(json.values[i].weight.match(/[\d\.]+/)) > parseFloat(json.values[i - 1].weight.match(/[\d\.]+/)))
                         parse += '<font color="green">Weight: ' + json.values[i].weight + "</font><br>";
@@ -825,7 +836,52 @@
                     parse += "Max Rep: " + json.values[i].max_rep + "<br>";
             else
                 parse += "Max Rep: " + json.values[i].max_rep + "<br>";
+            */
+
+            if(i > 0)
+                console.log('"' + json.values[i].weight + '"' + ' | ' + '"' + json.values[i - 1].weight + '"');
+
+            if(i > 0)
+                if(parseFloat(json.values[i].weight.match(/[\d\.]+/)) > parseFloat(json.values[i - 1].weight.match(/[\d\.]+/)))
+                    parse += '<font color="green">Weight: ' + json.values[i].weight + "</font><br>";
+                else if(parseFloat(json.values[i].weight.match(/[\d\.]+/)) < parseFloat(json.values[i - 1].weight.match(/[\d\.]+/)))
+                    parse += '<font color="red">Weight: ' + json.values[i].weight + "</font><br>"; 
+                else
+                    parse += "Weight: " + json.values[i].weight + "<br>";
+            else
+                parse += "Weight: " + json.values[i].weight + "<br>";
+
+            if(i > 0)
+                if(parseFloat(json.values[i].reps.match(/[\d\.]+/)) > parseFloat(json.values[i - 1].reps.match(/[\d\.]+/)))
+                    parse += '<font color="green">Reps: ' + json.values[i].reps + "</font><br>";
+                else if(parseFloat(json.values[i].reps.match(/[\d\.]+/)) < parseFloat(json.values[i - 1].reps.match(/[\d\.]+/)))
+                    parse += '<font color="red">Reps: ' + json.values[i].reps + "</font><br>";
+                else
+                    parse += "Reps: " + json.values[i].reps + "<br>";
+            else
+                parse += "Reps: " + json.values[i].reps + "<br>";
+
             
+            if(i > 0)
+                if(parseFloat(json.values[i].sets.match(/[\d\.]+/)) > parseFloat(json.values[i - 1].sets.match(/[\d\.]+/)))
+                    parse += '<font color="green">Sets: ' + json.values[i].sets + "</font><br>";
+                else if(parseFloat(json.values[i].sets.match(/[\d\.]+/)) < parseFloat(json.values[i - 1].sets.match(/[\d\.]+/)))
+                    parse += '<font color="red">Sets: ' + json.values[i].sets + "</font><br>";
+                else   
+                    parse += "Sets: " + json.values[i].sets + "<br>";
+            else
+                parse += "Sets: " + json.values[i].sets + "<br>";
+            
+            if(i > 0)
+                if(parseFloat(json.values[i].max_rep.match(/[\d\.]+/)) > parseFloat(json.values[i - 1].max_rep.match(/[\d\.]+/)))
+                    parse += '<font color="green">Max Rep: ' + json.values[i].max_rep + "</font><br>";
+                else if(parseFloat(json.values[i].max_rep.match(/[\d\.]+/)) < parseFloat(json.values[i - 1].max_rep.match(/[\d\.]+/)))
+                    parse += '<font color="red">Max Rep: ' + json.values[i].max_rep + "</font><br>";
+                else   
+                    parse += "Max Rep: " + json.values[i].max_rep + "<br>";
+            else
+                parse += "Max Rep: " + json.values[i].max_rep + "<br>";
+
             parse += "<br>"
 
         }

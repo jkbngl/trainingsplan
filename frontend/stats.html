@@ -748,7 +748,10 @@
 
         
 
-        chart.update();
+        chart.update({
+            duration: 900,
+            easing: 'easeInOutCubic'
+        });
     }
 
     function change_div(values, ex_name, reset)
@@ -923,14 +926,33 @@
             chart_type = "line";
 
         clear_chart(true);
+
+        // TODO
+        // write function rebuild chart, that clears chart but not data array and pushes all data back into the new chart
+        /*
+        var values;
+
+        chart.reset();
+        chart.clear();
+        chart = create_chart(chart_type);
+        
+        var weight_box = document.getElementById("weight_box");
+        var reps_box = document.getElementById("reps_box");
+        var sets_box = document.getElementById("sets_box");
+        var max_rep_box = document.getElementById("max_rep_box");
+
+        for(var i = 0; i < chart.data.datasets.length; i++)
+        {
+            values = get_value(active_ex_in_chart[i], weight_box.checked, reps_box.checked, sets_box.checked, max_rep_box.checked);
+            addData(values, chart.data.datasets[i], active_ex_in_chart[i])
+        }
+        */
     }
 
     function create_chart(chart_type)
     {
         // Make sure it is created from a clean start
         // clear_chart();
-
-        
 
         var chart = new Chart(document.getElementById("line-chart"), {
             type: chart_type,

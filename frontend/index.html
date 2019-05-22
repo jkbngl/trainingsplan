@@ -100,8 +100,6 @@
                 
             footer += '<br><br><hr style="height: 2px; background-color:#666;"><br>';
 
-            console.log(footer);
-
             Swal.fire({
               type: type,
               title: title,
@@ -132,7 +130,7 @@
                 
                     username = keycloak.idTokenParsed.name;
                     username = username.toLowerCase();
-                    document.getElementById("username").innerHTML = username;
+                    document.getElementById("username").innerHTML = username + ' <i class="fas fa-sign-out-alt"></i>';
                     
                     zoomOutMobile();
                     cleanUpTables();
@@ -666,7 +664,7 @@
             else
                 return "ERRORCODE 00003";
 
-            document.getElementById("username").innerHTML = planname + ' | '+ getusername();
+            document.getElementById("username").innerHTML = planname + ' | '+ getusername() + ' <i class="fas fa-sign-out-alt"></i>';
 
             
 
@@ -806,129 +804,129 @@
 
         try {
             if(jsondata == 'ERRORCODE 00003' || jsondata == 'ERRORCODE 00004')
-        {
-            console.log("sending dummy plan");
-            //xhr.send('{"plan":[{"username": "NoUser","planname": "NoPlan"}]}');
-        }
-        else
-        {
-            if(empty_values <= 3 && empty_values > 0)
-                alert_text = "Single fields are empty, are you sure you wanna save this values";
-            else if(empty_values < 10)
-                alert_text = "Some fields are empty, are you sure you wanna save this values";
-            else
-                alert_text = "A lot of fields are empty, are you sure you wanna save this valudes";
-            
-            
-            if(show_warning)
             {
-                Swal.fire({
-                  title: alert_text,
-                  input: 'checkbox',
-                  inputValue: show_warning,
-                  inputPlaceholder: 'Dont show again',
-                  text: info,
-                  type: 'warning',
-                  showCancelButton: true,
-                  confirmButtonColor: '#3085d6',
-                  cancelButtonColor: '#d33'
-                }).then((accept) => {
-                    // if(accept == 1)
-                    console.log(accept.value + ' | ' + show_warning);
-
-                    // 1 is accept and checkbox active, 0 is accept and checkbox inactive, undefined in cancelled, no need to save checkbox data
-                    if(accept.value == 1 || accept.value == 0)
-                    {
-                        // alert("Plan - " + planname +  " successfully Saved!");
-
-                        // check will always be true
-                        // TODO check if something changed and only if yes send e.g. id selected_value != stored_value_from_db
-                        // ^ not needed because if unchecked it is not shown again ^
-                        if(accept.value != show_warning) // Can be done as 1 == true and 0 == false - this means when something was changed
+                console.log("sending dummy plan");
+                //xhr.send('{"plan":[{"username": "NoUser","planname": "NoPlan"}]}');
+            }
+            else
+            {
+                if(empty_values <= 3 && empty_values > 0)
+                    alert_text = "Single fields are empty, are you sure you wanna save this values";
+                else if(empty_values < 10)
+                    alert_text = "Some fields are empty, are you sure you wanna save this values";
+                else
+                    alert_text = "A lot of fields are empty, are you sure you wanna save this valudes";
+                
+                
+                if(show_warning)
+                {
+                    Swal.fire({
+                      title: alert_text,
+                      input: 'checkbox',
+                      inputValue: show_warning,
+                      inputPlaceholder: 'Dont show again',
+                      text: info,
+                      type: 'warning',
+                      showCancelButton: true,
+                      confirmButtonColor: '#3085d6',
+                      cancelButtonColor: '#d33'
+                    }).then((accept) => {
+                        // if(accept == 1)
+                        console.log(accept.value + ' | ' + show_warning);
+                    
+                        // 1 is accept and checkbox active, 0 is accept and checkbox inactive, undefined in cancelled, no need to save checkbox data
+                        if(accept.value == 1 || accept.value == 0)
                         {
-                            console.log("changed")
-
-                            var preferences = {}; 
-
-                            preferences.username = getusername(); 
-                            if(accept.value == 0)
-                                preferences.check_dialog_save  = false;
+                            // alert("Plan - " + planname +  " successfully Saved!");
+                        
+                            // check will always be true
+                            // TODO check if something changed and only if yes send e.g. id selected_value != stored_value_from_db
+                            // ^ not needed because if unchecked it is not shown again ^
+                            if(accept.value != show_warning) // Can be done as 1 == true and 0 == false - this means when something was changed
+                            {
+                                console.log("changed")
+                            
+                                var preferences = {}; 
+                            
+                                preferences.username = getusername(); 
+                                if(accept.value == 0)
+                                    preferences.check_dialog_save  = false;
+                                else
+                                    preferences.check_dialog_save  = true;
+                            
+                                if(accept.value == 1)
+                                    show_warning = true;
+                                else
+                                    show_warning = false;
+                            
+                                var xhr = new XMLHttpRequest();
+                                var url = "http://jakob.ml:50003/trainingsplan/send_preferences";
+                                xhr.open("POST", url, true);
+                                xhr.setRequestHeader("Content-Type", "text/plain");
+                                var string = JSON.stringify(preferences);
+                                xhr.send(string);
+                            }
                             else
-                                preferences.check_dialog_save  = true;
-
-                            if(accept.value == 1)
-                                show_warning = true;
-                            else
-                                show_warning = false;
-
+                            {
+                                console.log("not changed")
+                            
+                                if(accept.value == 1)
+                                    show_warning = true;
+                                else
+                                    show_warning = false;
+                            }
+                        
+                            // OK was clicked so send it anyway what with the checkbox happened
+                            var jsondata = getExercises();
                             var xhr = new XMLHttpRequest();
-                            var url = "http://jakob.ml:50003/trainingsplan/send_preferences";
+                            var url = "http://jakob.ml:50003/trainingsplan/sendPlan";
                             xhr.open("POST", url, true);
                             xhr.setRequestHeader("Content-Type", "text/plain");
-                            var string = JSON.stringify(preferences);
-                            xhr.send(string);
+                            //var data = JSON.stringify(jsondata);
+                            xhr.send(jsondata);
+                        
+                            console.log("sending - " + jsondata);
+                        
+                            console.log("DATA SEND with warning");
+                            
+                            // After all is done, reload the page with the new ids
+                            onSave();
                         }
                         else
                         {
-                            console.log("not changed")
-
-                            if(accept.value == 1)
-                                show_warning = true;
-                            else
-                                show_warning = false;
+                            alert("Plan - " + planname +  " not Saved!");
+                            //console.log("not sending data");
                         }
-
-                        // OK was clicked so send it anyway what with the checkbox happened
-                        var jsondata = getExercises();
+                    });
+                }
+            
+                // Warning was not shown so send it here
+                if(!show_warning)
+                {
+                    /*
                         var xhr = new XMLHttpRequest();
-                        var url = "http://jakob.ml:50003/trainingsplan/sendPlan";
+                        var url = "http://jakob.ml:50003/trainingsplan/send_preferences";
                         xhr.open("POST", url, true);
                         xhr.setRequestHeader("Content-Type", "text/plain");
-                        //var data = JSON.stringify(jsondata);
-                        xhr.send(jsondata);
-
-                        console.log("sending - " + jsondata);
-
-                        console.log("DATA SEND with warning");
-                        
-                        // After all is done, reload the page with the new ids
-                        onSave();
-                    }
-                    else
-                    {
-                        alert("Plan - " + planname +  " not Saved!");
-                        //console.log("not sending data");
-                    }
-                });
-            }
-
-            // Warning was not shown so send it here
-            if(!show_warning)
-            {
-                /*
+                        var string = JSON.stringify(preferences);
+                        xhr.send(string);
+                    */
+                    var jsondata = getExercises();
                     var xhr = new XMLHttpRequest();
-                    var url = "http://jakob.ml:50003/trainingsplan/send_preferences";
+                    var url = "http://jakob.ml:50003/trainingsplan/sendPlan";
                     xhr.open("POST", url, true);
                     xhr.setRequestHeader("Content-Type", "text/plain");
-                    var string = JSON.stringify(preferences);
-                    xhr.send(string);
-                */
-                var jsondata = getExercises();
-                var xhr = new XMLHttpRequest();
-                var url = "http://jakob.ml:50003/trainingsplan/sendPlan";
-                xhr.open("POST", url, true);
-                xhr.setRequestHeader("Content-Type", "text/plain");
-                var data = JSON.stringify(jsondata);
-                xhr.send(jsondata);
-                console.log("no error found - sending normal plan");
-                console.log(jsondata);
-
-                console.log("DATA SEND, no warning displayed");
-                onSave();
+                    var data = JSON.stringify(jsondata);
+                    xhr.send(jsondata);
+                    console.log("no error found - sending normal plan");
+                    console.log(jsondata);
+                
+                    console.log("DATA SEND, no warning displayed");
+                    onSave();
+                }
             }
-        }
-        // after saving set it back to zero, for next save
-        empty_values = 0;
+            // after saving set it back to zero, for next save
+            empty_values = 0;
         }
         catch(err) {
             console.log("error when sending data");
@@ -1195,7 +1193,7 @@
 
             if(i == 0)
             {
-                document.getElementById("username").innerHTML = json.plan[i].planname + ' | '+ getusername();
+                document.getElementById("username").innerHTML = json.plan[i].planname + ' | '+ getusername() + ' <i class="fas fa-sign-out-alt"></i>';
                 planname = json.plan[i].planname;
             }
 
@@ -1235,7 +1233,7 @@
 
     function cleanUpTables()
     {
-        document.getElementById("username").innerHTML = getusername() + ' ';
+        document.getElementById("username").innerHTML = getusername() + ' <i class="fas fa-sign-out-alt"></i>';
         planname = '';
 
         for(var i = 1; i < 6; i++)

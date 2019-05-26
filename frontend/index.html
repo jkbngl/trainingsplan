@@ -110,6 +110,16 @@
         document.addEventListener('DOMContentLoaded',function(){
             try
             {
+
+                swal.fire({
+                    title: 'Loading your data...',
+                    allowEscapeKey: false,
+                    allowOutsideClick: false,
+                    onOpen: () => {
+                      swal.showLoading();
+                    }
+                });
+
                 keycloak = Keycloak();
 
                 keycloak.init({ onLoad: 'login-required' })
@@ -125,6 +135,8 @@
 
                 keycloak.onAuthSuccess = function() 
                 { 
+                    swal.close();
+
                     // alert('Successfully authenticated'); 
                     console.log('Successfully authenticated'); 
                 
@@ -865,6 +877,7 @@
                                 xhr.setRequestHeader("Content-Type", "text/plain");
                                 var string = JSON.stringify(preferences);
                                 xhr.send(string);
+                                
                             }
                             else
                             {

@@ -941,6 +941,16 @@
 
     function checkIfDataIsLoadedIntoDB(xhr)
     {
+
+        swal.fire({
+          title: 'Saving your Data...',
+          allowEscapeKey: false,
+          allowOutsideClick: false,
+          onOpen: () => {
+            swal.showLoading();
+          }
+        });
+
         var counter = 0;
         var check = function(){
             if(xhr.status == 200){
@@ -949,26 +959,32 @@
                 swal.fire({
                     title: 'Your plan was saved - ' + xhr.status + "!",
                     //text: 'I will close in 2 seconds.',
-                    timer: 500,
+                    type: 'success',
+                    //position: 'top-end',
+                    timer: 1000,
                     showCancelButton: false,
                     showConfirmButton: false
-                }).then(
-                    function () {},
-                    // handling the promise rejection
-                    function (dismiss) {
-                        if (dismiss === 'timer') {
-                            //console.log('I was closed by the timer')
-                        }
-                    }
-                )
+                });
                 
                 onSave();
             }
-            else if(counter >= 100) //After 10 (if check wait time is still 100) seconds of waiting
+            else if(counter >= 200) // After 20 (if check wait time is still 100) seconds of waiting, stop
             {
                 display_error("error", "Ooops...", "The backend seems to be unavailable");
             }
             else {
+                if(counter == 50)
+                {
+                    swal.fire({
+                      title: 'This takes longer than usual, please be patient',
+                      allowEscapeKey: false,
+                      allowOutsideClick: false,
+                      onOpen: () => {
+                        swal.showLoading();
+                      }
+                    });
+                }
+
                 console.log("waiting");
                 counter++;
                 setTimeout(check, 100); // check again in a second

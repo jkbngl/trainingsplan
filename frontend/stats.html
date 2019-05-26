@@ -899,8 +899,16 @@
 
     function clear_chart(clearSelect)
     {
-        chart.reset();
+        console.log(window.bar);
+
+        chart.destroy();
+
+        /*chart.reset();
         chart.clear();
+        */
+
+        // var ctxLine = document.getElementById("line-chart").getContext("2d");
+        
         chart = create_chart(chart_type);
         
         if(clearSelect)
@@ -1009,7 +1017,7 @@
                 },
                 legend: {
                     display: true,
-                    //position: 'bottom',
+                    position: 'bottom',
                     labels: {
                         fontSize: 20
                     }
@@ -1036,10 +1044,10 @@
                 maintainAspectRatio: false
 
             }
-         });
+        });
 
-         return chart;
-        }
+        return chart;
+    }
 
     function get_data_per_exercise_and_step(index, name)
     {

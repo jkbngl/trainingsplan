@@ -941,6 +941,7 @@
 
     function checkIfDataIsLoadedIntoDB(xhr)
     {
+        var counter = 0;
         var check = function(){
             if(xhr.status == 200){
                 console.log("POST worked, data send, reload page with new data: " + xhr.status);
@@ -963,13 +964,20 @@
                 
                 onSave();
             }
+            else if(counter >= 100) //After 10 (if check wait time is still 100) seconds of waiting
+            {
+                display_error("error", "Ooops...", "The backend seems to be unavailable");
+            }
             else {
-                console.log("waiting")
+                console.log("waiting");
+                counter++;
                 setTimeout(check, 100); // check again in a second
             }
         }
         
-        check();
+        // If not waiting longe than 10 seconds
+        if(counter < 100)
+            check();
     }
 
     function receivePlanfromDB(onlogon)

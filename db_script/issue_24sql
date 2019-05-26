@@ -1,0 +1,14 @@
+SELECT f(substring(column1 from '(([0-9]+.\*)*[0-9]+)')), substring(column1 from '(([0-9]+.*)*[0-9]+)'), column1 FROM
+    (VALUES
+        ('2 *2 +7 g pro seitex')
+    ) strings;
+    
+    
+create or replace function f(_s text)
+returns numeric as $$
+declare i numeric;
+begin
+    execute format('select %s', _s) into i;
+    return i;
+end;
+$$ language plpgsql

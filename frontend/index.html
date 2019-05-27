@@ -970,8 +970,7 @@
                 console.log("POST worked, data send, reload page with new data: " + xhr.status);
                 
                 swal.fire({
-                    title: 'Your plan was saved - ' + xhr.status + "!",
-                    //text: 'I will close in 2 seconds.',
+                    title: 'Your plan was saved!',
                     type: 'success',
                     //position: 'top-end',
                     timer: 1000,
@@ -980,6 +979,18 @@
                 });
                 
                 onSave();
+            }
+            else if(xhr.status != 200 && xhr.status != 0)
+            {
+                swal.fire({
+                    title: 'ERROR - ' + xhr.status + "!",
+                    //text: 'I will close in 2 seconds.',
+                    type: 'error',
+                    //position: 'top-end',
+                    timer: 5000,
+                    showCancelButton: false,
+                    showConfirmButton: false
+                });
             }
             else if(counter >= 200) // After 20 (if check wait time is still 100) seconds of waiting, stop
             {

@@ -613,9 +613,9 @@
             // push the data into a global object which is accessible for the function which updates the chart dynamically
             active_ex_in_chart.push(available_ex);
 
-            console.log(values);
+            /*console.log(values);
             console.log(text);
-            console.log(available_ex);
+            console.log(available_ex);*/
 
             addData(values, text, available_ex);
         }
@@ -931,7 +931,7 @@
     }
 
     var labels = [1,2,3,4,5,6,7,8];
-    var border_color_array = ["#00ad5f", "#E3170A", "#F7B32B", "#8980F5", "#102542", "#0EB1D2", "#41658A", "#A9E5BB", "#1A3A3A", "#0EB1D2"];
+    var border_color_array = ["#00ad5f", "#E3170A", "#F7B32B", "#4b081a", "#f63f01", "#777777", "#8980F5", "#102542", "#0EB1D2", "#41658A", "#1A3A3A"];
     var ex_names = ["kniebeuge", "bankdruecken", "seitheben", "latzug"];
 
     function get_chart_type()
@@ -1007,6 +1007,7 @@
                 ]
             },
             options: {
+                line:{ fill: true},
                 ticks: {
                     beginAtZero: false,
                     min: 0,

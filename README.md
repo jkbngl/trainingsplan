@@ -34,7 +34,7 @@ Stats
 
 Login
 
-![alt text](https://raw.githubusercontent.com/jkbngl/trainingsplan/master/pictures/login.png)
+![alt text](https://raw.githubusercontent.com/jkbngl/trainingsplan/master/pictures/login_personalized.png)
 - - - -
 ## Get access to stats ##
 

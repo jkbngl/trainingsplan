@@ -1041,8 +1041,7 @@
                         console.log('No plans found for user, nothing to display');
                     }
 
-                    // As I am not using the await keyword, close it with this
-                    swal.close();
+                    
                 }
             }
             else
@@ -1117,6 +1116,9 @@
                                 else
                                     restore_plan(value, true);
                             }
+
+                            // As I am not using the await keyword, close it with this
+                            swal.close();
                         })
                     }
                 });

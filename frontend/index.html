@@ -566,19 +566,7 @@
             }
         }
 
-        /*
-        if (typeof(document.getElementById("day" + id)) != 'undefined' && element != null)
-        {
-            var parent = document.getElementById("day" + id).parentElement.id;
-            var element =  document.getElementById(parent)
-        }
-
-        if (typeof(element) != 'undefined' && element != null)
-            document.getElementById(parent).innerHTML = ' ';
-        */
-
         numtables = numtables - 1;
-        // console.log("After Deleting: " + numtables);
 
         if(numtables == 0)
             addTable(true);
@@ -586,12 +574,8 @@
 
     function addRowWithEx(tableName, exid, exname, exweight, exreps, exsets, exmaxreps, expause)
     {
-        // console.log(tableName);
-
         var table = document.getElementById(tableName);
         var rowCount = document.getElementById(tableName).rows.length;
-
-        //console.log(rowCount);
 
         var row = table.insertRow(rowCount);
         var cell1 = row.insertCell(0);
@@ -783,9 +767,9 @@
         }
         else
         {
-            document.getElementById('dialog').style.display = 'inline';
-            showDialog('http://jakob.ml:50003/trainingsplan/getPlansByUser/', 0);
-            getPlanIdFromDialog(getusername(), false, true);
+            //document.getElementById('dialog').style.display = 'inline';
+            showDialog('http://jakob.ml:50003/trainingsplan/getPlansByUser/', 0, false, true);
+            //getPlanIdFromDialog(getusername(), false, true);    // false, true: -> false means dont display the plan, true means delete, false would mean restore
         }
     }
 
@@ -804,9 +788,9 @@
         else
         {
             // when choosing which plan to restore
-            document.getElementById('dialog').style.display = 'inline';
-            showDialog('http://jakob.ml:50003/trainingsplan/getPlansByUser/', 1);
-            getPlanIdFromDialog(getusername(), false, false);
+            //document.getElementById('dialog').style.display = 'inline';
+            showDialog('http://jakob.ml:50003/trainingsplan/getPlansByUser/', 1, false, false);
+            //getPlanIdFromDialog(getusername(), false, false);      // false, false: -> false means dont display the plan, false means restore, true would mean delete
         }
     }
 
@@ -984,7 +968,6 @@
             {
                 swal.fire({
                     title: 'ERROR - ' + xhr.status + "!",
-                    //text: 'I will close in 2 seconds.',
                     type: 'error',
                     //position: 'top-end',
                     timer: 5000,
@@ -1033,16 +1016,16 @@
         request.open('GET', url + username + '/2', true);
         request.onload = function ()
         {
-            // Begin accessing JSON data here
             if (request.status >= 200 && request.status < 400)
             {
                 var json = JSON.parse(this.response);
 
                 if(json.plans.length > 1 && onlogon == false) // if more than 1 day than load all plans
                 {
-                    document.getElementById('dialog').style.display = 'inline';
-                    showDialog('http://jakob.ml:50003/trainingsplan/getPlansByUser/', 0);
-                    getPlanIdFromDialog(username, true, null);
+                    // TODO: #60
+                    //document.getElementById('dialog').style.display = 'inline';            // #60 - this line will be gone and replaced by swal call
+                    showDialog('http://jakob.ml:50003/trainingsplan/getPlansByUser/', 0, true, null);  // #60 - this line can stay, add params from line under
+                    //getPlanIdFromDialog(username, true, null);                             // #60 this line can be replaced with swal
                 }
                 else
                 {
@@ -1057,6 +1040,9 @@
                         addTable(true);
                         console.log('No plans found for user, nothing to display');
                     }
+
+                    // As I am not using the await keyword, close it with this
+                    swal.close();
                 }
             }
             else
@@ -1067,17 +1053,93 @@
 
         request.send();
 
-        if( isMobile.any() ) 
+        if(isMobile.any()) 
         {
             console.log("MOBILE DETECTED AS DEVICE");
             customize_mobile();
         }
-        else
+    }
+
+    function showDialog(urlToCall, active, display_plan, restore_plan)
+    {
+        // TODO: #60
+        
+        var confirmButton = document.getElementById('confirm');
+        var request = new XMLHttpRequest();
+        var url = urlToCall;
+
+        var username = getusername();
+
+        clear_select();
+
+        request.open('GET', url + username + '/' + active, true);
+        request.onload = function ()
         {
-            //customize_mobile();
-            // console.log("PC DETECTED AS DEVICE");
+            // Begin accessing JSON data here
+            if (request.status >= 200 && request.status < 400)
+            {
+                var json = JSON.parse(this.response);
+                var amountdays = get_num_plan(active);
+                var parsed_json_for_swal = {}
+
+                for(var i = 0; i < json.plans.length; i++)
+                {
+                    var columnName = json.plans[i].id;
+                    parsed_json_for_swal[columnName] = json.plans[i].date + ' - ' +  json.plans[i].name;
+                }
+
+                console.log(parsed_json_for_swal);
+
+                daySelect = document.getElementById('test-dropdown');
+                
+                const {value: fruit} = Swal.fire({
+                    title: 'Select field validation',
+                    input: 'select',
+                    inputOptions: parsed_json_for_swal,
+                    inputPlaceholder: 'Select a plan...',
+                    showCancelButton: true,
+                    inputValidator: (value) => {
+                        return new Promise((resolve) => 
+                        {
+                            console.log(value);
+
+                            plan = getPlan('http://jakob.ml:50003/trainingsplan/getPlanByUserAndPlan/' + username + '/' + value);
+                            var data = JSON.parse(plan);
+
+                            // the dialog for loading a plan from the db was active and now display the new data
+                            if(display_plan)
+                                printjson(data, plan);
+                            else
+                            {
+                                // the dialog for restoring or deleting was active and now send the corresponding rest call
+                                if(delete_or_restore)
+                                    delete_plan(currentPlanId, true);
+                                else
+                                    restore_plan(currentPlanId, true);
+                            }
+                        })
+                    }
+                });
+
+                closeNav();
+
+                // #60 here the swal call will go, with parsed json.plans as inputs
+
+                for(var i = 0; i < amountdays; i++)
+                {
+                    daySelect = document.getElementById('test-dropdown');
+                    daySelect.options[i] = new Option(json.plans[i].date + ' - ' +  json.plans[i].name, json.plans[i].id);
+                }
+
+                loaded = true;      // loaded is true - which means all plans are loaded and dont add them AGAIN to dialog
+            }
+            else
+            {
+                console.log('error');
+            }
         }
 
+        request.send();
     }
 
     function getPlan(urlToCall)
@@ -1111,53 +1173,10 @@
         return plan;
     }
 
-    function showDialog(urlToCall, active)
-    {
-        /*
-        document.getElementById('dialog').style.display = 'none';
-        document.getElementById('dialog').style.display = 'inline';
-        */
-
-        console.log(active);
-
-        var confirmButton = document.getElementById('confirm');
-        var request = new XMLHttpRequest();
-        var url = urlToCall;
-
-        var username = getusername();
-
-        clear_select();
-
-        request.open('GET', url + username + '/' + active, true);
-        request.onload = function ()
-        {
-            // Begin accessing JSON data here
-            if (request.status >= 200 && request.status < 400)
-            {
-                var json = JSON.parse(this.response);
-                var amountdays = get_num_plan(active);
-                
-                daySelect = document.getElementById('test-dropdown');
-
-                for(var i = 0; i < amountdays; i++)
-                {
-                    daySelect = document.getElementById('test-dropdown');
-                    daySelect.options[i] = new Option(json.plans[i].date + ' - ' +  json.plans[i].name, json.plans[i].id);
-                }
-
-                loaded = true;      // loaded is true - which means all plans are loaded and dont add them AGAIN to dialog
-            }
-            else
-            {
-                console.log('error');
-            }
-        }
-
-        request.send();
-    }
-
     function clear_select()
     {
+        // TODO: #60
+        // Probably no longer used after loading with swal
         var select = document.getElementById("test-dropdown");
         var length = select.options.length;
 
@@ -1223,38 +1242,29 @@
         confirmButton.addEventListener('click', function()
         {
             var x = document.getElementById('test-dropdown');
-            // console.log(x.options[x.selectedIndex].value);
-
             currentPlanId = x.options[x.selectedIndex].value;
 
-            // TODO value at the end of url can probably be removed
-            plan = getPlan('http://jakob.ml:50003/trainingsplan/getPlanByUserAndPlan/' + username + '/' + x.options[x.selectedIndex].value);
+            plan = getPlan('http://jakob.ml:50003/trainingsplan/getPlanByUserAndPlan/' + username + '/' + currentPlanId);
             var data = JSON.parse(plan);
 
-            closeNav();
-
+            // the dialog for loading a plan from the db was active and now display the new data
             if(display_plan)
                 printjson(data, plan);
             else
             {
+                // the dialog for restoring or deleting was active and now send the corresponding rest call
                 if(delete_or_restore)
-                    delete_plan(x.options[x.selectedIndex].value, true);
+                    delete_plan(currentPlanId, true);
                 else
-                    restore_plan(x.options[x.selectedIndex].value, true);
-
+                    restore_plan(currentPlanId, true);
             }
-                 
             
             document.getElementById('dialog').style.display = 'none';
-            // return x.options[x.selectedIndex].value;
         });
 
         cancelButton.addEventListener('click', function()
         {
-            // console.log("CLOSED");
             document.getElementById('dialog').style.display = 'none';
-            console.log("cancelled");
-            closeNav();
         });
     }
 
@@ -1262,8 +1272,6 @@
     {
         var json = JSON.parse(plaintext);
         var daycount = json.plan.length
-
-        // console.log(json);
 
         cleanUpTables();
 

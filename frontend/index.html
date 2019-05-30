@@ -1102,20 +1102,31 @@
                         {
                             console.log(value);
 
-                            plan = getPlan('http://jakob.ml:50003/trainingsplan/getPlanByUserAndPlan/' + username + '/' + value);
-                            var data = JSON.parse(plan);
-
-                            // the dialog for loading a plan from the db was active and now display the new data
-                            if(display_plan)
-                                printjson(data, plan);
+                            if(typeof value == 'number')
+                            {
+                                plan = getPlan('http://jakob.ml:50003/trainingsplan/getPlanByUserAndPlan/' + username + '/' + value);
+                                var data = JSON.parse(plan);
+                                
+                                // the dialog for loading a plan from the db was active and now display the new data
+                                if(display_plan)
+                                    printjson(data, plan);
+                                else
+                                {
+                                    // the dialog for restoring or deleting was active and now send the corresponding rest call
+                                    if(delete_or_restore)
+                                        delete_plan(value, true);
+                                    else
+                                        restore_plan(value, true);
+                                }
+                            }
                             else
                             {
-                                // the dialog for restoring or deleting was active and now send the corresponding rest call
-                                if(delete_or_restore)
-                                    delete_plan(value, true);
-                                else
-                                    restore_plan(value, true);
+                                console.log("nothing selected");
                             }
+
+                            
+
+                            
 
                             // As I am not using the await keyword, close it with this
                             swal.close();

@@ -1060,7 +1060,7 @@
         }
     }
 
-    function showDialog(urlToCall, active, display_plan, restore_plan)
+    function showDialog(urlToCall, active, display_plan, delete_or_restore)
     {
         // TODO: #60
         
@@ -1113,9 +1113,9 @@
                             {
                                 // the dialog for restoring or deleting was active and now send the corresponding rest call
                                 if(delete_or_restore)
-                                    delete_plan(currentPlanId, true);
+                                    delete_plan(value, true);
                                 else
-                                    restore_plan(currentPlanId, true);
+                                    restore_plan(value, true);
                             }
                         })
                     }

@@ -24,8 +24,6 @@ LEVEL 1. CORE STYLES
 =====
 */
 
-
-
 #container {
   display: flex;                  /* establish flex container */
   flex-direction: row;            /* default value; can be omitted */
@@ -505,7 +503,7 @@ select option {
   background-color: #222222;
   overflow-x: hidden;
   transition: 0.5s;
-  padding-top: 60px;
+  /*padding-top: 60px;*/
   border-right: 1px solid #28AD5F;
 }
 

@@ -1029,9 +1029,7 @@
     }
 
     function showDialog(urlToCall, active, display_plan, delete_or_restore)
-    {
-        // TODO: #60
-        
+    {        
         var confirmButton = document.getElementById('confirm');
         var request = new XMLHttpRequest();
         var url = urlToCall;
@@ -1053,11 +1051,9 @@
                     var columnName = json.plans[i].id;
                     parsed_json_for_swal[columnName] = json.plans[i].date + ' - ' +  json.plans[i].name;
                 }
-
-                console.log(parsed_json_for_swal);
                 
                 const {value: fruit} = Swal.fire({
-                    title: 'Select field validation',
+                    title: 'Select a plan',
                     input: 'select',
                     inputOptions: parsed_json_for_swal,
                     inputPlaceholder: 'Select a plan...',

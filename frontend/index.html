@@ -1101,8 +1101,9 @@
                         return new Promise((resolve) => 
                         {
                             console.log(value);
+                            console.log(typeof value);
 
-                            if(typeof value == 'number')
+                            if(!isNaN(parseFloat(value)) && !isNaN(value - 0))
                             {
                                 plan = getPlan('http://jakob.ml:50003/trainingsplan/getPlanByUserAndPlan/' + username + '/' + value);
                                 var data = JSON.parse(plan);
@@ -1123,11 +1124,7 @@
                             {
                                 console.log("nothing selected");
                             }
-
                             
-
-                            
-
                             // As I am not using the await keyword, close it with this
                             swal.close();
                         })

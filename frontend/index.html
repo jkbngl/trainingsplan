@@ -10,7 +10,7 @@
         }
 
         .mobile_th th.mobile_th,  th.mobile_th {
-           font-size: 30px;
+           font-size: 35px;
         }
 
         .mobile_button button.mobile_button,  button.mobile_button {
@@ -18,23 +18,23 @@
         }
 
         .mobile_div div.mobile_div,  div.mobile_div {
-           font-size: 30px;
+           font-size: 35px;
         }
 
         .mobile_i i.mobile_i,  i.mobile_i {
-            font-size: 30px;
+            font-size: 35px;
         }
 
         .mobile_select select.mobile_select,  select.mobile_select {
-            font-size: 30px;
+            font-size: 35px;
         }
 
         .mobile_label label.mobile_label,  label.mobile_label {
-           font-size: 30px;
+           font-size: 35px;
         }
 
         .mobile_td td.mobile_td,  td.mobile_td {
-            border: 1px solid #373737;
+            border: 2px solid #373737;
         }
     </style>
 
@@ -166,6 +166,7 @@
             return username;
         }
     </script>
+
 </head>
 <body>
 
@@ -177,21 +178,20 @@
 
 
 <div id="mySidenav" class="sidenav">
-    <a href="javascript:void(0)" class="closebtn" onclick="closeNav()"><i class="fas fa-bars"></i></a>
-    <!--<a href="#">About</a>-->
-    <button onclick="receivePlanfromDB(false)"                      class="button" style="top: 10px; width:80%; margin-left: 10%; margin-top: 30px"><i class="fas fa-spinner">          </i> Load Plan</button>
-    <button onclick="check_allowed_to_add_plan()" class="button" style="top: 10px; width:80%; margin-left: 10%;">                 <i class="fas fa-plus-circle">      </i> New Plan</button>
-    <button onclick="delete_plan(-1, false)"                        class="button" style="top: 10px; width:80%; margin-left: 10%; margin-top: 20%;"><i class="fas fa-trash">            </i> Delete Plans</button>
-    <button onclick="restore_plan(-1, false)"                       class="button" style="top: 10px; width:80%; margin-left: 10%;">                 <i class="fas fa-trash-restore-alt"></i> Restore Plans</button>
-    <button id="stats-button" onclick="window.location.href='stats.html'"             class="button" style="top: 10px; width:80%; margin-left: 10%; margin-top: 20%;"><i class="fas fa-chart-line">       </i> Stats</button>
-    <button id="logout-button" onclick="keycloak.logout()"                            class="button" style="top: 10px; width:80%; margin-left: 10%;">                 <i class="fas fa-sign-out-alt">     </i> Logout</button>
+    <button id="open-nav-button" onclick="closeNav()"                      class="button" style="float:right; float:top; margin-right: 10%; margin-bottom: 15%" ><i class="fas fa-bars"></i></a>
+    <button onclick="receivePlanfromDB(false)"                             class="button" style="top: 10px; width:80%; margin-left: 10%; margin-top: 30px"><i class="fas fa-spinner">          </i> Load Plan</button>
+    <button onclick="check_allowed_to_add_plan()"                          class="button" style="top: 10px; width:80%; margin-left: 10%;">                 <i class="fas fa-plus-circle">      </i> New Plan</button>
+    <button onclick="delete_plan(-1, false)"                               class="button" style="top: 10px; width:80%; margin-left: 10%; margin-top: 20%;"><i class="fas fa-trash">            </i> Delete Plans</button>
+    <button onclick="restore_plan(-1, false)"                              class="button" style="top: 10px; width:80%; margin-left: 10%;">                 <i class="fas fa-trash-restore-alt"></i> Restore Plans</button>
+    <button id="stats-button" onclick="window.location.href='stats.html'"  class="button" style="top: 10px; width:80%; margin-left: 10%; margin-top: 20%;"><i class="fas fa-chart-line">       </i> Stats</button>
+    <button id="logout-button" onclick="keycloak.logout()"                 class="button" style="top: 10px; width:80%; margin-left: 10%;">                 <i class="fas fa-sign-out-alt">     </i> Logout</button>
     
 </div>
 
 <div id = "headerforbuttons" style="display: flex; justify-content: space-between; position:fixed; width:100%">
-    <button onclick="openNav()"                  class="button" style="top: 10px;"><i class="fas fa-bars"></i></span></button>
+    <button onclick="openNav()"                  class="button" id ="nav_opener" style="top: 10px;"><i class="fas fa-bars"></i></span></button>
     <button onclick="addTable(true)"             class="button" style="top: 10px;"><i class="fas fa-plus-circle"></i> Add new Day</button>
-    <button onclick="loadPlanIntoDB();" class="button" style="top: 10px;"><i class="far fa-save"></i></button>
+    <button onclick="loadPlanIntoDB();"          class="button" id ="saver" style="top: 10px;"><i class="far fa-save"></i></button>
     <button onclick="keycloak.logout()"          class="button" value="username ..." id="username" style="top: 10px;"></button>
 </div>​
 
@@ -1454,9 +1454,14 @@
 
     function customize_mobile()
     {
-        document.getElementById("headerforbuttons").style.height = "90px";
-        document.getElementById("container1").style.marginTop = "100px";
+        document.getElementById("headerforbuttons").style.height = "150px";
+        document.getElementById("container1").style.marginTop = "150px";
         
+        document.getElementById("nav_opener").style.width = "10%";
+        document.getElementById("saver").style.width = "10%";
+        document.getElementById("open-nav-button").style.height = "5%";
+        
+
         var buttons = document.getElementsByTagName("button");
         for(var i = 0, il = buttons.length; i < il; i++)
         {

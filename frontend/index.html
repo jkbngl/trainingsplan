@@ -195,29 +195,6 @@
     <button onclick="keycloak.logout()"          class="button" value="username ..." id="username" style="top: 10px;"></button>
 </div>​
 
-
-<div id="dialog" style="position: fixed; display:none; z-index: 10; text-align: center; width:100vw; margin:0 auto;">
-    <dialog id="favDialog" style="margin: 0 auto;">
-        <form method="dialog">
-            <p>
-                <label class="staticbutton" id="test-dropdown2" >Choose trainingsplan:
-                    <select id="test-dropdown" class="button">
-                    </select>
-                </label>
-            </p>
-            <menu style="display: flex; justify-content: center;">
-                <button id="cancel" class="button" style="display:inline-block;">Cancel</button>
-                <button id="confirm" class="button" style="display:inline-block;">Confirm</button>
-            </menu>
-        </form>
-    </dialog>
-
-    <output>
-        <!---->
-    </output>
-</div>
-
-
 <a onclick="topFunction()" id="topButton" style="display: none;" class="float">
     <i class="fa fa-angle-up my-float"></i>
 </a>
@@ -767,9 +744,7 @@
         }
         else
         {
-            //document.getElementById('dialog').style.display = 'inline';
             showDialog('http://jakob.ml:50003/trainingsplan/getPlansByUser/', 0, false, true);
-            //getPlanIdFromDialog(getusername(), false, true);    // false, true: -> false means dont display the plan, true means delete, false would mean restore
         }
     }
 
@@ -787,10 +762,7 @@
         }
         else
         {
-            // when choosing which plan to restore
-            //document.getElementById('dialog').style.display = 'inline';
             showDialog('http://jakob.ml:50003/trainingsplan/getPlansByUser/', 1, false, false);
-            //getPlanIdFromDialog(getusername(), false, false);      // false, false: -> false means dont display the plan, false means restore, true would mean delete
         }
     }
 
@@ -1022,10 +994,7 @@
 
                 if(json.plans.length > 1 && onlogon == false) // if more than 1 day than load all plans
                 {
-                    // TODO: #60
-                    //document.getElementById('dialog').style.display = 'inline';            // #60 - this line will be gone and replaced by swal call
-                    showDialog('http://jakob.ml:50003/trainingsplan/getPlansByUser/', 0, true, null);  // #60 - this line can stay, add params from line under
-                    //getPlanIdFromDialog(username, true, null);                             // #60 this line can be replaced with swal
+                    showDialog('http://jakob.ml:50003/trainingsplan/getPlansByUser/', 0, true, null);
                 }
                 else
                 {
@@ -1069,8 +1038,6 @@
 
         var username = getusername();
 
-        clear_select();
-
         request.open('GET', url + username + '/' + active, true);
         request.onload = function ()
         {
@@ -1088,8 +1055,6 @@
                 }
 
                 console.log(parsed_json_for_swal);
-
-                daySelect = document.getElementById('test-dropdown');
                 
                 const {value: fruit} = Swal.fire({
                     title: 'Select field validation',
@@ -1133,14 +1098,6 @@
 
                 closeNav();
 
-                // #60 here the swal call will go, with parsed json.plans as inputs
-
-                for(var i = 0; i < amountdays; i++)
-                {
-                    daySelect = document.getElementById('test-dropdown');
-                    daySelect.options[i] = new Option(json.plans[i].date + ' - ' +  json.plans[i].name, json.plans[i].id);
-                }
-
                 loaded = true;      // loaded is true - which means all plans are loaded and dont add them AGAIN to dialog
             }
             else
@@ -1181,21 +1138,6 @@
         plan = xmlHttp.responseText;
 
         return plan;
-    }
-
-    function clear_select()
-    {
-        // TODO: #60
-        // Probably no longer used after loading with swal
-        var select = document.getElementById("test-dropdown");
-        var length = select.options.length;
-
-        // make sure everything is deleted
-        for(j = 0; j < 5; j++)
-            for (i = 0; i < length; i++) 
-            {
-                select.options[i] = null;
-            }
     }
 
     function onSave()
@@ -1244,41 +1186,6 @@
         return num;
     }
 
-/*
-    function getPlanIdFromDialog(username, display_plan, delete_or_restore)
-    {
-        var confirmButton = document.getElementById('confirm');
-        var cancelButton = document.getElementById('cancel');
-
-        confirmButton.addEventListener('click', function()
-        {
-            var x = document.getElementById('test-dropdown');
-            currentPlanId = x.options[x.selectedIndex].value;
-
-            plan = getPlan('http://jakob.ml:50003/trainingsplan/getPlanByUserAndPlan/' + username + '/' + currentPlanId);
-            var data = JSON.parse(plan);
-
-            // the dialog for loading a plan from the db was active and now display the new data
-            if(display_plan)
-                printjson(data, plan);
-            else
-            {
-                // the dialog for restoring or deleting was active and now send the corresponding rest call
-                if(delete_or_restore)
-                    delete_plan(currentPlanId, true);
-                else
-                    restore_plan(currentPlanId, true);
-            }
-            
-            document.getElementById('dialog').style.display = 'none';
-        });
-
-        cancelButton.addEventListener('click', function()
-        {
-            document.getElementById('dialog').style.display = 'none';
-        });
-    }
-*/
     function printjson(json, plaintext)
     {
         var json = JSON.parse(plaintext);

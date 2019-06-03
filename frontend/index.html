@@ -15,6 +15,7 @@
 
         .mobile_button button.mobile_button,  button.mobile_button {
            font-size: 35px;
+           height: 20vh;
         }
 
         .mobile_div div.mobile_div,  div.mobile_div {
@@ -369,6 +370,7 @@
         var cell5 = row.insertCell(4);
         var cell6 = row.insertCell(5);
         var cell7 = row.insertCell(6);
+        var cell8 = row.insertCell(7);
 
         cell1.innerHTML = "<td class=\'tdinput\'> <div contenteditable='true' id='tags' value='defaultvaluetoignore' class='title' autocomplete='on' data-placeholder='name' style=\"background-color: transparent; color:#7F7F7F; width:inherit; max-width: 160px; min-width: 160px;  min-height: 25px; text-align: center\"/></div></td>";
         cell2.innerHTML = "<td class=\'tdinput\'> <div contenteditable='true' id='tags' value='defaultvaluetoignore' class='title' autocomplete='on' data-placeholder='kilo' style=\"background-color: transparent; color:#7F7F7F; width:inherit; max-width: 160px; min-width: 160px;  min-height: 25px; text-align: center\"/></div></td>";
@@ -379,7 +381,6 @@
         cell7.innerHTML = "<button style='background: #222222; color: #28AD5F; font-style=bold; float: right' onclick='deleteRow(" + tableName + ", "+ rowCount + ")'>&nbsp<i class='fas fa-times-circle'></i></i></button>";
 
         row.setAttribute("id", "somerow", 0);
-        // $.myjQuery();
 
         // make changes for reordered buttons again active
         if( isMobile.any() ) 

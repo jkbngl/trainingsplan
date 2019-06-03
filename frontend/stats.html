@@ -3,8 +3,9 @@
     <title>trainigsplan</title>
 
     <style>
-        .mobile_size button.mobile_button,  button.mobile_button {
+        .mobile_button button.mobile_button,  button.mobile_button {
            font-size: 35px;
+           height: 5vh;
         }
 
         .mobile_p p.mobile_p,  p.mobile_p {
@@ -133,7 +134,7 @@
     <div class="fixed-background blue-gradient-bg"></div>
 
     <div id="mySidenav" class="sidenav">
-        <a href="javascript:void(0)" class="closebtn" onclick="closeNav()"><i class="fas fa-bars"></i></a>
+        <button id="open-nav-button" onclick="closeNav()"                      class="button" style="float:right; float:top; margin-right: 10%; margin-bottom: 15%" ><i class="fas fa-bars"></i></a>
         <!--<a href="#">About</a>-->
         <!--<button onclick="receivePlanfromDB(false)" class="button" style=" top: 10px; width:80%; margin-left: 10%;">Load Plan</button>
         <button onclick="cleanUpTables(); addTable(true);  closeNav();"class="button" style="top: 10px; width:80%; margin-left: 10%;">New Plan</button>-->
@@ -142,7 +143,7 @@
         
                 
        
-        <button onclick="reset_settings(); save_settings()"class="button" style="top: 10px; width:80%; margin-left: 10%;"><i class="fas fa-hammer"></i> Reset Settings</button>
+        <button onclick="reset_settings(); save_settings()"class="button" style="top: 10px; width:80%; margin-left: 10%;"><i class="fas fa-hammer"></i> Reset</button>
         <button onclick="download();" class="button" style="top: 10px; width:80%; margin-left: 10%; margin-top: 20%;"><i class="fas fa-file-export"></i> Export</button>
         <button onclick="keycloak.logout('/trainingsplanorwhateveritdoesntworkanyway'); kc.logout()"class="button" style="top: 10px; width:80%; margin-left: 10%; "><i class="fas fa-sign-out-alt"></i> Logout</button>
 
@@ -196,13 +197,12 @@
 
     <div id = "headerforbuttons" style="display: flex; justify-content: space-between; position:fixed; width:100%">
         <button onclick="openNav()" class="button" style="top: 10px;"><i class="fas fa-bars"></i></span>
-            <!-- <button onclick="addTable(true)" class="button" style="top: 10px;">Add new Day</button>-->
             <button onclick="window.location.href='index.html'" class="button" style="top: 10px;" ><i class="fas fa-home"></i> Home</button>
             <button onclick="closeNav(); clear_chart(true)" class="button" style="top: 10px;" ><i class="fas fa-trash"></i> Clear</button>
             <button onclick="keycloak.logout()" class="button" value="username ..." id="username" style="top: 10px;"></button>
     </div>​
 
-    <div id="div-line-chart" style="position: relative; margin-top: 30px; height: 60vh;">
+    <div id="div-line-chart" style="position: relative; margin-top: 10%; height: 60vh;">
         <canvas id="line-chart" height="100"></canvas>
         <canvas id="line-chart" height="100"></canvas>        
     </div>
@@ -931,15 +931,15 @@
     }
 
     var labels = [1,2,3,4,5,6,7,8];
-    var border_color_array = [ "#1ece5c" // green
+    var border_color_array = [ "#18AD5F" // green
                              , "#BD000A" // burning red
                              , "#102542" // dark blue
-                             , "#F7B32B" // yellow
-                             , "#0EB1D2" // very light blue
+                             //, "#F7B32B" // yellow
+                             //, "#0EB1D2" // very light blue
                              , "#4b081a" // bordeaux red
-                             , "#F9F7F3" // darker light blue
+                             , "#0D1321" // dark blue
                              , "#f63f01" // orange
-                             , "#0D1321" // dark blue 
+                             //, "#F9F7F3" // white 
                              ];
 
     var ex_names = ["kniebeuge", "bankdruecken", "seitheben", "latzug"];
@@ -1145,7 +1145,7 @@
 
     function customize_mobile()
     {
-        document.getElementById("headerforbuttons").style.height = "75px";
+        document.getElementById("headerforbuttons").style.height = "100px";
         chart.options.legend.labels.fontSize = 30;
         document.getElementById("weight-slider").style.width = "90%";
         document.getElementById("reps-slider").style.width = "90%";

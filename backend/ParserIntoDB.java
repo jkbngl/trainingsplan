@@ -579,7 +579,8 @@ public class ParserIntoDB
         																	   + ", sets"
         																	   + ", max_rep"
         																	   + ", pausetime"
-        																	   + ", referenced_ex) VALUES ((?), (?), (?), (?), (?), (?), (?), (?));");
+        																	   + ", note"
+        																	   + ", referenced_ex) VALUES ((?), (?), (?), (?), (?), (?), (?), (?), (?));");
         
         st.setInt(1, day_id);
         st.setString(2, jsonObject.get("name").toString());
@@ -588,7 +589,9 @@ public class ParserIntoDB
     	st.setString(5, jsonObject.get("sets").toString());
     	st.setString(6, jsonObject.get("maxrep").toString());
     	st.setString(7, jsonObject.get("pause").toString());
-    	st.setInt(8, old_ex_id);
+    	// #37
+    	st.setString(8, jsonObject.get("note").toString()); 
+    	st.setInt(9, old_ex_id);
     		
     	st.executeUpdate();
     	st.close();
@@ -643,7 +646,8 @@ public class ParserIntoDB
 														  + "  and  e.reps = (?) "
 														  + "  and  e.sets = (?) "
 														  + "  and  e.pausetime = (?) "
-														  + "  and  e.max_rep = (?);");
+														  + "  and  e.max_rep = (?)"
+														  + "  and  e.note = (?);");
 			
 		if(jsonObject.get("id").toString().equals("defaultvaluetoignore"))
 			return id;
@@ -655,6 +659,8 @@ public class ParserIntoDB
 		st.setString(5, jsonObject.get("sets").toString());
 		st.setString(6, jsonObject.get("pause").toString());
 		st.setString(7, jsonObject.get("maxrep").toString());
+		st.setString(8, jsonObject.get("note").toString());
+
 		
 		ResultSet rs = st.executeQuery();
 		
@@ -841,9 +847,7 @@ public class ParserIntoDB
 	        	st.setBoolean(11, true);
 	        else
 	        	st.setBoolean(11, false);
-	                
-			System.out.println("test - " + st);
-
+	        
 			st.executeUpdate();
 		} catch (Exception e) {
 			e.printStackTrace();

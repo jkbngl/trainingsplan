@@ -118,6 +118,7 @@ public class ParserFromDB
 						 + ", e.sets"
 						 + ", e.max_rep"
 						 + ", e.pausetime "
+						 + ", e.note "
 						 + "from tp_user u "
 						 + "join tp_plan p      on u.id = p.userid_fk "
 						 + "join tp_day d       on p.id = d.plan_fk "
@@ -141,6 +142,7 @@ public class ParserFromDB
 						       + ", e.sets"
 						       + ", e.max_rep"
 						       + ", e.pausetime "
+   							   + ", e.note "
 						       + "from tp_user u "
 						  + "join tp_plan p      on u.id = p.userid_fk "
 						  + "join tp_day d       on p.id = d.plan_fk "
@@ -200,6 +202,7 @@ public class ParserFromDB
             plan = plan + "\"reps\":\"" + resultset.getString("reps") + "\",";
             plan = plan + "\"sets\":\"" + resultset.getString("sets") + "\",";
             plan = plan + "\"maxrep\":\"" + resultset.getString("max_rep") + "\",";
+            plan = plan + "\"note\":\"" + resultset.getString("note") + "\",";
             plan = plan + "\"pause\":\"" + resultset.getString("pausetime") + "\"}";
             
             

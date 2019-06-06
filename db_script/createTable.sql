@@ -1,6 +1,6 @@
 -- Get the data from linux command line, log onto container as postgres user and execute following command per table
 -- docker exec -it --user postgres postgresTP bash
--- postgres@localhost:/$ pg_dump postgres -t public.tp_user --schema-only
+-- postgres@localhost:/$ pg_dump postgres -t public.tp_exercise --schema-only
 
 drop table tp_exercise;
 drop table tp_day;
@@ -41,7 +41,8 @@ CREATE TABLE public.tp_exercise (
     created timestamp without time zone DEFAULT now(),
     changed timestamp without time zone,
     base_ex integer DEFAULT 0,
-    referenced_ex integer DEFAULT 0
+    referenced_ex integer DEFAULT 0,
+    note character varying(1000)
 );
 
 CREATE TABLE public.tp_preferences (

@@ -374,7 +374,7 @@
 
         cell1.innerHTML = "<td class=\'tdinput\'> <div contenteditable='true' id='tags' value='defaultvaluetoignore' class='title' data-placeholder='name' style=\"table-layout:fixed; display: table-cell; background-color: transparent; color:#7F7F7F; width:25em; min-height: 25px; text-align: center\"/></div></td>";
         cell2.innerHTML = "<td class=\'tdinput\'> <div contenteditable='true' id='tags' value='defaultvaluetoignore' class='title' data-placeholder='kilo' style=\"table-layout:fixed; display: table-cell; background-color: transparent; color:#7F7F7F; width:10em; min-height: 25px; text-align: center\"/></div></td>";
-        cell3.innerHTML = "<td class=\'tdinput\'> <div contenteditable='true' id='tags' value='defaultvaluetoignore' class='title' data-placeholder='reps' style=\"table-layout:fixed; display: table-cell; background-color: transparent; color:#7F7F7F; width:10em; min-height: 25px; text-align: center\"/></div></td>";
+        cell3.innerHTML = "<td class=\'tdinput\'> <div contenteditable='true' id='tags' value='defaultvaluetoignore' class='title' data-placeholder='reps' style=\"table-layout:fixed; display: table-cell; background-color: transparent; color:#7F7F7F; width:11em; min-height: 25px; text-align: center\"/></div></td>";
         cell4.innerHTML = "<td class=\'tdinput\'> <div contenteditable='true' id='tags' value='defaultvaluetoignore' class='title' data-placeholder='sets' style=\"table-layout:fixed; display: table-cell; background-color: transparent; color:#7F7F7F; width:10em; min-height: 25px; text-align: center\"/></div></td>";
         cell5.innerHTML = "<td class=\'tdinput\'> <div contenteditable='true' id='tags' value='defaultvaluetoignore' class='title' data-placeholder='maxr' style=\"table-layout:fixed; display: table-cell; background-color: transparent; color:#7F7F7F; width:10em; min-height: 25px; text-align: center\"/></div></td>";
         cell6.innerHTML = "<td class=\'tdinput\'> <div contenteditable='true' id='tags' value='defaultvaluetoignore' class='title' data-placeholder='time' style=\"table-layout:fixed; display: table-cell; background-color: transparent; color:#7F7F7F; width:10em; min-height: 25px; text-align: center\"/></div></td>";
@@ -453,9 +453,9 @@
                     // this is only done in the last cell because there is the button to delete with the corresponding onclick attribute
                     if(j==6)
                     {
-                        var cell = document.getElementById(tableName.id).rows[i].cells[6].innerHTML;
+                        var cell = document.getElementById(tableName.id).rows[i].cells[7].innerHTML;
                         var new_cell = '<button style="background: #222222; color: #28AD5F; font-style=bold; float: right" onclick="deleteRow(' + tableName.id + ', ' + i + ')">&nbsp;<i class="fas fa-times-circle"></i></button>'
-                        document.getElementById(tableName.id).rows[i].cells[6].innerHTML = new_cell;
+                        document.getElementById(tableName.id).rows[i].cells[7].innerHTML = new_cell;
                     }
                 } 
             }
@@ -570,13 +570,12 @@
 
         cell1.innerHTML = "<td class=\'tdinput\'> <div contenteditable='true' data-placeholder='name' value=" + exid + " class='title' style=\"display: table-cell; background-color: transparent; color:#7F7F7F; width:25em; min-height: 25px; text-align: center\"/>" + exname    + "</div></td>";
         cell2.innerHTML = "<td class=\'tdinput\'> <div contenteditable='true' data-placeholder='kilo' value=" + exid + " class='title' style=\"display: table-cell; background-color: transparent; color:#7F7F7F; width:10em; min-height: 25px; text-align: center\"/>" + exweight  + "</div></td>";
-        cell3.innerHTML = "<td class=\'tdinput\'> <div contenteditable='true' data-placeholder='reps' value=" + exid + " class='title' style=\"display: table-cell; background-color: transparent; color:#7F7F7F; width:10em; min-height: 25px; text-align: center\"/>" + exreps    + "</div></td>";
+        cell3.innerHTML = "<td class=\'tdinput\'> <div contenteditable='true' data-placeholder='reps' value=" + exid + " class='title' style=\"display: table-cell; background-color: transparent; color:#7F7F7F; width:11em; min-height: 25px; text-align: center\"/>" + exreps    + "</div></td>";
         cell4.innerHTML = "<td class=\'tdinput\'> <div contenteditable='true' data-placeholder='sets' value=" + exid + " class='title' style=\"display: table-cell; background-color: transparent; color:#7F7F7F; width:10em; min-height: 25px; text-align: center\"/>" + exsets    + "</div></td>";
         cell5.innerHTML = "<td class=\'tdinput\'> <div contenteditable='true' data-placeholder='maxr' value=" + exid + " class='title' style=\"display: table-cell; background-color: transparent; color:#7F7F7F; width:10em; min-height: 25px; text-align: center\"/>" + exmaxreps + "</div></td>";
         cell6.innerHTML = "<td class=\'tdinput\'> <div contenteditable='true' data-placeholder='time' value=" + exid + " class='title' style=\"display: table-cell; background-color: transparent; color:#7F7F7F; width:10em; min-height: 25px; text-align: center\"/>" + expause   + "</div></td>";
         cell7.innerHTML = "<td class=\'tdinput\'> <div contenteditable='true' data-placeholder='note' value=" + exid + " class='title' style=\"display: table-cell; background-color: transparent; color:#7F7F7F; width:25em; min-height: 25px; text-align: center\"/>" + "NOTE"   + "</div></td>";
         cell8.innerHTML = "<button style='background: #222222; color: #28AD5F; font-style=bold; float: right' onclick='deleteRow(" + tableName + ", "+ rowCount + ")'>&nbsp<i class='fas fa-times-circle'></i></i></button>";
-        
         
         // Needed for exctracting the data, maybe rename attribute
         row.setAttribute("id", "somerow", 0);

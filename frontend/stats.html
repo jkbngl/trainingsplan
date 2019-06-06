@@ -179,10 +179,6 @@
             </label>
         </div>
 
-
-
-
-
         <div class="page__toggle" style="margin-left: 10%; margin-top: 25%;">
             <label class="toggle">
             <input id="chart-type" onchange="closeNav();" onclick="change_chart(); save_settings();" class="toggle__input" type="checkbox">
@@ -202,7 +198,7 @@
             <button onclick="keycloak.logout()" class="button" value="username ..." id="username" style="top: 10px;"></button>
     </div>​
 
-    <div id="div-line-chart" style="position: relative; margin-top: 10%; height: 60vh;">
+    <div id="div-line-chart" style="position: relative; margin-top: 2.5%; height: 60vh;">
         <canvas id="line-chart" height="100"></canvas>
         <canvas id="line-chart" height="100"></canvas>        
     </div>
@@ -1151,6 +1147,7 @@
         document.getElementById("reps-slider").style.width = "90%";
         document.getElementById("sets-slider").style.width = "90%";
         document.getElementById("maxrep-slider").style.width = "90%";
+        document.getElementById("div-line-chart").style.marginTop = "5%";
 
         /*
         document.getElementById("weight-slider").style.height = "2.5%";

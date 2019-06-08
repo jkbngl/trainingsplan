@@ -36,6 +36,7 @@ public class DBConnector
     @Path("/send_preferences")
     public String send_preferences(String msg) throws JSONException, SQLException
 	{
+		System.out.println("(send_preferences) - " + msg);
 
 		ParserIntoDB p = new ParserIntoDB(msg);
 		Connection connection = null;

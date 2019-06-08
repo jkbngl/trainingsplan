@@ -367,7 +367,6 @@ public class ParserIntoDB
 		}
 		else
 		{
-			// System.out.println("user " + userName + " found");
 			return id;
 		}
 	}
@@ -722,22 +721,15 @@ public class ParserIntoDB
     	st.setString(5, jsonObject.get("reps").toString());
     	st.setString(6, jsonObject.get("maxrep").toString());
     	st.setString(7, jsonObject.get("pause").toString());
-
-		System.out.println("New Feature -2");
     	
     	ResultSet rs = st.executeQuery();
-		
-    	System.out.println("New Feature -1");
-    	
+		    	
 		while(rs.next())
 		{
-			System.out.println("New Feature 0");
 			// TODO check logic here
 			current_ex_id = Integer.parseInt(rs.getString(1)) > 0 ? Integer.parseInt(rs.getString(1)) : -1;
 		}
-		
-		System.out.println("New Feature 1");
-				
+						
 		st = connection.prepareStatement("select base_ex from tp_exercise where id = ?");
 		
 		st.setInt(1, old_ex_id);
@@ -752,17 +744,12 @@ public class ParserIntoDB
 		
 		rs.close();
 		
-		System.out.println("New Feature 2");
-
-		
 		st = connection.prepareStatement("update  tp_exercise "
 										  + "set  base_ex = ?"
 										+ "		, changed = current_timestamp "
 										+ "where  id = ?"
 										+ "   or  id = ?");
-		
-		System.out.println(old_ex_id + " | " + current_ex_id);
-		
+				
 		if(base_ex != -1)
 			st.setInt(1, base_ex);
 		else
@@ -878,8 +865,6 @@ public class ParserIntoDB
 	        else
 	        	st.setBoolean(2, false);
 	                
-			System.out.println("test - " + st);
-
 			st.executeUpdate();
 		} catch (Exception e) {
 			e.printStackTrace();

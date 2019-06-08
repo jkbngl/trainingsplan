@@ -22,7 +22,7 @@ public class DBConnector
     @Path("/sendPlan")
     public String sendPlan(String msg) throws JSONException, SQLException
 	{
-		System.out.println("worked (sendPlan) - " + msg);
+		System.out.println("(sendPlan) - " + msg);
 		
 		ParserIntoDB p = new ParserIntoDB(msg);
 		p.parse();
@@ -44,16 +44,14 @@ public class DBConnector
 
 		JSONObject jsonObject = new JSONObject(msg.toString());
 		
-		try {
-		if(jsonObject.getString("check_dialog_save").equals("ignore"))
-		{
-			System.out.println("stats");
-			p.save_preferences(msg, connection);
-		}
-		else {
-			System.out.println("index");
-			p.save_preferences_index(msg, connection);
-		}
+		try {			
+			if(jsonObject.get("check_dialog_save").equals("ignore"))
+			{
+				p.save_preferences(msg, connection);
+			}
+			else {
+				p.save_preferences_index(msg, connection);
+			}
 		}
 		catch (Exception e) 
 		{
@@ -71,7 +69,7 @@ public class DBConnector
     @Path("/delete_plan")
     public String delete_plan(int id) throws JSONException, SQLException
 	{
-		System.out.println("worked (deletePlan) - " + id);
+		System.out.println("(deletePlan) - " + id);
 		Connection connection = null;		
 		ParserIntoDB p = new ParserIntoDB(id);
 
@@ -88,7 +86,7 @@ public class DBConnector
     @Path("/restore_plan")
     public String restore_plan(int id) throws JSONException, SQLException
 	{
-		System.out.println("worked (restore_plan) - " + id);
+		System.out.println("(restore_plan) - " + id);
 		Connection connection = null;		
 		ParserIntoDB p = new ParserIntoDB(id);
 
@@ -109,7 +107,7 @@ public class DBConnector
 		ParserFromDB p = new ParserFromDB(user);
 		plan = p.parseUser();
 		
-		System.out.println("worked (getNewestPlan) - " + plan);
+		System.out.println("(getNewestPlan) - " + plan);
         return plan;
 	}
 	
@@ -124,7 +122,7 @@ public class DBConnector
 		Connection connection = ParserFromDB.connectToDB(p.connectionString, p.user, p.password);
 		preferences = p.get_preferences(username, connection);
 		
-		System.out.println("worked (get_preferences) - " + preferences);
+		System.out.println("(get_preferences) - " + preferences);
         return preferences;
 	}
 	
@@ -140,14 +138,13 @@ public class DBConnector
 		 * 2 = both
 		 */
 		
-		System.out.println("connected - " + username);
 		Connection connection = null;		
 		ParserFromDB p = new ParserFromDB(username);
 		connection = ParserFromDB.connectToDB(p.connectionString, p.user, p.password);
 		String plans = "";
 		plans = ParserFromDB.getPlansByUser(username, active, connection);
 		
-		System.out.println("worked (getPlansByUser) - " + active + " - " + plans);
+		System.out.println("(getPlansByUser) - " + active + " - " + plans);
 		
         return plans;
 	}
@@ -164,14 +161,13 @@ public class DBConnector
 		 * 2 = both
 		 */
 		
-		System.out.println("connected - " + username);
 		Connection connection = null;		
 		ParserFromDB p = new ParserFromDB(username);
 		connection = ParserFromDB.connectToDB(p.connectionString, p.user, p.password);
 		int plans = -1;
 		plans = ParserFromDB.getAmountOfPlans(username, active, connection);
 		
-		System.out.println("worked (getAmountOfPlans) - " + active + " - " + plans);
+		System.out.println("(getAmountOfPlans) - " + active + " - " + plans);
 		
         return plans;
 	}
@@ -186,7 +182,7 @@ public class DBConnector
 		// The Username would not be needed but makes it easier to program and understand
 		int amountDays = 0;
 		String plan = "";
-		System.out.println("worked(getPlanByUserAndPlan): " + planid);
+		System.out.println("(getPlanByUserAndPlan): " + planid);
 		
 		ParserFromDB p = new ParserFromDB();
 		amountDays = ParserFromDB.getDaysFromMaxPlanID(null, ParserFromDB.connectToDB(p.connectionString, p.user, p.password), true, Integer.parseInt(planid));
@@ -202,7 +198,7 @@ public class DBConnector
 	public int getPlanIdByUsernameAndPlanname(@PathParam("username") String username, @PathParam("planname") String planname) throws JSONException, SQLException
 	{
 		int plan_id;
-		System.out.println("worked (getPlanIdByUsernameAndPlanname) - " + username + " | " + planname);
+		System.out.println("(getPlanIdByUsernameAndPlanname) - " + username + " | " + planname);
 		
 		ParserFromDB p = new ParserFromDB();
 		plan_id = ParserFromDB.getPlanIDByPlanName(username, planname, ParserFromDB.connectToDB(p.connectionString, p.user, p.password));
@@ -217,13 +213,11 @@ public class DBConnector
 	public String get_possible_base_exs(@PathParam("username") String username) throws JSONException, SQLException
 	{
 		String possible_base_ex = "";
-		System.out.println("worked (get_possible_base_ex) - " + username);
+		System.out.println("(get_possible_base_ex) - " + username);
 		
 		ParserFromDB p = new ParserFromDB();
 		possible_base_ex = ParserFromDB.get_possible_base_exs(username, ParserFromDB.connectToDB(p.connectionString, p.user, p.password));
-		
-		System.out.println(possible_base_ex);
-		
+				
         return possible_base_ex;
 	}
 	
@@ -234,12 +228,10 @@ public class DBConnector
 	public String get_stats(@PathParam("base_ex") int base_ex) throws JSONException, SQLException
 	{
 		String possible_base_ex = "";
-		System.out.println("worked (get_stats) - " + base_ex);
+		System.out.println("(get_stats) - " + base_ex);
 		
 		ParserFromDB p = new ParserFromDB();
 		possible_base_ex = ParserFromDB.get_stats(base_ex, ParserFromDB.connectToDB(p.connectionString, p.user, p.password));
-		
-		System.out.println(possible_base_ex);
 		
         return possible_base_ex;
 	}

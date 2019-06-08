@@ -294,9 +294,7 @@ public class ParserFromDB
 		PreparedStatement pstmt = connection.prepareStatement(query);
 		pstmt.setString(1, username);
 		pstmt.setString(2, username);
-		
-		System.out.println(pstmt.toString());
-		
+				
 		try
 		{
 			resultset = pstmt.executeQuery();
@@ -386,7 +384,7 @@ public class ParserFromDB
 			query += "and p.deleted >= 0 order by p.id";
 
 		
-		System.out.println(query);
+		// System.out.println(query);
 		
 		String jsonPlan = "{\"username\": \"" + username + "\",\"plans\": [";
 		
@@ -398,12 +396,10 @@ public class ParserFromDB
 		{
 			if(resultset.isLast())
 			{
-				System.out.println("last - " + resultset.getString(1));
 				jsonPlan = jsonPlan +"{ \"name\":\"" + resultset.getString(1) + "\", \"date\" : \"" + resultset.getString(2) + "\", \"id\": \"" + resultset.getString(3) + "\"}";
 			}
 			else 
 			{ 	
-				System.out.println("not last - " + resultset.getString(1));
 				jsonPlan = jsonPlan +"{ \"name\":\"" + resultset.getString(1) + "\", \"date\" : \"" + resultset.getString(2) + "\", \"id\": \"" + resultset.getString(3) + "\"},";
 			}
 		}
@@ -432,9 +428,7 @@ public class ParserFromDB
 		ResultSet resultset = pstmt.executeQuery();
 		
 		while (resultset.next()) 
-		{
-			System.out.println("NEW BUG - " + resultset.getString(1));
-			
+		{			
 			if(resultset.isLast())
 				possible_base_ex = possible_base_ex +"{ \"base_ex\":\"" + resultset.getString(1) + "\", \"name\" : \"" + resultset.getString(2) + "\", \"id\": \"" + resultset.getString(3) + "\", \"planname\": \"" + resultset.getString(4) + "\"}";
 			else 				
@@ -476,7 +470,7 @@ public class ParserFromDB
 				+ "order by max(e.id) "
 				+ "; ";
 				
-		System.out.println(query);
+		// System.out.println(query);
 		
 		try 
 		{
@@ -501,7 +495,7 @@ public class ParserFromDB
 		
 		possible_base_ex = possible_base_ex + "]}";
 		
-		System.out.println(possible_base_ex);
+		//System.out.println(possible_base_ex);
 
 		
 		return possible_base_ex;
@@ -561,7 +555,7 @@ public class ParserFromDB
 				     + "where   u.username = ? "
 				     + ";";
 			
-		System.out.println(query);
+		//System.out.println(query);
 		
 		PreparedStatement pstmt = connection.prepareStatement(query);
 		pstmt.setString(1, username.toLowerCase());

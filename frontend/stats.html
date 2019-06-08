@@ -8,9 +8,9 @@
            height: 5vh;
         }
 
-        .mobile_p p.mobile_p,  p.mobile_p {
-           font-size: 25px;
-        }
+        /*.mobile_p p.mobile_p,  p.mobile_p {
+           font-size: 30px;
+        }*/
 
         .mobile_span span.mobile_span,  span.mobile_span {
            font-size: 30px;
@@ -200,7 +200,6 @@
 
     <div id="div-line-chart" style="position: relative; margin-top: 2.5%; height: 60vh;">
         <canvas id="line-chart" height="100"></canvas>
-        <canvas id="line-chart" height="100"></canvas>        
     </div>
 
     <div id="container">
@@ -222,13 +221,16 @@
 
         <!------------------->
         <div id="checks">
-            <div style="float:left; margin-left:3px; margin-right:3px; font-family: inherit; color: #00ad5f; text-align:center; width: 20vw">
+            <div style="float:left; margin-left:3px; margin-right:3px; font-family: inherit; color: #00ad5f; text-align:center;  width: 25vw">
                 <!-- <p style="font-size: 22px; padding-bottom: 6px; border-right: 4px solid rgba(0,0,0, 0.12); text-align:center; ">Choose the &nbsp-->
-                <p style="font-size: 22px; padding-bottom: 6px; border-bottom: 4px solid rgba(0,0,0, 0.12); border-right: 4px solid rgba(0,0,0, 0.12); text-align:center; "> 2. Choose the parameter/s &nbsp
+                <p id="checkboxes-text" style="font-size: 22px; padding-bottom: 6px; border-bottom: 4px solid rgba(0,0,0, 0.12); border-right: 4px solid rgba(0,0,0, 0.12); text-align:center; "> 2. Choose the parameter/s &nbsp
                 <i class="fas fa-info-circle" rel="tooltip" title="If you deselect/ select parameters from this list they will either be used to calculate your stats or not" id="info-step-2"></i>
             </div>                                            
 
-            <div class="page__toggle" style="margin-top: 12%;">
+            
+            <br><br><br>
+            
+            <div id="check-1" class="page__toggle" style="margin-top: 12%; margin: auto; width: 40%;">
                 <label class="toggle">
                 <input id="weight_box" onchange="closeNav();" onclick="save_settings(); update_chart();" class="toggle__input" type="checkbox" checked>
                 <span class="toggle__label">
@@ -236,7 +238,8 @@
                 </span>
                 </label>
             </div>
-            <div class="page__toggle"  style="margin-top: 10px;">
+            <br>
+            <div id="check-2" class="page__toggle"  style="margin-top: 10px; margin: auto; width: 40%;">
                 <label class="toggle">
                 <input id="reps_box" onchange="closeNav();" onclick="save_settings(); update_chart();"  class="toggle__input" type="checkbox" checked>
                 <span class="toggle__label">
@@ -244,7 +247,8 @@
                 </span>
                 </label>
             </div>
-            <div class="page__toggle"  style="margin-top: 10px;">
+            <br>
+            <div id="check-3" class="page__toggle"  style="margin-top: 10px; margin: auto; width: 40%;">
                 <label class="toggle">
                 <input id="sets_box" onchange="closeNav();" onclick="save_settings(); update_chart();"  class="toggle__input" type="checkbox" checked>
                 <span class="toggle__label">
@@ -252,7 +256,8 @@
                 </span>
                 </label>
             </div>
-            <div class="page__toggle" style="margin-top: 10px;">
+            <br>
+            <div id="check-4" class="page__toggle" style="margin-top: 10px; margin: auto; width: 40%;">
                 <label class="toggle">
                 <input id="max_rep_box" onchange="closeNav();" onclick="save_settings(); update_chart();" class="toggle__input" type="checkbox">
                 <span class="toggle__label">
@@ -1148,6 +1153,12 @@
         document.getElementById("sets-slider").style.width = "90%";
         document.getElementById("maxrep-slider").style.width = "90%";
         document.getElementById("div-line-chart").style.marginTop = "5%";
+        document.getElementById("checkboxes-text").style.fontSize = "30px";
+        document.getElementById("checkboxes-text").style.marginBottom = "10%";
+        document.getElementById("check-1").style.width = "60%";
+        document.getElementById("check-2").style.width = "60%";
+        document.getElementById("check-3").style.width = "60%";
+        document.getElementById("check-4").style.width = "60%";
 
         /*
         document.getElementById("weight-slider").style.height = "2.5%";

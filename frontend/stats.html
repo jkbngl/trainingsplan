@@ -205,14 +205,13 @@
     <div id="container">
         
         <!------------------->
-        <div id="selects" style="margin-left:5%; margin-top:5%">
-
-            <div class="select" style="width: 80%; border-bottom: 4px solid rgba(0,0,0, 0.12); border-right: 4px solid rgba(0,0,0, 0.12); ">
+        <div id="selects" style="margin-left:5%; margin-top:10%">
+            <div class="select" style="width: 80%; padding-bottom: 10px; border-bottom: 4px solid rgba(0,0,0, 0.12); border-right: 4px solid rgba(0,0,0, 0.12); ">
                 <select id= "select" onchange="closeNav(); display_ex();" class="select-text" required >
                     <option value="" selected></option>
                 </select>
                 <span class="select-highlight"></span>
-                <label style="font-size: 22px;" class="select-label">1. Choose an exercise
+                <label id="select-text" style="font-size: 22px;" class="select-label">1. Choose an Exercise
                         <i class="fas fa-info-circle" rel="tooltip" title="Select an exercise from this list to have the history (if existent) of your data displayed in the chart above  " id="info-step-1"></i>
                         </label>
                 <span class="select-bar"></span>
@@ -1152,13 +1151,18 @@
         document.getElementById("reps-slider").style.width = "90%";
         document.getElementById("sets-slider").style.width = "90%";
         document.getElementById("maxrep-slider").style.width = "90%";
+        
         document.getElementById("div-line-chart").style.marginTop = "5%";
+
         document.getElementById("checkboxes-text").style.fontSize = "30px";
         document.getElementById("checkboxes-text").style.marginBottom = "10%";
         document.getElementById("check-1").style.width = "60%";
         document.getElementById("check-2").style.width = "60%";
         document.getElementById("check-3").style.width = "60%";
         document.getElementById("check-4").style.width = "60%";
+
+        document.getElementById("select-text").style.fontSize = "30px";
+        document.getElementById("select-text").innerHTML = "1. Exercise";
 
         /*
         document.getElementById("weight-slider").style.height = "2.5%";

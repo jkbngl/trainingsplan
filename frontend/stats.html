@@ -799,8 +799,12 @@
             
             var json = JSON.parse(values);
 
-            document.getElementById("additional-info").innerHTML = document.getElementById("additional-info").innerHTML + '<button id="' + json.base_ex + '" class="button" style="top: 10px; width:80%; margin-left: 10%;">' + ex_name + '</button>'
+            document.getElementById("additional-info").innerHTML += '<button id="' + json.base_ex + '" class="button" style="top: 10px; width:80%; margin-left: 10%;">' + ex_name + '</button>'
             document.getElementById(json.base_ex).setAttribute( "onClick", "Swal.fire({html: '" + parse_base_ex(values, ex_name) + "'});");
+
+            // Needs to be called here to style the progress dialog which is created dynamically
+            if(isMobile.any() ) 
+                document.getElementById(json.base_ex).style.fontSize = "20px";
         }
     }
 

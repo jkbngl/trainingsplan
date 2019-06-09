@@ -95,11 +95,12 @@
                     var available_ex = get_available_ex();            
                     append_combo(available_ex);
                     data = append_preferences();
-
+                
                     // Check if the preferences for the small changes to the ui are stored
                     // TODO rename cookie variables
-                    checkCookie();
-                
+                    if(!document.getElementById("simplify-ui").checked)
+                        checkCookie(); 
+
                     if(data.check_chart_type == 'f' /* || typeof data.check_chart_type == 'undefined'*/)
                     {
                         chart_type = 'line';
@@ -1269,7 +1270,7 @@
             
             document.getElementById("checks-checkbox-ui").checked = true;
             document.getElementById("factors-checkbox-ui").checked = true;
-        }    
+        }   
     }
 
     function simplify_ui_partly()
@@ -1344,44 +1345,46 @@
         var partly_check_simplfied_ui = getCookie("partly_check_simplfied_ui");
         var partly_factor_simplfied_ui = getCookie("partly_factor_simplfied_ui");
 
-        console.log(partly_factor_simplfied_ui);
-        console.log(partly_check_simplfied_ui);
-
-        if (partly_check_simplfied_ui != "" && partly_factor_simplfied_ui != "") {
+        if (partly_check_simplfied_ui != "" && partly_factor_simplfied_ui != "") 
         {
+            console.log(partly_factor_simplfied_ui);
+            console.log(partly_check_simplfied_ui);
+
             if(partly_check_simplfied_ui == "true")
                 document.getElementById("checks-checkbox-ui").checked = true;
             else
                 document.getElementById("checks-checkbox-ui").checked = false;
-            
+
             if(partly_factor_simplfied_ui == "true")
                 document.getElementById("factors-checkbox-ui").checked = true;
             else
                 document.getElementById("factors-checkbox-ui").checked = false;
 
 
-            if(document.getElementById("checks-checkbox-ui").checked && document.getElementById("factors-checkbox-ui").checked)
+            if(partly_check_simplfied_ui == "true" && partly_factor_simplfied_ui == "true")
             {
+                console.log("0");
                 document.getElementById("simplify-ui").checked = false;
                 simplify_ui();
             }
-            else if(document.getElementById("checks-checkbox-ui").checked && !document.getElementById("factors-checkbox-ui").checked)
+            else if(partly_check_simplfied_ui == "true" && partly_factor_simplfied_ui == "false")
             {
+                console.log("1");
                 // document.getElementById("selects").style.width = "30%";
                 document.getElementById("selects").style.marginLeft = "10%";
             
                 document.getElementById("checks").style.display = "inline";
                 document.getElementById("factors").style.display = "none";
             }    
-            else if(!document.getElementById("checks-checkbox-ui").checked && document.getElementById("factors-checkbox-ui").checked)
+            else if(partly_check_simplfied_ui == "false" && partly_factor_simplfied_ui == "true")
             {
+                console.log("2");
                 // document.getElementById("selects").style.width = "30%";
                 document.getElementById("selects").style.marginLeft = "10%";
             
                 document.getElementById("checks").style.display = "none";
                 document.getElementById("factors").style.display = "inline";
             }
-        }
         } else {
             setCookie("partly_check_simplfied_ui", document.getElementById("checks-checkbox-ui").checked, 30);
             setCookie("partly_factor_simplfied_ui", document.getElementById("factors-checkbox-ui").checked, 30);

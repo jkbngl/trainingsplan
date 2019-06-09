@@ -108,7 +108,10 @@
                         chart_type = 'bar';
                         chart = create_chart(chart_type);
                     }
-                
+                    
+                    // Check if the preferences for the small changes to the ui are stored
+                    // TODO rename cookie variables
+                    checkCookie();
                 
                     if( isMobile.any() ) 
                         customize_mobile();
@@ -1305,7 +1308,62 @@
             document.getElementById("checks").style.display = "inline";
             document.getElementById("factors").style.display = "inline";
             document.getElementById("additional-info").style.display = "inline";
-        } 
+        }
+
+        var date = new Date();
+        date.setTime(date.getTime());
+
+        setCookie("partly_check_simplfied_ui", document.getElementById("checks-checkbox-ui").checked, 30);
+        setCookie("partly_factor_simplfied_ui", document.getElementById("factors-checkbox-ui").checked, 30);
+    }
+
+    function setCookie(cname,cvalue,exdays) {
+        var d = new Date();
+        d.setTime(d.getTime() + (exdays*24*60*60*1000));
+        var expires = "expires=" + d.toGMTString();
+        document.cookie = cname + "=" + cvalue + ";" + expires + ";path=/";
+    }
+
+    function getCookie(cname) {
+        var name = cname + "=";
+        var decodedCookie = decodeURIComponent(document.cookie);
+        var ca = decodedCookie.split(';');
+        for(var i = 0; i < ca.length; i++) {
+            var c = ca[i];
+            while (c.charAt(0) == ' ') {
+                c = c.substring(1);
+            }
+            if (c.indexOf(name) == 0) {
+                return c.substring(name.length, c.length);
+            }
+        }
+        return "";
+    }
+
+    function checkCookie() {
+        var partly_check_simplfied_ui = getCookie("partly_check_simplfied_ui");
+        var partly_factor_simplfied_ui = getCookie("partly_factor_simplfied_ui");
+
+        console.log(partly_check_simplfied_ui);
+        console.log(partly_factor_simplfied_ui);
+
+        if (partly_check_simplfied_ui != "" && partly_factor_simplfied_ui != "") {
+        {
+            if(partly_check_simplfied_ui)
+                document.getElementById("checks-checkbox-ui").checked = true;
+            else
+                document.getElementById("checks-checkbox-ui").checked = false;
+            
+            if(partly_factor_simplfied_ui)
+                document.getElementById("factors-checkbox-ui").checked = true;
+            else
+                document.getElementById("factors-checkbox-ui").checked = false;
+        }
+        } else {
+            setCookie("partly_check_simplfied_ui", document.getElementById("checks-checkbox-ui").checked, 30);
+            setCookie("partly_factor_simplfied_ui", document.getElementById("factors-checkbox-ui").checked, 30);
+
+        }
     }
 
     /*

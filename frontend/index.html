@@ -42,9 +42,9 @@
     <title>
         trainigsplan.com
     </title>
-
+    <meta name="viewport" content="initial-scale=1.0, width=device-width">
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
+
     <link rel="stylesheet" type="text/css" href="vendor/bootstrap/css/bootstrap.min.css">
     <link rel="stylesheet" type="text/css" href="css/main.css">
     <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.7.1/css/all.css" integrity="sha384-fnmOCqbTlWIlj8LyTjo7mOUStjsKC4pOpQbqyi7RrhN7udi9RwhKkMHpvLbHG9Sr" crossorigin="anonymous">
@@ -80,7 +80,8 @@
     <meta name="msapplication-TileColor" content="#ffffff">
     <meta name="theme-color" content="#ffffff">
 
-    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@8"></script>
+    <!--<script src="https://cdn.jsdelivr.net/npm/sweetalert2@8"></script>-->
+    <script src="js/sweetalert.js"></script>
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@sweetalert2/theme-dark@1/dark.css">
     <script src="http://jakob.ml:8081/auth/js/keycloak.js"></script> 
     <script>
@@ -103,6 +104,7 @@
 
             Swal.fire({
               type: type,
+              customClass: mobile_swal,
               title: title,
               html: footer
             })
@@ -114,6 +116,7 @@
 
                 swal.fire({
                     title: 'Loading your data...',
+                    customClass: mobile_swal,
                     allowEscapeKey: false,
                     allowOutsideClick: false,
                     onOpen: () => {
@@ -215,8 +218,9 @@
     var currentPlanId = ''; // Needed to send to backend which planid should be replace - going to be deprecated when no new plan is created anymore
     var empty_values = 0;
     var amount_plans = ''             // Needed to check the amount of plans already existent for user
-    var maximum_allowed_plans = -1;  // Needed to check if user without super account is allowed to add another plan
+    var maximum_allowed_plans = -1;   // Needed to check if user without super account is allowed to add another plan
     var show_warning = true;
+    var mobile_swal = '';             // Here the class is set for the swal to use, depending on mobile or desktop, desktop leave empty - mobile is set in customize_mobile
 
     // get the first button by it's ID, and listen to the click event
     // add an empty table to the container div
@@ -797,6 +801,7 @@
                 {
                     Swal.fire({
                       title: alert_text,
+                      customClass: mobile_swal,
                       input: 'checkbox',
                       inputValue: show_warning,
                       inputPlaceholder: 'Dont show again',
@@ -919,6 +924,7 @@
         swal.fire({
           title: 'Saving your Data...',
           allowEscapeKey: false,
+          customClass: mobile_swal,
           allowOutsideClick: false,
           onOpen: () => {
             swal.showLoading();
@@ -935,6 +941,7 @@
                     type: 'success',
                     //position: 'top-end',
                     timer: 1000,
+                    customClass: mobile_swal,
                     showCancelButton: false,
                     showConfirmButton: false
                 });
@@ -947,6 +954,7 @@
                     title: 'ERROR - ' + xhr.status + "!",
                     type: 'error',
                     //position: 'top-end',
+                    customClass: mobile_swal,
                     timer: 5000,
                     showCancelButton: false,
                     showConfirmButton: false
@@ -961,6 +969,7 @@
                 {
                     swal.fire({
                       title: 'This takes longer than usual, please be patient',
+                      customClass: mobile_swal,
                       allowEscapeKey: false,
                       allowOutsideClick: false,
                       onOpen: () => {
@@ -1062,6 +1071,7 @@
                     input: 'select',
                     inputOptions: parsed_json_for_swal,
                     inputPlaceholder: 'Select a plan...',
+                    customClass: mobile_swal,
                     showCancelButton: true,
                     inputValidator: (value) => {
                         return new Promise((resolve) => 
@@ -1360,6 +1370,8 @@
 
     function customize_mobile()
     {
+        mobile_swal = 'mobile_swal';
+
         document.getElementById("headerforbuttons").style.height = "150px";
         document.getElementById("container1").style.marginTop = "150px";
         

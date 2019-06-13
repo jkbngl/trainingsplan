@@ -12,13 +12,13 @@
 
 <div style="display:table-cell; vertical-align:middle; text-align:center">
 	<p>
- 	<img src="https://cdn-images-1.medium.com/max/2600/1*l4xICbIIYlz1OTymWCoUTw.jpeg" width="120" title="hover text">
-	<img src="https://www.3pillarglobal.com/wp-content/uploads/2016/03/xwildflyfeatured-300x300.png.pagespeed.ic.zhVGfZt0xY.png" width="120" title="hover text">
-  	<img src="https://www.cbronline.com/wp-content/uploads/2016/06/Java.png" width="120" title="hover text">
-	<img src="https://cdn-images-1.medium.com/max/1600/1*fK7U56Q-MRzEkuWHmMRn1Q.png" width="120" title="hover text">
-	<img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTtQSGh0yCrRRhfzku93O-RQeTF7Ey3WEB60cFUlUVxqSwEWF_A" width="120" title="hover text">
-	<img src="https://assets.t3n.sc/news/wp-content/uploads/2016/03/nginx-hoster-featured-620x349.jpg?auto=format&h=349&ixlib=php-2.1.1&w=620" width="120" title="hover text">
-		<img src="https://www.docker.com/sites/default/files/social/docker_facebook_share.png" width="120" title="hover text">
+ 	<img src="https://cdn-images-1.medium.com/max/2600/1*l4xICbIIYlz1OTymWCoUTw.jpeg" width="115" title="hover text">
+	<img src="https://www.3pillarglobal.com/wp-content/uploads/2016/03/xwildflyfeatured-300x300.png.pagespeed.ic.zhVGfZt0xY.png" width="115" title="hover text">
+  	<img src="https://www.cbronline.com/wp-content/uploads/2016/06/Java.png" width="115" title="hover text">
+	<img src="https://cdn-images-1.medium.com/max/1600/1*fK7U56Q-MRzEkuWHmMRn1Q.png" width="115" title="hover text">
+	<img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTtQSGh0yCrRRhfzku93O-RQeTF7Ey3WEB60cFUlUVxqSwEWF_A" width="115" title="hover text">
+	<img src="https://assets.t3n.sc/news/wp-content/uploads/2016/03/nginx-hoster-featured-620x349.jpg?auto=format&h=349&ixlib=php-2.1.1&w=620" width="115" title="hover text">
+		<img src="https://www.docker.com/sites/default/files/social/docker_facebook_share.png" width="115" title="hover text">
 	</p>
 </div>
 

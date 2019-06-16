@@ -8,9 +8,8 @@ import javax.ws.rs.core.MediaType;
 import java.sql.Connection;
 import java.sql.SQLException;
 
-@Path("/hello")
+@Path("/trainingsplan")
 public class DBConnector {
-
     @GET
     @Produces(MediaType.TEXT_PLAIN)
     public String getMessage()

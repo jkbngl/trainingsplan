@@ -13,3 +13,8 @@ CREATE TABLE tp_bm_it (
 );
 
 drop table tp_bm_it;
+
+ALTER TABLE tp_bm_it RENAME COLUMN valuename TO value_name;
+ALTER TABLE tp_bm_it RENAME COLUMN timeofday TO time_of_day;
+ALTER TABLE tp_bm_it RENAME COLUMN base_stat TO base_bm_value;
+ALTER TABLE tp_bm_it RENAME COLUMN referenced_stat TO referenced_bm_value;

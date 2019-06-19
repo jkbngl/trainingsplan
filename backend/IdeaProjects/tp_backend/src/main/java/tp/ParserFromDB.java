@@ -627,18 +627,59 @@ public class ParserFromDB
             json.put ("changed", resultset.getString(10));
 
             array.put(json);
+        }
 
-            /*json.remove("user_id");
-            json.remove("base_bm_value");
-            json.remove("value_name");
-            json.remove("uom");
-            json.remove("time_of_day");
-            json.remove("value");
-            json.remove("note");
-            json.remove("referenced_bm_value");
-            json.remove("created");
-            json.remove("changed");
-            */
+        System.out.println(array);
+
+        return array.toString();
+    }
+
+    public static String get_historical_bm_values(int user_id, int base_bm_id, Connection connection) throws SQLException, JSONException
+    {
+        JSONArray array = new JSONArray();
+
+        String query = "select  base_bm_id"
+                     + "      , userid_fk "
+                     + "      , value_name "
+                     + "      , uom "
+                     + "      , time_of_day "
+                     + "      , value "
+                     + "      , note "
+                     + "      , referenced_bm_id "
+                     + "      , created "
+                     + "      , changed "
+                     + "  from    tp_bm_it p "
+                     + "  where   userid_fk = ? "
+                     + "  and     base_bm_id = ? or referenced_bm_id = ? "
+                     + ";";
+
+
+
+        PreparedStatement pstmt = connection.prepareStatement(query);
+        pstmt.setInt(1, user_id);
+        pstmt.setInt(2, base_bm_id);
+        pstmt.setInt(3, base_bm_id);
+
+        ResultSet resultset = pstmt.executeQuery();
+
+        while (resultset.next())
+        {
+            JSONObject json = new JSONObject();
+
+            System.out.println(resultset.getString(3));
+
+            json.put ("base_bm_id", resultset.getString(1));
+            json.put ("userid_fk", resultset.getString(2));
+            json.put ("value_name", resultset.getString(3));
+            json.put ("uom", resultset.getString(4));
+            json.put ("time_of_day", resultset.getString(5));
+            json.put ("value", resultset.getString(6));
+            json.put ("note", resultset.getString(7));
+            json.put ("referenced_bm_id", resultset.getString(8));
+            json.put ("created", resultset.getString(9));
+            json.put ("changed", resultset.getString(10));
+
+            array.put(json);
         }
 
         System.out.println(array);

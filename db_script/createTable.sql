@@ -70,8 +70,8 @@ CREATE TABLE tp_bm_it (
     time_of_day character varying(20),
     value integer DEFAULT 1,
     note character varying(1000),
-    base_bm_value integer DEFAULT 0,
-    referenced_bm_value integer DEFAULT 0,
+    base_bm_id integer DEFAULT 0,
+    referenced_bm_id integer DEFAULT 0,
     created timestamp without time zone DEFAULT now(),
     changed timestamp without time zone DEFAULT now()
 );

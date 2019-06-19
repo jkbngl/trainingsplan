@@ -34,6 +34,8 @@ public class ParserIntoDB
     String username = "";
     int id = -1;
 
+    public ParserIntoDB()    {    }
+
     public ParserIntoDB(String input)
     {
         this.input = input;
@@ -875,5 +877,21 @@ public class ParserIntoDB
 
         st.close();
     }
+
+    public String parse_bm(String msg, Connection connection) throws SQLException, JSONException {
+
+        /*
+        * 1. check what has changed
+        * TODO check what has to be done
+        *
+        *
+        *
+        *
+        * */
+
+        return "TODO";
+    }
+
+
 }
 

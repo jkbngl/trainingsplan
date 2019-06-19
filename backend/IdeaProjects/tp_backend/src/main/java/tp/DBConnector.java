@@ -253,18 +253,34 @@ public class DBConnector {
         return user_values;
     }
 
-    // http://jakob.ml:8080/tp_backend-1.0-SNAPSHOT/api/trainingsplan/get_bm_values/15
+    // http://jakob.ml:8080/tp_backend-1.0-SNAPSHOT/api/trainingsplan/get_historical_bm_values/15/1
     @Path("get_historical_bm_values/{user_id}/{base_bm_id}")
     @GET
     @Produces("text/plain")
     public String get_historical_bm_values(@PathParam("user_id") int user_id, @PathParam("base_bm_id") int base_bm_id) throws JSONException, SQLException
     {
         String historical_bm_values = "";
-        System.out.println("(get_bm_values) - " + user_id);
+        System.out.println("(get_historical_bm_values) - " + user_id);
 
         ParserFromDB p = new ParserFromDB();
         historical_bm_values = ParserFromDB.get_historical_bm_values(user_id, base_bm_id, ParserFromDB.connectToDB(p.connectionString, p.user, p.password));
 
         return historical_bm_values;
+    }
+
+    // http://jakob.ml:8080/tp_backend-1.0-SNAPSHOT/api/trainingsplan/send_bm_values/
+    @POST
+    @Consumes("text/plain")
+    @Produces("text/plain")
+    @Path("/send_bm_values")
+    public String send_bm_values(String msg) throws JSONException, java.sql.SQLException
+    {
+        System.out.println("(send_bm_values) - " + msg);
+        ParserFromDB p1 = new ParserFromDB();
+        ParserIntoDB p2 = new ParserIntoDB();
+
+        p2.parse_bm(msg, ParserFromDB.connectToDB(p1.connectionString, p1.user, p1.password));
+
+        return "ok";
     }
 }

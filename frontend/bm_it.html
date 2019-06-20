@@ -1,0 +1,1396 @@
+<html>
+<head>
+    <title>trainigsplan</title>
+
+    <style>
+        .mobile_button button.mobile_button,  button.mobile_button {
+           font-size: 35px;
+           height: 5vh;
+        }
+
+        /*.mobile_p p.mobile_p,  p.mobile_p {
+           font-size: 30px;
+        }*/
+
+        .mobile_span span.mobile_span,  span.mobile_span {
+           font-size: 30px;
+        }
+
+        .mobile_label label.mobile_label,  label.mobile_label {
+           font-size: 30px;
+        }
+    </style>
+
+    <link rel="stylesheet" type="text/css" href="css/main.css">
+    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.7.1/css/all.css" integrity="sha384-fnmOCqbTlWIlj8LyTjo7mOUStjsKC4pOpQbqyi7RrhN7udi9RwhKkMHpvLbHG9Sr" crossorigin="anonymous">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.8.0/Chart.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@8"></script>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@sweetalert2/theme-dark@1/dark.css">
+
+
+
+
+    <script src="http://jakob.ml:8081/auth/js/keycloak.js"></script> 
+    <script>
+        var keycloak;
+
+        function display_error(type, title, message)
+        {
+            var footer = '<hr style="height: 2px; background-color:#666;"><br>';
+
+            console.log(message);
+
+            if(message.includes('backend') && message.includes('unavailable') || message.includes('Authentification'))
+                footer += message + '<br><br><a href onclick="location.reload()">Reload the Page!</button><br>';
+
+            if(type == 'error')
+                footer += '<a href="https://github.com/jkbngl/trainingsplan/issues/new">If you think this is not correct please open a github issue!</a>'
+                
+            footer += '<br><br><hr style="height: 2px; background-color:#666;"><br>';
+
+            Swal.fire({
+              type: type,
+              customClass: mobile_swal,
+              title: title,
+              html: footer
+            })
+        }
+
+        document.addEventListener('DOMContentLoaded',function(){
+            try
+            {
+                swal.fire({
+                    title: 'Loading your data...',
+                    customClass: mobile_swal,
+                    allowEscapeKey: false,
+                    allowOutsideClick: false,
+                    onOpen: () => {
+                      swal.showLoading();
+                    }
+                });
+
+                keycloak = Keycloak();
+
+                keycloak.init({ onLoad: 'login-required' })
+
+                keycloak.init().success(
+                    function(authenticated) 
+                    {
+                        // alert(authenticated ? 'authenticated' : 'not authenticated');
+                    }
+                ).error(function() {
+                    // alert('failed to initialize');
+                });
+
+                keycloak.onAuthSuccess = function() 
+                { 
+                    swal.close();
+                    // alert('Successfully authenticated'); 
+                    console.log('Successfully authenticated'); 
+                
+                    username = keycloak.idTokenParsed.name;
+                    username = username.toLowerCase();
+                    check_roles(keycloak.realmAccess.roles);
+                
+                    document.getElementById("username").innerHTML = username + ' <i class="fas fa-sign-out-alt"></i>';
+
+                    var available_ex = get_available_ex();            
+                    append_combo(available_ex);
+                    data = append_preferences();
+                
+                    // Check if the preferences for the small changes to the ui are stored
+                    // TODO rename cookie variables
+                    if(!document.getElementById("simplify-ui").checked)
+                        checkCookie(); 
+
+                    if(data.check_chart_type == 'f' /* || typeof data.check_chart_type == 'undefined'*/)
+                    {
+                        chart_type = 'line';
+                        chart = create_chart(chart_type);
+                    }    
+                    else
+                    {
+                        // if undefined as above, make bar chart default and make it checked
+                        //document.getElementById("chart-type").checked = true;
+                        chart_type = 'bar';
+                        chart = create_chart(chart_type);
+                    }
+                
+                    if( isMobile.any() ) 
+                        customize_mobile();
+                    else
+                        ;
+                }
+            }
+            catch(err)
+            {
+                console.log("error");
+                display_error("error", "Ooops...", "Error with Authentification, please try again at a later point");
+                window.stop() 
+            }
+        });
+
+        function getusername()
+        {
+            return username;
+        }
+    </script>
+</head>
+<body>
+    <div class="fixed-background blue-gradient-bg"></div>
+
+    <div id="mySidenav" class="sidenav">
+        <button id="open-nav-button" onclick="closeNav()"                      class="button" style="float:right; float:top; margin-right: 10%; margin-bottom: 15%" ><i class="fas fa-bars"></i></a>
+        <!--<a href="#">About</a>-->
+        <!--<button onclick="receivePlanfromDB(false)" class="button" style=" top: 10px; width:80%; margin-left: 10%;">Load Plan</button>
+        <button onclick="cleanUpTables(); addTable(true);  closeNav();"class="button" style="top: 10px; width:80%; margin-left: 10%;">New Plan</button>-->
+        <button onclick="window.location.href='index.html'" class="button" style="top: 10px; width:80%; margin-left: 10%;"><i class="fas fa-home"></i> Home</button>
+        <!--<button onclick="save_settings(); update_chart();"                  class="button" style="top: 10px; width:80%; margin-left: 10%; margin-top: 20%;"><i class="far fa-save"></i> Save Preferences</button>-->
+        
+                
+       
+        <button onclick="reset_settings(); save_settings()"class="button" style="top: 10px; width:80%; margin-left: 10%;"><i class="fas fa-hammer"></i> Reset</button>
+        <button onclick="download();" class="button" style="top: 10px; width:80%; margin-left: 10%; margin-top: 20%;"><i class="fas fa-file-export"></i> Export</button>
+        <button onclick="keycloak.logout('/trainingsplanorwhateveritdoesntworkanyway'); kc.logout()"class="button" style="top: 10px; width:80%; margin-left: 10%; "><i class="fas fa-sign-out-alt"></i> Logout</button>
+
+        <div class="page__toggle" style="margin-left: 10%; margin-top: 12%;">
+            <label class="toggle">
+            <input id="simplify-ui" onchange="closeNav();" onclick="simplify_ui(); save_settings();" class="toggle__input" type="checkbox">
+            <span class="toggle__label">
+                <span class="toggle__text">Simple interface 
+                    <i class="fas fa-info-circle" rel="tooltip" title="If simple Interface is turned on, the website will use the default values (check what the default settings are by clicking reset settings above, Attention: old settings will be lost) and in addition make the interface simpler by not showing the advanced settings" id="info-step-2"></i>
+                </span>
+            </span>
+            </label>
+        </div>
+
+        <div class="page__toggle" style="margin-left: 20%; margin-top: 7%;">
+            <label class="toggle">
+            <input id="factors-checkbox-ui" onclick="simplify_ui_partly(); save_settings();" class="toggle__input" type="checkbox">
+            <span class="toggle__label">
+                <span class="toggle__text">Show Factors 
+                    <i class="fas fa-info-circle" rel="tooltip" title="If this checkbox is active you can access the part of the advanced ui where you can change the factors per attribute" id="info-step-2"></i>
+                </span>
+            </span>
+            </label>
+        </div>
+        <div class="page__toggle" style="margin-left: 20%; margin-top: 5%;">
+            <label class="toggle">
+            <input id="checks-checkbox-ui" onclick="simplify_ui_partly(); save_settings();" class="toggle__input" type="checkbox">
+            <span class="toggle__label">
+                <span class="toggle__text">Show Checks
+                    <i class="fas fa-info-circle" rel="tooltip" title="If this checkbox is active you can access the part of the advanced ui where you can change the attributes that should be used to calc the data in the chart" id="info-step-2"></i>
+                </span>
+            </span>
+            </label>
+        </div>
+
+        <div class="page__toggle" style="margin-left: 10%; margin-top: 25%;">
+            <label class="toggle">
+            <input id="chart-type" onchange="closeNav();" onclick="change_chart(); save_settings();" class="toggle__input" type="checkbox">
+            <span class="toggle__label">
+                <span class="toggle__text">Bar Chart 
+                    <i class="fas fa-info-circle" rel="tooltip" title="Change between the normal line chart and the bar chart to analyze your data" id="info-step-2"></i>
+                </span>
+            </span>
+            </label>
+        </div>
+    </div>
+
+    <div id = "headerforbuttons" style="display: flex; justify-content: space-between; position:fixed; width:100%">
+        <button onclick="openNav()" class="button" style="top: 10px;"><i class="fas fa-bars"></i></span>
+            <button onclick="window.location.href='index.html'" class="button" style="top: 10px;" ><i class="fas fa-home"></i> Home</button>
+            <button onclick="closeNav(); clear_chart(true)" class="button" style="top: 10px;" ><i class="fas fa-trash"></i> Clear</button>
+            <button onclick="keycloak.logout()" class="button" value="username ..." id="username" style="top: 10px;"></button>
+    </div>​
+
+    
+
+
+    <div id="div-line-chart" style="position: relative; margin-top: 2.5%; height: 60vh;">
+        <canvas id="line-chart" height="100"></canvas>
+    </div>
+
+    <div id="container">
+        <div id="additional-info" style="width: 100%; margin-bottom: 2%">
+            <!--<button onclick="window.location.href='index.html'" class="button" style="top: 10px; margin-left: 10%;"><i class="fas fa-home"></i> Home</button>  -->
+
+            <div id="check-2" class="page__toggle"  style="margin-top: 10px; margin: auto; width: 40%;">
+                <label class="toggle">
+                    <input id="reps_box" onchange="closeNav();" onclick="save_settings(); update_chart();"  class="toggle__input" type="checkbox" checked>
+                    <span class="toggle__label">
+                        <span class="toggle__text">Active</span>
+                    </span>
+                </label>
+
+                <div class="select" style="border-bottom: 4px solid rgba(0,0,0, 0.12); border-right: 4px solid rgba(0,0,0, 0.12); ">
+                    <select id= "select" onchange="closeNav(); display_ex();" class="select-text" required >
+                        <option value="" selected></option>
+                    </select>
+                    <span class="select-highlight"></span>
+                    <label id="select-text" style="font-size: 22px;" class="select-label">UOM
+                    <i class="fas fa-info-circle" rel="tooltip" title="Select an exercise from this list to have the history (if existent) of your data displayed in the chart above  " id="info-step-1"></i>
+                        </label>
+                    <span class="select-bar"></span>
+                </div>
+
+                <div class="select" style="border-bottom: 4px solid rgba(0,0,0, 0.12); border-right: 4px solid rgba(0,0,0, 0.12); ">
+                        <select id= "select" onchange="closeNav(); display_ex();" class="select-text" required >
+                            <option value="" selected></option>
+                        </select>
+                        <span class="select-highlight"></span>
+                        <label id="select-text" style="font-size: 22px;" class="select-label">Time of Day
+                        <i class="fas fa-info-circle" rel="tooltip" title="Select an exercise from this list to have the history (if existent) of your data displayed in the chart above  " id="info-step-1"></i>
+                            </label>
+                        <span class="select-bar"></span>
+                    </div>
+            </div>
+        </div>
+
+        <div id="additional-info" style="width: 100%; margin-bottom: 2%">
+            <button onclick="window.location.href='index.html'" class="button" style="top: 10px; width:80%; margin-left: 10%;"><i class="fas fa-home"></i> Home</button>  
+        </div>
+
+        <div id="additional-info" style="width: 100%">
+            <button onclick="window.location.href='index.html'" class="button" style="top: 10px; width:80%; margin-left: 10%;"><i class="fas fa-home"></i> Home</button>  
+        </div>
+    </div>
+
+        
+</body>
+
+<script>
+    // Object to store data for all actively displayed data in chart
+    var active_ex_in_chart = [
+
+    ];
+
+    // Used to determine which color the line should have, gets set to 0 after all numbers are used and starts again at zero
+    var num_ex_color = 0;
+    // Used to get an overview how many exexercises are displayed and close or open the div in which additional info about the exercises can be get
+    var num_ex = 0;
+
+    // global variable to handle the creation and destruction of chart easily
+    var chart;
+    
+    // global variable to handle the creation and destruction of different chart easily, line = default
+    var chart_type = 'line';
+
+    // Here the class is set for the swal to use, depending on mobile or desktop, desktop leave empty - mobile is set in customize_mobile
+    var mobile_swal = '';             
+
+
+    function download() 
+    {
+        if(num_ex > 0)
+        {
+            // Get the data to save the file with different names #
+            // TODO read active_ex_in_chart and add ex names
+            
+            var url_base64 = document.getElementById('line-chart').toDataURL('image/png');
+            var element = document.createElement('a');
+            
+            element.setAttribute('href', url_base64);
+            element.setAttribute('download', 'chart_' + get_date() + '.png');
+            element.style.display = 'none';
+            document.body.appendChild(element);
+            element.click();
+            document.body.removeChild(element);
+        }
+        else
+        {
+            alert("Nothing to export!");
+        }
+    }
+
+    function get_date()
+    {
+        var today = new Date();
+        var dd = String(today.getDate()).padStart(2, '0');
+        var mm = String(today.getMonth() + 1).padStart(2, '0'); //January is 0!
+        var yyyy = today.getFullYear();
+
+        return mm + '_' + dd + '_' + yyyy;
+    }
+
+    // Changing is only possible with the last choosen ex so use this number
+    // TODO: will maybe be changed later - add value to buttons of ex and return the value to this function
+    function update_chart()
+    {
+        if(num_ex > 0)
+        {
+            var values = [];
+
+            var chart_to_change = num_ex - 1;
+           
+
+            for(var j = 0; j <= chart_to_change; j++)
+            {
+                var length_of_chart = chart.data.datasets[j].data.length;
+                // Get the last added exercise
+                var data = active_ex_in_chart[j];
+
+                values = get_value(data,  document.getElementById("weight_box").checked
+                                        , document.getElementById("reps_box").checked
+                                        , document.getElementById("sets_box").checked
+                                        , document.getElementById("max_rep_box").checked);
+
+                console.log(data);    
+            
+                for(var i = 0; i < length_of_chart; i++)
+                {
+                    chart.data.datasets[j].data[i] = values[i];
+                }
+            }
+
+            console.log("---------------------------"); 
+            
+
+            chart.update();
+        }
+        
+    }
+
+    function reset_settings()
+    {
+        document.getElementById("weight-slider").value = 1;
+        document.getElementById("reps-slider").value = 1;
+        document.getElementById("sets-slider").value = 1;
+        document.getElementById("maxrep-slider").value = 1;
+
+        document.getElementById("weight-slider-button").innerHTML = "Weight Faktor: " + 1 + " &nbsp&nbsp&nbsp";
+        document.getElementById("reps-slider-button").innerHTML = "Reps Faktor: " + 1 + " &nbsp";
+        document.getElementById("sets-slider-button").innerHTML = "Sets Faktor: " + 1 + " &nbsp";
+        document.getElementById("maxrep-slider-button").innerHTML = "MaxRep Faktor: " + 1 + " &nbsp";
+
+        document.getElementById("weight_box").checked = true;
+        document.getElementById("reps_box").checked = true;
+        document.getElementById("sets_box").checked = true;
+        document.getElementById("max_rep_box").checked = false;
+    }
+
+    function slider_change_w(value)
+    {
+        document.getElementById("weight-slider-button").innerHTML = "Weight Faktor: " + value + " &nbsp&nbsp&nbsp";
+    }
+
+    function slider_change_r(value)
+    {
+        document.getElementById("reps-slider-button").innerHTML = "Reps Faktor: " + value + " &nbsp";
+    }
+
+    function slider_change_s(value)
+    {
+        document.getElementById("sets-slider-button").innerHTML = "Sets Faktor: " + value + " &nbsp";
+    }
+
+    function slider_change_m(value)
+    {
+        document.getElementById("maxrep-slider-button").innerHTML = "MaxRep Faktor: " + value + " &nbsp";
+    }
+
+    function check_roles(assigned_roles)
+    {
+        var roles = [];
+
+        for(var i = 0; i < assigned_roles.length; i++)
+        {
+            if(assigned_roles[i] == 'paid_account' || assigned_roles[i] == 'friend_account')
+                roles[0] = assigned_roles[i];
+        }
+
+        var superaccount = (roles.indexOf("friend_account") > -1) || (roles.indexOf("paid_account") > -1);
+
+        if(!superaccount)
+        {
+            alert("Access denied!");
+            window.location.href='index.html'
+        }
+        else
+        {
+            //alert("Access granted!");
+        }
+    }
+    
+
+    function get_available_ex()
+    {
+        var request = new XMLHttpRequest();
+        var url = 'http://jakob.ml:8080/tp_backend-1.0-SNAPSHOT/api/trainingsplan/get_possible_base_exs/';
+        var username = getusername();
+
+        try
+        {
+            var xmlHttp = new XMLHttpRequest();
+
+            xmlHttp.open( "GET", url + username, false ); // false for synchronous request
+            xmlHttp.send( null );
+            available_ex = xmlHttp.responseText;
+
+            return available_ex;
+        }
+        catch(err)
+        {
+            display_error('error', 'Oops...', 'The backend seems to be unavailable!')
+        }
+    }
+
+    function append_combo(json_base_exs)
+    {
+        console.log(json_base_exs);
+
+        var json = JSON.parse(json_base_exs);
+        var exercises = document.getElementById('select');
+
+        for(var i = 0; i < json.base_exs.length; i++) 
+        {
+            var opt = document.createElement('option');
+            opt.value = json.base_exs[i].base_ex;
+            opt.innerHTML = json.base_exs[i].name + " - " + json.base_exs[i].planname;
+            opt.id = 'option_element';
+            exercises.appendChild(opt);
+        }
+    }
+
+    function append_preferences()
+    {
+        var request = new XMLHttpRequest();
+        var url = 'http://jakob.ml:8080/tp_backend-1.0-SNAPSHOT/api/trainingsplan/get_preferences/';
+        var xmlHttp = new XMLHttpRequest();
+
+        xmlHttp.open( "GET", url + getusername(), false ); // false for synchronous request
+        xmlHttp.send( null );
+        preferences = xmlHttp.responseText;
+
+        var json = JSON.parse(preferences);
+        
+        if(json.check_weight == 't')
+            document.getElementById("weight_box").checked = true;
+        else if(typeof json.check_weight == 'undefined')
+            document.getElementById("weight_box").checked = true;            
+        else
+            document.getElementById("weight_box").checked = false;
+
+        if(json.check_reps == 't')
+            document.getElementById("reps_box").checked = true;
+        else if(typeof json.check_reps == 'undefined')
+            document.getElementById("reps_box").checked = true;
+        else
+            document.getElementById("reps_box").checked = false;
+
+        if(json.check_sets == 't')
+            document.getElementById("sets_box").checked = true;
+        else if(typeof json.check_sets == 'undefined')
+            document.getElementById("sets_box").checked = true;
+        else
+            document.getElementById("sets_box").checked = false;
+
+        // if undefined dont set because default is unselected
+        if(json.check_maxrep == 't')
+            document.getElementById("max_rep_box").checked = true;
+        else
+            document.getElementById("max_rep_box").checked = false;
+
+        // if undefined dont set because default is unselected -
+        if(json.check_simple_view == 't')
+        {
+            document.getElementById("simplify-ui").checked = true;
+            simplify_ui();
+        }
+        else
+        {
+            document.getElementById("simplify-ui").checked = false;
+            simplify_ui();
+        }
+
+        // if undefined dont set because default is unselected
+        if(json.check_chart_type == 't')
+        {
+            document.getElementById("chart-type").checked = true;
+            create_chart("bar");
+        }
+        else
+        {
+            document.getElementById("chart-type").checked = false;
+            create_chart("line");
+        }
+
+        if(does_json_contain_data(json))
+        {
+            document.getElementById("weight-slider-button").innerHTML = 'Weight Faktor: ' + json.mul_weight + ' &nbsp&nbsp&nbsp';
+            document.getElementById("reps-slider-button").innerHTML = 'Reps Faktor: ' + json.mul_reps + ' &nbsp';
+            document.getElementById("sets-slider-button").innerHTML = 'Sets Faktor: ' + json.mul_sets + ' &nbsp';
+            document.getElementById("maxrep-slider-button").innerHTML = 'MaxRep Faktor: ' + json.mul_maxrep + ' &nbsp';
+
+            document.getElementById("weight-slider").value = json.mul_weight;
+            document.getElementById("reps-slider").value = json.mul_reps;
+            document.getElementById("sets-slider").value = json.mul_sets;
+            document.getElementById("maxrep-slider").value = json.mul_maxrep;
+        }
+
+        return json;
+    }
+
+    function does_json_contain_data(object) 
+    {
+        for(var i in object)
+        {
+            return true;
+        }
+        
+        return false; 
+    } 
+
+    function display_ex() {
+        var values = [];
+        var e = document.getElementById("select");
+        var value = e.options[e.selectedIndex].value;
+        var text = e.options[e.selectedIndex].text;
+
+        console.log(" exercise name + plan name: " + text)
+
+        try
+        {
+            var request = new XMLHttpRequest();
+            var url = 'http://jakob.ml:8080/tp_backend-1.0-SNAPSHOT/api/trainingsplan/get_stats/';
+            var xmlHttp = new XMLHttpRequest();
+
+            xmlHttp.open( "GET", url + value, false ); // false for synchronous request
+            xmlHttp.send( null );
+            available_ex = xmlHttp.responseText;
+
+            //console.log(available_ex);
+
+            var weight_box = document.getElementById("weight_box");
+            var reps_box = document.getElementById("reps_box");
+            var sets_box = document.getElementById("sets_box");
+            var max_rep_box = document.getElementById("max_rep_box");
+
+            values = get_value(available_ex, weight_box.checked, reps_box.checked, sets_box.checked, max_rep_box.checked);
+
+
+            // push the data into a global object which is accessible for the function which updates the chart dynamically
+            active_ex_in_chart.push(available_ex);
+
+            /*console.log(values);
+            console.log(text);
+            console.log(available_ex);*/
+
+            addData(values, text, available_ex);
+        }
+        catch(err)
+        {
+            console.error(err);
+            display_error('error', 'Oops...', 'There seems to be a problem with your data (this might happen if you type text into the weight, reps, sets or maxrep fields), maybe try another exercise!')
+        }
+    }
+
+    function get_value(json_ex, weight, reps, sets, max_rep) 
+    {
+        var json = JSON.parse(json_ex);
+        var values = [];
+
+        // default values are used if simplified mode is used
+        if(document.getElementById("simplify-ui").checked)
+        {
+            weight  = true;
+            reps    = true;
+            sets    = true;
+            max_rep = false;
+            var mul_weight = 1;
+            var mul_reps   = 1;
+            var mul_sets   = 1;
+        }
+        else
+        {
+            var mul_weight = document.getElementById("weight-slider").value;
+            var mul_reps   = document.getElementById("reps-slider").value;
+            var mul_sets   = document.getElementById("sets-slider").value;
+            var mul_max_rep = document.getElementById("maxrep-slider").value;
+        }
+        
+        for(var i = 0; i < json.values.length; i++) 
+        {
+            // to avoid multiplying * 0
+            values[i] = 1;
+
+            // Dont use else if because multiple checkboxes can be checked
+            /*if(weight && typeof(json.values[i].weight) != 'undefined' && json.values[i].weight != null && json.values[i].weight.length > 0) // FMI: .length references lengt of string not of an json array
+                if(parseFloat(json.values[i].weight.match(/[\d\.]+/)) > 0)
+                    values[i] *= parseFloat(json.values[i].weight.match(/[\d\.]+/)) * mul_weight;
+            
+            if(reps && typeof(json.values[i].reps) != 'undefined' && json.values[i].reps != null && json.values[i].reps.length > 0)
+                if(parseFloat(json.values[i].reps.match(/[\d\.]+/)) > 0)
+                    values[i] *= parseFloat(json.values[i].reps.match(/[\d\.]+/)) * mul_reps;
+            
+            if(sets && typeof(json.values[i].sets) != 'undefined' && json.values[i].sets != null && json.values[i].sets.length > 0)
+                if(parseFloat(json.values[i].sets.match(/[\d\.]+/)) > 0)
+                    values[i] *= parseFloat(json.values[i].sets.match(/[\d\.]+/)) * mul_sets;
+            
+            if(max_rep && typeof(json.values[i].max_rep) != 'undefined' && json.values[i].max_rep != null && json.values[i].max_rep.length > 0)
+                if(parseFloat(json.values[i].max_rep.match(/[\d\.]+/)) > 0)
+                    values[i] *= parseFloat(json.values[i].max_rep.match(/[\d\.]+/)) * mul_max_rep;
+            */
+
+            if(weight)
+                values[i] *= json.values[i].weight * mul_weight;
+            
+            if(reps)
+                values[i] *= json.values[i].reps * mul_reps;
+            
+            if(sets)
+                values[i] *= json.values[i].sets * mul_sets;
+            
+            if(max_rep)
+                values[i] *= json.values[i].max_rep * mul_max_rep;
+        }
+
+
+
+        return values;
+    }
+
+    function addData(values, ex_name, all_ex)
+    {
+        /*
+        console.log(values);
+        console.log(ex_name);
+        console.log(all_ex);
+        */
+
+        var local_labels_date = [];
+        var local_labels_numbers = [];
+        var json_ex = JSON.parse(all_ex);
+
+        for(var i = 0; i < json_ex.values.length; i++)
+        {
+            local_labels_date.push(json_ex.values[i].created);
+        }
+
+        chart.data.labels = local_labels_date;
+
+        if(document.getElementById("chart-type").checked == false)
+        {    
+            chart.data.datasets.push({
+                data: values,
+                label: ex_name,
+                borderColor: border_color_array[num_ex_color],
+                backgroundColor: border_color_array[num_ex_color],
+                fill: false
+            });
+
+            chart.data.labels = local_labels_date;
+        }
+        else
+        {
+            chart.data.datasets.push({
+                data: values,
+                label: ex_name,
+                backgroundColor: border_color_array[num_ex_color],
+            });
+        }   
+
+        if(num_ex_color == border_color_array.length - 1)
+            num_ex_color = 0;
+        else
+            num_ex_color++;
+
+        // needs to be checked before numbers gets increased
+        change_div(all_ex, ex_name, false);
+    
+        
+        // needs to be checked before numbers gets increased
+        if(num_ex >= 1)
+        {
+            // Get longest exercise with most entries from chart and store it in a variable
+            for(var i = 0; i <= num_ex; i++)
+            {
+                var data = active_ex_in_chart[i];
+                var json = JSON.parse(data);
+
+                local_labels_numbers.push(json.values.length);
+            }
+
+            var max_num = Math.max.apply(Math, local_labels_numbers); 
+
+            local_labels_numbers = [];
+
+            for(var i = 1; i <= max_num; i++)
+                local_labels_numbers.push(i);
+
+            chart.data.labels = local_labels_numbers;
+        }    
+
+        num_ex++;
+
+        
+
+        chart.update({
+            duration: 900,
+            easing: 'easeInOutCubic'
+        });
+    }
+
+    function change_div(values, ex_name, reset)
+    {
+        if(reset)
+        {
+            document.getElementById("additional-info").innerHTML = "";
+            document.getElementById("additional-info").style.width = "0%";
+        }
+        else
+        {
+            if(num_ex == 0)
+            {
+                document.getElementById("additional-info").style.width = "25%";
+                document.getElementById("additional-info").innerHTML += "<p id='progress-text' style='margin-top: 5%; font-size: 22px; padding-bottom: 6px; color: #00ad5f; margin-right: 10%; margin-left: 10%; margin-bottom: 2%; border-bottom: 4px solid rgba(0,0,0, 0.12); border-right: 4px solid rgba(0,0,0, 0.12); text-align:center; '>4. Check your progress &nbsp <i id='info-progress' class='fas fa-info-circle' rel='tooltip' title='Click on one of the exercises to have a detailed view on how your volume changed' id='info-step-4'></i> "
+                    
+                // Needs to be called here to style the progress dialog which is created dynamically
+                if( isMobile.any() ) 
+                    customize_mobile(true);
+                else
+                ;
+            }    
+            
+            var json = JSON.parse(values);
+
+            document.getElementById("additional-info").innerHTML += '<button id="' + json.base_ex + '" class="button" style="top: 10px; width:80%; margin-left: 10%;">' + ex_name + '</button>'
+            document.getElementById(json.base_ex).setAttribute( "onClick", "Swal.fire({html: '" + parse_base_ex(values, ex_name) + "', customClass: mobile_swal});");
+
+            // Needs to be called here to style the progress dialog which is created dynamically
+            if(isMobile.any() ) 
+                document.getElementById(json.base_ex).style.fontSize = "20px";
+        }
+    }
+
+    function parse_base_ex(values, ex_name)
+    {
+        var json = JSON.parse(values);
+        var parse = ex_name + "<br><br><br>";
+
+        console.log(json);
+
+        for(var i = 0; i < json.values.length; i++)
+        {
+            parse += (i + 1) + ". Entry on: " + json.values[i].created + "<br>";
+            
+            /*if(i > 0)
+                if(typeof(json.values[i].weight) != 'undefined' && json.values[i].weight != null)
+                    if(parseFloat(json.values[i].weight.match(/[\d\.]+/)) > parseFloat(json.values[i - 1].weight.match(/[\d\.]+/)))
+                        parse += '<font color="green">Weight: ' + json.values[i].weight + "</font><br>";
+                    else if(parseFloat(json.values[i].weight.match(/[\d\.]+/)) < parseFloat(json.values[i - 1].weight.match(/[\d\.]+/)))
+                        parse += '<font color="red">Weight: ' + json.values[i].weight + "</font><br>";
+                    else
+                        parse += "Weight: " + json.values[i].weight + "<br>";
+                else
+                    parse += "Weight: " + json.values[i].weight + "<br>";
+            else
+                parse += "Weight: " + json.values[i].weight + "<br>";
+            
+            if(i > 0)
+                if(typeof(json.values[i].reps) != 'undefined' && json.values[i].reps != null)   
+                    if(parseFloat(json.values[i].reps.match(/[\d\.]+/)) > parseFloat(json.values[i - 1].reps.match(/[\d\.]+/)))
+                        parse += '<font color="green">Reps: ' + json.values[i].reps + "</font><br>";
+                    else if(parseFloat(json.values[i].reps.match(/[\d\.]+/)) < parseFloat(json.values[i - 1].reps.match(/[\d\.]+/)))
+                        parse += '<font color="red">Reps: ' + json.values[i].reps + "</font><br>";
+                    else
+                        parse += "Reps: " + json.values[i].reps + "<br>";
+                else
+                    parse += "Reps: " + json.values[i].reps + "<br>";
+            else
+                parse += "Reps: " + json.values[i].reps + "<br>";
+
+            
+            if(i > 0)
+                if(typeof(json.values[i].sets) != 'undefined' && json.values[i].sets != null)
+                    if(json.values[i].sets > json.values[i - 1].sets)
+                        parse += '<font color="green">Sets: ' + json.values[i].sets + "</font><br>";
+                    else if(json.values[i].sets < json.values[i - 1].sets)
+                        parse += '<font color="red">Sets: ' + json.values[i].sets + "</font><br>";
+                    else   
+                        parse += "Sets: " + json.values[i].sets + "<br>";
+                else
+                    parse += "Sets: " + json.values[i].sets + "<br>";
+            else
+                parse += "Sets: " + json.values[i].sets + "<br>";
+            
+            if(i > 0)
+                if(typeof(json.values[i].max_rep) != 'undefined' && json.values[i].max_rep != null)
+                    if(json.values[i].max_rep > json.values[i - 1].max_rep)
+                        parse += '<font color="green">Max Rep: ' + json.values[i].max_rep + "</font><br>";
+                    else if(json.values[i].max_rep < json.values[i - 1].max_rep)
+                        parse += '<font color="red">Max Rep: ' + json.values[i].max_rep + "</font><br>";
+                    else   
+                        parse += "Max Rep: " + json.values[i].max_rep + "<br>";
+                else
+                    parse += "Max Rep: " + json.values[i].max_rep + "<br>";
+            else
+                parse += "Max Rep: " + json.values[i].max_rep + "<br>";
+            */
+
+            if(i > 0)
+                if(parseFloat(json.values[i].weight.match(/[\d\.]+/)) > parseFloat(json.values[i - 1].weight.match(/[\d\.]+/)))
+                    parse += '<font color="green">Weight: ' + json.values[i].weight + "</font><br>";
+                else if(parseFloat(json.values[i].weight.match(/[\d\.]+/)) < parseFloat(json.values[i - 1].weight.match(/[\d\.]+/)))
+                    parse += '<font color="red">Weight: ' + json.values[i].weight + "</font><br>"; 
+                else
+                    parse += "Weight: " + json.values[i].weight + "<br>";
+            else
+                parse += "Weight: " + json.values[i].weight + "<br>";
+
+            if(i > 0)
+                if(parseFloat(json.values[i].reps.match(/[\d\.]+/)) > parseFloat(json.values[i - 1].reps.match(/[\d\.]+/)))
+                    parse += '<font color="green">Reps: ' + json.values[i].reps + "</font><br>";
+                else if(parseFloat(json.values[i].reps.match(/[\d\.]+/)) < parseFloat(json.values[i - 1].reps.match(/[\d\.]+/)))
+                    parse += '<font color="red">Reps: ' + json.values[i].reps + "</font><br>";
+                else
+                    parse += "Reps: " + json.values[i].reps + "<br>";
+            else
+                parse += "Reps: " + json.values[i].reps + "<br>";
+
+            
+            if(i > 0)
+                if(parseFloat(json.values[i].sets.match(/[\d\.]+/)) > parseFloat(json.values[i - 1].sets.match(/[\d\.]+/)))
+                    parse += '<font color="green">Sets: ' + json.values[i].sets + "</font><br>";
+                else if(parseFloat(json.values[i].sets.match(/[\d\.]+/)) < parseFloat(json.values[i - 1].sets.match(/[\d\.]+/)))
+                    parse += '<font color="red">Sets: ' + json.values[i].sets + "</font><br>";
+                else   
+                    parse += "Sets: " + json.values[i].sets + "<br>";
+            else
+                parse += "Sets: " + json.values[i].sets + "<br>";
+            
+            if(i > 0)
+                if(parseFloat(json.values[i].max_rep.match(/[\d\.]+/)) > parseFloat(json.values[i - 1].max_rep.match(/[\d\.]+/)))
+                    parse += '<font color="green">Max Rep: ' + json.values[i].max_rep + "</font><br>";
+                else if(parseFloat(json.values[i].max_rep.match(/[\d\.]+/)) < parseFloat(json.values[i - 1].max_rep.match(/[\d\.]+/)))
+                    parse += '<font color="red">Max Rep: ' + json.values[i].max_rep + "</font><br>";
+                else   
+                    parse += "Max Rep: " + json.values[i].max_rep + "<br>";
+            else
+                parse += "Max Rep: " + json.values[i].max_rep + "<br>";
+
+            parse += "<br>"
+
+        }
+
+        return parse;
+    }
+
+    function clear_chart(clearSelect)
+    {
+        console.log(window.bar);
+
+        chart.destroy();
+
+        /*chart.reset();
+        chart.clear();
+        */
+
+        // var ctxLine = document.getElementById("line-chart").getContext("2d");
+        
+        chart = create_chart(chart_type);
+        
+        if(clearSelect)
+            document.getElementById("select").selectedIndex = -1;
+
+        change_div(0, 0, true);
+        active_ex_in_chart = [];
+        num_ex = 0;
+        // console.log(num_ex);
+    }
+
+    var labels = [1,2,3,4,5,6,7,8];
+    var border_color_array = [ "#18AD5F" // green
+                             , "#BD000A" // burning red
+                             , "#102542" // dark blue
+                             //, "#F7B32B" // yellow
+                             //, "#0EB1D2" // very light blue
+                             , "#4b081a" // bordeaux red
+                             , "#0D1321" // dark blue
+                             , "#f63f01" // orange
+                             //, "#F9F7F3" // white 
+                             ];
+
+    var ex_names = ["kniebeuge", "bankdruecken", "seitheben", "latzug"];
+
+    function get_chart_type()
+    {
+        return "line";
+    }
+
+    function change_chart()
+    {
+        // Used to change between the two chart types
+        if(document.getElementById("chart-type").checked)
+            chart_type = "bar";
+        else
+            chart_type = "line";
+
+        // TODO
+        // write function rebuild chart, that clears chart but not data array and pushes all data back into the new chart
+        /*
+            needed:
+                - values of data which where in chart
+                - name of the exercises which where in the chart
+                - the whole json object of the exercise
+
+        */
+       
+        var length = chart.data.datasets.length;
+        var ex_names = [];
+        var values = [];
+        var local_active_ex_in_chart = active_ex_in_chart;
+
+        var weight_box = document.getElementById("weight_box");
+        var reps_box = document.getElementById("reps_box");
+        var sets_box = document.getElementById("sets_box");
+        var max_rep_box = document.getElementById("max_rep_box");
+
+        // first store the needed data temporary in vars
+        for(var i = 0; i < length; i++)
+        {
+            ex_names.push(chart.data.datasets[i].label);
+            values.push(get_value(active_ex_in_chart[i], weight_box.checked, reps_box.checked, sets_box.checked, max_rep_box.checked));
+        }
+
+        // delete all the data from the chart, but dont remove selected value from the combobox
+        clear_chart(false);
+
+        // recreate the new chart type with the same data which was in the chart
+        for(var i = 0; i < length; i++)
+        {
+            console.log(values[i]);
+            console.log(ex_names[i]);
+            console.log(local_active_ex_in_chart[i]);      
+            
+            // data is pushed in this array when selecting from the combobox so needs to be done here manually
+            // needs to be done before adding data as the function needs the data
+            active_ex_in_chart.push(local_active_ex_in_chart[i]);
+            addData(values[i], ex_names[i], local_active_ex_in_chart[i]);
+           
+        } 
+    }
+
+    function create_chart(chart_type)
+    {
+        // Make sure it is created from a clean start - is done by clear_chart
+        // clear_chart();
+
+        var chart = new Chart(document.getElementById("line-chart"), {
+            type: chart_type,
+            data: {
+                labels: labels,
+                datasets: [
+                    
+                ]
+            },
+            options: {
+                line:{ fill: true},
+                ticks: {
+                    beginAtZero: false,
+                    min: 0,
+                    max: 5.03,
+                    stepSize: 1,
+                    padding: 10,
+                    fontFamily: 'Karla, sans-serif',
+                    maxRotation: 0/*,
+                    callback: function(value, index, values) {
+                        if (value !== 5.03) {
+                            return values[index]
+                        }
+                    }*/
+                },
+                title: {
+                    display: false,
+                    text: 'Trainingsplan'
+                },
+                legend: {
+                    display: true,
+                    //position: 'bottom',
+                    labels: {
+                        fontSize: 20
+                    }
+                },
+                scales: {
+                    yAxes: [{
+                        ticks: {
+                            beginAtZero: true
+                        }
+                    }]
+                },
+                tooltips: {
+                    enabled: true,
+                    mode: 'single',
+                    callbacks: {
+                        label: function(tooltipItems, data) { 
+                            var label = data.datasets[tooltipItems.datasetIndex].label || '';
+                            get_data_per_exercise_and_step(tooltipItems.xLabel, label);
+                            return tooltipItems.xLabel + " | " + label;
+                        }
+                    }
+                },            
+                responsive: true,
+                maintainAspectRatio: false
+
+            }
+        });
+
+        return chart;
+    }
+
+    function get_data_per_exercise_and_step(index, name)
+    {
+        
+    }
+
+    function openNav()
+    {
+        if( isMobile.any() ) 
+        {
+            document.getElementById("mySidenav").style.width = "300px";
+        }
+        else
+        {
+            document.getElementById("mySidenav").style.width = "250px";
+        }   
+    }
+
+    function closeNav()
+    {
+        document.getElementById("mySidenav").style.width = "0";
+    }
+
+    function save_settings()
+    {
+        var preferences = {}; 
+
+        preferences.username = getusername(); 
+        preferences.check_weight = document.getElementById("weight_box").checked;
+        preferences.check_reps = document.getElementById("reps_box").checked;
+        preferences.check_sets = document.getElementById("sets_box").checked;
+        preferences.check_maxrep = document.getElementById("max_rep_box").checked;
+        preferences.check_simple_view = document.getElementById('simplify-ui').checked;
+        preferences.check_chart_type  = document.getElementById('chart-type').checked;        
+        preferences.check_dialog_save = "ignore";     
+
+        preferences.mul_weight = document.getElementById('weight-slider').value;
+        preferences.mul_reps = document.getElementById('reps-slider').value;
+        preferences.mul_sets = document.getElementById('sets-slider').value;
+        preferences.mul_maxrep = document.getElementById('maxrep-slider').value;
+
+        
+        var xhr = new XMLHttpRequest();
+        var url = "http://jakob.ml:8080/tp_backend-1.0-SNAPSHOT/api/trainingsplan/send_preferences";
+        xhr.open("POST", url, true);
+        xhr.setRequestHeader("Content-Type", "text/plain");
+        var string = JSON.stringify(preferences);
+
+        console.log()
+
+        xhr.send(string);
+        //alert("Preferences saved!");
+    }
+
+    var isMobile = {
+        Android: function() {
+            return navigator.userAgent.match(/Android/i);
+        },
+        BlackBerry: function() {
+            return navigator.userAgent.match(/BlackBerry/i);
+        },
+        iOS: function() {
+            return navigator.userAgent.match(/iPhone|iPad|iPod/i);
+        },
+        Opera: function() {
+            return navigator.userAgent.match(/Opera Mini/i);
+        },
+        Windows: function() {
+            return navigator.userAgent.match(/IEMobile/i) || navigator.userAgent.match(/WPDesktop/i);
+        },
+        any: function() {
+            return (isMobile.Android() || isMobile.BlackBerry() || isMobile.iOS() || isMobile.Opera() || isMobile.Windows());
+        }
+    };
+
+    function customize_mobile(after_startup)
+    {
+        mobile_swal = 'mobile_swal';
+
+        document.getElementById("headerforbuttons").style.height = "100px";
+        chart.options.legend.labels.fontSize = 30;
+        
+        document.getElementById("weight-slider").style.width = "90%";
+        document.getElementById("reps-slider").style.width = "90%";
+        document.getElementById("sets-slider").style.width = "90%";
+        document.getElementById("maxrep-slider").style.width = "90%";
+        
+        document.getElementById("div-line-chart").style.marginTop = "5%";
+
+        document.getElementById("checkboxes-text").style.fontSize = "30px";
+        document.getElementById("checkboxes-text").style.marginBottom = "10%";
+        document.getElementById("check-1").style.width = "60%";
+        document.getElementById("check-2").style.width = "60%";
+        document.getElementById("check-3").style.width = "60%";
+        document.getElementById("check-4").style.width = "60%";
+
+        document.getElementById("select-text").style.fontSize = "30px";
+        document.getElementById("select-text").innerHTML = "1. Exercise";
+        
+        if(document.getElementById("info-checks"))
+            document.getElementById("info-checks").remove();
+        
+        if(document.getElementById("info-factors"))
+            document.getElementById("info-factors").remove();
+
+        document.getElementById("factors-text").style.fontSize = "30px";
+        document.getElementById("factors-text").innerHTML = "3. Change the factors";
+
+        document.getElementById("weight-slider-button").style.fontSize = "28px";
+        document.getElementById("reps-slider-button").style.fontSize = "28px";
+        document.getElementById("sets-slider-button").style.fontSize = "28px";
+        document.getElementById("maxrep-slider-button").style.fontSize = "28px";
+
+        document.getElementById("selects").style.marginTop = "10%";
+        
+
+        if(after_startup)
+        {
+            console.log("customized");
+            document.getElementById("progress-text").style.fontSize = "30px";
+            
+            if(document.getElementById("info-progress"))
+                document.getElementById("info-progress").remove();
+        }
+
+        /*
+        document.getElementById("weight-slider").style.height = "2.5%";
+        document.getElementById("reps-slider").style.height = "2.5%";
+        document.getElementById("sets-slider").style.height = "2.5%";
+        document.getElementById("maxrep-slider").style.height = "2.5%";
+        */
+
+        document.getElementById("weight-slider").style.float = "left";
+        document.getElementById("reps-slider").style.float = "left";
+        document.getElementById("sets-slider").style.float = "left";
+        document.getElementById("maxrep-slider").style.float = "left";
+
+        //document.getElementById("weight-slider-div").style.padding = "200px"; doesnt need as it is the first
+        document.getElementById("reps-slider-div").style.marginTop = "80px";
+        document.getElementById("sets-slider-div").style.marginTop = "80px";
+        document.getElementById("max-slider-div").style.marginTop = "80px";
+
+        document.getElementById("max-slider-div").style.marginTop = "80px";
+
+
+        var buttons = document.getElementsByTagName("button");
+        for(var i = 0, il = buttons.length; i < il; i++)
+        {
+            buttons[i].className += " mobile_button";
+        }
+
+        var spans = document.getElementsByTagName("span");
+        for(var i = 0, il = spans.length; i < il; i++)
+        {
+            spans[i].className += " mobile_span";
+        }
+
+        var ps = document.getElementsByTagName("p");
+        for(var i = 0, il = ps.length; i < il; i++)
+        {
+            ps[i].className += " mobile_p";
+        }
+
+        var labels = document.getElementsByTagName("label");
+        for(var i = 0, il = labels.length; i < il; i++)
+        {
+            //labels[i].className += " mobile_label";
+        }
+    }
+
+    function simplify_ui()
+    {
+        document.getElementById("checks-checkbox-ui").checked = false;
+        document.getElementById("factors-checkbox-ui").checked = false;
+
+        if(document.getElementById("simplify-ui").checked)
+        {          
+            // document.getElementById("selects").style.width = "30%";
+            document.getElementById("selects").style.marginLeft = "38%";
+
+            document.getElementById("checks").style.display = "none";
+            document.getElementById("factors").style.display = "none";
+            //  document.getElementById("additional-info").style.display = "none";
+        }    
+        else
+        {
+            document.getElementById("selects").style.marginLeft = "5%";
+
+            document.getElementById("checks").style.display = "inline";
+            document.getElementById("factors").style.display = "inline";
+            document.getElementById("additional-info").style.display = "inline";
+            
+            document.getElementById("checks-checkbox-ui").checked = true;
+            document.getElementById("factors-checkbox-ui").checked = true;
+        }   
+    }
+
+    function simplify_ui_partly()
+    {
+        // As i activate some part of the advanced ui, it is no longer the simplified view, so deactivate it
+        document.getElementById("simplify-ui").checked = false;
+
+        // If both are checked, use the simplify_ui function to set everything back to normal, but activate the buttons to make it look 
+        if(document.getElementById("checks-checkbox-ui").checked && document.getElementById("factors-checkbox-ui").checked)
+        {
+            document.getElementById("simplify-ui").checked = false;
+            simplify_ui();
+        }
+        else if(document.getElementById("checks-checkbox-ui").checked && !document.getElementById("factors-checkbox-ui").checked)
+        {
+            // document.getElementById("selects").style.width = "30%";
+            document.getElementById("selects").style.marginLeft = "10%";
+
+            document.getElementById("checks").style.display = "inline";
+            document.getElementById("factors").style.display = "none";
+        }    
+        else if(!document.getElementById("checks-checkbox-ui").checked && document.getElementById("factors-checkbox-ui").checked)
+        {
+            // document.getElementById("selects").style.width = "30%";
+            document.getElementById("selects").style.marginLeft = "10%";
+
+            document.getElementById("checks").style.display = "none";
+            document.getElementById("factors").style.display = "inline";
+        }
+        else 
+        {
+            document.getElementById("simplify-ui").checked = false;
+
+            document.getElementById("selects").style.marginLeft = "5%";
+
+            document.getElementById("checks").style.display = "inline";
+            document.getElementById("factors").style.display = "inline";
+            document.getElementById("additional-info").style.display = "inline";
+        }
+
+        var date = new Date();
+        date.setTime(date.getTime());
+
+        setCookie("partly_check_simplfied_ui", document.getElementById("checks-checkbox-ui").checked, 90);
+        setCookie("partly_factor_simplfied_ui", document.getElementById("factors-checkbox-ui").checked, 90);
+    }
+
+    function setCookie(cname,cvalue,exdays) {
+        var d = new Date();
+        d.setTime(d.getTime() + (exdays*24*60*60*1000));
+        var expires = "expires=" + d.toGMTString();
+        document.cookie = cname + "=" + cvalue + ";" + expires + ";path=/";
+    }
+
+    function getCookie(cname) {
+        var name = cname + "=";
+        var decodedCookie = decodeURIComponent(document.cookie);
+        var ca = decodedCookie.split(';');
+        for(var i = 0; i < ca.length; i++) {
+            var c = ca[i];
+            while (c.charAt(0) == ' ') {
+                c = c.substring(1);
+            }
+            if (c.indexOf(name) == 0) {
+                return c.substring(name.length, c.length);
+            }
+        }
+        return "";
+    }
+
+    function checkCookie() {
+        var partly_check_simplfied_ui = getCookie("partly_check_simplfied_ui");
+        var partly_factor_simplfied_ui = getCookie("partly_factor_simplfied_ui");
+
+        if (partly_check_simplfied_ui != "" && partly_factor_simplfied_ui != "") 
+        {
+            console.log(partly_factor_simplfied_ui);
+            console.log(partly_check_simplfied_ui);
+
+            if(partly_check_simplfied_ui == "true")
+                document.getElementById("checks-checkbox-ui").checked = true;
+            else
+                document.getElementById("checks-checkbox-ui").checked = false;
+
+            if(partly_factor_simplfied_ui == "true")
+                document.getElementById("factors-checkbox-ui").checked = true;
+            else
+                document.getElementById("factors-checkbox-ui").checked = false;
+
+
+            if(partly_check_simplfied_ui == "true" && partly_factor_simplfied_ui == "true")
+            {
+                console.log("0");
+                document.getElementById("simplify-ui").checked = false;
+                simplify_ui();
+            }
+            else if(partly_check_simplfied_ui == "true" && partly_factor_simplfied_ui == "false")
+            {
+                console.log("1");
+                // document.getElementById("selects").style.width = "30%";
+                document.getElementById("selects").style.marginLeft = "10%";
+            
+                document.getElementById("checks").style.display = "inline";
+                document.getElementById("factors").style.display = "none";
+            }    
+            else if(partly_check_simplfied_ui == "false" && partly_factor_simplfied_ui == "true")
+            {
+                console.log("2");
+                // document.getElementById("selects").style.width = "30%";
+                document.getElementById("selects").style.marginLeft = "10%";
+            
+                document.getElementById("checks").style.display = "none";
+                document.getElementById("factors").style.display = "inline";
+            }
+        } else {
+            setCookie("partly_check_simplfied_ui", document.getElementById("checks-checkbox-ui").checked, 90);
+            setCookie("partly_factor_simplfied_ui", document.getElementById("factors-checkbox-ui").checked, 90);
+        }
+    }
+
+    /*
+    document.addEventListener('DOMContentLoaded', function()
+    {
+        var available_ex;
+        var check = function()
+        {
+            if(getusername().length > 0){
+                
+                available_ex = get_available_ex();            
+                append_combo(available_ex);
+                data = append_preferences();
+
+                if(data.check_chart_type == 'f')
+                {
+                    chart_type = 'line';
+                    chart = create_chart(chart_type);
+                }    
+                else
+                {
+                    chart_type = 'bar';
+                    chart = create_chart(chart_type);
+                }
+
+
+                if( isMobile.any() ) 
+                    customize_mobile();
+                else
+                    ;
+            }
+            else
+            {
+                setTimeout(check, 10); // check again in 10 ms
+            }
+        }
+        
+        check();
+
+        
+    }, false);
+    */
+</script>
+</html>

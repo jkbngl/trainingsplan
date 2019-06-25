@@ -1,0 +1,23 @@
+<component name="libraryTable">
+  <library name="java-json">
+    <ANNOTATIONS>
+      <root url="jar://H:/Download/java-json.jar.zip!/" />
+    </ANNOTATIONS>
+    <CLASSES>
+      <root url="jar://H:/Download/java-json.jar!/" />
+      <root url="jar://H:/Download/java-json.jar.zip!/" />
+    </CLASSES>
+    <JAVADOC>
+      <root url="jar://H:/Download/java-json.jar.zip!/" />
+    </JAVADOC>
+    <NATIVE>
+      <root url="jar://H:/Download/java-json.jar.zip!/" />
+    </NATIVE>
+    <SOURCES>
+      <root url="jar://H:/Download/java-json.jar!/" />
+      <root url="jar://H:/Download/java-json.jar.zip!/" />
+    </SOURCES>
+    <jarDirectory url="jar://H:/Download/java-json.jar.zip!/" recursive="false" />
+    <jarDirectory url="jar://H:/Download/java-json.jar.zip!/" recursive="false" type="SOURCES" />
+  </library>
+</component>

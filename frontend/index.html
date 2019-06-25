@@ -188,6 +188,7 @@
     <button onclick="delete_plan(-1, false)"                               class="button" style="top: 10px; width:80%; margin-left: 10%; margin-top: 20%;"><i class="fas fa-trash">            </i> Delete Plans</button>
     <button onclick="restore_plan(-1, false)"                              class="button" style="top: 10px; width:80%; margin-left: 10%;">                 <i class="fas fa-trash-restore-alt"></i> Restore Plans</button>
     <button id="stats-button" onclick="window.location.href='stats.html'"  class="button" style="top: 10px; width:80%; margin-left: 10%; margin-top: 20%;"><i class="fas fa-chart-line">       </i> Stats</button>
+    <button id="bm-button" onclick="window.location.href='bm_it.html'"     class="button" style="top: 10px; width:80%; margin-left: 10%;">                 <i class="fas fa-weight"></i>       </i> BM-IT</button>
     <button id="logout-button" onclick="keycloak.logout()"                 class="button" style="top: 10px; width:80%; margin-left: 10%;">                 <i class="fas fa-sign-out-alt">     </i> Logout</button>
     
 </div>
@@ -305,7 +306,7 @@
     function append_preferences()
     {
         var request = new XMLHttpRequest();
-        var url = 'http://jakob.ml:50003/trainingsplan/get_preferences/';
+        var url = 'http://jakob.ml:8080/tp_backend-1.0-SNAPSHOT/api/trainingsplan/get_preferences/';
         var xmlHttp = new XMLHttpRequest();
 
         xmlHttp.open( "GET", url + getusername(), false ); // false for synchronous request
@@ -422,7 +423,7 @@
         }
         
         var request = new XMLHttpRequest();
-        var url = 'http://jakob.ml:50003/trainingsplan/getAmountOfPlans/';
+        var url = 'http://jakob.ml:8080/tp_backend-1.0-SNAPSHOT/api/trainingsplan/getAmountOfPlans/';
         var username = getusername();
 
         try 
@@ -588,7 +589,7 @@
     function doesPlanNameExists(plannamelocal)
     {
         var request = new XMLHttpRequest();
-        var url = 'http://jakob.ml:50003/trainingsplan/getPlansByUser/';
+        var url = 'http://jakob.ml:8080/tp_backend-1.0-SNAPSHOT/api/trainingsplan/getPlansByUser/';
         var plan = '';
         var username = getusername();
 
@@ -747,7 +748,7 @@
         if(delete_bool)
         {
             var xhr = new XMLHttpRequest();
-            var url = "http://jakob.ml:50003/trainingsplan/delete_plan";
+            var url = "http://jakob.ml:8080/tp_backend-1.0-SNAPSHOT/api/trainingsplan/delete_plan";
             xhr.open("POST", url, true);
             xhr.setRequestHeader("Content-Type", "text/plain");
 
@@ -755,7 +756,7 @@
         }
         else
         {
-            showDialog('http://jakob.ml:50003/trainingsplan/getPlansByUser/', 0, false, true);
+            showDialog('http://jakob.ml:8080/tp_backend-1.0-SNAPSHOT/api/trainingsplan/getPlansByUser/', 0, false, true);
         }
     }
 
@@ -765,7 +766,7 @@
         if(delete_bool)
         {
             var xhr = new XMLHttpRequest();
-            var url = "http://jakob.ml:50003/trainingsplan/restore_plan";
+            var url = "http://jakob.ml:8080/tp_backend-1.0-SNAPSHOT/api/trainingsplan/restore_plan";
             xhr.open("POST", url, true);
             xhr.setRequestHeader("Content-Type", "text/plain");
 
@@ -773,7 +774,7 @@
         }
         else
         {
-            showDialog('http://jakob.ml:50003/trainingsplan/getPlansByUser/', 1, false, false);
+            showDialog('http://jakob.ml:8080/tp_backend-1.0-SNAPSHOT/api/trainingsplan/getPlansByUser/', 1, false, false);
         }
     }
 
@@ -838,7 +839,7 @@
                                     show_warning = false;
                             
                                 var xhr = new XMLHttpRequest();
-                                var url = "http://jakob.ml:50003/trainingsplan/send_preferences";
+                                var url = "http://jakob.ml:8080/tp_backend-1.0-SNAPSHOT/api/trainingsplan/send_preferences";
                                 xhr.open("POST", url, true);
                                 xhr.setRequestHeader("Content-Type", "text/plain");
                                 var string = JSON.stringify(preferences);
@@ -858,7 +859,7 @@
                             // OK was clicked so send it anyway what with the checkbox happened
                             var jsondata = getExercises();
                             var xhr = new XMLHttpRequest();
-                            var url = "http://jakob.ml:50003/trainingsplan/sendPlan";
+                            var url = "http://jakob.ml:8080/tp_backend-1.0-SNAPSHOT/api/trainingsplan/sendPlan";
                             xhr.open("POST", url, true);
                             xhr.setRequestHeader("Content-Type", "text/plain");
                             //var data = JSON.stringify(jsondata);
@@ -885,7 +886,7 @@
                 {
                     /*
                         var xhr = new XMLHttpRequest();
-                        var url = "http://jakob.ml:50003/trainingsplan/send_preferences";
+                        var url = "http://jakob.ml:8080/tp_backend-1.0-SNAPSHOT/api/trainingsplan/send_preferences";
                         xhr.open("POST", url, true);
                         xhr.setRequestHeader("Content-Type", "text/plain");
                         var string = JSON.stringify(preferences);
@@ -893,7 +894,7 @@
                     */
                     var jsondata = getExercises();
                     var xhr = new XMLHttpRequest();
-                    var url = "http://jakob.ml:50003/trainingsplan/sendPlan";
+                    var url = "http://jakob.ml:8080/tp_backend-1.0-SNAPSHOT/api/trainingsplan/sendPlan";
                     xhr.open("POST", url, true);
                     xhr.setRequestHeader("Content-Type", "text/plain");
                     var data = JSON.stringify(jsondata);
@@ -993,7 +994,7 @@
     {
         var request = new XMLHttpRequest();
 
-        var url = 'http://jakob.ml:50003/trainingsplan/getPlansByUser/';
+        var url = 'http://jakob.ml:8080/tp_backend-1.0-SNAPSHOT/api/trainingsplan/getPlansByUser/';
         var username = getusername();
         var planid;
 
@@ -1008,13 +1009,13 @@
 
                 if(json.plans.length > 1 && onlogon == false) // if more than 1 day than load all plans
                 {
-                    showDialog('http://jakob.ml:50003/trainingsplan/getPlansByUser/', 0, true, null);
+                    showDialog('http://jakob.ml:8080/tp_backend-1.0-SNAPSHOT/api/trainingsplan/getPlansByUser/', 0, true, null);
                 }
                 else
                 {
                     if(this.response != '{"username": "' + username + '","plans": []}')
                     {
-                        plan = getPlan('http://jakob.ml:50003/trainingsplan/getNewestPlan/' + username);
+                        plan = getPlan('http://jakob.ml:8080/tp_backend-1.0-SNAPSHOT/api/trainingsplan/getNewestPlan/' + username);
                         var data = JSON.parse(plan);
                         printjson(data, plan);
                     }
@@ -1081,7 +1082,7 @@
 
                             if(!isNaN(parseFloat(value)) && !isNaN(value - 0))
                             {
-                                plan = getPlan('http://jakob.ml:50003/trainingsplan/getPlanByUserAndPlan/' + username + '/' + value);
+                                plan = getPlan('http://jakob.ml:8080/tp_backend-1.0-SNAPSHOT/api/trainingsplan/getPlanByUserAndPlan/' + username + '/' + value);
                                 var data = JSON.parse(plan);
                                 
                                 // the dialog for loading a plan from the db was active and now display the new data
@@ -1140,7 +1141,7 @@
     function getPlanID()
     {
         var request = new XMLHttpRequest();
-        var url = 'http://jakob.ml:50003/trainingsplan/getPlanIdByUsernameAndPlanname/';
+        var url = 'http://jakob.ml:8080/tp_backend-1.0-SNAPSHOT/api/trainingsplan/getPlanIdByUsernameAndPlanname/';
         var username = getusername();
 
         var xmlHttp = new XMLHttpRequest();
@@ -1160,7 +1161,7 @@
         {
             try{
                 setTimeout(function(){
-                    var url = 'http://jakob.ml:50003/trainingsplan/getPlanByUserAndPlan/' + username + '/' + currentPlanId;
+                    var url = 'http://jakob.ml:8080/tp_backend-1.0-SNAPSHOT/api/trainingsplan/getPlanByUserAndPlan/' + username + '/' + currentPlanId;
 
                     var xmlHttp = new XMLHttpRequest();
                     xmlHttp.open( "GET", url, false ); // false for synchronous request
@@ -1185,7 +1186,7 @@
         var request = new XMLHttpRequest();
         var username = getusername();
 
-        var url = 'http://jakob.ml:50003/trainingsplan/getAmountOfPlans/' + username + '/' + num;
+        var url = 'http://jakob.ml:8080/tp_backend-1.0-SNAPSHOT/api/trainingsplan/getAmountOfPlans/' + username + '/' + num;
 
         var xmlHttp = new XMLHttpRequest();
         xmlHttp.open( "GET", url, false ); // false for synchronous request

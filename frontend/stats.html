@@ -468,7 +468,7 @@
     function get_available_ex()
     {
         var request = new XMLHttpRequest();
-        var url = 'http://jakob.ml:50003/trainingsplan/get_possible_base_exs/';
+        var url = 'http://jakob.ml:8080/tp_backend-1.0-SNAPSHOT/api/trainingsplan/get_possible_base_exs/';
         var username = getusername();
 
         try
@@ -507,7 +507,7 @@
     function append_preferences()
     {
         var request = new XMLHttpRequest();
-        var url = 'http://jakob.ml:50003/trainingsplan/get_preferences/';
+        var url = 'http://jakob.ml:8080/tp_backend-1.0-SNAPSHOT/api/trainingsplan/get_preferences/';
         var xmlHttp = new XMLHttpRequest();
 
         xmlHttp.open( "GET", url + getusername(), false ); // false for synchronous request
@@ -604,7 +604,7 @@
         try
         {
             var request = new XMLHttpRequest();
-            var url = 'http://jakob.ml:50003/trainingsplan/get_stats/';
+            var url = 'http://jakob.ml:8080/tp_backend-1.0-SNAPSHOT/api/trainingsplan/get_stats/';
             var xmlHttp = new XMLHttpRequest();
 
             xmlHttp.open( "GET", url + value, false ); // false for synchronous request
@@ -1132,7 +1132,7 @@
 
         
         var xhr = new XMLHttpRequest();
-        var url = "http://jakob.ml:50003/trainingsplan/send_preferences";
+        var url = "http://jakob.ml:8080/tp_backend-1.0-SNAPSHOT/api/trainingsplan/send_preferences";
         xhr.open("POST", url, true);
         xhr.setRequestHeader("Content-Type", "text/plain");
         var string = JSON.stringify(preferences);

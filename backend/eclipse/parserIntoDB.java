@@ -16,21 +16,54 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import com.eclipsesource.json.Json;
-import com.eclipsesource.json.JsonArray;
-import com.eclipsesource.json.JsonObject;
+
+/*
+ * import com.eclipsesource.json.Json;
+ * import com.eclipsesource.json.JsonArray;
+ * import com.eclipsesource.json.JsonObject;
+ */
 
 
-
-
-public class parserIntoDB 
+public class ParserIntoDB 
 {
+	String connectionString = "jdbc:postgresql://127.0.0.1:5432/";
+	String user = "postgres";
+	String password = "test";
+	
 	String input;
 	String username = "";
+	int id = -1;
 	
-	public parserIntoDB(String input)
+	public ParserIntoDB(String input)
 	{
 		this.input = input;
+	}
+	
+	public ParserIntoDB(int id)
+	{
+		this.id = id;
+	}
+	
+	public boolean delete_plan(int id, Connection connection) throws SQLException
+	{
+		PreparedStatement st = connection.prepareStatement("update tp_plan set deleted = 1, changed = current_timestamp where id = (?)");
+        st.setInt(1, id);
+    	
+    	st.executeUpdate();
+    	st.close();	
+    		
+		return true;
+	}
+	
+	public boolean restore_plan(int id, Connection connection) throws SQLException
+	{
+		PreparedStatement st = connection.prepareStatement("update tp_plan set deleted = 0, changed = current_timestamp where id = (?)");
+        st.setInt(1, id);
+    	
+    	st.executeUpdate();
+    	st.close();	
+    		
+		return true;
 	}
 	
 	public void parse() throws JSONException, SQLException 
@@ -141,8 +174,7 @@ public class parserIntoDB
 						// Q: needs to be commented in A: think not if ex does exist nothing needs to be don
 						// addNewExercisesForDay(exercises, j, day_id, plan_id, username, connection);	
 				}
-				
-				
+								
 				// clear the list after a day has been saved
 				exercises.clear();
 			}
@@ -317,7 +349,7 @@ public class parserIntoDB
 	{
 		int id = 0;
 		PreparedStatement st = connection.prepareStatement("select id from tp_user where lower(username) = ?");
-		st.setString(1, userName);
+		st.setString(1, userName.trim().toLowerCase());
 		ResultSet rs = st.executeQuery();
 		
 		
@@ -336,7 +368,6 @@ public class parserIntoDB
 		}
 		else
 		{
-			// System.out.println("user " + userName + " found");
 			return id;
 		}
 	}
@@ -345,7 +376,7 @@ public class parserIntoDB
 	{
 		int id = 0;
 		PreparedStatement st = connection.prepareStatement("select id from tp_user where lower(username) = ?");
-		st.setString(1, userName);
+		st.setString(1, userName.trim().toLowerCase());
 		ResultSet rs = st.executeQuery();
 		
 		while(rs.next())
@@ -398,7 +429,7 @@ public class parserIntoDB
 	public static void createUser(String userName, Connection connection) throws SQLException
 	{
 		PreparedStatement st = connection.prepareStatement("INSERT INTO tp_user (username) VALUES (?)");
-		st.setString(1, userName.trim());
+		st.setString(1, userName.trim().toLowerCase());
 		st.executeUpdate();
 		st.close();
 		
@@ -480,6 +511,7 @@ public class parserIntoDB
 		{
 			String match = m.group(1);
 			
+			
 			if(match.substring(0, Math.min(match.length(), 8)).equalsIgnoreCase("{\"day\":["))
 			{
 				day = "{\"plan\": " + match + "]}}";
@@ -497,16 +529,17 @@ public class parserIntoDB
 	
 	public static String getDay(List<String> days, int index)
 	{
-		// System.out.println("day");
 		return days.get(index).toString();
 	}
 	
-	public static String cut(String input, String toCut)
+	/*public static String cut(String input, String toCut)
 	{
 		JsonObject object = Json.parse(input).asObject();
 		JsonArray items = object.get("plan").asArray();
+		
+		System.out.println("NEW FEATURE: " + items.toString());
 		return items.toString();
-	}
+	}*/
 	
 	public static String getExercisesPerDay(String day) throws JSONException
 	{
@@ -548,7 +581,8 @@ public class parserIntoDB
         																	   + ", sets"
         																	   + ", max_rep"
         																	   + ", pausetime"
-        																	   + ", referenced_ex) VALUES ((?), (?), (?), (?), (?), (?), (?), (?));");
+        																	   + ", note"
+        																	   + ", referenced_ex) VALUES ((?), (?), (?), (?), (?), (?), (?), (?), (?));");
         
         st.setInt(1, day_id);
         st.setString(2, jsonObject.get("name").toString());
@@ -557,7 +591,9 @@ public class parserIntoDB
     	st.setString(5, jsonObject.get("sets").toString());
     	st.setString(6, jsonObject.get("maxrep").toString());
     	st.setString(7, jsonObject.get("pause").toString());
-    	st.setInt(8, old_ex_id);
+    	// #37
+    	st.setString(8, jsonObject.get("note").toString()); 
+    	st.setInt(9, old_ex_id);
     		
     	st.executeUpdate();
     	st.close();
@@ -612,7 +648,8 @@ public class parserIntoDB
 														  + "  and  e.reps = (?) "
 														  + "  and  e.sets = (?) "
 														  + "  and  e.pausetime = (?) "
-														  + "  and  e.max_rep = (?);");
+														  + "  and  e.max_rep = (?)"
+														  + "  and  e.note = (?);");
 			
 		if(jsonObject.get("id").toString().equals("defaultvaluetoignore"))
 			return id;
@@ -624,6 +661,8 @@ public class parserIntoDB
 		st.setString(5, jsonObject.get("sets").toString());
 		st.setString(6, jsonObject.get("pause").toString());
 		st.setString(7, jsonObject.get("maxrep").toString());
+		st.setString(8, jsonObject.get("note").toString());
+
 		
 		ResultSet rs = st.executeQuery();
 		
@@ -685,22 +724,15 @@ public class parserIntoDB
     	st.setString(5, jsonObject.get("reps").toString());
     	st.setString(6, jsonObject.get("maxrep").toString());
     	st.setString(7, jsonObject.get("pause").toString());
-
-		System.out.println("New Feature -2");
     	
     	ResultSet rs = st.executeQuery();
-		
-    	System.out.println("New Feature -1");
-    	
+		    	
 		while(rs.next())
 		{
-			System.out.println("New Feature 0");
 			// TODO check logic here
 			current_ex_id = Integer.parseInt(rs.getString(1)) > 0 ? Integer.parseInt(rs.getString(1)) : -1;
 		}
-		
-		System.out.println("New Feature 1");
-				
+						
 		st = connection.prepareStatement("select base_ex from tp_exercise where id = ?");
 		
 		st.setInt(1, old_ex_id);
@@ -715,17 +747,12 @@ public class parserIntoDB
 		
 		rs.close();
 		
-		System.out.println("New Feature 2");
-
-		
 		st = connection.prepareStatement("update  tp_exercise "
 										  + "set  base_ex = ?"
 										+ "		, changed = current_timestamp "
 										+ "where  id = ?"
 										+ "   or  id = ?");
-		
-		System.out.println(old_ex_id + " | " + current_ex_id);
-		
+				
 		if(base_ex != -1)
 			st.setInt(1, base_ex);
 		else
@@ -745,6 +772,107 @@ public class parserIntoDB
         st.setInt(1, id);
     	
     	st.executeUpdate();
+    	st.close();
+	}
+
+	public void save_preferences(String msg, Connection connection) throws JSONException, SQLException
+	{		
+		JSONObject obj = new JSONObject(msg);
+		
+		int user_id = getUserid(obj.get("username").toString(), connection);
+
+        PreparedStatement st = connection.prepareStatement("    INSERT INTO tp_preferences (userid_fk,         mul_weight, mul_reps,   mul_sets,     mul_maxrep "
+        													 + "                          , check_weight,      check_reps, check_sets, check_maxrep, check_simple_view"
+        													 + "						  , check_chart_type,  changed) "
+        													 + "VALUES ( ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, now())"
+        													 + "ON CONFLICT (userid_fk) DO UPDATE "
+        													 + "SET "
+        													 + " mul_weight = EXCLUDED.mul_weight, "
+        													 + " mul_reps = EXCLUDED.mul_reps, "
+        													 + " mul_sets = EXCLUDED.mul_sets, "
+        													 + " mul_maxrep = EXCLUDED.mul_maxrep, "
+        													 + " check_weight = EXCLUDED.check_weight, "
+        													 + " check_reps = EXCLUDED.check_reps, "
+        													 + " check_sets = EXCLUDED.check_sets, "
+        													 + " check_maxrep = EXCLUDED.check_maxrep, "
+        													 + " check_simple_view = EXCLUDED.check_simple_view, "
+        													 + " check_chart_type = EXCLUDED.check_chart_type, "
+        													 + " changed = now()"
+        													 + ";");
+        
+        try 
+		{
+	        st.setInt(1, user_id);
+	        st.setInt(2,Integer.parseInt(obj.get("mul_weight").toString()));
+	        st.setInt(3, Integer.parseInt(obj.get("mul_reps").toString()));
+	        st.setInt(4, Integer.parseInt(obj.get("mul_sets").toString()));
+	        st.setInt(5, Integer.parseInt(obj.get("mul_maxrep").toString()));
+	
+	        if(obj.getBoolean("check_weight"))
+	        	st.setBoolean(6, true);
+	        else
+	        	st.setBoolean(6, false);
+	        
+	        if(obj.getBoolean("check_reps"))
+	        	st.setBoolean(7, true);
+	        else
+	        	st.setBoolean(7, false);
+	        
+	        if(obj.getBoolean("check_sets"))
+	        	st.setBoolean(8, true);
+	        else
+	        	st.setBoolean(8, false);
+	        
+	        if(obj.getBoolean("check_maxrep"))
+	        	st.setBoolean(9, true);
+	        else
+	        	st.setBoolean(9, false);
+	                
+	        if(obj.getBoolean("check_simple_view"))
+	        	st.setBoolean(10, true);
+	        else
+	        	st.setBoolean(10, false);
+	        
+	        if(obj.getBoolean("check_chart_type"))
+	        	st.setBoolean(11, true);
+	        else
+	        	st.setBoolean(11, false);
+	        
+			st.executeUpdate();
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+
+    	st.close();
+	}
+
+	public void save_preferences_index(String msg, Connection connection) throws SQLException, JSONException {
+		JSONObject obj = new JSONObject(msg);
+		
+		int user_id = getUserid(obj.get("username").toString(), connection);
+
+        PreparedStatement st = connection.prepareStatement("    INSERT INTO tp_preferences (userid_fk, check_dialog_save, changed) "
+        													 + "VALUES ( ?, ?, now()) "
+        													 + "ON CONFLICT (userid_fk) DO UPDATE "
+        													 + "SET "
+        													 + " check_dialog_save = EXCLUDED.check_dialog_save, "
+        													 + " changed = now() "
+        													 + ";");
+        
+        try 
+		{
+	        st.setInt(1, user_id);
+	
+	        if(obj.getBoolean("check_dialog_save"))
+	        	st.setBoolean(2, true);
+	        else
+	        	st.setBoolean(2, false);
+	                
+			st.executeUpdate();
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+
     	st.close();
 	}
 }

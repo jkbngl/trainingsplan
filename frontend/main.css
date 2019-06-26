@@ -23,18 +23,27 @@ melnik909@ya.ru
 LEVEL 1. CORE STYLES
 =====
 */
-
+.mobile_p p.mobile_p,  p.mobile_p {
+  font-size: 30px;
+}
 #container {
   display: flex;                  /* establish flex container */
   flex-direction: row;            /* default value; can be omitted */
   flex-wrap: nowrap;              /* default value; can be omitted */
   justify-content: space-between; /* switched from default (flex-start, see below) */
 }
+
 #container > div {
   width: 33vw;
   /*border: 2px dashed red;*/
 }
 
+#container_bm {
+  display: flex;                  /* establish flex container */
+  flex-direction: column;            /* default value; can be omitted */
+  flex-wrap: nowrap;              /* default value; can be omitted */
+  justify-content: space-between; /* switched from default (flex-start, see below) */
+}
 
 .slider {
   -webkit-appearance: none;
@@ -70,8 +79,8 @@ LEVEL 1. CORE STYLES
 @media (max-width: 1200px) {
   .divOuter{
     display: block;
-    margin-left: auto;
-    margin-right: auto;
+    /*margin-left: auto;
+    margin-right: auto;*/
     width: 40%;
     margin-top:50px;
   }
@@ -305,13 +314,13 @@ LEVEL 3. SETTINGS
 .divInner1{
   float:left;
   margin-left:3px;
-  margin-right:3px;
+  /*margin-right:3px;*/
 }
 
 .divInner2{
   float:left;
   margin-left:3px;
-  margin-right:3px;
+  /*margin-right:3px;*/
   font-family: inherit;
   color: #00ad5f; 
 }
@@ -343,13 +352,16 @@ LEVEL 3. SETTINGS
 
 	/* Use custom arrow */
 .select .select-text {
-	appearance: none;
-	-webkit-appearance:none
+  /*
+    appearance: none;
+    -webkit-appearance:none;
+  */
+  
 }
 
 .select:after {
 	position: absolute;
-	top: 18px;
+	top: 10%;
   right: 10px;
   font-size:10000px;
 
@@ -363,6 +375,10 @@ LEVEL 3. SETTINGS
 	pointer-events: none;
 }
 
+.mobile_swal
+{
+  font-size: 2rem !important;
+}
 
 /* LABEL ======================================= */
 .select-label {
@@ -383,7 +399,7 @@ LEVEL 3. SETTINGS
 /* active state */
 .select-text:focus ~ .select-label, .select-text:valid ~ .select-label {
 	color: #00ad5f;
-  top: -20px;
+  top: -30px;
   right: -20px;
 	transition: 0.5s ease all;
 	font-size: 1004px;
@@ -516,7 +532,7 @@ select option {
 .fixed-background {
   position:fixed;
   margin-left: auto;
-  margin-right: auto;
+  /*margin-right: auto;*/
   top: 0;
   width: 100%;
   height: 100%;
@@ -537,7 +553,6 @@ select option {
 body{
   margin: 0;
 }
-
 
 
 
@@ -582,13 +597,6 @@ dialog {
   color: #00ad5f;
 }
 
-#test-dropdown {
-  background-color: #4e4e4e;
-}
-
-#test-dropdown2 {
-  width:99%;
-}
 
 
 /* ------------------------------------ */
@@ -670,14 +678,14 @@ iframe {
   position: absolute;
   background-color: #ebebeb;
   border-radius: 5px;
-  width: 100%;
+  /*width: 100%;*/
   height: calc(100% - 30px);
   left: 0;
   top: 15px;
 }
 
 .table100 .ps__rail-y .ps__thumb-y {
-  width: 100%;
+  /*width: 100%;*/
   right: 0;
   background-color: transparent;
   opacity: 1 !important;
@@ -689,7 +697,7 @@ iframe {
   position: absolute;
   background-color: #cccccc;
   border-radius: 5px;
-  width: 100%;
+  /*width: 100%;*/
   height: calc(100% - 30px);
   left: 0;
   top: 15px;
@@ -705,7 +713,7 @@ iframe {
 }
 
 .container-table100 {
-  width: 100%;
+  /*width: 100%;*/
   min-height: 100vh;
 
   display: -webkit-box;
@@ -719,10 +727,7 @@ iframe {
   padding: 33px 30px;
 }
 
-.test-dropdown2
-{
-  color: #00ad5f;
-}
+
 
 .staticbutton {
   background-color: #393939;
@@ -826,28 +831,31 @@ table {
 
 th, td {
   /*font-weight: unset;*/
-  padding-right: 10px;
+  padding-right: 2%; /*used for delete button to not be displayed at complete right of bar*/
 }
 
 .column1 {
-  width: 33%;
-  padding-left: 40px;
+  width: 30%;
 }
 
 .column2 {
-  width: 13%;
+  width: 8.5%;
 }
 
 .column3 {
-  width: 22%;
+  width: 8.5%;
 }
 
 .column4 {
-  width: 19%;
+  width: 8.5%;
 }
 
 .column5 {
-  width: 13%;
+  width: 8.5%;
+}
+
+.column6 {
+  width: 30%;
 }
 
 .table100-head th {
@@ -1144,7 +1152,7 @@ th, td {
   border-top-left-radius: 10px;
   border-bottom-left-radius: 10px;
 }
-.table100.ver5 .table100-body td:last-child {
+.table100.ver5 .table100-body  {
   border-right-style: solid;
   border-bottom-right-radius: 10px;
   border-top-right-radius: 10px;
@@ -1167,7 +1175,7 @@ th, td {
 }
 
 .table100.ver5 .table100-body{
-  padding-right: 30px;
+  /*padding-right: 30px;*/
 }
 
 .table100.ver5 .ps__rail-y {

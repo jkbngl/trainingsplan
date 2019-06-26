@@ -380,6 +380,11 @@ LEVEL 3. SETTINGS
   font-size: 2rem !important;
 }
 
+::placeholder { /* Chrome, Firefox, Opera, Safari 10.1+ */
+  color: #00ad5f;
+  opacity: 1; /* Firefox */
+}
+
 /* LABEL ======================================= */
 .select-label {
 	color:  #00ad5f;
@@ -631,7 +636,6 @@ ul, li {
 input {
   display: block;
   outline: none;
-  border: none !important;
 }
 
 textarea {
@@ -663,6 +667,13 @@ iframe {
 .js-pscroll {
   position: relative;
   overflow: hidden;
+}
+
+.input_bm:hover
+{
+  -moz-box-shadow: 0 0 10px ;
+  -webkit-box-shadow: 0 0 10px;
+  box-shadow: 0 0 10p;
 }
 
 .table100 .ps__rail-y {

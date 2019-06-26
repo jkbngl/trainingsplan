@@ -144,7 +144,7 @@
                     // alert('Successfully authenticated'); 
                     console.log('Successfully authenticated'); 
                 
-                    username = keycloak.idTokenParsed.name;
+                    username = keycloak.idTokenParsed.preferred_username;
                     username = username.toLowerCase();
                     document.getElementById("username").innerHTML = username + ' <i class="fas fa-sign-out-alt"></i>';
                     

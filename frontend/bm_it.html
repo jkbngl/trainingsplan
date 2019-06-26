@@ -214,8 +214,6 @@
 
     <div id="container_bm">
         <div id="additional-info" style="width: 100%; margin-bottom: 2%; display: flex; flex-direction: row; flex-wrap: nowrap;justify-content: space-between;">
-            <!--<button onclick="window.location.href='index.html'" class="button" style="top: 10px; margin-left: 10%;"><i class="fas fa-home"></i> Home</button>  -->
-
             <div id="check-2" class="page__toggle"  style="margin-top: 10px; margin: auto;  margin-left:5%; ">
                 <label class="toggle">
                     <input id="reps_box" onchange="closeNav();" onclick="save_settings(); update_chart();"  class="toggle__input" type="checkbox" checked>
@@ -225,9 +223,9 @@
                 </label>
             </div>
 
-            <input type="text" id="value_name" style="width: 25%; margin-left:5%; margin-right:5%">
-            <input type="text" id="value_value"style="width: 25%; margin-rigth:5%">
-
+            <input type="text" id="value_name"  placeholder="&nbsp; Name of input value" style="background: transparent; color:red; width: 25%; margin-left:5%; margin-right:5%">
+            <input type="text" id="value_value" placeholder="&nbsp; Value of input" style="width: 25%; margin-rigth:5%">
+ 
             <div class="select" style="border-bottom: 4px solid rgba(0,0,0, 0.12); border-right: 4px solid rgba(0,0,0, 0.12); margin-left:5%; margin-right: 5%">
                 <select id= "select" onchange="closeNav(); display_ex();" class="select-text" required >
                     <option value="" selected></option>
@@ -250,15 +248,17 @@
                 <span class="select-bar"></span>
             </div>
         </div>
+
+        <div id="additional-info" style="width: 100%; margin-bottom: 2%">
+            <button onclick="window.location.href='index.html'" class="button" style="top: 10px; width:80%; margin-left: 10%;"><i class="fas fa-home"></i> Home</button>  
+        </div>
+    
+        <div id="additional-info" style="width: 100%">
+            <button onclick="window.location.href='index.html'" class="button" style="top: 10px; width:80%; margin-left: 10%;"><i class="fas fa-home"></i> Home</button>  
+        </div>
     </div>
 
-    <div id="additional-info" style="width: 100%; margin-bottom: 2%">
-        <button onclick="window.location.href='index.html'" class="button" style="top: 10px; width:80%; margin-left: 10%;"><i class="fas fa-home"></i> Home</button>  
-    </div>
-
-    <div id="additional-info" style="width: 100%">
-        <button onclick="window.location.href='index.html'" class="button" style="top: 10px; width:80%; margin-left: 10%;"><i class="fas fa-home"></i> Home</button>  
-    </div>
+    
 </body>
 
 <script>

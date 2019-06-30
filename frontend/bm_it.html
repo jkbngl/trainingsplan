@@ -28,8 +28,6 @@
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@sweetalert2/theme-dark@1/dark.css">
 
 
-
-
     <script src="http://jakob.ml:8081/auth/js/keycloak.js"></script> 
     <script>
         var keycloak;
@@ -210,7 +208,7 @@
     </div>
 
     <div id="container_bm">
-        <div id="additional-info" style="width: 100%; margin-bottom: 2%; display: flex; flex-direction: row; flex-wrap: nowrap;justify-content: space-between;">
+        <div id="additional-info_1" style="width: 100%; margin-bottom: 2%; display: flex; flex-direction: row; flex-wrap: nowrap;justify-content: space-between;">
             <div id="check-2" class="page__toggle"  style="margin-top: 10px; margin: auto;  margin-left:5%; ">
                 <label class="toggle">
                     <input id="reps_box" onchange="closeNav();" onclick="save_settings(); update_chart();"  class="toggle__input" type="checkbox" checked>
@@ -272,9 +270,28 @@
     // Here the class is set for the swal to use, depending on mobile or desktop, desktop leave empty - mobile is set in customize_mobile
     var mobile_swal = '';             
 
+    // #67 Newly added func
+    function get_amount_inputs()
+    {
+        // Get the main_div with all the stats inside
+        var main_div = document.getElementById('container_bm');
+        // Divided by 4 because there are additionally 4 divs in the main divs
+        var amount_stats = main_div.getElementsByTagName('div').length / 4;
+
+        return amount_stats;
+    }
+
+    // #67 Newly added func
     function save()
     {
-        console.log("saving...");
+        var amount_stats = get_amount_inputs();
+
+        for(let i = 1; i <= amount_stats; i++)
+        {
+            console.log(document.getElementById("additional-info_" + i).querySelector("#reps_box").checked);
+            console.log(document.getElementById("additional-info_" + i).querySelector("#value_name").value);
+            console.log(document.getElementById("additional-info_" + i).querySelector("#value_value").value);
+        }
     }
 
     function download() 
@@ -313,7 +330,12 @@
     // #67 Newly added func
     function add_html_input()
     {
-        document.getElementById("container_bm").innerHTML += '<div id="additional-info" style="width: 100%; margin-bottom: 2%; margin-top: 2%; display: flex; flex-direction: row; flex-wrap: nowrap;justify-content: space-between;"> \
+        //Give the new div a number which is the current amount + 1
+        var num_input = get_amount_inputs() + 1;
+        // Create a container that will be added to the div
+        var container = document.createElement("div");
+
+        container.innerHTML = '<div id="additional-info_' + num_input + '" style="width: 100%; margin-bottom: 2%; margin-top: 2%; display: flex; flex-direction: row; flex-wrap: nowrap;justify-content: space-between;"> \
             <div id="check-2" class="page__toggle"  style="margin-top: 10px; margin: auto;  margin-left:5%; "> \
                 <label class="toggle"> \
                     <input id="reps_box" onchange="closeNav();" onclick="save_settings(); update_chart();"  class="toggle__input" type="checkbox" checked> \
@@ -347,7 +369,8 @@
                 </label> \
                 <span class="select-bar"></span> \
             </div> \
-        </div>' 
+        </div>';
+        document.getElementById("container_bm").appendChild(container);
     }
 
     // Changing is only possible with the last choosen ex so use this number

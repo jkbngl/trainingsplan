@@ -91,7 +91,7 @@
                 
                     document.getElementById("username").innerHTML = username + ' <i class="fas fa-sign-out-alt"></i>';
 
-                    append_combo();
+                    append_combo("additional-info_1");
                 
                     if( isMobile.any() ) 
                         customize_mobile();
@@ -331,8 +331,8 @@
         var json_uoms = rest_uoms();
         var json_tods = rest_tods();
 
-        var s_1 = document.getElementById("additional-info_1").querySelector("#select_1");
-        var s_2 = document.getElementById("additional-info_1").querySelector("#select_2");
+        var s_1 = document.getElementById(div).querySelector("#select_1");
+        var s_2 = document.getElementById(div).querySelector("#select_2");
         
 
         for(var i = 0; i < json_uoms.length; i++) 
@@ -436,6 +436,8 @@
 
         const node = document.getElementById("div_to_delete");
         node.replaceWith(...node.childNodes); // or node.children, if you don't want textNodes
+
+        append_combo("additional-info_" + num_input);
 
     }
 

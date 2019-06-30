@@ -146,9 +146,6 @@
         <button onclick="cleanUpTables(); addTable(true);  closeNav();"class="button" style="top: 10px; width:80%; margin-left: 10%;">New Plan</button>-->
         <button onclick="window.location.href='index.html'" class="button" style="top: 10px; width:80%; margin-left: 10%;"><i class="fas fa-home"></i> Home</button>
         <!--<button onclick="save_settings(); update_chart();"                  class="button" style="top: 10px; width:80%; margin-left: 10%; margin-top: 20%;"><i class="far fa-save"></i> Save Preferences</button>-->
-        
-                
-       
         <button onclick="reset_settings(); save_settings()"class="button" style="top: 10px; width:80%; margin-left: 10%;"><i class="fas fa-hammer"></i> Reset</button>
         <button onclick="download();" class="button" style="top: 10px; width:80%; margin-left: 10%; margin-top: 20%;"><i class="fas fa-file-export"></i> Export</button>
         <button onclick="keycloak.logout('/trainingsplanorwhateveritdoesntworkanyway'); kc.logout()"class="button" style="top: 10px; width:80%; margin-left: 10%; "><i class="fas fa-sign-out-alt"></i> Logout</button>
@@ -201,7 +198,7 @@
     <div id = "headerforbuttons" style="display: flex; justify-content: space-between; position:fixed; width:100%">
         <button onclick="openNav()" class="button" style="top: 10px;"><i class="fas fa-bars"></i></span>
             <button onclick="window.location.href='index.html'" class="button" style="top: 10px;" ><i class="fas fa-home"></i> Home</button>
-            <button onclick="closeNav(); clear_chart(true)" class="button" style="top: 10px;" ><i class="fas fa-trash"></i> Clear</button>
+            <button onclick="save()" class="button" style="top: 10px;" ><i class="far fa-save"></i> Save</button>
             <button onclick="keycloak.logout()" class="button" value="username ..." id="username" style="top: 10px;"></button>
     </div>​
 
@@ -223,10 +220,10 @@
                 </label>
             </div>
 
-            <input type="text" id="value_name"  placeholder="&nbsp; Name of input value" style="background: transparent; color:red; width: 25%; margin-left:5%; margin-right:5%">
-            <input type="text" id="value_value" placeholder="&nbsp; Value of input" style="width: 25%; margin-rigth:5%">
+            <input type="text" id="value_name"  class="input_bm" placeholder="&nbsp; Enter the name of input value ..." style="background: transparent; border-radius: 25px; border: 2px solid #00ad5f; color:#00ad5f; width: 25%; font-size: 18px;font-family: Century Gothic; margin-right:5%; margin-left:5%; ">
+            <input type="text" id="value_value" class="input_bm" placeholder="&nbsp; Enter the value of input ..."      style="background: transparent; border-radius: 25px; border: 2px solid #00ad5f; color:#00ad5f; width: 25%; font-size: 18px;font-family: Century Gothic; margin-right:5%">
  
-            <div class="select" style="border-bottom: 4px solid rgba(0,0,0, 0.12); border-right: 4px solid rgba(0,0,0, 0.12); margin-left:5%; margin-right: 5%">
+            <div class="select" style="border-bottom: 4px solid rgba(0,0,0, 0.12); border-right: 4px solid rgba(0,0,0, 0.12); margin-right: 5%">
                 <select id= "select" onchange="closeNav(); display_ex();" class="select-text" required >
                     <option value="" selected></option>
                 </select>
@@ -248,15 +245,9 @@
                 <span class="select-bar"></span>
             </div>
         </div>
-
-        <div id="additional-info" style="width: 100%; margin-bottom: 2%">
-            <button onclick="window.location.href='index.html'" class="button" style="top: 10px; width:80%; margin-left: 10%;"><i class="fas fa-home"></i> Home</button>  
-        </div>
-    
-        <div id="additional-info" style="width: 100%">
-            <button onclick="window.location.href='index.html'" class="button" style="top: 10px; width:80%; margin-left: 10%;"><i class="fas fa-home"></i> Home</button>  
-        </div>
     </div>
+
+    <button id="add-new-input" onclick="closeNav(); add_html_input()" class="button" style="width:20%; margin:auto; display:block;" >Add <i class="fas fa-plus-circle"></i></a>
 
     
 </body>
@@ -281,6 +272,10 @@
     // Here the class is set for the swal to use, depending on mobile or desktop, desktop leave empty - mobile is set in customize_mobile
     var mobile_swal = '';             
 
+    function save()
+    {
+        console.log("saving...");
+    }
 
     function download() 
     {
@@ -313,6 +308,46 @@
         var yyyy = today.getFullYear();
 
         return mm + '_' + dd + '_' + yyyy;
+    }
+
+    // #67 Newly added func
+    function add_html_input()
+    {
+        document.getElementById("container_bm").innerHTML += '<div id="additional-info" style="width: 100%; margin-bottom: 2%; margin-top: 2%; display: flex; flex-direction: row; flex-wrap: nowrap;justify-content: space-between;"> \
+            <div id="check-2" class="page__toggle"  style="margin-top: 10px; margin: auto;  margin-left:5%; "> \
+                <label class="toggle"> \
+                    <input id="reps_box" onchange="closeNav();" onclick="save_settings(); update_chart();"  class="toggle__input" type="checkbox" checked> \
+                    <span class="toggle__label"> \
+                        <span class="toggle__text">Active</span> \
+                    </span> \
+                </label> \
+            </div> \
+            \
+            <input type="text" id="value_name"  class="input_bm" placeholder="&nbsp; Enter the name of input value ..." style="background: transparent; border-radius: 25px; border: 2px solid #00ad5f; color:#00ad5f; width: 25%; font-size: 18px;font-family: Century Gothic; margin-right:5%; margin-left:5%; "> \
+            <input type="text" id="value_value" class="input_bm" placeholder="&nbsp; Enter the value of input ..."      style="background: transparent; border-radius: 25px; border: 2px solid #00ad5f; color:#00ad5f; width: 25%; font-size: 18px;font-family: Century Gothic; margin-right:5%"> \
+            \
+            <div class="select" style="border-bottom: 4px solid rgba(0,0,0, 0.12); border-right: 4px solid rgba(0,0,0, 0.12); margin-right: 5%"> \
+                <select id= "select" onchange="closeNav(); display_ex();" class="select-text" required > \
+                    <option value="" selected></option> \
+                </select> \
+                <span class="select-highlight"></span> \
+                <label id="select-text" style="font-size: 22px;" class="select-label">UOM \
+                <i class="fas fa-info-circle" rel="tooltip" title="Select an exercise from this list to have the history (if existent) of your data displayed in the chart above  " id="info-step-1"></i> \
+                    </label> \
+                <span class="select-bar"></span> \
+            </div> \
+             \
+            <div class="select" style="border-bottom: 4px solid rgba(0,0,0, 0.12); border-right: 4px solid rgba(0,0,0, 0.12); margin-right: 5%"> \
+                <select id= "select" onchange="closeNav(); display_ex();" class="select-text" required > \
+                    <option value="" selected></option> \
+                </select> \
+                <span class="select-highlight"></span> \
+                <label id="select-text" style="font-size: 22px;" class="select-label">Time of Day \
+                <i class="fas fa-info-circle" rel="tooltip" title="Select an exercise from this list to have the history (if existent) of your data displayed in the chart above  " id="info-step-1"></i> \
+                </label> \
+                <span class="select-bar"></span> \
+            </div> \
+        </div>' 
     }
 
     // Changing is only possible with the last choosen ex so use this number

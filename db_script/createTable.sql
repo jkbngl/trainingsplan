@@ -75,3 +75,19 @@ CREATE TABLE tp_bm_it (
     created timestamp without time zone DEFAULT now(),
     changed timestamp without time zone DEFAULT now()
 );
+
+CREATE TABLE public.tp_uoms (
+    id integer NOT NULL,
+    uom_name character varying(100) NOT NULL,
+    createdby character varying(20) NOT NULL,
+    created timestamp without time zone DEFAULT CURRENT_TIMESTAMP NOT NULL,
+    changed timestamp without time zone DEFAULT CURRENT_TIMESTAMP NOT NULL
+);
+
+CREATE TABLE public.tp_tods (
+    id integer NOT NULL,
+    tod_name character varying(100) NOT NULL,
+    createdby character varying(20) NOT NULL,
+    created timestamp without time zone DEFAULT CURRENT_TIMESTAMP NOT NULL,
+    changed timestamp without time zone DEFAULT CURRENT_TIMESTAMP NOT NULL
+);

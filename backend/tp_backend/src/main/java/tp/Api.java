@@ -8,8 +8,9 @@ import java.util.HashSet;
 import java.util.Set;
 
 @ApplicationPath("/api")
-public class Api extends Application {
-
+public class Api extends Application
+{
+    // https://courses.bekwam.net/public_tutorials/bkcourse_wildfly_restful_devenv.html
     private Set<Object> singletons = new HashSet<Object>();
     private HashSet<Class<?>> classes = new HashSet<Class<?>>();
 

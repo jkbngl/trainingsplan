@@ -34,6 +34,8 @@ public class ParserIntoDB
     String username = "";
     int id = -1;
 
+    public ParserIntoDB()    {    }
+
     public ParserIntoDB(String input)
     {
         this.input = input;
@@ -874,6 +876,23 @@ public class ParserIntoDB
         }
 
         st.close();
+    }
+
+    public String parse_bm(String msg, Connection connection) throws SQLException, JSONException
+    {
+
+        /*
+        * if the bm does not yet exist: from frontend send a specific id when the bm is new and has not yet been loaded, if this is the case:
+        *   - write the bm with -1 as referenced bm in table
+        *   - return the id of the bm, that was just written in the db
+        *   - update the field base_bm with the returned id
+        * if the bm does already exist
+        *   - set the referenced bm as deprecated, i get it from the frontend, which is the current value of the div
+        *   - insert the new row with the data and the base_bm gotten from the previous row, which is get from the value of the div and I can get the base_bm from there
+        *
+        * */
+
+        return "TODO";
     }
 }
 

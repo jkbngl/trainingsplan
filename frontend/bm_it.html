@@ -208,7 +208,7 @@
     </div>
 
     <div id="container_bm">
-        <div id="additional-info_1" style="width: 100%; margin-bottom: 2%; display: flex; flex-direction: row; flex-wrap: nowrap;justify-content: space-between;">
+        <div id="additional-info_1" style="width: 100%; margin-bottom: 1%; display: flex; flex-direction: row; flex-wrap: nowrap;justify-content: space-between;">
             <div id="check-2" class="page__toggle"  style="margin-top: 10px; margin: auto;  margin-left:5%; ">
                 <label class="toggle">
                     <input id="reps_box" onchange="closeNav();" onclick="save_settings(); update_chart();"  class="toggle__input" type="checkbox" checked>
@@ -335,7 +335,7 @@
         // Create a container that will be added to the div
         var container = document.createElement("div");
 
-        container.innerHTML = '<div id="additional-info_' + num_input + '" style="width: 100%; margin-bottom: 2%; margin-top: 2%; display: flex; flex-direction: row; flex-wrap: nowrap;justify-content: space-between;"> \
+        container.innerHTML = '<div id="additional-info_' + num_input + '" style="width: 100%; margin-bottom: 1%; display: flex; flex-direction: row; flex-wrap: nowrap;justify-content: space-between;"> \
             <div id="check-2" class="page__toggle"  style="margin-top: 10px; margin: auto;  margin-left:5%; "> \
                 <label class="toggle"> \
                     <input id="reps_box" onchange="closeNav();" onclick="save_settings(); update_chart();"  class="toggle__input" type="checkbox" checked> \
@@ -370,6 +370,7 @@
                 <span class="select-bar"></span> \
             </div> \
         </div>';
+
         document.getElementById("container_bm").appendChild(container);
     }
 

@@ -83,7 +83,6 @@
                 keycloak.onAuthSuccess = function() 
                 { 
                     swal.close();
-                    // alert('Successfully authenticated'); 
                     console.log('Successfully authenticated'); 
                 
                     username = keycloak.idTokenParsed.preferred_username;
@@ -92,27 +91,7 @@
                 
                     document.getElementById("username").innerHTML = username + ' <i class="fas fa-sign-out-alt"></i>';
 
-                    var available_ex = get_available_ex();            
-                    append_combo(available_ex);
-                    data = append_preferences();
-                
-                    // Check if the preferences for the small changes to the ui are stored
-                    // TODO rename cookie variables
-                    if(!document.getElementById("simplify-ui").checked)
-                        checkCookie(); 
-
-                    if(data.check_chart_type == 'f' /* || typeof data.check_chart_type == 'undefined'*/)
-                    {
-                        chart_type = 'line';
-                        chart = create_chart(chart_type);
-                    }    
-                    else
-                    {
-                        // if undefined as above, make bar chart default and make it checked
-                        //document.getElementById("chart-type").checked = true;
-                        chart_type = 'bar';
-                        chart = create_chart(chart_type);
-                    }
+                    append_combo();
                 
                     if( isMobile.any() ) 
                         customize_mobile();
@@ -222,7 +201,7 @@
             <input type="text" id="value_value" class="input_bm" placeholder="&nbsp; Enter the value of input ..."      style="background: transparent; border-radius: 25px; border: 2px solid #00ad5f; color:#00ad5f; width: 25%; font-size: 18px;font-family: Century Gothic; margin-right:5%">
  
             <div class="select" style="border-bottom: 4px solid rgba(0,0,0, 0.12); border-right: 4px solid rgba(0,0,0, 0.12); margin-right: 5%">
-                <select id= "select" onchange="closeNav(); display_ex();" class="select-text" required >
+                <select id= "select_1" onchange="closeNav();" class="select-text" required >
                     <option value="" selected></option>
                 </select>
                 <span class="select-highlight"></span>
@@ -233,7 +212,7 @@
             </div>
 
             <div class="select" style="border-bottom: 4px solid rgba(0,0,0, 0.12); border-right: 4px solid rgba(0,0,0, 0.12); margin-right: 5%">
-                <select id= "select" onchange="closeNav(); display_ex();" class="select-text" required >
+                <select id= "select_2" onchange="closeNav();    " class="select-text" required >
                     <option value="" selected></option>
                 </select>
                 <span class="select-highlight"></span>
@@ -275,23 +254,42 @@
     {
         // Get the main_div with all the stats inside
         var main_div = document.getElementById('container_bm');
-        // Divided by 4 because there are additionally 4 divs in the main divs
-        var amount_stats = main_div.getElementsByTagName('div').length / 4;
 
-        return amount_stats;
+        // Divided by 4 because there are additionally 4 divs in the main divs
+        var amount_stats = main_div.getElementsByTagName('div').length;
+
+
+        console.log(amount_stats / 4 + " | " + amount_stats);
+
+        return amount_stats / 4;
     }
 
     // #67 Newly added func
     function save()
     {
         var amount_stats = get_amount_inputs();
+        var jsonData = {
+            stats: []
+        };
 
         for(let i = 1; i <= amount_stats; i++)
         {
-            console.log(document.getElementById("additional-info_" + i).querySelector("#reps_box").checked);
-            console.log(document.getElementById("additional-info_" + i).querySelector("#value_name").value);
-            console.log(document.getElementById("additional-info_" + i).querySelector("#value_value").value);
+            jsonData.stats.push({ 
+                "name"  : document.getElementById("additional-info_" + i).querySelector("#value_name").value,
+                "value" : document.getElementById("additional-info_" + i).querySelector("#value_value").value,
+                "uom"   : document.getElementById("additional-info_1").querySelector("#select_1").options[document.getElementById("additional-info_1").querySelector("#select_1").selectedIndex].value,
+                "tod"   : document.getElementById("additional-info_1").querySelector("#select_2").options[document.getElementById("additional-info_1").querySelector("#select_2").selectedIndex].value
+            });
         }
+
+        var xhr = new XMLHttpRequest();
+        var url = "http://jakob.ml:8080/tp_backend-1.0-SNAPSHOT/api/trainingsplan/send_bm_values";
+        xhr.open("POST", url, true);
+        xhr.setRequestHeader("Content-Type", "text/plain");
+        var string = JSON.stringify(jsonData);
+        
+        console.log(jsonData);
+        xhr.send(string);
     }
 
     function download() 
@@ -328,12 +326,75 @@
     }
 
     // #67 Newly added func
+    function append_combo(div)
+    {
+        var json_uoms = rest_uoms();
+        var json_tods = rest_tods();
+
+        var s_1 = document.getElementById("additional-info_1").querySelector("#select_1");
+        var s_2 = document.getElementById("additional-info_1").querySelector("#select_2");
+        
+
+        for(var i = 0; i < json_uoms.length; i++) 
+        {
+            console.log(json_uoms[i].uom_name);
+
+            var opt = document.createElement('option');
+            opt.value = json_uoms[i].uom_name;
+            opt.innerHTML = json_uoms[i].uom_name;
+            opt.id = 'option_element';
+            s_1.appendChild(opt);
+        }
+
+        for(var i = 0; i < json_tods.length; i++) 
+        {
+            console.log(json_tods[i].tod_name);
+            
+            var opt = document.createElement('option');
+            opt.value = json_tods[i].tod_name;
+            opt.innerHTML = json_tods[i].tod_name;
+            opt.id = 'option_element';
+            s_2.appendChild(opt);
+        }
+    }
+    
+    // #67 Newly added func
+    function rest_uoms()
+    {
+        var request = new XMLHttpRequest();
+        var url = 'http://jakob.ml:8080/tp_backend-1.0-SNAPSHOT/api/trainingsplan/get_uoms/';
+        var xmlHttp = new XMLHttpRequest();
+
+        xmlHttp.open( "GET", url, false ); // false for synchronous request
+        xmlHttp.send( null );
+        uoms = xmlHttp.responseText;
+
+        return JSON.parse(uoms);
+    }
+
+    // #67 Newly added func
+    function rest_tods()
+    {
+        var request = new XMLHttpRequest();
+        var url = 'http://jakob.ml:8080/tp_backend-1.0-SNAPSHOT/api/trainingsplan/get_tods/';
+        var xmlHttp = new XMLHttpRequest();
+
+        xmlHttp.open( "GET", url, false ); // false for synchronous request
+        xmlHttp.send( null );
+        tods = xmlHttp.responseText;
+
+        return JSON.parse(tods);
+    }
+
+    // #67 Newly added func
     function add_html_input()
     {
         //Give the new div a number which is the current amount + 1
         var num_input = get_amount_inputs() + 1;
         // Create a container that will be added to the div
         var container = document.createElement("div");
+        container.setAttribute("id", "div_to_delete");
+
 
         container.innerHTML = '<div id="additional-info_' + num_input + '" style="width: 100%; margin-bottom: 1%; display: flex; flex-direction: row; flex-wrap: nowrap;justify-content: space-between;"> \
             <div id="check-2" class="page__toggle"  style="margin-top: 10px; margin: auto;  margin-left:5%; "> \
@@ -349,7 +410,7 @@
             <input type="text" id="value_value" class="input_bm" placeholder="&nbsp; Enter the value of input ..."      style="background: transparent; border-radius: 25px; border: 2px solid #00ad5f; color:#00ad5f; width: 25%; font-size: 18px;font-family: Century Gothic; margin-right:5%"> \
             \
             <div class="select" style="border-bottom: 4px solid rgba(0,0,0, 0.12); border-right: 4px solid rgba(0,0,0, 0.12); margin-right: 5%"> \
-                <select id= "select" onchange="closeNav(); display_ex();" class="select-text" required > \
+                <select id= "select_1" onchange="closeNav();" class="select-text" required > \
                     <option value="" selected></option> \
                 </select> \
                 <span class="select-highlight"></span> \
@@ -360,7 +421,7 @@
             </div> \
              \
             <div class="select" style="border-bottom: 4px solid rgba(0,0,0, 0.12); border-right: 4px solid rgba(0,0,0, 0.12); margin-right: 5%"> \
-                <select id= "select" onchange="closeNav(); display_ex();" class="select-text" required > \
+                <select id= "select_2" onchange="closeNav();" class="select-text" required > \
                     <option value="" selected></option> \
                 </select> \
                 <span class="select-highlight"></span> \
@@ -372,6 +433,10 @@
         </div>';
 
         document.getElementById("container_bm").appendChild(container);
+
+        const node = document.getElementById("div_to_delete");
+        node.replaceWith(...node.childNodes); // or node.children, if you don't want textNodes
+
     }
 
     // Changing is only possible with the last choosen ex so use this number
@@ -493,23 +558,6 @@
         catch(err)
         {
             display_error('error', 'Oops...', 'The backend seems to be unavailable!')
-        }
-    }
-
-    function append_combo(json_base_exs)
-    {
-        console.log(json_base_exs);
-
-        var json = JSON.parse(json_base_exs);
-        var exercises = document.getElementById('select');
-
-        for(var i = 0; i < json.base_exs.length; i++) 
-        {
-            var opt = document.createElement('option');
-            opt.value = json.base_exs[i].base_ex;
-            opt.innerHTML = json.base_exs[i].name + " - " + json.base_exs[i].planname;
-            opt.id = 'option_element';
-            exercises.appendChild(opt);
         }
     }
 
@@ -1092,7 +1140,6 @@
                 },            
                 responsive: true,
                 maintainAspectRatio: false
-
             }
         });
 
@@ -1145,8 +1192,6 @@
         xhr.open("POST", url, true);
         xhr.setRequestHeader("Content-Type", "text/plain");
         var string = JSON.stringify(preferences);
-
-        console.log()
 
         xhr.send(string);
         //alert("Preferences saved!");

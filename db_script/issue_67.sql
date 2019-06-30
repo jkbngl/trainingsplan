@@ -12,6 +12,7 @@ CREATE TABLE tp_bm_it (
     changed timestamp without time zone DEFAULT now()
 );
 
+
 drop table tp_bm_it;
 
 ALTER TABLE tp_bm_it RENAME COLUMN valuename TO value_name;
@@ -26,12 +27,12 @@ select  userid_fk
       , time_of_day  
       , value 
       , note 
-      , base_bm_value 
-      , referenced_bm_value 
+      , base_bm_id 
+      , referenced_bm_id 
       , created 
       , changed 
 from    tp_bm_it p 
-where   userid_fk = 17
+--where   userid_fk = 17
 ;
 
 select * from tp_user;
@@ -58,4 +59,54 @@ select  distinct base_bm_id
 from    tp_bm_it p 
 where   userid_fk = 15
 --and base_bm_value > 0
+;
+
+
+--------------------------------------------------------------------------------
+----------------------------------------------------------------------------------------------------------------------------------------------------------------
+----------------------------------------------------------------------------------------------------------------------------------------------------------------
+--------------------------------------------------------------------------------
+
+
+
+
+
+CREATE TABLE tp_uoms (
+    id SERIAL NOT NULL PRIMARY KEY,
+    uom_name character varying(100) NOT NULL,
+    createdby character varying(20) NOT NULL,
+    created timestamp DEFAULT CURRENT_TIMESTAMP NOT NULL,
+    changed timestamp DEFAULT CURRENT_TIMESTAMP NOT NULL
+);
+
+CREATE EXTENSION moddatetime;
+
+
+CREATE TRIGGER    tp_uoms_moddatetime
+BEFORE UPDATE ON  tp_uoms
+FOR EACH ROW
+EXECUTE PROCEDURE moddatetime (changed)
+;
+/
+
+select * from tp_uoms;
+insert into tp_uoms (uom_name, createdby) values ('kg', 'jakob.engl');
+update tp_uoms set createdby = 'test';
+update tp_uoms set createdby = 'jakob.engl';
+
+----------------------------------------------------------------------------------------------------------------------------------------------------------------
+----------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+CREATE TABLE tp_tods (
+    id SERIAL NOT NULL PRIMARY KEY,
+    tod_name character varying(100) NOT NULL,
+    createdby character varying(20) NOT NULL,
+    created timestamp DEFAULT CURRENT_TIMESTAMP NOT NULL,
+    changed timestamp DEFAULT CURRENT_TIMESTAMP NOT NULL
+);
+
+CREATE TRIGGER    tp_tods_moddatetime
+BEFORE UPDATE ON  tp_tods
+FOR EACH ROW
+EXECUTE PROCEDURE moddatetime (changed)
 ;

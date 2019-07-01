@@ -187,7 +187,7 @@
     </div>
 
     <div id="container_bm">
-        <div id="additional-info_1" style="width: 100%; margin-bottom: 1%; display: flex; flex-direction: row; flex-wrap: nowrap;justify-content: space-between;">
+        <div id="additional-info_1" style="width: 100%; margin-bottom: 1%; display: flex; flex-direction: row; flex-wrap: nowrap;justify-content: space-between;" value="defaultvaluetoignore">
             <div id="check-2" class="page__toggle"  style="margin-top: 10px; margin: auto;  margin-left:5%; ">
                 <label class="toggle">
                     <input id="reps_box" onchange="closeNav();" onclick="save_settings(); update_chart();"  class="toggle__input" type="checkbox" checked>
@@ -224,7 +224,7 @@
         </div>
     </div>
 
-    <button id="add-new-input" onclick="closeNav(); add_html_input()" class="button" style="width:20%; margin:auto; display:block;" >Add <i class="fas fa-plus-circle"></i></a>
+    <button id="add-new-input" onclick="closeNav(); add_html_input(true)" class="button" style="width:20%; margin:auto; display:block;" >Add <i class="fas fa-plus-circle"></i></a>
 
     
 </body>
@@ -277,6 +277,7 @@
             jsonData.stats.push({ 
                 "name"  : document.getElementById("additional-info_" + i).querySelector("#value_name").value,
                 "value" : document.getElementById("additional-info_" + i).querySelector("#value_value").value,
+                "id"    : document.getElementById("additional-info_" + i).getAttribute('value'),
                 "uom"   : document.getElementById("additional-info_1").querySelector("#select_1").options[document.getElementById("additional-info_1").querySelector("#select_1").selectedIndex].value,
                 "tod"   : document.getElementById("additional-info_1").querySelector("#select_2").options[document.getElementById("additional-info_1").querySelector("#select_2").selectedIndex].value
             });
@@ -387,16 +388,18 @@
     }
 
     // #67 Newly added func
-    function add_html_input()
+    function add_html_input(via_button, id, active_or_not, name, value, select_uom, select_tod)
     {
         //Give the new div a number which is the current amount + 1
         var num_input = get_amount_inputs() + 1;
         // Create a container that will be added to the div
         var container = document.createElement("div");
         container.setAttribute("id", "div_to_delete");
+        
+        if(via_button)
+            id = "defaultvaluetoignore";
 
-
-        container.innerHTML = '<div id="additional-info_' + num_input + '" style="width: 100%; margin-bottom: 1%; display: flex; flex-direction: row; flex-wrap: nowrap;justify-content: space-between;"> \
+        container.innerHTML = '<div id="additional-info_' + num_input + '" value="' + id + '" style="width: 100%; margin-bottom: 1%; display: flex; flex-direction: row; flex-wrap: nowrap;justify-content: space-between;"> \
             <div id="check-2" class="page__toggle"  style="margin-top: 10px; margin: auto;  margin-left:5%; "> \
                 <label class="toggle"> \
                     <input id="reps_box" onchange="closeNav();" onclick="save_settings(); update_chart();"  class="toggle__input" type="checkbox" checked> \

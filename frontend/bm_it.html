@@ -275,22 +275,31 @@
         for(let i = 1; i <= amount_stats; i++)
         {
             jsonData.stats.push({ 
-                "name"  : document.getElementById("additional-info_" + i).querySelector("#value_name").value,
-                "value" : document.getElementById("additional-info_" + i).querySelector("#value_value").value,
-                "id"    : document.getElementById("additional-info_" + i).getAttribute('value'),
-                "uom"   : document.getElementById("additional-info_1").querySelector("#select_1").options[document.getElementById("additional-info_1").querySelector("#select_1").selectedIndex].value,
-                "tod"   : document.getElementById("additional-info_1").querySelector("#select_2").options[document.getElementById("additional-info_1").querySelector("#select_2").selectedIndex].value
+                "username" : getusername(),
+                "name"     : document.getElementById("additional-info_" + i).querySelector("#value_name").value,
+                "value"    : document.getElementById("additional-info_" + i).querySelector("#value_value").value,
+                "id"       : document.getElementById("additional-info_" + i).getAttribute('value'),
+                "uom"      : document.getElementById("additional-info_1").querySelector("#select_1").options[document.getElementById("additional-info_1").querySelector("#select_1").selectedIndex].value,
+                "tod"      : document.getElementById("additional-info_1").querySelector("#select_2").options[document.getElementById("additional-info_1").querySelector("#select_2").selectedIndex].value
             });
         }
 
-        var xhr = new XMLHttpRequest();
-        var url = "http://jakob.ml:8080/tp_backend-1.0-SNAPSHOT/api/trainingsplan/send_bm_values";
-        xhr.open("POST", url, true);
-        xhr.setRequestHeader("Content-Type", "text/plain");
-        var string = JSON.stringify(jsonData);
+        if(jsonData.tod.length > 0 && jsonData.uom.length > 0)
+        {
+            var xhr = new XMLHttpRequest();
+            var url = "http://jakob.ml:8080/tp_backend-1.0-SNAPSHOT/api/trainingsplan/send_bm_values";
+            xhr.open("POST", url, true);
+            xhr.setRequestHeader("Content-Type", "text/plain");
+            var string = JSON.stringify(jsonData);
+            
+            console.log(jsonData);
+            xhr.send(string);
+        }
+        else
+        {
+            display_error('error', 'UOM and TOD have to be selected', 'dont know');
+        }
         
-        console.log(jsonData);
-        xhr.send(string);
     }
 
     function download() 
@@ -334,26 +343,27 @@
 
         var s_1 = document.getElementById(div).querySelector("#select_1");
         var s_2 = document.getElementById(div).querySelector("#select_2");
+
         
 
         for(var i = 0; i < json_uoms.length; i++) 
         {
-            console.log(json_uoms[i].uom_name);
+            console.log(json_uoms[i]);
 
             var opt = document.createElement('option');
-            opt.value = json_uoms[i].uom_name;
-            opt.innerHTML = json_uoms[i].uom_name;
+            opt.value = json_uoms[i];
+            opt.innerHTML = json_uoms[i];
             opt.id = 'option_element';
             s_1.appendChild(opt);
         }
 
         for(var i = 0; i < json_tods.length; i++) 
         {
-            console.log(json_tods[i].tod_name);
+            console.log(json_tods[i]);
             
             var opt = document.createElement('option');
-            opt.value = json_tods[i].tod_name;
-            opt.innerHTML = json_tods[i].tod_name;
+            opt.value = json_tods[i];
+            opt.innerHTML = json_tods[i];
             opt.id = 'option_element';
             s_2.appendChild(opt);
         }
@@ -370,6 +380,8 @@
         xmlHttp.send( null );
         uoms = xmlHttp.responseText;
 
+        console.log(JSON.parse(uoms));
+
         return JSON.parse(uoms);
     }
 
@@ -383,6 +395,8 @@
         xmlHttp.open( "GET", url, false ); // false for synchronous request
         xmlHttp.send( null );
         tods = xmlHttp.responseText;
+        
+        console.log(JSON.parse(tods));
 
         return JSON.parse(tods);
     }

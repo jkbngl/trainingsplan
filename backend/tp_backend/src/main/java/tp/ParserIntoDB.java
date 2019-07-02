@@ -34,6 +34,8 @@ public class ParserIntoDB
     String username = "";
     int id = -1;
 
+    public ParserIntoDB()    {    }
+
     public ParserIntoDB(String input)
     {
         this.input = input;
@@ -765,7 +767,7 @@ public class ParserIntoDB
         st.close();
     }
 
-    private void set_exercise_deleted_by_id(int id, Connection connection) throws SQLException, NumberFormatException, JSONException
+    private void set_exercise_deleted_by_id(int id, Connection connection) throws SQLException, NumberFormatException
     {
         PreparedStatement st = connection.prepareStatement("update tp_exercise set deprecated = 2, changed = current_timestamp where id = (?)");
 
@@ -874,6 +876,100 @@ public class ParserIntoDB
         }
 
         st.close();
+    }
+
+    public int parse_bm(String msg, Connection connection) throws SQLException, JSONException
+    {
+
+        /*
+        * if the bm does not yet exist: from frontend send a specific id when the bm is new and has not yet been loaded, if this is the case:
+        *   - write the bm with -1 as referenced bm in table
+        *   - return the id of the bm, that was just written in the db
+        *   - update the field base_bm with the returned id
+        * if the bm does already exist
+        *   - set the referenced bm as deprecated, i get it from the frontend, which is the current value of the div
+        *   - insert the new row with the data and the base_bm gotten from the previous row, which is get from the value of the div and I can get the base_bm from there
+        *
+        */
+
+        // Normal updated id
+        int id = -1;
+        // Used when a new id is added
+        int base_id = -1;
+        // TODO: Have to check if needed
+        int referenced_id = -1;
+
+        JSONObject jsonObject = new JSONObject(msg);
+
+        System.out.println(bm_does_already_exist(connection, jsonObject.getJSONArray("stats").getJSONObject(0).getString("username")
+                                                           , jsonObject.getJSONArray("stats").getJSONObject(0).getString("name")
+                                                           , jsonObject.getJSONArray("stats").getJSONObject(0).getString("uom")
+                                                           , jsonObject.getJSONArray("stats").getJSONObject(0).getString("tod")));
+
+        /*
+        if(!bm_does_already_exist(connection, jsonObject.getString("username"), jsonObject.getString("name"), jsonObject.getString("uom"), jsonObject.getString("tod")))
+        {
+            // Value names have to be unique
+            // TODO define if unique per name and username or unique per name + tod and + uom and username
+            return -1;
+        }
+        else
+        {
+            if(jsonObject.getString("id").equalsIgnoreCase("defaultvaluetoignore"))
+            {
+                // insert the new bm with no ids only values
+                insert_new_bm(jsonObject);
+                // Get the id of the last added stat
+                base_id  = get_id_of_new_added_bm(jsonObject);
+                set_base_bm_of_new_added_bm(jsonObject, base_id );
+
+                return id;
+            }
+            else
+            {
+                set_old_bm_as_deprecated(jsonObject.getString("id"));
+                insert_new_bm();
+                base_id  = get_id_of_new_added_bm(jsonObject);
+                set_base_bm_of_new_added_bm(jsonObject.getString("id"));
+                set_referenced_bm_of_new_added_bm(jsonObject.getString("id"));
+            }
+        }
+
+         */
+
+        return 0;
+    }
+
+    public boolean bm_does_already_exist(Connection connection, String username, String bm_name, String uom, String tod) throws SQLException
+    {
+        int id = -1;
+        PreparedStatement st = connection.prepareStatement("select  b.id " +
+                                                            "from    tp_bm_it b " +
+                                                            "join    tp_user u on b.userid_fk = u.id " +
+                                                            "where   u.username = ? " +
+                                                            "and     b.value_name = ? " +
+                                                            "and     b.uom = ? " +
+                                                            "and     b.time_of_day = ? ");
+
+        st.setString(1, username);
+        st.setString(2, bm_name);
+        st.setString(3, uom);
+        st.setString(4, tod);
+
+        ResultSet rs = st.executeQuery();
+
+        while(rs.next())
+        {
+            id = Integer.parseInt(rs.getString(1)) > 0 ? Integer.parseInt(rs.getString(1)) : -1;
+        }
+
+        rs.close();
+        st.close();
+
+        if(id != -1)
+            return true;
+        else
+            return false;
     }
 }
 

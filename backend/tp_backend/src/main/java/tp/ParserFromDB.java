@@ -7,6 +7,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 
 import org.json.JSONException;
+import org.json.JSONArray;
 import org.json.JSONObject;
 
 
@@ -583,5 +584,149 @@ public class ParserFromDB
         System.out.println(json.toString());
 
         return json.toString();
+    }
+
+    public static String get_bm_values(int user_id, Connection connection) throws SQLException, JSONException
+    {
+        JSONArray array = new JSONArray();
+
+        String query = "select  distinct on (base_bm_id) base_bm_id "
+                     + "      , userid_fk "
+                     + "      , value_name "
+                     + "      , uom "
+                     + "      , time_of_day  "
+                     + "      , value "
+                     + "      , note "
+                     + "      , referenced_bm_id "
+                     + "      , created "
+                     + "      , changed "
+                     + "from    tp_bm_it "
+                     + "where   userid_fk = ? "
+                     + "and base_bm_id > 0 "
+                     + ";";
+
+        PreparedStatement pstmt = connection.prepareStatement(query);
+        pstmt.setInt(1, user_id);
+        ResultSet resultset = pstmt.executeQuery();
+
+        while (resultset.next())
+        {
+            JSONObject json = new JSONObject();
+
+            System.out.println(resultset.getString(3));
+
+            json.put ("user_id", user_id);
+            json.put ("base_bm_value", resultset.getString(1));
+            json.put ("value_name", resultset.getString(3));
+            json.put ("uom", resultset.getString(4));
+            json.put ("time_of_day", resultset.getString(5));
+            json.put ("value", resultset.getString(6));
+            json.put ("note", resultset.getString(7));
+            json.put ("referenced_bm_value", resultset.getString(8));
+            json.put ("created", resultset.getString(9));
+            json.put ("changed", resultset.getString(10));
+
+            array.put(json);
+        }
+
+        System.out.println(array);
+
+        return array.toString();
+    }
+
+    public static String get_historical_bm_values(int user_id, int base_bm_id, Connection connection) throws SQLException, JSONException
+    {
+        JSONArray array = new JSONArray();
+
+        String query = "select  id " +
+                "             , base_bm_id"
+                     + "      , userid_fk "
+                     + "      , value_name "
+                     + "      , uom "
+                     + "      , time_of_day "
+                     + "      , value "
+                     + "      , note "
+                     + "      , referenced_bm_id "
+                     + "      , created "
+                     + "      , changed "
+                     + "  from    tp_bm_it p "
+                     + "  where   userid_fk = ? "
+                     + "  and     base_bm_id = ? or referenced_bm_id = ? "
+                     + ";";
+
+
+
+        PreparedStatement pstmt = connection.prepareStatement(query);
+        pstmt.setInt(1, user_id);
+        pstmt.setInt(2, base_bm_id);
+        pstmt.setInt(3, base_bm_id);
+
+        ResultSet resultset = pstmt.executeQuery();
+
+        while (resultset.next())
+        {
+            JSONObject json = new JSONObject();
+
+            System.out.println(resultset.getString(3));
+
+            json.put ("id", resultset.getString(1));
+            json.put ("base_bm_id", resultset.getString(2));
+            json.put ("userid_fk", resultset.getString(3));
+            json.put ("value_name", resultset.getString(4));
+            json.put ("uom", resultset.getString(5));
+            json.put ("time_of_day", resultset.getString(6));
+            json.put ("value", resultset.getString(7));
+            json.put ("note", resultset.getString(8));
+            json.put ("referenced_bm_id", resultset.getString(9));
+            json.put ("created", resultset.getString(10));
+            json.put ("changed", resultset.getString(11));
+
+            array.put(json);
+        }
+
+        System.out.println(array);
+
+        return array.toString();
+    }
+
+    public static String get_tods(Connection connection) throws SQLException, JSONException
+    {
+        JSONArray array = new JSONArray();
+
+        String query = "select  tod_name"
+                     + "  from  tp_tods p";
+
+
+        PreparedStatement pstmt = connection.prepareStatement(query);
+        ResultSet resultset = pstmt.executeQuery();
+
+        while (resultset.next())
+        {
+            array.put(resultset.getString(1));
+        }
+
+        System.out.println(array);
+
+        return array.toString();
+    }
+
+    public static String get_uoms(Connection connection) throws SQLException, JSONException
+    {
+        JSONArray array = new JSONArray();
+
+        String query = "select  uom_name"
+                     + "  from  tp_uoms p";
+
+        PreparedStatement pstmt = connection.prepareStatement(query);
+        ResultSet resultset = pstmt.executeQuery();
+
+        while (resultset.next())
+        {
+            array.put(resultset.getString(1));
+        }
+
+        System.out.println(array);
+
+        return array.toString();
     }
 }

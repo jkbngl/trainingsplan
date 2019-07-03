@@ -16,7 +16,7 @@ CREATE TABLE tp_bm_it (
 drop table tp_bm_it;
 
 ALTER TABLE tp_bm_it RENAME COLUMN valuename TO value_name;
-ALTER TABLE tp_bm_it RENAME COLUMN timeofday TO time_of_day;
+ALTER TABLE tp_bm_it RENAME COLUMN time_of_day TO tod;
 ALTER TABLE tp_bm_it RENAME COLUMN base_bm_value TO base_bm_id;
 ALTER TABLE tp_bm_it RENAME COLUMN referenced_bm_value TO referenced_bm_id;
 
@@ -31,6 +31,7 @@ select  userid_fk
       , referenced_bm_id 
       , created 
       , changed 
+      , id
 from    tp_bm_it p 
 --where   userid_fk = 17
 ;
@@ -94,6 +95,20 @@ insert into tp_uoms (uom_name, createdby) values ('kg', 'jakob.engl');
 update tp_uoms set createdby = 'test';
 update tp_uoms set createdby = 'jakob.engl';
 
+insert into tp_uoms (uom_name, createdby) values ('g', 'jakob.engl');
+insert into tp_uoms (uom_name, createdby) values ('dg', 'jakob.engl');
+insert into tp_uoms (uom_name, createdby) values ('kg', 'jakob.engl');
+insert into tp_uoms (uom_name, createdby) values ('lb', 'jakob.engl');
+insert into tp_uoms (uom_name, createdby) values ('mm', 'jakob.engl');
+insert into tp_uoms (uom_name, createdby) values ('cm', 'jakob.engl');
+insert into tp_uoms (uom_name, createdby) values ('m', 'jakob.engl');
+insert into tp_uoms (uom_name, createdby) values ('pound', 'jakob.engl');
+insert into tp_uoms (uom_name, createdby) values ('foot', 'jakob.engl');
+insert into tp_uoms (uom_name, createdby) values ('feed', 'jakob.engl');
+insert into tp_uoms (uom_name, createdby) values ('stone', 'jakob.engl');
+insert into tp_uoms (uom_name, createdby) values ('oz', 'jakob.engl');
+
+
 ----------------------------------------------------------------------------------------------------------------------------------------------------------------
 ----------------------------------------------------------------------------------------------------------------------------------------------------------------
 
@@ -110,3 +125,16 @@ BEFORE UPDATE ON  tp_tods
 FOR EACH ROW
 EXECUTE PROCEDURE moddatetime (changed)
 ;
+/
+
+select tod_name from tp_tods;
+
+
+insert into tp_tods (tod_name, createdby) values ('after waking up', 'jakob.engl');
+insert into tp_tods (tod_name, createdby) values ('after breakfast', 'jakob.engl');
+insert into tp_tods (tod_name, createdby) values ('after training', 'jakob.engl');
+insert into tp_tods (tod_name, createdby) values ('on empty stomach', 'jakob.engl');
+insert into tp_tods (tod_name, createdby) values ('after lunch', 'jakob.engl');
+insert into tp_tods (tod_name, createdby) values ('after dinner', 'jakob.engl');
+insert into tp_tods (tod_name, createdby) values ('after snack', 'jakob.engl');
+

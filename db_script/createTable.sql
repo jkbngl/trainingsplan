@@ -67,7 +67,7 @@ CREATE TABLE tp_bm_it (
     userid_fk integer NOT NULL,
     value_name character varying(100) NOT NULL,
     uom character varying(20) NOT NULL,
-    time_of_day character varying(20),
+    tod character varying(20),
     value integer DEFAULT 1,
     note character varying(1000),
     base_bm_id integer DEFAULT 0,

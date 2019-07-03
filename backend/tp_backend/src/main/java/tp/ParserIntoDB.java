@@ -901,41 +901,43 @@ public class ParserIntoDB
 
         JSONObject jsonObject = new JSONObject(msg);
 
-        System.out.println(bm_does_already_exist(connection, jsonObject.getJSONArray("stats").getJSONObject(0).getString("username")
-                                                           , jsonObject.getJSONArray("stats").getJSONObject(0).getString("name")
-                                                           , jsonObject.getJSONArray("stats").getJSONObject(0).getString("uom")
-                                                           , jsonObject.getJSONArray("stats").getJSONObject(0).getString("tod")));
+        String username = jsonObject.getJSONArray("stats").getJSONObject(0).getString("username");
+        String bm_name  = jsonObject.getJSONArray("stats").getJSONObject(0).getString("name");
+        String uom      = jsonObject.getJSONArray("stats").getJSONObject(0).getString("uom");
+        String tod      = jsonObject.getJSONArray("stats").getJSONObject(0).getString("tod");
+        String bm_id    = jsonObject.getJSONArray("stats").getJSONObject(0).getString("id");
+        String value    = jsonObject.getJSONArray("stats").getJSONObject(0).getString("value");
 
-        /*
-        if(!bm_does_already_exist(connection, jsonObject.getString("username"), jsonObject.getString("name"), jsonObject.getString("uom"), jsonObject.getString("tod")))
+        int user_id = getUserid(username,connection);
+
+        if(!bm_does_already_exist(connection, username, bm_name, uom, tod))
         {
-            // Value names have to be unique
-            // TODO define if unique per name and username or unique per name + tod and + uom and username
+            System.out.println("Same value does already exist");
             return -1;
         }
         else
         {
             if(jsonObject.getString("id").equalsIgnoreCase("defaultvaluetoignore"))
             {
-                // insert the new bm with no ids only values
-                insert_new_bm(jsonObject);
-                // Get the id of the last added stat
-                base_id  = get_id_of_new_added_bm(jsonObject);
-                set_base_bm_of_new_added_bm(jsonObject, base_id );
+                // insert the new bm with no ids only the values
+                insert_new_bm(connection, user_id, bm_name, value, uom, tod);
+                // Get the id of the last added stat, user, bm_name, uom and tod have to be unique so I can get the base ex with this values
+                base_id  = get_id_of_new_added_bm(connection, user_id, bm_name, value, uom, tod);
+                // Set the base_id of the new added id, also it is unique by this values so I can set it and be sure that I get the correct one
+                set_base_bm_of_new_added_bm(connection, base_id,user_id, bm_name, uom, tod);
 
-                return id;
+                return base_id;
             }
             else
             {
-                set_old_bm_as_deprecated(jsonObject.getString("id"));
-                insert_new_bm();
-                base_id  = get_id_of_new_added_bm(jsonObject);
-                set_base_bm_of_new_added_bm(jsonObject.getString("id"));
-                set_referenced_bm_of_new_added_bm(jsonObject.getString("id"));
+                // The bm_id is unique so I just have to set the bm with this id as deprecated which is 1
+                set_old_bm_as_deprecated(connection, bm_id);
+                // Get the base_id of the bm
+                base_id  = get_base_bm(connection, bm_id);
+                // Insert the bm with the old bm_id which I get from the post as referenced_bm and the base_id which I get from the referenced bm
+                insert_bm(connection, user_id, bm_name, value, uom, tod, bm_id, base_id);
             }
         }
-
-         */
 
         return 0;
     }

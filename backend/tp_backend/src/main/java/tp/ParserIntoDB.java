@@ -917,19 +917,26 @@ public class ParserIntoDB
         }
         else
         {
-            if(jsonObject.getString("id").equalsIgnoreCase("defaultvaluetoignore"))
+            if(bm_id.equalsIgnoreCase("defaultvaluetoignore"))
             {
                 // insert the new bm with the correct values but with no base and referenced ids this are set to -1
                 insert_bm(connection, user_id, bm_name, value, uom, tod, -1, -1);
+
+                /*
+
                 // Get the id of the last added stat, user, bm_name, uom and tod have to be unique so I can get the id of the last added bm
                 base_id = get_id_of_new_added_bm(connection, user_id, bm_name, value, uom, tod);  // TODO use max even thought that there should be only one bm
                 // Set the base_id of the new added id, also it is unique by this values so I can set it and be sure that I get the correct one
                 set_base_bm_of_new_added_bm(connection, user_id, bm_name, uom, tod, base_id);
 
                 return base_id;
+
+                */
             }
             else
             {
+                /*
+
                 referenced_id = Integer.parseInt(bm_id);
 
                 // The bm_id is unique so I just have to set the bm with this id as deprecated which is 1
@@ -938,6 +945,8 @@ public class ParserIntoDB
                 base_id  = get_base_bm(connection, bm_id);
                 // Insert the bm with the old bm_id which I get from the post as referenced_bm and the base_id which I get from the referenced bm
                 insert_bm(connection, user_id, bm_name, value, uom, tod, referenced_id, base_id);
+
+                */
             }
         }
 
@@ -971,9 +980,9 @@ public class ParserIntoDB
         st.close();
 
         if(id != -1)
-            return true;
-        else
             return false;
+        else
+            return true;
     }
 
     public static void insert_bm(Connection connection, int user_id, String bm_name, String bm_value, String uom, String tod, int referenced_id, int base_id) throws SQLException
@@ -992,7 +1001,7 @@ public class ParserIntoDB
         st.setString(5, tod);
         st.setInt(6, referenced_id);
         st.setInt(7, base_id);
-        
+
         st.executeUpdate();
         st.close();
     }

@@ -13,7 +13,11 @@ CREATE TABLE tp_bm_it (
 );
 
 
-drop table tp_bm_it;
+select * from tp_bm_it;
+
+ALTER TABLE tp_bm_it
+ADD COLUMN deprecated integer DEFAULT 0;
+
 
 ALTER TABLE tp_bm_it RENAME COLUMN valuename TO value_name;
 ALTER TABLE tp_bm_it RENAME COLUMN time_of_day TO tod;

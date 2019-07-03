@@ -62,8 +62,8 @@ CREATE TABLE public.tp_preferences (
     check_dialog_save boolean DEFAULT true NOT NULL
 );
 
-CREATE TABLE tp_bm_it (
-    id SERIAL NOT NULL PRIMARY KEY,
+CREATE TABLE public.tp_bm_it (
+    id integer NOT NULL,
     userid_fk integer NOT NULL,
     value_name character varying(100) NOT NULL,
     uom character varying(20) NOT NULL,
@@ -73,7 +73,8 @@ CREATE TABLE tp_bm_it (
     base_bm_id integer DEFAULT 0,
     referenced_bm_id integer DEFAULT 0,
     created timestamp without time zone DEFAULT now(),
-    changed timestamp without time zone DEFAULT now()
+    changed timestamp without time zone DEFAULT now(),
+    deprecated integer DEFAULT 0
 );
 
 CREATE TABLE public.tp_uoms (

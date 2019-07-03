@@ -919,23 +919,25 @@ public class ParserIntoDB
         {
             if(jsonObject.getString("id").equalsIgnoreCase("defaultvaluetoignore"))
             {
-                // insert the new bm with no ids only the values
-                insert_new_bm(connection, user_id, bm_name, value, uom, tod);
-                // Get the id of the last added stat, user, bm_name, uom and tod have to be unique so I can get the base ex with this values
-                base_id  = get_id_of_new_added_bm(connection, user_id, bm_name, value, uom, tod);
+                // insert the new bm with the correct values but with no base and referenced ids this are set to -1
+                insert_bm(connection, user_id, bm_name, value, uom, tod, -1, -1);
+                // Get the id of the last added stat, user, bm_name, uom and tod have to be unique so I can get the id of the last added bm
+                base_id = get_id_of_new_added_bm(connection, user_id, bm_name, value, uom, tod);  // TODO use max even thought that there should be only one bm
                 // Set the base_id of the new added id, also it is unique by this values so I can set it and be sure that I get the correct one
-                set_base_bm_of_new_added_bm(connection, base_id,user_id, bm_name, uom, tod);
+                set_base_bm_of_new_added_bm(connection, user_id, bm_name, uom, tod, base_id);
 
                 return base_id;
             }
             else
             {
+                referenced_id = Integer.parseInt(bm_id);
+
                 // The bm_id is unique so I just have to set the bm with this id as deprecated which is 1
                 set_old_bm_as_deprecated(connection, bm_id);
                 // Get the base_id of the bm
                 base_id  = get_base_bm(connection, bm_id);
                 // Insert the bm with the old bm_id which I get from the post as referenced_bm and the base_id which I get from the referenced bm
-                insert_bm(connection, user_id, bm_name, value, uom, tod, bm_id, base_id);
+                insert_bm(connection, user_id, bm_name, value, uom, tod, referenced_id, base_id);
             }
         }
 
@@ -948,10 +950,10 @@ public class ParserIntoDB
         PreparedStatement st = connection.prepareStatement("select  b.id " +
                                                             "from    tp_bm_it b " +
                                                             "join    tp_user u on b.userid_fk = u.id " +
-                                                            "where   u.username = ? " +
+                                                            "where   u.username   = ? " +
                                                             "and     b.value_name = ? " +
-                                                            "and     b.uom = ? " +
-                                                            "and     b.time_of_day = ? ");
+                                                            "and     b.uom        = ? " +
+                                                            "and     b.tod        = ? ");
 
         st.setString(1, username);
         st.setString(2, bm_name);
@@ -972,6 +974,27 @@ public class ParserIntoDB
             return true;
         else
             return false;
+    }
+
+    public static void insert_bm(Connection connection, int user_id, String bm_name, String bm_value, String uom, String tod, int referenced_id, int base_id) throws SQLException
+    {
+        PreparedStatement st = connection.prepareStatement("INSERT INTO tp_bm_it (userid_fk" +
+                                                                                    ", value_name" +
+                                                                                    ", value" +
+                                                                                    ", uom" +
+                                                                                    ", tod" +
+                                                                                    ", base_bm_id" +
+                                                                                    ", referenced_bm_id) VALUES ((?), (?), (?), (?), (?), (?), (?))");
+        st.setInt(1, user_id);
+        st.setString(2, bm_name);
+        st.setString(3, bm_value);
+        st.setString(4, uom);
+        st.setString(5, tod);
+        st.setInt(6, referenced_id);
+        st.setInt(7, base_id);
+        
+        st.executeUpdate();
+        st.close();
     }
 }
 

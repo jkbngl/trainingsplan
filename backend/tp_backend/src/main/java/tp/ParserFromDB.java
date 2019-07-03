@@ -594,7 +594,7 @@ public class ParserFromDB
                      + "      , userid_fk "
                      + "      , value_name "
                      + "      , uom "
-                     + "      , time_of_day  "
+                     + "      , tod  "
                      + "      , value "
                      + "      , note "
                      + "      , referenced_bm_id "
@@ -619,7 +619,7 @@ public class ParserFromDB
             json.put ("base_bm_value", resultset.getString(1));
             json.put ("value_name", resultset.getString(3));
             json.put ("uom", resultset.getString(4));
-            json.put ("time_of_day", resultset.getString(5));
+            json.put ("tod", resultset.getString(5));
             json.put ("value", resultset.getString(6));
             json.put ("note", resultset.getString(7));
             json.put ("referenced_bm_value", resultset.getString(8));
@@ -643,7 +643,7 @@ public class ParserFromDB
                      + "      , userid_fk "
                      + "      , value_name "
                      + "      , uom "
-                     + "      , time_of_day "
+                     + "      , tod "
                      + "      , value "
                      + "      , note "
                      + "      , referenced_bm_id "
@@ -674,7 +674,7 @@ public class ParserFromDB
             json.put ("userid_fk", resultset.getString(3));
             json.put ("value_name", resultset.getString(4));
             json.put ("uom", resultset.getString(5));
-            json.put ("time_of_day", resultset.getString(6));
+            json.put ("tod", resultset.getString(6));
             json.put ("value", resultset.getString(7));
             json.put ("note", resultset.getString(8));
             json.put ("referenced_bm_id", resultset.getString(9));

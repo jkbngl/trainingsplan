@@ -13,6 +13,10 @@ CREATE TABLE tp_bm_it (
 );
 
 
+ALTER TABLE tp_bm_it
+ALTER COLUMN value TYPE character varying(50);
+
+
 select * from tp_bm_it;
 
 ALTER TABLE tp_bm_it

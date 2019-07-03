@@ -68,7 +68,7 @@ CREATE TABLE public.tp_bm_it (
     value_name character varying(100) NOT NULL,
     uom character varying(20) NOT NULL,
     tod character varying(20),
-    value integer DEFAULT 1,
+    value character varying(50) DEFAULT 1,
     note character varying(1000),
     base_bm_id integer DEFAULT 0,
     referenced_bm_id integer DEFAULT 0,

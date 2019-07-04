@@ -922,16 +922,16 @@ public class ParserIntoDB
                 // insert the new bm with the correct values but with no base and referenced ids this are set to -1
                 insert_bm(connection, user_id, bm_name, value, uom, tod, -1, -1);
 
-                /*
-
                 // Get the id of the last added stat, user, bm_name, uom and tod have to be unique so I can get the id of the last added bm
-                base_id = get_id_of_new_added_bm(connection, user_id, bm_name, value, uom, tod);  // TODO use max even thought that there should be only one bm
+                base_id = get_id_of_new_added_bm(connection, user_id, bm_name, uom, tod);  // TODO use max even thought that there should be only one bm
+
                 // Set the base_id of the new added id, also it is unique by this values so I can set it and be sure that I get the correct one
-                set_base_bm_of_new_added_bm(connection, user_id, bm_name, uom, tod, base_id);
+                set_base_bm_of_new_added_bm(connection, base_id);
+
+
+                System.out.println(base_id);
 
                 return base_id;
-
-                */
             }
             else
             {
@@ -1004,6 +1004,46 @@ public class ParserIntoDB
 
         st.executeUpdate();
         st.close();
+    }
+
+    public static void set_base_bm_of_new_added_bm(Connection connection, int id) throws SQLException
+    {
+        PreparedStatement st = connection.prepareStatement("update tp_bm_it set base_bm_id = ? where id = ?");
+
+        st.setInt(1, id);
+        st.setInt(2, id);
+
+        st.executeUpdate();
+        st.close();
+    }
+
+    public int get_id_of_new_added_bm(Connection connection, int user_id, String bm_name, String uom, String tod) throws SQLException
+    {
+        int id = -1;
+
+        PreparedStatement st = connection.prepareStatement("select  max(id) " +
+                                                                "from    tp_bm_it " +
+                                                                "where   userid_fk  = ? " +
+                                                                "and     value_name = ? " +
+                                                                "and     uom        = ? " +
+                                                                "and     tod        = ? ");
+
+        st.setInt(1, user_id);
+        st.setString(2, bm_name);
+        st.setString(3, uom);
+        st.setString(4, tod);
+
+        ResultSet rs = st.executeQuery();
+
+        while(rs.next())
+        {
+            id = Integer.parseInt(rs.getString(1));
+        }
+
+        rs.close();
+        st.close();
+
+        return id;
     }
 }
 

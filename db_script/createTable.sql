@@ -66,15 +66,17 @@ CREATE TABLE public.tp_bm_it (
     id integer NOT NULL,
     userid_fk integer NOT NULL,
     value_name character varying(100) NOT NULL,
-    uom character varying(20) NOT NULL,
-    tod character varying(20),
+    uom integer NOT NULL,
+    tod integer,
     value character varying(50) DEFAULT 1,
     note character varying(1000),
     base_bm_id integer DEFAULT 0,
     referenced_bm_id integer DEFAULT 0,
     created timestamp without time zone DEFAULT now(),
     changed timestamp without time zone DEFAULT now(),
-    deprecated integer DEFAULT 0
+    deprecated integer DEFAULT 0,
+    FOREIGN KEY (tod) REFERENCES tp_tods (id),
+    FOREIGN KEY (uom) REFERENCES tp_uoms (id)
 );
 
 CREATE TABLE public.tp_uoms (

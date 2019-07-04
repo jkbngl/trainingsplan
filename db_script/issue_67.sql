@@ -1,21 +1,34 @@
-CREATE TABLE tp_bm_it (
-    id SERIAL NOT NULL PRIMARY KEY,
+CREATE TABLE public.tp_bm_it (
+    id integer NOT NULL,
     userid_fk integer NOT NULL,
     value_name character varying(100) NOT NULL,
-    uom character varying(20) NOT NULL,
-    time_of_day character varying(20),
-    value integer DEFAULT 1,
+    uom integer NOT NULL,
+    tod integer,
+    value character varying(50) DEFAULT 1,
     note character varying(1000),
-    base_bm_value integer DEFAULT 0,
-    referenced_bm_value integer DEFAULT 0,
+    base_bm_id integer DEFAULT 0,
+    referenced_bm_id integer DEFAULT 0,
     created timestamp without time zone DEFAULT now(),
-    changed timestamp without time zone DEFAULT now()
+    changed timestamp without time zone DEFAULT now(),
+    deprecated integer DEFAULT 0,
+    FOREIGN KEY (tod) REFERENCES tp_tod (id)
+    FOREIGN KEY (uom) REFERENCES tp_uom (id)
 );
 
 
 ALTER TABLE tp_bm_it
 ALTER COLUMN value TYPE character varying(50);
 
+
+select  max(id)
+from    tp_bm_it
+where   userid_fk  = ?
+and     value_name = ?
+and     uom        = ?
+and     tod        = ?
+;
+
+delete from tp_bm_it;
 
 select * from tp_bm_it;
 

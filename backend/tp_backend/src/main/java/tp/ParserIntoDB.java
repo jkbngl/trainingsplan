@@ -910,7 +910,10 @@ public class ParserIntoDB
 
         int user_id = getUserid(username,connection);
 
-        if(!bm_does_already_exist(connection, username, bm_name, uom, tod))
+        System.out.println("ID: " + bm_id);
+
+        // If the bm does not alredy exist and it is not a new one
+        if(bm_does_already_exist(connection, username, bm_name, uom, tod) && bm_id.equals("defaultvaluetoignore"))
         {
             System.out.println("Same value does already exist");
             return -1;
@@ -928,25 +931,22 @@ public class ParserIntoDB
                 // Set the base_id of the new added id, also it is unique by this values so I can set it and be sure that I get the correct one
                 set_base_bm_of_new_added_bm(connection, base_id);
 
-
-                System.out.println(base_id);
-
                 return base_id;
             }
             else
             {
-                /*
-
                 referenced_id = Integer.parseInt(bm_id);
 
                 // The bm_id is unique so I just have to set the bm with this id as deprecated which is 1
-                set_old_bm_as_deprecated(connection, bm_id);
+                set_old_bm_as_deprecated(connection, Integer.parseInt(bm_id));
+
                 // Get the base_id of the bm
-                base_id  = get_base_bm(connection, bm_id);
+                base_id  = get_base_bm(connection, Integer.parseInt(bm_id));
+
+                System.out.println("BASE_ID: " + base_id);
+
                 // Insert the bm with the old bm_id which I get from the post as referenced_bm and the base_id which I get from the referenced bm
                 insert_bm(connection, user_id, bm_name, value, uom, tod, referenced_id, base_id);
-
-                */
             }
         }
 
@@ -959,10 +959,12 @@ public class ParserIntoDB
         PreparedStatement st = connection.prepareStatement("select  b.id " +
                                                             "from    tp_bm_it b " +
                                                             "join    tp_user u on b.userid_fk = u.id " +
+                                                            "join    tp_tods tod on b.tod = tod .id " +
+                                                            "join    tp_uoms uom on b.uom = uom.id " +
                                                             "where   u.username   = ? " +
                                                             "and     b.value_name = ? " +
-                                                            "and     b.uom        = ? " +
-                                                            "and     b.tod        = ? ");
+                                                            "and     uom.uom_name   = ? " +
+                                                            "and     tod.tod_name    = ? ");
 
         st.setString(1, username);
         st.setString(2, bm_name);
@@ -980,14 +982,17 @@ public class ParserIntoDB
         st.close();
 
         if(id != -1)
-            return false;
-        else
             return true;
+        else
+            return false;
     }
 
-    public static void insert_bm(Connection connection, int user_id, String bm_name, String bm_value, String uom, String tod, int referenced_id, int base_id) throws SQLException
+    public void insert_bm(Connection connection, int user_id, String bm_name, String bm_value, String uom, String tod, int referenced_id, int base_id) throws SQLException
     {
-        PreparedStatement st = connection.prepareStatement("INSERT INTO tp_bm_it (userid_fk" +
+        int uom_id = get_uom_id_by_name(connection, uom);
+        int tod_id = get_tod_id_by_name(connection, tod);
+
+        PreparedStatement st = connection.prepareStatement("INSERT INTO tp_bm_it (userid_fk " +
                                                                                     ", value_name" +
                                                                                     ", value" +
                                                                                     ", uom" +
@@ -997,10 +1002,12 @@ public class ParserIntoDB
         st.setInt(1, user_id);
         st.setString(2, bm_name);
         st.setString(3, bm_value);
-        st.setString(4, uom);
-        st.setString(5, tod);
-        st.setInt(6, referenced_id);
-        st.setInt(7, base_id);
+        st.setInt(4, uom_id);
+        st.setInt(5, tod_id);
+        st.setInt(6, base_id);
+        st.setInt(7, referenced_id);
+
+        System.out.println(st.toString());
 
         st.executeUpdate();
         st.close();
@@ -1017,16 +1024,60 @@ public class ParserIntoDB
         st.close();
     }
 
+    public int get_uom_id_by_name(Connection connection, String uom_name) throws SQLException
+    {
+        int id = -1;
+
+        PreparedStatement st = connection.prepareStatement("select id from tp_uoms where uom_name = ?");
+
+        st.setString(1, uom_name);
+
+        ResultSet rs = st.executeQuery();
+
+        while(rs.next())
+        {
+            id = Integer.parseInt(rs.getString(1));
+        }
+
+        rs.close();
+        st.close();
+
+        return id;
+    }
+
+    public int get_tod_id_by_name(Connection connection, String tod_name) throws SQLException
+    {
+        int id = -1;
+
+        PreparedStatement st = connection.prepareStatement("select id from tp_tods where tod_name = ?");
+
+        st.setString(1, tod_name);
+
+        ResultSet rs = st.executeQuery();
+
+        while(rs.next())
+        {
+            id = Integer.parseInt(rs.getString(1));
+        }
+
+        rs.close();
+        st.close();
+
+        return id;
+    }
+
     public int get_id_of_new_added_bm(Connection connection, int user_id, String bm_name, String uom, String tod) throws SQLException
     {
         int id = -1;
 
-        PreparedStatement st = connection.prepareStatement("select  max(id) " +
-                                                                "from    tp_bm_it " +
-                                                                "where   userid_fk  = ? " +
-                                                                "and     value_name = ? " +
-                                                                "and     uom        = ? " +
-                                                                "and     tod        = ? ");
+        PreparedStatement st = connection.prepareStatement("select  max(bm.id) " +
+                                                                "from    tp_bm_it bm " +
+                                                                "join tp_tods t on bm.tod = t.id " +
+                                                                "join tp_uoms u on bm.uom = u.id " +
+                                                                "where   bm.userid_fk  = ? " +
+                                                                "and     bm.value_name = ? " +
+                                                                "and     u.uom_name = ? " +
+                                                                "and     t.tod_name = ? ");
 
         st.setInt(1, user_id);
         st.setString(2, bm_name);
@@ -1042,6 +1093,39 @@ public class ParserIntoDB
 
         rs.close();
         st.close();
+
+        return id;
+    }
+
+    public void set_old_bm_as_deprecated(Connection connection, int id) throws SQLException
+    {
+        PreparedStatement st = connection.prepareStatement("update tp_bm_it set deprecated = 1 where id = ?");
+
+        st.setInt(1, id);
+
+        st.executeUpdate();
+        st.close();
+    }
+
+    public int get_base_bm(Connection connection, int id) throws SQLException
+    {
+        System.out.println("ID IN GET_BASE_BM" + id);
+
+        PreparedStatement st = connection.prepareStatement("select base_bm_id from tp_bm_it where id = ?");
+
+        st.setInt(1, id);
+
+        ResultSet rs = st.executeQuery();
+
+        while(rs.next())
+        {
+            id = Integer.parseInt(rs.getString(1));
+        }
+
+        rs.close();
+        st.close();
+
+        System.out.println("ID IN GET_BASE_BM - AFTERWARDS" + id);
 
         return id;
     }

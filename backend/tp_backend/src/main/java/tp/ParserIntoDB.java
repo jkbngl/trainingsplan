@@ -909,6 +909,7 @@ public class ParserIntoDB
             // TODO: Have to check if needed
             int referenced_id = -1;
 
+            System.out.println("Position: " + i + " - von: " + jsonObject.getJSONArray("stats").length());
 
             String bm_name  = jsonObject.getJSONArray("stats").getJSONObject(i).getString("name");
             String uom      = jsonObject.getJSONArray("stats").getJSONObject(i).getString("uom");
@@ -928,7 +929,7 @@ public class ParserIntoDB
             if(bm_does_already_exist(connection, username, bm_name, uom, tod) && bm_id.equals("defaultvaluetoignore"))
             {
                 System.out.println("Same value does already exist");
-                return 1;
+                // return 1;
             }
             else
             {
@@ -943,7 +944,7 @@ public class ParserIntoDB
                     // Set the base_id of the new added id, also it is unique by this values so I can set it and be sure that I get the correct one
                     set_base_bm_of_new_added_bm(connection, base_id);
 
-                    return 0;
+                    // return 0;
                 }
                 else
                 {
@@ -960,7 +961,7 @@ public class ParserIntoDB
                     //if(something_has_changed(connection, user_id, bm_name, value, uom, tod, referenced_id))
                     insert_bm(connection, user_id, bm_name, value, uom, tod, referenced_id, base_id);
 
-                    return 0;
+                    // return 0;
                 }
             }
         }

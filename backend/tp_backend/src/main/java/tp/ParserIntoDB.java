@@ -892,65 +892,80 @@ public class ParserIntoDB
         *
         */
 
-        // Normal updated id
-        int id = -1;
-        // Used when a new id is added
-        int base_id = -1;
-        // TODO: Have to check if needed
-        int referenced_id = -1;
-
         JSONObject jsonObject = new JSONObject(msg);
 
+        // Get username only once, 0 can be used at it is always the same
         String username = jsonObject.getJSONArray("stats").getJSONObject(0).getString("username");
-        String bm_name  = jsonObject.getJSONArray("stats").getJSONObject(0).getString("name");
-        String uom      = jsonObject.getJSONArray("stats").getJSONObject(0).getString("uom");
-        String tod      = jsonObject.getJSONArray("stats").getJSONObject(0).getString("tod");
-        String bm_id    = jsonObject.getJSONArray("stats").getJSONObject(0).getString("id");
-        String value    = jsonObject.getJSONArray("stats").getJSONObject(0).getString("value");
-
         int user_id = getUserid(username,connection);
 
-        System.out.println("ID: " + bm_id);
+        System.out.println(jsonObject.getJSONArray("stats").length());
 
-        // If the bm does not alredy exist and it is not a new one
-        if(bm_does_already_exist(connection, username, bm_name, uom, tod) && bm_id.equals("defaultvaluetoignore"))
+        for(int i = 0; i < jsonObject.getJSONArray("stats").length(); i++)
         {
-            System.out.println("Same value does already exist");
-            return -1;
-        }
-        else
-        {
-            if(bm_id.equalsIgnoreCase("defaultvaluetoignore"))
+            // Normal updated id
+            int id = -1;
+            // Used when a new id is added
+            int base_id = -1;
+            // TODO: Have to check if needed
+            int referenced_id = -1;
+
+
+            String bm_name  = jsonObject.getJSONArray("stats").getJSONObject(i).getString("name");
+            String uom      = jsonObject.getJSONArray("stats").getJSONObject(i).getString("uom");
+            String tod      = jsonObject.getJSONArray("stats").getJSONObject(i).getString("tod");
+            String bm_id    = jsonObject.getJSONArray("stats").getJSONObject(i).getString("id");
+            String value    = jsonObject.getJSONArray("stats").getJSONObject(i).getString("value");
+
+            // TODO
+            // check_for_deleted_bms();
+
+            // TODO
+            // Loop through whole jsonobject
+            System.out.println(jsonObject.getJSONArray("stats").length());
+
+
+            // If the bm does not alredy exist and it is not a new one
+            if(bm_does_already_exist(connection, username, bm_name, uom, tod) && bm_id.equals("defaultvaluetoignore"))
             {
-                // insert the new bm with the correct values but with no base and referenced ids this are set to -1
-                insert_bm(connection, user_id, bm_name, value, uom, tod, -1, -1);
-
-                // Get the id of the last added stat, user, bm_name, uom and tod have to be unique so I can get the id of the last added bm
-                base_id = get_id_of_new_added_bm(connection, user_id, bm_name, uom, tod);  // TODO use max even thought that there should be only one bm
-
-                // Set the base_id of the new added id, also it is unique by this values so I can set it and be sure that I get the correct one
-                set_base_bm_of_new_added_bm(connection, base_id);
-
-                return base_id;
+                System.out.println("Same value does already exist");
+                return 1;
             }
             else
             {
-                referenced_id = Integer.parseInt(bm_id);
+                if(bm_id.equalsIgnoreCase("defaultvaluetoignore"))
+                {
+                    // insert the new bm with the correct values but with no base and referenced ids this are set to -1
+                    insert_bm(connection, user_id, bm_name, value, uom, tod, -1, -1);
 
-                // The bm_id is unique so I just have to set the bm with this id as deprecated which is 1
-                set_old_bm_as_deprecated(connection, Integer.parseInt(bm_id));
+                    // Get the id of the last added stat, user, bm_name, uom and tod have to be unique so I can get the id of the last added bm
+                    base_id = get_id_of_new_added_bm(connection, user_id, bm_name, uom, tod);  // TODO use max even thought that there should be only one bm
 
-                // Get the base_id of the bm
-                base_id  = get_base_bm(connection, Integer.parseInt(bm_id));
+                    // Set the base_id of the new added id, also it is unique by this values so I can set it and be sure that I get the correct one
+                    set_base_bm_of_new_added_bm(connection, base_id);
 
-                System.out.println("BASE_ID: " + base_id);
+                    return 0;
+                }
+                else
+                {
+                    referenced_id = Integer.parseInt(bm_id);
 
-                // Insert the bm with the old bm_id which I get from the post as referenced_bm and the base_id which I get from the referenced bm
-                insert_bm(connection, user_id, bm_name, value, uom, tod, referenced_id, base_id);
+                    // The bm_id is unique so I just have to set the bm with this id as deprecated which is 1
+                    set_old_bm_as_deprecated(connection, Integer.parseInt(bm_id));
+
+                    // Get the base_id of the bm
+                    base_id  = get_base_bm(connection, Integer.parseInt(bm_id));
+
+                    // Insert the bm with the old bm_id which I get from the post as referenced_bm and the base_id which I get from the referenced bm
+                    // But only if something from the value has changed, if it is still the same dont update the field
+                    //if(something_has_changed(connection, user_id, bm_name, value, uom, tod, referenced_id))
+                    insert_bm(connection, user_id, bm_name, value, uom, tod, referenced_id, base_id);
+
+                    return 0;
+                }
             }
         }
 
-        return 0;
+        return -1;
     }
 
     public boolean bm_does_already_exist(Connection connection, String username, String bm_name, String uom, String tod) throws SQLException
@@ -1109,8 +1124,6 @@ public class ParserIntoDB
 
     public int get_base_bm(Connection connection, int id) throws SQLException
     {
-        System.out.println("ID IN GET_BASE_BM" + id);
-
         PreparedStatement st = connection.prepareStatement("select base_bm_id from tp_bm_it where id = ?");
 
         st.setInt(1, id);
@@ -1124,8 +1137,6 @@ public class ParserIntoDB
 
         rs.close();
         st.close();
-
-        System.out.println("ID IN GET_BASE_BM - AFTERWARDS" + id);
 
         return id;
     }

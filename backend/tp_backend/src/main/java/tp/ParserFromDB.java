@@ -586,27 +586,36 @@ public class ParserFromDB
         return json.toString();
     }
 
-    public static String get_bm_values(int user_id, Connection connection) throws SQLException, JSONException
+    public static String get_bm_values(String username, Connection connection) throws SQLException, JSONException
     {
         JSONArray array = new JSONArray();
 
-        String query = "select  distinct on (base_bm_id) base_bm_id "
-                     + "      , userid_fk "
-                     + "      , value_name "
-                     + "      , uom "
-                     + "      , tod  "
-                     + "      , value "
-                     + "      , note "
-                     + "      , referenced_bm_id "
-                     + "      , created "
-                     + "      , changed "
-                     + "from    tp_bm_it "
-                     + "where   userid_fk = ? "
-                     + "and base_bm_id > 0 "
-                     + ";";
+        String query = "select  b.base_bm_id  newest_id " +
+                       "      , b.userid_fk   userid " +
+                       "      , b.value_name " +
+                       "      , uom.uom_name " +
+                       "      , tod.tod_name " +
+                       "      , max(b.value) " +
+                       "      , max(b.referenced_bm_id) " +
+                       "      , max(b.created) " +
+                       "      , max(b.changed)" +
+                       "      , max(b.id)" +
+                       "from    tp_bm_it b " +
+                       "join    tp_user u on u.id = b.userid_fk " +
+                       "join    tp_uoms uom on uom.id = b.uom " +
+                       "join    tp_tods tod on tod.id = b.tod " +
+                       "where   u.username = ? " +
+                       "and base_bm_id > 0 " +
+                       "group by  b.base_bm_id " +
+                       "        , b.userid_fk " +
+                       "        , u.username " +
+                       "        , b.value_name " +
+                       "        , uom.uom_name " +
+                       "        , tod.tod_name " +
+                       ";";
 
         PreparedStatement pstmt = connection.prepareStatement(query);
-        pstmt.setInt(1, user_id);
+        pstmt.setString(1, username);
         ResultSet resultset = pstmt.executeQuery();
 
         while (resultset.next())
@@ -615,16 +624,17 @@ public class ParserFromDB
 
             System.out.println(resultset.getString(3));
 
-            json.put ("user_id", user_id);
+            json.put ("username", username);
             json.put ("base_bm_value", resultset.getString(1));
             json.put ("value_name", resultset.getString(3));
             json.put ("uom", resultset.getString(4));
             json.put ("tod", resultset.getString(5));
             json.put ("value", resultset.getString(6));
-            json.put ("note", resultset.getString(7));
-            json.put ("referenced_bm_value", resultset.getString(8));
-            json.put ("created", resultset.getString(9));
-            json.put ("changed", resultset.getString(10));
+            // json.put ("note", resultset.getString(7)); // Note is not interesting at this moment
+            json.put ("referenced_bm_value", resultset.getString(7));
+            json.put ("created", resultset.getString(8));
+            json.put ("changed", resultset.getString(9));
+            json.put ("id", resultset.getString(10));
 
             array.put(json);
         }

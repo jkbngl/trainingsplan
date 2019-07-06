@@ -91,7 +91,7 @@
                 
                     document.getElementById("username").innerHTML = username + ' <i class="fas fa-sign-out-alt"></i>';
 
-                    append_combo("additional-info_1");
+                    build_page();
                 
                     if( isMobile.any() ) 
                         customize_mobile();
@@ -187,6 +187,8 @@
     </div>
 
     <div id="container_bm">
+        <!-- No longer used as one default input is loaded automatically when the user has none in the DB -->
+        <!--
         <div id="additional-info_1" style="width: 100%; margin-bottom: 1%; display: flex; flex-direction: row; flex-wrap: nowrap;justify-content: space-between;" value="defaultvaluetoignore">
             <div id="check-2" class="page__toggle"  style="margin-top: 10px; margin: auto;  margin-left:5%; ">
                 <label class="toggle">
@@ -197,8 +199,8 @@
                 </label>
             </div>
 
-            <input type="text" id="value_name"  class="input_bm" placeholder="&nbsp; Enter the name of input value ..." style="background: transparent; border-radius: 25px; border: 2px solid #00ad5f; color:#00ad5f; width: 25%; font-size: 18px;font-family: Century Gothic; margin-right:5%; margin-left:5%; ">
-            <input type="text" id="value_value" class="input_bm" placeholder="&nbsp; Enter the value of input ..."      style="background: transparent; border-radius: 25px; border: 2px solid #00ad5f; color:#00ad5f; width: 25%; font-size: 18px;font-family: Century Gothic; margin-right:5%">
+            <input type="text" id="value_name"  class="input_bm" placeholder="&nbsp; Enter the name of input value ..." style="text-align:center; background: transparent; border-radius: 25px; border: 2px solid #00ad5f; color:#00ad5f; width: 25%; font-size: 18px;font-family: Century Gothic; margin-right:5%; margin-left:5%; ">
+            <input type="text" id="value_value" class="input_bm" placeholder="&nbsp; Enter the value of input ..."      style="text-align:center; background: transparent; border-radius: 25px; border: 2px solid #00ad5f; color:#00ad5f; width: 25%; font-size: 18px;font-family: Century Gothic; margin-right:5%">
  
             <div class="select" style="border-bottom: 4px solid rgba(0,0,0, 0.12); border-right: 4px solid rgba(0,0,0, 0.12); margin-right: 5%">
                 <select id= "select_1" onchange="closeNav();" class="select-text" required >
@@ -222,6 +224,7 @@
                 <span class="select-bar"></span>
             </div>
         </div>
+        -->
     </div>
 
     <button id="add-new-input" onclick="closeNav(); add_html_input(true)" class="button" style="width:20%; margin:auto; display:block;" >Add <i class="fas fa-plus-circle"></i></a>
@@ -258,9 +261,6 @@
         // Divided by 4 because there are additionally 4 divs in the main divs
         var amount_stats = main_div.getElementsByTagName('div').length;
 
-
-        console.log(amount_stats / 4 + " | " + amount_stats);
-
         return amount_stats / 4;
     }
 
@@ -284,7 +284,7 @@
             });
         }
 
-        if(jsonData.tod.length > 0 && jsonData.uom.length > 0)
+        if(jsonData.stats[0].tod.length > 0 && jsonData.stats[0].uom.length > 0 && jsonData.stats[0].name.length > 0)
         {
             var xhr = new XMLHttpRequest();
             var url = "http://jakob.ml:8080/tp_backend-1.0-SNAPSHOT/api/trainingsplan/send_bm_values";
@@ -293,11 +293,12 @@
             var string = JSON.stringify(jsonData);
             
             console.log(jsonData);
+
             xhr.send(string);
         }
         else
         {
-            display_error('error', 'UOM and TOD have to be selected', 'dont know');
+            display_error('error', 'Name, UOM and TOD have to be selected', 'dont know');
         }
         
     }
@@ -345,11 +346,8 @@
         var s_2 = document.getElementById(div).querySelector("#select_2");
 
         
-
         for(var i = 0; i < json_uoms.length; i++) 
         {
-            console.log(json_uoms[i]);
-
             var opt = document.createElement('option');
             opt.value = json_uoms[i];
             opt.innerHTML = json_uoms[i];
@@ -358,9 +356,7 @@
         }
 
         for(var i = 0; i < json_tods.length; i++) 
-        {
-            console.log(json_tods[i]);
-            
+        {            
             var opt = document.createElement('option');
             opt.value = json_tods[i];
             opt.innerHTML = json_tods[i];
@@ -380,8 +376,6 @@
         xmlHttp.send( null );
         uoms = xmlHttp.responseText;
 
-        console.log(JSON.parse(uoms));
-
         return JSON.parse(uoms);
     }
 
@@ -396,8 +390,6 @@
         xmlHttp.send( null );
         tods = xmlHttp.responseText;
         
-        console.log(JSON.parse(tods));
-
         return JSON.parse(tods);
     }
 
@@ -413,7 +405,7 @@
         if(via_button)
             id = "defaultvaluetoignore";
 
-        container.innerHTML = '<div id="additional-info_' + num_input + '" value="' + id + '" style="width: 100%; margin-bottom: 1%; display: flex; flex-direction: row; flex-wrap: nowrap;justify-content: space-between;"> \
+        container.innerHTML = '<div id="additional-info_' + num_input + '" value="' + id + '" style="width: 100%; margin-bottom: 3%; display: flex; flex-direction: row; flex-wrap: nowrap;justify-content: space-between;"> \
             <div id="check-2" class="page__toggle"  style="margin-top: 10px; margin: auto;  margin-left:5%; "> \
                 <label class="toggle"> \
                     <input id="reps_box" onchange="closeNav();" onclick="save_settings(); update_chart();"  class="toggle__input" type="checkbox" checked> \
@@ -423,8 +415,8 @@
                 </label> \
             </div> \
             \
-            <input type="text" id="value_name"  class="input_bm" placeholder="&nbsp; Enter the name of input value ..." style="background: transparent; border-radius: 25px; border: 2px solid #00ad5f; color:#00ad5f; width: 25%; font-size: 18px;font-family: Century Gothic; margin-right:5%; margin-left:5%; "> \
-            <input type="text" id="value_value" class="input_bm" placeholder="&nbsp; Enter the value of input ..."      style="background: transparent; border-radius: 25px; border: 2px solid #00ad5f; color:#00ad5f; width: 25%; font-size: 18px;font-family: Century Gothic; margin-right:5%"> \
+            <input type="text" id="value_name"  class="input_bm" placeholder="&nbsp; Enter the name of input value ..." style="text-align:center; background: transparent; border-radius: 25px; border: 2px solid #00ad5f; color:#00ad5f; width: 25%; font-size: 18px;font-family: Century Gothic; margin-right:5%; margin-left:5%; "> \
+            <input type="text" id="value_value" class="input_bm" placeholder="&nbsp; Enter the value of input ..."      style="text-align:center; background: transparent; border-radius: 25px; border: 2px solid #00ad5f; color:#00ad5f; width: 25%; font-size: 18px;font-family: Century Gothic; margin-right:5%"> \
             \
             <div class="select" style="border-bottom: 4px solid rgba(0,0,0, 0.12); border-right: 4px solid rgba(0,0,0, 0.12); margin-right: 5%"> \
                 <select id= "select_1" onchange="closeNav();" class="select-text" required > \
@@ -456,6 +448,58 @@
 
         append_combo("additional-info_" + num_input);
 
+        if(!via_button)
+        {
+            document.getElementById("additional-info_" + num_input).querySelector("#value_name").value = name;
+            document.getElementById("additional-info_" + num_input).querySelector("#value_value").value = value;
+            document.getElementById("additional-info_" + num_input).querySelector("#select_1").value = select_uom;
+            document.getElementById("additional-info_" + num_input).querySelector("#select_2").value = select_tod;
+
+            console.log(select_tod)
+        }
+
+    }
+
+    // #67 Newly added func
+    function build_page()
+    {
+        // empty String bms which will in case there are any contain the json object with the bms in it
+        var bms = '';
+
+        bms = rest_get_bms();
+
+        if(bms.length > 0)
+        {
+            // Load his bms from the backend into the frontend
+            for(var i = 0; i < bms.length; i ++)
+            {
+                // TODO load from cookies if active or not
+
+                add_html_input(false, bms[i].id, true, bms[i].value_name, bms[i].value, bms[i].uom, bms[i].tod)
+            }
+        }
+        else
+        {
+            // Add one single new when the user has none yet
+            add_html_input(true);
+        }
+
+        // If the user has currently no bms present load one single input field and add the uoms and tods from the backend
+        // append_combo("additional-info_1");
+    }
+
+    function rest_get_bms()
+    {
+        var request = new XMLHttpRequest();
+        var url = 'http://jakob.ml:8080/tp_backend-1.0-SNAPSHOT/api/trainingsplan/get_bm_values/';
+        var xmlHttp = new XMLHttpRequest();
+
+        xmlHttp.open( "GET", url + getusername(), false ); // false for synchronous request
+        xmlHttp.send( null );
+        bms = xmlHttp.responseText;
+
+
+        return JSON.parse(bms);
     }
 
     // Changing is only possible with the last choosen ex so use this number

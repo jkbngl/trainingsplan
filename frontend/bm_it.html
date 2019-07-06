@@ -295,12 +295,96 @@
             console.log(jsonData);
 
             xhr.send(string);
+
+            checkIfDataIsLoadedIntoDB(xhr);
         }
         else
         {
             display_error('error', 'Name, UOM and TOD have to be selected', 'dont know');
         }
         
+    }
+
+    // #67 Newly added func
+    function checkIfDataIsLoadedIntoDB(xhr)
+    {
+
+        swal.fire({
+          title: 'Saving your Data...',
+          allowEscapeKey: false,
+          customClass: mobile_swal,
+          allowOutsideClick: false,
+          onOpen: () => {
+            swal.showLoading();
+          }
+        });
+
+        var counter = 0;
+        var check = function(){
+            if(xhr.status == 200){
+                console.log("POST worked, data send, reload page with new data: " + xhr.status);
+                
+                swal.fire({
+                    title: 'Your plan was saved!',
+                    type: 'success',
+                    //position: 'top-end',
+                    timer: 1000,
+                    customClass: mobile_swal,
+                    showCancelButton: false,
+                    showConfirmButton: false
+                });
+                
+                on_save();
+            }
+            else if(xhr.status != 200 && xhr.status != 0)
+            {
+                swal.fire({
+                    title: 'ERROR - ' + xhr.status + "!",
+                    type: 'error',
+                    //position: 'top-end',
+                    customClass: mobile_swal,
+                    timer: 5000,
+                    showCancelButton: false,
+                    showConfirmButton: false
+                });
+            }
+            else if(counter >= 200) // After 20 (if check wait time is still 100) seconds of waiting, stop
+            {
+                display_error("error", "Ooops...", "The backend seems to be unavailable");
+            }
+            else {
+                if(counter == 50)
+                {
+                    swal.fire({
+                      title: 'This takes longer than usual, please be patient',
+                      customClass: mobile_swal,
+                      allowEscapeKey: false,
+                      allowOutsideClick: false,
+                      onOpen: () => {
+                        swal.showLoading();
+                      }
+                    });
+                }
+
+                console.log("waiting");
+                counter++;
+                setTimeout(check, 100); // check again in a second
+            }
+        }
+        
+        // If not waiting longe than 10 seconds
+        if(counter < 100)
+            check();
+    }
+
+    // #67 Newly added func
+    function on_save()
+    {
+        var num_input = get_amount_inputs();
+
+        document.getElementById("container_bm").innerHTML = '';
+        
+        build_page();
     }
 
     function download() 
@@ -451,9 +535,17 @@
         if(!via_button)
         {
             document.getElementById("additional-info_" + num_input).querySelector("#value_name").value = name;
+            document.getElementById("additional-info_" + num_input).querySelector("#value_name").disabled = true;
+            document.getElementById("additional-info_" + num_input).querySelector("#value_name").style.color = "gray";
+
             document.getElementById("additional-info_" + num_input).querySelector("#value_value").value = value;
+
             document.getElementById("additional-info_" + num_input).querySelector("#select_1").value = select_uom;
+            //document.getElementById("additional-info_" + num_input).querySelector("#select_1").disabled = true;
+
             document.getElementById("additional-info_" + num_input).querySelector("#select_2").value = select_tod;
+            //document.getElementById("additional-info_" + num_input).querySelector("#select_2").disabled = true;
+
 
             console.log(select_tod)
         }

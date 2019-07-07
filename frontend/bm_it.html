@@ -223,8 +223,10 @@
                 </label>
                 <span class="select-bar"></span>
             </div>
+            <button class="button" ><i class='fas fa-trash'></i></button>
         </div>
         -->
+        
     </div>
 
     <button id="add-new-input" onclick="closeNav(); add_html_input(true)" class="button" style="width:20%; margin:auto; display:block;" >Add <i class="fas fa-plus-circle"></i></a>
@@ -499,8 +501,8 @@
                 </label> \
             </div> \
             \
-            <input type="text" id="value_name"  class="input_bm" placeholder="&nbsp; Enter the name of input value ..." style="text-align:center; background: transparent; border-radius: 25px; border: 2px solid #00ad5f; color:#00ad5f; width: 25%; font-size: 18px;font-family: Century Gothic; margin-right:5%; margin-left:5%; "> \
-            <input type="text" id="value_value" class="input_bm" placeholder="&nbsp; Enter the value of input ..."      style="text-align:center; background: transparent; border-radius: 25px; border: 2px solid #00ad5f; color:#00ad5f; width: 25%; font-size: 18px;font-family: Century Gothic; margin-right:5%"> \
+            <input type="text" ' + ( via_button                   ? 'autofocus' : '') + ' id="value_name"  class="input_bm" placeholder="&nbsp; Enter the name of input value ..." style="text-align:center; background: transparent; border-radius: 25px; border: 2px solid #00ad5f; color:#00ad5f; width: 25%; font-size: 18px;font-family: Century Gothic; margin-right:5%; margin-left:5%; "> \
+            <input type="text" ' + (!via_button && num_input <= 1 ? 'autofocus' : '') + ' id="value_value" class="input_bm" placeholder="&nbsp; Enter the value of input ..."      style="text-align:center; background: transparent; border-radius: 25px; border: 2px solid #00ad5f; color:#00ad5f; width: 25%; font-size: 18px;font-family: Century Gothic; margin-right:5%"> \
             \
             <div class="select" style="border-bottom: 4px solid rgba(0,0,0, 0.12); border-right: 4px solid rgba(0,0,0, 0.12); margin-right: 5%"> \
                 <select id= "select_1" onchange="closeNav();" class="select-text" required > \
@@ -523,12 +525,13 @@
                 </label> \
                 <span class="select-bar"></span> \
             </div> \
+            <button class="button" onclick="console.log(\'delete and reorder: \' + ' + num_input + ')" style="margin-right: 1%"><i class="fas fa-trash"></i></button> \
         </div>';
 
         document.getElementById("container_bm").appendChild(container);
 
         const node = document.getElementById("div_to_delete");
-        node.replaceWith(...node.childNodes); // or node.children, if you don't want textNodes
+        node.replaceWith(...node.childNodes);
 
         append_combo("additional-info_" + num_input);
 

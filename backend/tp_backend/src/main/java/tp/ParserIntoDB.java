@@ -898,8 +898,6 @@ public class ParserIntoDB
         String username = jsonObject.getJSONArray("stats").getJSONObject(0).getString("username");
         int user_id = getUserid(username,connection);
 
-        System.out.println(jsonObject.getJSONArray("stats").length());
-
         for(int i = 0; i < jsonObject.getJSONArray("stats").length(); i++)
         {
             // Normal updated id
@@ -909,26 +907,20 @@ public class ParserIntoDB
             // TODO: Have to check if needed
             int referenced_id = -1;
 
-            System.out.println("Position: " + i + " - von: " + jsonObject.getJSONArray("stats").length());
-
             String bm_name  = jsonObject.getJSONArray("stats").getJSONObject(i).getString("name");
             String uom      = jsonObject.getJSONArray("stats").getJSONObject(i).getString("uom");
             String tod      = jsonObject.getJSONArray("stats").getJSONObject(i).getString("tod");
             String bm_id    = jsonObject.getJSONArray("stats").getJSONObject(i).getString("id");
             String value    = jsonObject.getJSONArray("stats").getJSONObject(i).getString("value");
+            String note     = jsonObject.getJSONArray("stats").getJSONObject(i).getString("note");
 
             // TODO
             // check_for_deleted_bms();
 
-            // TODO
-            // Loop through whole jsonobject
-            System.out.println(jsonObject.getJSONArray("stats").length());
-
-
             // If the bm does not alredy exist and it is not a new one
             if(bm_does_already_exist(connection, username, bm_name, uom, tod) && bm_id.equals("defaultvaluetoignore"))
             {
-                System.out.println("Same value does already exist");
+                System.out.println("Same bm does already exist");
                 // return 1;
             }
             else
@@ -936,7 +928,7 @@ public class ParserIntoDB
                 if(bm_id.equalsIgnoreCase("defaultvaluetoignore"))
                 {
                     // insert the new bm with the correct values but with no base and referenced ids this are set to -1
-                    insert_bm(connection, user_id, bm_name, value, uom, tod, -1, -1);
+                    insert_bm(connection, user_id, bm_name, value, uom, tod, note, -1, -1);
 
                     // Get the id of the last added stat, user, bm_name, uom and tod have to be unique so I can get the id of the last added bm
                     base_id = get_id_of_new_added_bm(connection, user_id, bm_name, uom, tod);  // TODO use max even thought that there should be only one bm
@@ -958,8 +950,15 @@ public class ParserIntoDB
 
                     // Insert the bm with the old bm_id which I get from the post as referenced_bm and the base_id which I get from the referenced bm
                     // But only if something from the value has changed, if it is still the same dont update the field
-                    //if(something_has_changed(connection, user_id, bm_name, value, uom, tod, referenced_id))
-                    insert_bm(connection, user_id, bm_name, value, uom, tod, referenced_id, base_id);
+                    if(something_has_changed(connection, value, note, referenced_id))
+                    {
+                        System.out.println("Something has changed");
+                        insert_bm(connection, user_id, bm_name, value, uom, tod, note, referenced_id, base_id);
+                    }
+                    else
+                    {
+                        System.out.println("Nothing has changed");
+                    }
 
                     // return 0;
                 }
@@ -967,6 +966,31 @@ public class ParserIntoDB
         }
 
         return -1;
+    }
+
+    public boolean something_has_changed(Connection connection, String new_value, String new_note, int referenced_id) throws SQLException
+    {
+        String old_value = "";
+        String old_note  = "";
+        PreparedStatement st = connection.prepareStatement("select value, note from tp_bm_it where id = ?");
+
+        st.setInt(1, referenced_id);
+
+        ResultSet rs = st.executeQuery();
+
+        while(rs.next())
+        {
+            old_value = rs.getString(1);
+            old_note = rs.getString(2);
+        }
+
+        rs.close();
+        st.close();
+
+        if(new_value.equals(old_value) && new_note.equals(old_note))
+            return false;
+        else
+            return true;
     }
 
     public boolean bm_does_already_exist(Connection connection, String username, String bm_name, String uom, String tod) throws SQLException
@@ -1003,7 +1027,7 @@ public class ParserIntoDB
             return false;
     }
 
-    public void insert_bm(Connection connection, int user_id, String bm_name, String bm_value, String uom, String tod, int referenced_id, int base_id) throws SQLException
+    public void insert_bm(Connection connection, int user_id, String bm_name, String bm_value, String uom, String tod, String note, int referenced_id, int base_id) throws SQLException
     {
         int uom_id = get_uom_id_by_name(connection, uom);
         int tod_id = get_tod_id_by_name(connection, tod);
@@ -1013,17 +1037,17 @@ public class ParserIntoDB
                                                                                     ", value" +
                                                                                     ", uom" +
                                                                                     ", tod" +
+                                                                                    ", note " +
                                                                                     ", base_bm_id" +
-                                                                                    ", referenced_bm_id) VALUES ((?), (?), (?), (?), (?), (?), (?))");
+                                                                                    ", referenced_bm_id) VALUES ((?), (?), (?), (?), (?), (?), (?), (?))");
         st.setInt(1, user_id);
         st.setString(2, bm_name);
         st.setString(3, bm_value);
         st.setInt(4, uom_id);
         st.setInt(5, tod_id);
-        st.setInt(6, base_id);
-        st.setInt(7, referenced_id);
-
-        System.out.println(st.toString());
+        st.setString(6, note);
+        st.setInt(7, base_id);
+        st.setInt(8, referenced_id);
 
         st.executeUpdate();
         st.close();

@@ -618,11 +618,12 @@ public class ParserFromDB
         pstmt.setString(1, username);
         ResultSet resultset = pstmt.executeQuery();
 
+
+
+
         while (resultset.next())
         {
             JSONObject json = new JSONObject();
-
-            System.out.println(resultset.getString(3));
 
             json.put ("username", username);
             json.put ("base_bm_value", resultset.getString(1));
@@ -635,6 +636,7 @@ public class ParserFromDB
             json.put ("created", resultset.getString(8));
             json.put ("changed", resultset.getString(9));
             json.put ("id", resultset.getString(10));
+            json.put("note", get_note(connection, resultset.getString(10)));
 
             array.put(json);
         }
@@ -642,6 +644,21 @@ public class ParserFromDB
         System.out.println(array);
 
         return array.toString();
+    }
+
+    public static String get_note(Connection connection, String id) throws SQLException
+    {
+        String note_query = "select note from tp_bm_it where id = ?";
+        PreparedStatement pstmt_note = connection.prepareStatement(note_query);
+        pstmt_note.setInt(1, Integer.parseInt(id));
+
+        ResultSet resultset_note = pstmt_note.executeQuery();
+
+        while (resultset_note.next()) {
+            return resultset_note.getString(1);
+        }
+
+        return null;
     }
 
     public static String get_historical_bm_values(int user_id, int base_bm_id, Connection connection) throws SQLException, JSONException
@@ -694,7 +711,6 @@ public class ParserFromDB
             array.put(json);
         }
 
-        System.out.println(array);
 
         return array.toString();
     }
@@ -715,8 +731,6 @@ public class ParserFromDB
             array.put(resultset.getString(1));
         }
 
-        System.out.println(array);
-
         return array.toString();
     }
 
@@ -734,8 +748,6 @@ public class ParserFromDB
         {
             array.put(resultset.getString(1));
         }
-
-        System.out.println(array);
 
         return array.toString();
     }

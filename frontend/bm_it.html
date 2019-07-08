@@ -481,7 +481,7 @@
     }
 
     // #67 Newly added func
-    function add_html_input(via_button, id, active_or_not, name, value, select_uom, select_tod)
+    function add_html_input(via_button, id, active_or_not, name, value, select_uom, select_tod, note)
     {
         //Give the new div a number which is the current amount + 1
         var num_input = get_amount_inputs() + 1;
@@ -544,6 +544,7 @@
             document.getElementById("additional-info_" + num_input).querySelector("#value_name").style.color = "gray";
 
             document.getElementById("additional-info_" + num_input).querySelector("#value_value").value = value;
+            document.getElementById("additional-info_" + num_input).querySelector("#note").value = note;
 
             document.getElementById("additional-info_" + num_input).querySelector("#select_1").value = select_uom;
             //document.getElementById("additional-info_" + num_input).querySelector("#select_1").disabled = true;
@@ -604,7 +605,7 @@
             {
                 // TODO load from cookies if active or not
 
-                add_html_input(false, bms[i].id, true, bms[i].value_name, bms[i].value, bms[i].uom, bms[i].tod)
+                add_html_input(false, bms[i].id, true, bms[i].value_name, bms[i].value, bms[i].uom, bms[i].tod, bms[i].note)
             }
         }
         else

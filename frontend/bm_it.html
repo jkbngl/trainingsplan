@@ -527,7 +527,7 @@
                 </label> \
                 <span class="select-bar"></span> \
             </div> \
-            <button class="button" onclick="delete_and_reoder(' + num_input + ')" style="margin-right: 1%"><i class="fas fa-trash"></i></button> \
+            <button class="button" id="delete_button" onclick="delete_and_reoder(' + num_input + ')" style="margin-right: 1%"><i class="fas fa-trash"></i></button> \
         </div>';
 
         document.getElementById("container_bm").appendChild(container);
@@ -550,16 +550,43 @@
 
             document.getElementById("additional-info_" + num_input).querySelector("#select_2").value = select_tod;
             //document.getElementById("additional-info_" + num_input).querySelector("#select_2").disabled = true;
-
-
-            console.log(select_tod)
         }
 
     }
 
     function delete_and_reoder(num_to_delete)
     {
-        document.getElementById("additional-info_" + num_to_delete).innerHTML = '';
+        var current_active_amount = get_amount_inputs();
+        document.getElementById("additional-info_" + num_to_delete).remove();
+
+        // If the last one was deleted nothing needs to be changed
+        if(num_to_delete == current_active_amount)
+        {
+            console.log("nothing to reorder")
+        }    
+        else
+        {
+            for(var i = num_to_delete; i <= current_active_amount; i++)
+            {
+                console.log("current_active_amount: " + current_active_amount + " | num_to_delete: " + num_to_delete + " | i: " + i)
+                
+                // 1 can not be set to 0
+                if(i > 1)
+                {
+                    if(document.body.contains(document.getElementById("additional-info_" + i)))
+                    {
+                        document.getElementById("additional-info_" + i).id = "additional-info_" + (i - 1);
+                        document.getElementById("additional-info_" + (i - 1)).querySelector("#delete_button").setAttribute( "onClick","delete_and_reoder(" + (i - 1) + ");");
+                    } 
+                }       
+            }
+        }
+        
+        if(get_amount_inputs() == 0)
+        {
+            add_html_input(true);
+        }
+    
     }
 
     // #67 Newly added func

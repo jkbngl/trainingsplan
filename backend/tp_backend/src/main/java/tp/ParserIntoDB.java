@@ -914,8 +914,9 @@ public class ParserIntoDB
             String value    = jsonObject.getJSONArray("stats").getJSONObject(i).getString("value");
             String note     = jsonObject.getJSONArray("stats").getJSONObject(i).getString("note");
 
-            // TODO
-            // check_for_deleted_bms();
+            // Do it only at the first run, does not make sense to make per array as I need to check all if one bm is missing
+            if(i == 0)
+                check_for_deleted_bms(connection, jsonObject.getJSONArray("stats"));
 
             // If the bm does not alredy exist and it is not a new one
             if(bm_does_already_exist(connection, username, bm_name, uom, tod) && bm_id.equals("defaultvaluetoignore"))
@@ -1164,6 +1165,44 @@ public class ParserIntoDB
         st.close();
 
         return id;
+    }
+
+    public void check_for_deleted_bms(Connection connection, JSONArray send_bms) throws JSONException, SQLException
+    {
+        // Username and parser from db object to get his currently active bms
+        String username = send_bms.getJSONObject(0).getString("username");
+        ParserFromDB check_active_bms_checker = new ParserFromDB();
+        // Store all his active bms in a jsonarray
+        JSONArray active_bms = new JSONArray(check_active_bms_checker.get_bm_values(username, connection));
+        // Store both the send and the active bms in a arraylist
+        List<String> send_bms_list = new ArrayList<String>();
+        List<String> active_bms_list = new ArrayList<String>();
+
+        // Send both into the lists
+        for(int i = 0; i < send_bms.length(); i++)
+            send_bms_list.add(send_bms.getJSONObject(i).getString("id"));
+
+        for(int i = 0; i < active_bms.length(); i++)
+            active_bms_list.add(active_bms.getJSONObject(i).getString("id"));
+
+        // Probably not needed but does not hurt anythign
+        send_bms_list = remove_doubles(send_bms_list);
+        // Remove all from the active which where send - The ones which where not send will be deleted
+        active_bms_list.removeAll(send_bms_list);
+
+        for(int i = 0; i < active_bms_list.size(); i++)
+            set_bm_deleted(connection, Integer.parseInt(active_bms_list.get(i)));
+
+        //System.out.println("To delete:" + active_bms_list.toString());
+    }
+
+    public void set_bm_deleted(Connection connection, int id) throws SQLException
+    {
+        PreparedStatement st = connection.prepareStatement("update tp_bm_it set deprecated = 2, changed = current_timestamp where id = (?)");
+        st.setInt(1, id);
+
+        st.executeUpdate();
+        st.close();
     }
 }
 

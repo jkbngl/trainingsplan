@@ -605,7 +605,8 @@ public class ParserFromDB
                        "join    tp_uoms uom on uom.id = b.uom " +
                        "join    tp_tods tod on tod.id = b.tod " +
                        "where   u.username = ? " +
-                       "and base_bm_id > 0 " +
+                       "and base_bm_id > 0" +
+                       "and deprecated < 2 " +
                        "group by  b.base_bm_id " +
                        "        , b.userid_fk " +
                        "        , u.username " +

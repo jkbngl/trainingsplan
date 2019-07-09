@@ -618,6 +618,7 @@
         // append_combo("additional-info_1");
     }
 
+    // #67 Newly added func
     function rest_get_bms()
     {
         var request = new XMLHttpRequest();
@@ -688,26 +689,6 @@
         document.getElementById("max_rep_box").checked = false;
     }
 
-    function slider_change_w(value)
-    {
-        document.getElementById("weight-slider-button").innerHTML = "Weight Faktor: " + value + " &nbsp&nbsp&nbsp";
-    }
-
-    function slider_change_r(value)
-    {
-        document.getElementById("reps-slider-button").innerHTML = "Reps Faktor: " + value + " &nbsp";
-    }
-
-    function slider_change_s(value)
-    {
-        document.getElementById("sets-slider-button").innerHTML = "Sets Faktor: " + value + " &nbsp";
-    }
-
-    function slider_change_m(value)
-    {
-        document.getElementById("maxrep-slider-button").innerHTML = "MaxRep Faktor: " + value + " &nbsp";
-    }
-
     function check_roles(assigned_roles)
     {
         var roles = [];
@@ -731,29 +712,7 @@
         }
     }
     
-
-    function get_available_ex()
-    {
-        var request = new XMLHttpRequest();
-        var url = 'http://jakob.ml:8080/tp_backend-1.0-SNAPSHOT/api/trainingsplan/get_possible_base_exs/';
-        var username = getusername();
-
-        try
-        {
-            var xmlHttp = new XMLHttpRequest();
-
-            xmlHttp.open( "GET", url + username, false ); // false for synchronous request
-            xmlHttp.send( null );
-            available_ex = xmlHttp.responseText;
-
-            return available_ex;
-        }
-        catch(err)
-        {
-            display_error('error', 'Oops...', 'The backend seems to be unavailable!')
-        }
-    }
-
+    
     function append_preferences()
     {
         var request = new XMLHttpRequest();
@@ -1275,6 +1234,8 @@
 
     function create_chart(chart_type)
     {
+        console.log(chart_type)
+
         // Make sure it is created from a clean start - is done by clear_chart
         // clear_chart();
 

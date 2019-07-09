@@ -280,10 +280,10 @@
                 "username" : getusername(),
                 "name"     : document.getElementById("additional-info_" + i).querySelector("#value_name").value,
                 "value"    : document.getElementById("additional-info_" + i).querySelector("#value_value").value,
-                "note"    : document.getElementById("additional-info_" + i).querySelector("#note").value,
+                "note"     : document.getElementById("additional-info_" + i).querySelector("#note").value,
                 "id"       : document.getElementById("additional-info_" + i).getAttribute('value'),
-                "uom"      : document.getElementById("additional-info_1").querySelector("#select_1").options[document.getElementById("additional-info_1").querySelector("#select_1").selectedIndex].value,
-                "tod"      : document.getElementById("additional-info_1").querySelector("#select_2").options[document.getElementById("additional-info_1").querySelector("#select_2").selectedIndex].value
+                "uom"      : document.getElementById("additional-info_" + i).querySelector("#select_1").options[document.getElementById("additional-info_" + i).querySelector("#select_1").selectedIndex].value,
+                "tod"      : document.getElementById("additional-info_" + i).querySelector("#select_2").options[document.getElementById("additional-info_" + i).querySelector("#select_2").selectedIndex].value
             });
         }
 
@@ -328,7 +328,7 @@
                 console.log("POST worked, data send, reload page with new data: " + xhr.status);
                 
                 swal.fire({
-                    title: 'Your plan was saved!',
+                    title: 'Your bms were saved!',
                     type: 'success',
                     //position: 'top-end',
                     timer: 1000,

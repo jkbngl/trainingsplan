@@ -83,7 +83,7 @@
                 keycloak.onAuthSuccess = function() 
                 { 
                     swal.close();
-                    console.log('Successfully authenticated'); 
+                    console.log('Successfully authenticated');
                 
                     username = keycloak.idTokenParsed.preferred_username;
                     username = username.toLowerCase();
@@ -92,6 +92,8 @@
                     document.getElementById("username").innerHTML = username + ' <i class="fas fa-sign-out-alt"></i>';
 
                     build_page();
+                    // Shoule not be in build_page function as build page is also called on save to load new ids of bms
+                    create_chart();
                 
                     if( isMobile.any() ) 
                         customize_mobile();
@@ -229,7 +231,7 @@
         
     </div>
 
-    <button id="add-new-input" onclick="closeNav(); add_html_input(true)" class="button" style="width:20%; margin:auto; display:block;" >Add <i class="fas fa-plus-circle"></i></a>
+    <button id="add-new-input" onclick="closeNav(); add_html_input(true)" class="button" style="width:20%; margin:auto; display:block; margin-bottom: 2%" >Add <i class="fas fa-plus-circle"></i></a>
 
     
 </body>
@@ -712,7 +714,7 @@
         }
     }
     
-    
+
     function append_preferences()
     {
         var request = new XMLHttpRequest();

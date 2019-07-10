@@ -255,16 +255,16 @@ public class DBConnector
     }
 
     // http://jakob.ml:8080/tp_backend-1.0-SNAPSHOT/api/trainingsplan/get_historical_bm_values/15/1
-    @Path("get_historical_bm_values/{user_id}/{base_bm_id}")
+    @Path("get_historical_bm_values/{username}/{base_bm_id}")
     @GET
     @Produces("text/plain")
-    public String get_historical_bm_values(@PathParam("user_id") int user_id, @PathParam("base_bm_id") int base_bm_id) throws JSONException, SQLException
+    public String get_historical_bm_values(@PathParam("username") String username, @PathParam("base_bm_id") int base_bm_id) throws JSONException, SQLException
     {
         String historical_bm_values = "";
-        System.out.println("(get_historical_bm_values) - " + user_id);
+        System.out.println("(get_historical_bm_values) - " + username);
 
         ParserFromDB p = new ParserFromDB();
-        historical_bm_values = ParserFromDB.get_historical_bm_values(user_id, base_bm_id, ParserFromDB.connectToDB(p.connectionString, p.user, p.password));
+        historical_bm_values = ParserFromDB.get_historical_bm_values(username, base_bm_id, ParserFromDB.connectToDB(p.connectionString, p.user, p.password));
 
         return historical_bm_values;
     }

@@ -662,12 +662,12 @@ public class ParserFromDB
         return null;
     }
 
-    public static String get_historical_bm_values(int user_id, int base_bm_id, Connection connection) throws SQLException, JSONException
+    public static String get_historical_bm_values(String username, int base_bm_id, Connection connection) throws SQLException, JSONException
     {
         JSONArray array = new JSONArray();
 
-        String query = "select  id " +
-                "             , base_bm_id"
+        String query = "select  p.id "
+                     + "      , base_bm_id"
                      + "      , userid_fk "
                      + "      , value_name "
                      + "      , uom "
@@ -675,17 +675,18 @@ public class ParserFromDB
                      + "      , value "
                      + "      , note "
                      + "      , referenced_bm_id "
-                     + "      , created "
-                     + "      , changed "
-                     + "  from    tp_bm_it p "
-                     + "  where   userid_fk = ? "
-                     + "  and     base_bm_id = ? or referenced_bm_id = ? "
+                     + "      , p.created "
+                     + "      , p.changed "
+                     + "  from  tp_bm_it p "
+                     + "  join  tp_user u on u.id = p.userid_fk"
+                     + "  where u.username  = ? "
+                     + "  and   base_bm_id  = ? or referenced_bm_id = ? "
                      + ";";
 
 
 
         PreparedStatement pstmt = connection.prepareStatement(query);
-        pstmt.setInt(1, user_id);
+        pstmt.setString(1, username);
         pstmt.setInt(2, base_bm_id);
         pstmt.setInt(3, base_bm_id);
 

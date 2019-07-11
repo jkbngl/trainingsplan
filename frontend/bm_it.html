@@ -93,7 +93,8 @@
                 
                     document.getElementById("username").innerHTML = username + ' <i class="fas fa-sign-out-alt"></i>';
 
-                    build_page();                    
+                    build_page();           
+                             
                 
                     if( isMobile.any() ) 
                         customize_mobile();
@@ -202,11 +203,6 @@
     var active_bm = [
 
     ];
-
-    // Used to determine which color the line should have, gets set to 0 after all numbers are used and starts again at zero
-    var num_ex_color = 0;
-    // Used to get an overview how many exexercises are displayed and close or open the div in which additional info about the exercises can be get
-    var num_ex = 0;
 
     // global variable to handle the creation and destruction of chart easily
     var chart;
@@ -547,6 +543,7 @@
             }
         }
         
+        // if all were deleted add one so that anytime at least one is active
         if(get_amount_inputs() == 0)
         {
             add_html_input(true);
@@ -561,7 +558,6 @@
         var bms = '';
 
         bms = rest_get_bms();
-        chart = create_chart();
 
         if(bms.length > 0)
         {
@@ -622,9 +618,28 @@
         return history_bms;
     }
 
+    // #67 changed function
+    function clear_chart()
+    {
+        console.log(chart);
+        chart.destroy();
+        
+        chart = create_chart();
+
+        change_div(0, 0, true);
+        //active_ex_in_chart = [];
+        //num_ex = 0;
+        // console.log(num_ex);
+        return chart;
+    }
+
     // #67 Newly added func
     function update_bm_chart(bms)
     {
+        chart = create_chart();
+
+        console.log(chart.data);
+
         var values = [];
         var bm_name = '';
 
@@ -645,6 +660,7 @@
             
             if(document.getElementById("additional-info_" + (i + 1)).querySelector("#reps_box").checked)
             {
+                
                 chart.data.datasets.push({
                     data: values,
                     label: bm_name,
@@ -652,6 +668,11 @@
                     backgroundColor: border_color_array[i],
                     fill: false
                 });
+
+                chart.update();
+                
+
+                console.log(chart.data.datasets);
             }        
 
             // Clear for next bm
@@ -967,7 +988,7 @@
             num_ex_color++;
 
         // needs to be checked before numbers gets increased
-        change_div(all_ex, ex_name, false);
+        //change_div(all_ex, ex_name, false);
     
         
         // needs to be checked before numbers gets increased
@@ -1147,19 +1168,6 @@
         return parse;
     }
 
-    // #67 changed function
-    function clear_chart()
-    {
-        chart.destroy();
-        
-        chart = create_chart();
-
-        change_div(0, 0, true);
-        //active_ex_in_chart = [];
-        //num_ex = 0;
-        // console.log(num_ex);
-    }
-
     var labels = [1,2,3,4,5,6,7,8];
     var border_color_array = [ "#18AD5F" // green
                              , "#BD000A" // burning red
@@ -1234,9 +1242,14 @@
 
     function create_chart(chart_type)
     {
-        //console.log(chart_type)
+        // console.log(chart_type)
         if(typeof chart_type == 'undefined')
             chart_type = 'line';
+
+
+        console.log(chart_type);
+        console.log(labels);
+
 
         // Make sure it is created from a clean start - is done by clear_chart
         // clear_chart();
@@ -1282,7 +1295,7 @@
                             beginAtZero: true
                         }
                     }]
-                },
+                }/*,
                 tooltips: {
                     enabled: true,
                     mode: 'single',
@@ -1295,7 +1308,7 @@
                     }
                 },            
                 responsive: true,
-                maintainAspectRatio: false
+                maintainAspectRatio: false*/
             }
         });
 

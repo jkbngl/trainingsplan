@@ -1,5 +1,7 @@
-<html>
+<!DOCTYPE html>
+<html lang="de">
 <head>
+    <meta charset="utf-8"/>
     <title>trainigsplan</title>
 
     <style>
@@ -88,7 +90,7 @@
                     // alert('Successfully authenticated'); 
                     console.log('Successfully authenticated'); 
                 
-                    username = keycloak.idTokenParsed.name;
+                    username = keycloak.idTokenParsed.preferred_username;
                     username = username.toLowerCase();
                     check_roles(keycloak.realmAccess.roles);
                 

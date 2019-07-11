@@ -1,5 +1,7 @@
-<html>
+<!DOCTYPE html>
+<html lang="de">
 <head>
+    <meta charset="utf-8"/>
     <title>trainigsplan</title>
 
     <style>
@@ -91,9 +93,7 @@
                 
                     document.getElementById("username").innerHTML = username + ' <i class="fas fa-sign-out-alt"></i>';
 
-                    build_page();
-                    // Shoule not be in build_page function as build page is also called on save to load new ids of bms
-                    create_chart();
+                    build_page();                    
                 
                     if( isMobile.any() ) 
                         customize_mobile();
@@ -189,46 +189,7 @@
     </div>
 
     <div id="container_bm">
-        <!-- No longer used as one default input is loaded automatically when the user has none in the DB -->
-        <!--
-        <div id="additional-info_1" style="width: 100%; margin-bottom: 1%; display: flex; flex-direction: row; flex-wrap: nowrap;justify-content: space-between;" value="defaultvaluetoignore">
-            <div id="check-2" class="page__toggle"  style="margin-top: 10px; margin: auto;  margin-left:5%; ">
-                <label class="toggle">
-                    <input id="reps_box" onchange="closeNav();" onclick="save_settings(); update_chart();"  class="toggle__input" type="checkbox" checked>
-                    <span class="toggle__label">
-                        <span class="toggle__text">Active</span>
-                    </span>
-                </label>
-            </div>
-
-            <input type="text" id="value_name"  class="input_bm" placeholder="&nbsp; Enter the name of input value ..." style="text-align:center; background: transparent; border-radius: 25px; border: 2px solid #00ad5f; color:#00ad5f; width: 25%; font-size: 18px;font-family: Century Gothic; margin-right:5%; margin-left:5%; ">
-            <input type="text" id="value_value" class="input_bm" placeholder="&nbsp; Enter the value of input ..."      style="text-align:center; background: transparent; border-radius: 25px; border: 2px solid #00ad5f; color:#00ad5f; width: 25%; font-size: 18px;font-family: Century Gothic; margin-right:5%">
- 
-            <div class="select" style="border-bottom: 4px solid rgba(0,0,0, 0.12); border-right: 4px solid rgba(0,0,0, 0.12); margin-right: 5%">
-                <select id= "select_1" onchange="closeNav();" class="select-text" required >
-                    <option value="" selected></option>
-                </select>
-                <span class="select-highlight"></span>
-                <label id="select-text" style="font-size: 22px;" class="select-label">UOM
-                <i class="fas fa-info-circle" rel="tooltip" title="Select an exercise from this list to have the history (if existent) of your data displayed in the chart above  " id="info-step-1"></i>
-                    </label>
-                <span class="select-bar"></span>
-            </div>
-
-            <div class="select" style="border-bottom: 4px solid rgba(0,0,0, 0.12); border-right: 4px solid rgba(0,0,0, 0.12); margin-right: 5%">
-                <select id= "select_2" onchange="closeNav();    " class="select-text" required >
-                    <option value="" selected></option>
-                </select>
-                <span class="select-highlight"></span>
-                <label id="select-text" style="font-size: 22px;" class="select-label">Time of Day
-                <i class="fas fa-info-circle" rel="tooltip" title="Select an exercise from this list to have the history (if existent) of your data displayed in the chart above  " id="info-step-1"></i>
-                </label>
-                <span class="select-bar"></span>
-            </div>
-            <button class="button" ><i class='fas fa-trash'></i></button>
-        </div>
-        -->
-        
+       <!-- Here come all the dinamically created bms-->
     </div>
 
     <button id="add-new-input" onclick="closeNav(); add_html_input(true)" class="button" style="width:20%; margin:auto; display:block; margin-bottom: 2%" >Add <i class="fas fa-plus-circle"></i></a>
@@ -238,7 +199,7 @@
 
 <script>
     // Object to store data for all actively displayed data in chart
-    var active_ex_in_chart = [
+    var active_bm = [
 
     ];
 
@@ -272,6 +233,7 @@
     function save()
     {
         var amount_stats = get_amount_inputs();
+
         var jsonData = {
             stats: []
         };
@@ -307,7 +269,6 @@
         {
             display_error('error', 'Name, UOM and TOD have to be selected', 'dont know');
         }
-        
     }
 
     // #67 Newly added func
@@ -389,6 +350,7 @@
 
         document.getElementById("container_bm").innerHTML = '';
         
+        clear_chart();  
         build_page();
     }
 
@@ -599,6 +561,7 @@
         var bms = '';
 
         bms = rest_get_bms();
+        chart = create_chart();
 
         if(bms.length > 0)
         {
@@ -616,6 +579,17 @@
             add_html_input(true);
         }
 
+        var amount_bms = get_amount_inputs();
+        
+        //active_bm = [];
+
+        for(var i = 1; i <= amount_bms; i++)
+        {
+            active_bm.push(rest_get_historical_bm(document.getElementById("additional-info_" + i).getAttribute("value")));
+        }
+
+        update_bm_chart(active_bm);
+
         // If the user has currently no bms present load one single input field and add the uoms and tods from the backend
         // append_combo("additional-info_1");
     }
@@ -631,8 +605,66 @@
         xmlHttp.send( null );
         bms = xmlHttp.responseText;
 
-
         return JSON.parse(bms);
+    }
+
+    // #67 Newly added func
+    function rest_get_historical_bm(bm_id)
+    {
+        var request = new XMLHttpRequest();
+        var url = 'http://jakob.ml:8080/tp_backend-1.0-SNAPSHOT/api/trainingsplan/get_historical_bm_values/';
+        var xmlHttp = new XMLHttpRequest();
+
+        xmlHttp.open( "GET", url + getusername() + "/" + bm_id, false ); // false for synchronous request
+        xmlHttp.send( null );
+        history_bms = xmlHttp.responseText;
+
+        return history_bms;
+    }
+
+    // #67 Newly added func
+    function update_bm_chart(bms)
+    {
+        var values = [];
+        var bm_name = '';
+
+        for(var i = 0; i < bms.length; i++)
+        {
+            parsed_bm = JSON.parse(bms[i]);
+
+            for(var j = 0; j < parsed_bm.length; j++)
+            {
+                // console.log(parsed_bm[j].value_name + " | " + parsed_bm[j].value + " | " + parsed_bm.length)
+
+                values[j] = parsed_bm[j].value;
+                
+                // Once
+                if(j == 0)
+                    bm_name = parsed_bm[j].value_name
+            }
+            
+            if(document.getElementById("additional-info_" + (i + 1)).querySelector("#reps_box").checked)
+            {
+                chart.data.datasets.push({
+                    data: values,
+                    label: bm_name,
+                    borderColor: border_color_array[i],
+                    backgroundColor: border_color_array[i],
+                    fill: false
+                });
+            }        
+
+            // Clear for next bm
+            values =[];
+            bm_name = '';
+        }
+
+        
+
+        //chart.data.datasets[0].data[0] = 5
+        console.log(chart.data);
+
+        
     }
 
     // Changing is only possible with the last choosen ex so use this number
@@ -642,20 +674,15 @@
         if(num_ex > 0)
         {
             var values = [];
+            var length = get_amount_inputs();
 
-            var chart_to_change = num_ex - 1;
-           
-
-            for(var j = 0; j <= chart_to_change; j++)
+            for(var j = 0; j <= length; j++)
             {
                 var length_of_chart = chart.data.datasets[j].data.length;
                 // Get the last added exercise
-                var data = active_ex_in_chart[j];
+                var data = active_bm[j];
 
-                values = get_value(data,  document.getElementById("weight_box").checked
-                                        , document.getElementById("reps_box").checked
-                                        , document.getElementById("sets_box").checked
-                                        , document.getElementById("max_rep_box").checked);
+                values = get_value(data);
 
                 console.log(data);    
             
@@ -670,7 +697,6 @@
 
             chart.update();
         }
-        
     }
 
     function reset_settings()
@@ -876,24 +902,6 @@
         {
             // to avoid multiplying * 0
             values[i] = 1;
-
-            // Dont use else if because multiple checkboxes can be checked
-            /*if(weight && typeof(json.values[i].weight) != 'undefined' && json.values[i].weight != null && json.values[i].weight.length > 0) // FMI: .length references lengt of string not of an json array
-                if(parseFloat(json.values[i].weight.match(/[\d\.]+/)) > 0)
-                    values[i] *= parseFloat(json.values[i].weight.match(/[\d\.]+/)) * mul_weight;
-            
-            if(reps && typeof(json.values[i].reps) != 'undefined' && json.values[i].reps != null && json.values[i].reps.length > 0)
-                if(parseFloat(json.values[i].reps.match(/[\d\.]+/)) > 0)
-                    values[i] *= parseFloat(json.values[i].reps.match(/[\d\.]+/)) * mul_reps;
-            
-            if(sets && typeof(json.values[i].sets) != 'undefined' && json.values[i].sets != null && json.values[i].sets.length > 0)
-                if(parseFloat(json.values[i].sets.match(/[\d\.]+/)) > 0)
-                    values[i] *= parseFloat(json.values[i].sets.match(/[\d\.]+/)) * mul_sets;
-            
-            if(max_rep && typeof(json.values[i].max_rep) != 'undefined' && json.values[i].max_rep != null && json.values[i].max_rep.length > 0)
-                if(parseFloat(json.values[i].max_rep.match(/[\d\.]+/)) > 0)
-                    values[i] *= parseFloat(json.values[i].max_rep.match(/[\d\.]+/)) * mul_max_rep;
-            */
 
             if(weight)
                 values[i] *= json.values[i].weight * mul_weight;
@@ -1139,26 +1147,16 @@
         return parse;
     }
 
-    function clear_chart(clearSelect)
+    // #67 changed function
+    function clear_chart()
     {
-        console.log(window.bar);
-
         chart.destroy();
-
-        /*chart.reset();
-        chart.clear();
-        */
-
-        // var ctxLine = document.getElementById("line-chart").getContext("2d");
         
-        chart = create_chart(chart_type);
-        
-        if(clearSelect)
-            document.getElementById("select").selectedIndex = -1;
+        chart = create_chart();
 
         change_div(0, 0, true);
-        active_ex_in_chart = [];
-        num_ex = 0;
+        //active_ex_in_chart = [];
+        //num_ex = 0;
         // console.log(num_ex);
     }
 
@@ -1236,7 +1234,9 @@
 
     function create_chart(chart_type)
     {
-        console.log(chart_type)
+        //console.log(chart_type)
+        if(typeof chart_type == 'undefined')
+            chart_type = 'line';
 
         // Make sure it is created from a clean start - is done by clear_chart
         // clear_chart();

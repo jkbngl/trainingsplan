@@ -1,4 +1,7 @@
+<!DOCTYPE html>
+<html lang="de">
 <head>
+    <meta charset="utf-8"/>
     <style>
         td {
             /*border: 1px solid #373737;*/
@@ -159,7 +162,7 @@
             }
             catch(err)
             {
-                console.log("error");
+                console.log("error - " + err);
                 display_error("error", "Ooops...", "Error with Authentification, please try again at a later point");
                 window.stop() 
             }
@@ -435,7 +438,7 @@
             amount_plans = xmlHttp.responseText;
         }
         catch(err) {
-            console.log("error");
+            console.log("error - " + err);
             
             display_error('error', 'Oops...', 'The backend seems to be unavailable!');
         }
@@ -913,7 +916,7 @@
             empty_values = 0;
         }
         catch(err) {
-            console.log("error when sending data");
+            console.log("error when sending data - " + err);
 
             display_error('error', 'Oops...', 'Error when saving your changes, please backup the fields you changed, reload the page and try again!')
         }
@@ -1174,7 +1177,7 @@
 
             }
             catch(err) {
-                console.log("error when sending data");
+                console.log("error when sending data - " + err);
 
                 display_error('error', 'Oops...', 'Error when saving your changes, please backup the fields you changed, reload the page and try again!')
             }

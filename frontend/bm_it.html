@@ -577,7 +577,7 @@
 
         var amount_bms = get_amount_inputs();
         
-        //active_bm = [];
+        active_bm = [];
 
         for(var i = 1; i <= amount_bms; i++)
         {
@@ -626,7 +626,7 @@
         
         chart = create_chart();
 
-        change_div(0, 0, true);
+        //change_div(0, 0, true);
         //active_ex_in_chart = [];
         //num_ex = 0;
         // console.log(num_ex);
@@ -637,8 +637,6 @@
     function update_bm_chart(bms)
     {
         chart = create_chart();
-
-        console.log(chart.data);
 
         var values = [];
         var bm_name = '';
@@ -657,10 +655,11 @@
                 if(j == 0)
                     bm_name = parsed_bm[j].value_name
             }
+
+            console.log(bms);
             
             if(document.getElementById("additional-info_" + (i + 1)).querySelector("#reps_box").checked)
             {
-                
                 chart.data.datasets.push({
                     data: values,
                     label: bm_name,
@@ -670,22 +669,12 @@
                 });
 
                 chart.update();
-                
-
-                console.log(chart.data.datasets);
             }        
 
             // Clear for next bm
             values =[];
             bm_name = '';
-        }
-
-        
-
-        //chart.data.datasets[0].data[0] = 5
-        console.log(chart.data);
-
-        
+        }        
     }
 
     // Changing is only possible with the last choosen ex so use this number
@@ -1245,11 +1234,6 @@
         // console.log(chart_type)
         if(typeof chart_type == 'undefined')
             chart_type = 'line';
-
-
-        console.log(chart_type);
-        console.log(labels);
-
 
         // Make sure it is created from a clean start - is done by clear_chart
         // clear_chart();

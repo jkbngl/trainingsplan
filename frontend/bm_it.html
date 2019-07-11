@@ -622,7 +622,7 @@
     function clear_chart()
     {
         console.log(chart);
-        chart.destroy();
+        chart.reset();
         
         chart = create_chart();
 
@@ -640,23 +640,28 @@
 
         var values = [];
         var bm_name = '';
+        // If one ex active show dates of active
+        var local_labels_date = [];
+        // if multiple ex active show amount of datapoints
+        var local_labels_numbers = [];
 
         for(var i = 0; i < bms.length; i++)
         {
+            console.log(bms.length);
+
             parsed_bm = JSON.parse(bms[i]);
 
             for(var j = 0; j < parsed_bm.length; j++)
             {
-                // console.log(parsed_bm[j].value_name + " | " + parsed_bm[j].value + " | " + parsed_bm.length)
+                values[j] = parsed_bm[j].value;                
 
-                values[j] = parsed_bm[j].value;
-                
+                dateString = new Date(parsed_bm[j].created).toUTCString();
+                local_labels_date.push(dateString.split(' ').slice(1, 4).join(' '));
+
                 // Once
                 if(j == 0)
                     bm_name = parsed_bm[j].value_name
             }
-
-            console.log(bms);
             
             if(document.getElementById("additional-info_" + (i + 1)).querySelector("#reps_box").checked)
             {
@@ -668,11 +673,14 @@
                     fill: false
                 });
 
+                if(bms.length == 1)
+                    chart.data.labels = local_labels_date;
+
                 chart.update();
             }        
 
             // Clear for next bm
-            values =[];
+            values = [];
             bm_name = '';
         }        
     }

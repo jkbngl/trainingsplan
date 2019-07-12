@@ -455,7 +455,7 @@
         container.innerHTML = '<div id="additional-info_' + num_input + '" value="' + id + '" style="width: 100%; margin-bottom: 3%; display: flex; flex-direction: row; flex-wrap: nowrap;justify-content: space-between;"> \
             <div id="check-2" class="page__toggle"  style="margin-top: 10px; margin: auto;  margin-left:5%; "> \
                 <label class="toggle"> \
-                    <input id="reps_box" onchange="closeNav();" onclick="save_settings(); update_chart();"  class="toggle__input" type="checkbox" checked> \
+                    <input id="reps_box" onchange="closeNav();" onclick="set_cookie(\'active\', 90);"  class="toggle__input" type="checkbox" checked> \
                     <span class="toggle__label"> \
                         <span class="toggle__text">Active</span> \
                     </span> \
@@ -512,9 +512,25 @@
             document.getElementById("additional-info_" + num_input).querySelector("#select_2").value = select_tod;
             //document.getElementById("additional-info_" + num_input).querySelector("#select_2").disabled = true;
         }
-
     }
 
+    function set_cookie(cname, exdays) {
+        
+        var d = new Date();
+        d.setTime(d.getTime() + (exdays*24*60*60*1000));
+        var expires = "expires=" + d.toGMTString();
+        document.cookie = cname + "=" + 5 + ";" + expires + ";path=/";
+        
+        var length = get_amount_inputs();
+
+        for(var i = 0; i < length; i++)
+        {
+            document.getElementById("additional-info_" + (i + 1)).querySelector("#reps_box").checked
+            console.log(chart.data.datasets[i+1]['_meta']);
+        }
+    }
+
+    // 67 newly added function
     function delete_and_reoder(num_to_delete)
     {
         var current_active_amount = get_amount_inputs();
@@ -677,15 +693,18 @@
                 });
 
                 if(bms.length == 1)
+                {
                     chart.data.labels = local_labels_date;
+                }
                 else
                 {    
                     var max_num = Math.max.apply(Math, local_labels_numbers);
                     local_labels_numbers = [];
-                    for(var i = 1; i <= max_num; i++)
-                        local_labels_numbers.push(i);
+                    
+                    for(var k = 1; k <= max_num; k++)
+                        local_labels_numbers.push(k);
 
-                        chart.data.labels = local_labels_numbers;
+                    chart.data.labels = local_labels_numbers;
                 }
 
                 chart.update();
@@ -696,8 +715,6 @@
             values = [];
             bm_name = '';
         }
-
-        console.log();
     }
 
     // Changing is only possible with the last choosen ex so use this number

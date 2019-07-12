@@ -647,8 +647,6 @@
 
         for(var i = 0; i < bms.length; i++)
         {
-            console.log(bms.length);
-
             parsed_bm = JSON.parse(bms[i]);
 
             for(var j = 0; j < parsed_bm.length; j++)
@@ -658,9 +656,14 @@
                 dateString = new Date(parsed_bm[j].created).toUTCString();
                 local_labels_date.push(dateString.split(' ').slice(1, 4).join(' '));
 
+                console.log(parsed_bm.length);
+
                 // Once
                 if(j == 0)
+                {
                     bm_name = parsed_bm[j].value_name
+                    local_labels_numbers.push(parsed_bm.length);
+                }
             }
             
             if(document.getElementById("additional-info_" + (i + 1)).querySelector("#reps_box").checked)
@@ -675,14 +678,26 @@
 
                 if(bms.length == 1)
                     chart.data.labels = local_labels_date;
+                else
+                {    
+                    var max_num = Math.max.apply(Math, local_labels_numbers);
+                    local_labels_numbers = [];
+                    for(var i = 1; i <= max_num; i++)
+                        local_labels_numbers.push(i);
+
+                        chart.data.labels = local_labels_numbers;
+                }
 
                 chart.update();
+
             }        
 
             // Clear for next bm
             values = [];
             bm_name = '';
-        }        
+        }
+
+        console.log();
     }
 
     // Changing is only possible with the last choosen ex so use this number

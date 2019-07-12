@@ -1033,6 +1033,11 @@ public class ParserIntoDB
         int uom_id = get_uom_id_by_name(connection, uom);
         int tod_id = get_tod_id_by_name(connection, tod);
 
+        System.out.println("UOM: " + uom_id);
+        System.out.println("TOD: " + tod_id);
+        System.out.println("UOM: " + uom);
+        System.out.println("TOD: " + tod);
+
         PreparedStatement st = connection.prepareStatement("INSERT INTO tp_bm_it (userid_fk " +
                                                                                     ", value_name" +
                                                                                     ", value" +
@@ -1040,7 +1045,7 @@ public class ParserIntoDB
                                                                                     ", tod" +
                                                                                     ", note " +
                                                                                     ", base_bm_id" +
-                                                                                    ", referenced_bm_id) VALUES ((?), (?), (?), (?), (?), (?), (?), (?))");
+                                                                                    ", referenced_bm_id) VALUES ((?), (?), replace((?), ',', '.'), (?), (?), (?), (?), (?))");
         st.setInt(1, user_id);
         st.setString(2, bm_name);
         st.setString(3, bm_value);

@@ -525,8 +525,11 @@
 
         for(var i = 0; i < length; i++)
         {
-            document.getElementById("additional-info_" + (i + 1)).querySelector("#reps_box").checked
-            console.log(chart.data.datasets[i+1]['_meta']);
+            if(!document.getElementById("additional-info_" + (i + 1)).querySelector("#reps_box").checked)
+               chart.data.datasets[i]['_meta'][0].hidden = true;
+            else
+                chart.data.datasets[i]['_meta'][0].hidden = false;
+            chart.update();
         }
     }
 

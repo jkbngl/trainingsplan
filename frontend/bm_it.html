@@ -189,11 +189,13 @@
         <canvas id="line-chart" height="100"></canvas>
     </div>
 
+    <button id="add-new-input" onclick="closeNav(); add_html_input(true)" class="button" style="width:20%; margin:auto; display:block; margin-bottom: 1%" >Add <i class="fas fa-plus-circle"></i></a> </button>
+
     <div id="container_bm">
        <!-- Here come all the dinamically created bms-->
     </div>
 
-    <button id="add-new-input" onclick="closeNav(); add_html_input(true)" class="button" style="width:20%; margin:auto; display:block; margin-bottom: 2%" >Add <i class="fas fa-plus-circle"></i></a>
+    
 
     
 </body>
@@ -455,7 +457,7 @@
         container.innerHTML = '<div id="additional-info_' + num_input + '" value="' + id + '" style="width: 100%; margin-bottom: 3%; display: flex; flex-direction: row; flex-wrap: nowrap;justify-content: space-between;"> \
             <div id="check-2" class="page__toggle"  style="margin-top: 10px; margin: auto;  margin-left:5%; "> \
                 <label class="toggle"> \
-                    <input id="reps_box" onchange="closeNav();" onclick="set_cookie(\'active\', 90);"  class="toggle__input" type="checkbox" checked> \
+                    <input id="reps_box" onchange="closeNav();" onclick="set_cookie(\'active\', 90); toggle_chart_datasets();"  class="toggle__input" type="checkbox" checked> \
                     <span class="toggle__label"> \
                         <span class="toggle__text">Active</span> \
                     </span> \
@@ -514,13 +516,19 @@
         }
     }
 
+    // #67  newly added func
     function set_cookie(cname, exdays) {
         
         var d = new Date();
         d.setTime(d.getTime() + (exdays*24*60*60*1000));
         var expires = "expires=" + d.toGMTString();
-        document.cookie = cname + "=" + 5 + ";" + expires + ";path=/";
         
+        document.cookie = cname + "=" + 5 + ";" + expires + ";path=/";
+    }
+
+    // #67  newly added func
+    function toggle_chart_datasets()
+    {
         var length = get_amount_inputs();
 
         for(var i = 0; i < length; i++)
@@ -529,6 +537,7 @@
                chart.data.datasets[i]['_meta'][0].hidden = true;
             else
                 chart.data.datasets[i]['_meta'][0].hidden = false;
+            
             chart.update();
         }
     }
@@ -621,6 +630,22 @@
         bms = xmlHttp.responseText;
 
         return JSON.parse(bms);
+    }
+
+    function getCookie(cname) {
+        var name = cname + "=";
+        var decodedCookie = decodeURIComponent(document.cookie);
+        var ca = decodedCookie.split(';');
+        for(var i = 0; i < ca.length; i++) {
+            var c = ca[i];
+            while (c.charAt(0) == ' ') {
+                c = c.substring(1);
+            }
+            if (c.indexOf(name) == 0) {
+                return c.substring(name.length, c.length);
+            }
+        }
+        return "";
     }
 
     // #67 Newly added func

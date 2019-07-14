@@ -165,7 +165,7 @@
 
         <div class="page__toggle" style="margin-left: 10%; margin-top: 25%;">
             <label class="toggle">
-            <input id="chart-type" onchange="closeNav();" onclick="change_chart(); save_settings();" class="toggle__input" type="checkbox">
+            <input id="chart-type" onchange="closeNav();" onclick="update_bm_chart(get_active_bms());" class="toggle__input" type="checkbox">
             <span class="toggle__label">
                 <span class="toggle__text">Bar Chart 
                     <i class="fas fa-info-circle" rel="tooltip" title="Change between the normal line chart and the bar chart to analyze your data" id="info-step-2"></i>
@@ -210,7 +210,7 @@
     var chart;
     
     // global variable to handle the creation and destruction of different chart easily, line = default
-    var chart_type = 'line';
+    // var chart_type = 'line';
 
     // Here the class is set for the swal to use, depending on mobile or desktop, desktop leave empty - mobile is set in customize_mobile
     var mobile_swal = '';             
@@ -455,7 +455,7 @@
             id = "defaultvaluetoignore";
 
         container.innerHTML = '<div id="additional-info_' + num_input + '" value="' + id + '" style="width: 100%; margin-bottom: 3%; display: flex; flex-direction: row; flex-wrap: nowrap;justify-content: space-between;"> \
-            <div id="check-2" class="page__toggle"  style="margin-top: 10px; margin: auto;  margin-left:5%; "> \
+            <div id="check-2" class="page__toggle"  style="margin-top: 10px; margin: auto;  margin-left:1%; "> \
                 <label class="toggle"> \
                     <input id="reps_box" onchange="closeNav();" onclick="set_cookie(\'active\', 90); toggle_chart_datasets();"  class="toggle__input" type="checkbox" checked> \
                     <span class="toggle__label"> \
@@ -465,7 +465,7 @@
             </div> \
             \
             <input type="text" ' + ( via_button                   ? 'autofocus' : '') + ' id="value_name"  class="input_bm" placeholder="&nbsp; Enter the name of input value ..." style="text-align:center; background: transparent; border-radius: 25px; border: 2px solid #00ad5f; color:#00ad5f; width: 25%; font-size: 18px;font-family: Century Gothic; margin-right:2%; margin-left:2%; "> \
-            <input type="text" ' + (!via_button && num_input <= 1 ? 'autofocus' : '') + ' id="value_value" class="input_bm" placeholder="&nbsp; Value of input ..."      style="text-align:center; background: transparent; border-radius: 25px; border: 2px solid #00ad5f; color:#00ad5f; width: 15%; font-size: 18px;font-family: Century Gothic; margin-right:2%"> \
+            <input type="text" ' + (!via_button && num_input <= 1 ? 'autofocus' : '') + ' onchange="show_potential()" id="value_value" class="input_bm" placeholder="&nbsp; Value of input ..."      style="text-align:center; background: transparent; border-radius: 25px; border: 2px solid #00ad5f; color:#00ad5f; width: 15%; font-size: 18px;font-family: Century Gothic; margin-right:2%"> \
             <input type="text" id="note" class="input_bm" placeholder="&nbsp; Note ..." style="text-align:center; background: transparent; border-radius: 25px; border: 2px solid #00ad5f; color:#00ad5f; width: 25%; font-size: 18px;font-family: Century Gothic; margin-right:2%; "> \
             \
             <div class="select" style="border-bottom: 4px solid rgba(0,0,0, 0.12); border-right: 4px solid rgba(0,0,0, 0.12); margin-right: 5%"> \
@@ -514,6 +514,56 @@
             document.getElementById("additional-info_" + num_input).querySelector("#select_2").value = select_tod;
             //document.getElementById("additional-info_" + num_input).querySelector("#select_2").disabled = true;
         }
+    }
+
+    // #67 newly added func
+    function show_potential()
+    {
+        // get the send bms
+        var active_bms = get_active_bms();
+        // Amount of elements in the currentyl active bms
+        var num_last_elem;
+        // All historic values of the bm
+        var current_active_values = [];
+        
+        for(var i = 0; i < active_bms.length; i++)
+        {
+            // get the last value of the bm, the current one
+            var bm = JSON.parse(active_bms[i])
+            num_last_elem = bm.length - 1;
+
+
+            if(bm[num_last_elem].value != document.getElementById("additional-info_" + (i + 1)).querySelector("#value_value").value)
+            {
+                for(var j = 0; j < num_last_elem + 1; j++)
+                {
+                    current_active_values.push(bm[j].value);
+                }
+
+                current_active_values.push(document.getElementById("additional-info_" + (i + 1)).querySelector("#value_value").value);
+
+                console.log(current_active_values);
+
+                chart.data.datasets.push({
+                    data: current_active_values,
+                    label: 'test',
+                    borderColor: border_color_array[i],
+                    backgroundColor: border_color_array[i],
+                    borderDash: [10],
+                    fill: false
+                });
+
+                // Set the animation duration to 0 to not show that a new dataset has been added to chart 
+                var old_animation_duration = chart.options.animation.duration;
+                chart.options.animation.duration = 0;
+                chart.update();
+                // Set it back to the old value
+                chart.options.duration = old_animation_duration;
+                
+                // Clean at the end
+                current_active_values = [];
+            }
+        }    
     }
 
     // #67  newly added func
@@ -603,8 +653,20 @@
             add_html_input(true);
         }
 
+        active_bm = [];
+
+        active_bm = get_active_bms();
+
+        update_bm_chart(active_bm);
+
+        // If the user has currently no bms present load one single input field and add the uoms and tods from the backend
+        // append_combo("additional-info_1");
+    }
+
+    // #67 newly added func
+    function get_active_bms()
+    {
         var amount_bms = get_amount_inputs();
-        
         active_bm = [];
 
         for(var i = 1; i <= amount_bms; i++)
@@ -612,10 +674,7 @@
             active_bm.push(rest_get_historical_bm(document.getElementById("additional-info_" + i).getAttribute("value")));
         }
 
-        update_bm_chart(active_bm);
-
-        // If the user has currently no bms present load one single input field and add the uoms and tods from the backend
-        // append_combo("additional-info_1");
+        return active_bm;
     }
 
     // #67 Newly added func
@@ -666,9 +725,13 @@
     function clear_chart()
     {
         console.log(chart);
-        chart.reset();
+        chart.destroy();
+        //chart.reset();
         
-        chart = create_chart();
+        if(document.getElementById("chart-type").checked)
+            chart = create_chart("bar");
+        else
+            chart = create_chart('line');
 
         //change_div(0, 0, true);
         //active_ex_in_chart = [];
@@ -680,7 +743,10 @@
     // #67 Newly added func
     function update_bm_chart(bms)
     {
-        chart = create_chart();
+        if(document.getElementById("chart-type").checked)
+            chart = create_chart("bar");
+        else
+            chart = create_chart("line");
 
         var values = [];
         var bm_name = '';
@@ -700,7 +766,8 @@
                 dateString = new Date(parsed_bm[j].created).toUTCString();
                 local_labels_date.push(dateString.split(' ').slice(1, 4).join(' '));
 
-                console.log(parsed_bm.length);
+                // console.log(parsed_bm[j].uom);
+                // console.log(parsed_bm[j].tod);
 
                 // Once
                 if(j == 0)
@@ -729,8 +796,10 @@
                     var max_num = Math.max.apply(Math, local_labels_numbers);
                     local_labels_numbers = [];
                     
-                    for(var k = 1; k <= max_num; k++)
+                    // Start at 0 to have 1 extra space for potential
+                    for(var k = 0; k <= max_num; k++)
                         local_labels_numbers.push(k);
+                        
 
                     chart.data.labels = local_labels_numbers;
                 }
@@ -1237,74 +1306,14 @@
                              //, "#F9F7F3" // white 
                              ];
 
-    var ex_names = ["kniebeuge", "bankdruecken", "seitheben", "latzug"];
-
-    function get_chart_type()
-    {
-        return "line";
-    }
-
-    function change_chart()
-    {
-        // Used to change between the two chart types
-        if(document.getElementById("chart-type").checked)
-            chart_type = "bar";
-        else
-            chart_type = "line";
-
-        // TODO
-        // write function rebuild chart, that clears chart but not data array and pushes all data back into the new chart
-        /*
-            needed:
-                - values of data which where in chart
-                - name of the exercises which where in the chart
-                - the whole json object of the exercise
-
-        */
-       
-        var length = chart.data.datasets.length;
-        var ex_names = [];
-        var values = [];
-        var local_active_ex_in_chart = active_ex_in_chart;
-
-        var weight_box = document.getElementById("weight_box");
-        var reps_box = document.getElementById("reps_box");
-        var sets_box = document.getElementById("sets_box");
-        var max_rep_box = document.getElementById("max_rep_box");
-
-        // first store the needed data temporary in vars
-        for(var i = 0; i < length; i++)
-        {
-            ex_names.push(chart.data.datasets[i].label);
-            values.push(get_value(active_ex_in_chart[i], weight_box.checked, reps_box.checked, sets_box.checked, max_rep_box.checked));
-        }
-
-        // delete all the data from the chart, but dont remove selected value from the combobox
-        clear_chart(false);
-
-        // recreate the new chart type with the same data which was in the chart
-        for(var i = 0; i < length; i++)
-        {
-            console.log(values[i]);
-            console.log(ex_names[i]);
-            console.log(local_active_ex_in_chart[i]);      
-            
-            // data is pushed in this array when selecting from the combobox so needs to be done here manually
-            // needs to be done before adding data as the function needs the data
-            active_ex_in_chart.push(local_active_ex_in_chart[i]);
-            addData(values[i], ex_names[i], local_active_ex_in_chart[i]);
-           
-        } 
-    }
-
     function create_chart(chart_type)
     {
         // console.log(chart_type)
         if(typeof chart_type == 'undefined')
             chart_type = 'line';
 
-        // Make sure it is created from a clean start - is done by clear_chart
-        // clear_chart();
+
+        console.log("GOING TO CREATE - " + chart_type)
 
         var chart = new Chart(document.getElementById("line-chart"), {
             type: chart_type,
@@ -1678,46 +1687,5 @@
             setCookie("partly_factor_simplfied_ui", document.getElementById("factors-checkbox-ui").checked, 90);
         }
     }
-
-    /*
-    document.addEventListener('DOMContentLoaded', function()
-    {
-        var available_ex;
-        var check = function()
-        {
-            if(getusername().length > 0){
-                
-                available_ex = get_available_ex();            
-                append_combo(available_ex);
-                data = append_preferences();
-
-                if(data.check_chart_type == 'f')
-                {
-                    chart_type = 'line';
-                    chart = create_chart(chart_type);
-                }    
-                else
-                {
-                    chart_type = 'bar';
-                    chart = create_chart(chart_type);
-                }
-
-
-                if( isMobile.any() ) 
-                    customize_mobile();
-                else
-                    ;
-            }
-            else
-            {
-                setTimeout(check, 10); // check again in 10 ms
-            }
-        }
-        
-        check();
-
-        
-    }, false);
-    */
 </script>
 </html>

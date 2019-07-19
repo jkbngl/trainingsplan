@@ -252,7 +252,7 @@
         if(jsonData.stats[0].tod.length > 0 && jsonData.stats[0].uom.length > 0 && jsonData.stats[0].name.length > 0)
         {
             var xhr = new XMLHttpRequest();
-            var url = "http://jakob.ml:8080/tp_backend-1.0-SNAPSHOT/api/trainingsplan/send_bm_values";
+            var url = "http://jakob.ml:8080/tpbackend_1-1.0-SNAPSHOT/api/trainingsplan/send_bm_values";
             xhr.open("POST", url, true);
             xhr.setRequestHeader("Content-Type", "text/plain");
             var string = JSON.stringify(jsonData);
@@ -418,7 +418,7 @@
     function rest_uoms()
     {
         var request = new XMLHttpRequest();
-        var url = 'http://jakob.ml:8080/tp_backend-1.0-SNAPSHOT/api/trainingsplan/get_uoms/';
+        var url = 'http://jakob.ml:8080/tpbackend_1-1.0-SNAPSHOT/api/trainingsplan/get_uoms/';
         var xmlHttp = new XMLHttpRequest();
 
         xmlHttp.open( "GET", url, false ); // false for synchronous request
@@ -432,7 +432,7 @@
     function rest_tods()
     {
         var request = new XMLHttpRequest();
-        var url = 'http://jakob.ml:8080/tp_backend-1.0-SNAPSHOT/api/trainingsplan/get_tods/';
+        var url = 'http://jakob.ml:8080/tpbackend_1-1.0-SNAPSHOT/api/trainingsplan/get_tods/';
         var xmlHttp = new XMLHttpRequest();
 
         xmlHttp.open( "GET", url, false ); // false for synchronous request
@@ -443,7 +443,7 @@
     }
 
     // #67 Newly added func
-    function add_html_input(via_button, id, active_or_not, name, value, select_uom, select_tod, note)
+    function add_html_input(via_button, id, active_or_not, name, value, select_uom, select_tod, note, base_bm)
     {
         //Give the new div a number which is the current amount + 1
         var num_input = get_amount_inputs() + 1;
@@ -454,7 +454,7 @@
         if(via_button)
             id = "defaultvaluetoignore";
 
-        container.innerHTML = '<div id="additional-info_' + num_input + '" value="' + id + '" style="width: 100%; margin-bottom: 3%; display: flex; flex-direction: row; flex-wrap: nowrap;justify-content: space-between;"> \
+        container.innerHTML = '<div id="additional-info_' + num_input + '" value="' + id + '" base_bm="' + base_bm + '" style="width: 100%; margin-bottom: 3%; display: flex; flex-direction: row; flex-wrap: nowrap;justify-content: space-between;"> \
             <div id="check-2" class="page__toggle"  style="margin-top: 10px; margin: auto;  margin-left:1%; "> \
                 <label class="toggle"> \
                     <input id="reps_box" onchange="closeNav();" onclick="set_cookie(\'active\', 90); toggle_chart_datasets();"  class="toggle__input" type="checkbox" checked> \
@@ -642,9 +642,11 @@
             // Load his bms from the backend into the frontend
             for(var i = 0; i < bms.length; i ++)
             {
+
+                console.log(bms[i])
                 // TODO load from cookies if active or not
 
-                add_html_input(false, bms[i].id, true, bms[i].value_name, bms[i].value, bms[i].uom, bms[i].tod, bms[i].note)
+                add_html_input(false, bms[i].id, true, bms[i].value_name, bms[i].value, bms[i].uom, bms[i].tod, bms[i].note, bms[i].base_bm_value)
             }
         }
         else
@@ -671,7 +673,7 @@
 
         for(var i = 1; i <= amount_bms; i++)
         {
-            active_bm.push(rest_get_historical_bm(document.getElementById("additional-info_" + i).getAttribute("value")));
+            active_bm.push(rest_get_historical_bm(document.getElementById("additional-info_" + i).getAttribute("base_bm")));
         }
 
         return active_bm;
@@ -681,7 +683,7 @@
     function rest_get_bms()
     {
         var request = new XMLHttpRequest();
-        var url = 'http://jakob.ml:8080/tp_backend-1.0-SNAPSHOT/api/trainingsplan/get_bm_values/';
+        var url = 'http://jakob.ml:8080/tpbackend_1-1.0-SNAPSHOT/api/trainingsplan/get_bm_values/';
         var xmlHttp = new XMLHttpRequest();
 
         xmlHttp.open( "GET", url + getusername(), false ); // false for synchronous request
@@ -710,8 +712,10 @@
     // #67 Newly added func
     function rest_get_historical_bm(bm_id)
     {
+        console.log("mandatory param: " + bm_id)
+
         var request = new XMLHttpRequest();
-        var url = 'http://jakob.ml:8080/tp_backend-1.0-SNAPSHOT/api/trainingsplan/get_historical_bm_values/';
+        var url = 'http://jakob.ml:8080/tpbackend_1-1.0-SNAPSHOT/api/trainingsplan/get_historical_bm_values/';
         var xmlHttp = new XMLHttpRequest();
 
         xmlHttp.open( "GET", url + getusername() + "/" + bm_id, false ); // false for synchronous request
@@ -757,6 +761,8 @@
 
         for(var i = 0; i < bms.length; i++)
         {
+            console.log(bms[j])
+
             parsed_bm = JSON.parse(bms[i]);
 
             for(var j = 0; j < parsed_bm.length; j++)
@@ -772,7 +778,8 @@
                 // Once
                 if(j == 0)
                 {
-                    bm_name = parsed_bm[j].value_name
+                    bm_name = parsed_bm[j].value_name;
+                    
                     local_labels_numbers.push(parsed_bm.length);
                 }
             }
@@ -805,7 +812,6 @@
                 }
 
                 chart.update();
-
             }        
 
             // Clear for next bm
@@ -891,7 +897,7 @@
     function append_preferences()
     {
         var request = new XMLHttpRequest();
-        var url = 'http://jakob.ml:8080/tp_backend-1.0-SNAPSHOT/api/trainingsplan/get_preferences/';
+        var url = 'http://jakob.ml:8080/tpbackend_1-1.0-SNAPSHOT/api/trainingsplan/get_preferences/';
         var xmlHttp = new XMLHttpRequest();
 
         xmlHttp.open( "GET", url + getusername(), false ); // false for synchronous request
@@ -988,7 +994,7 @@
         try
         {
             var request = new XMLHttpRequest();
-            var url = 'http://jakob.ml:8080/tp_backend-1.0-SNAPSHOT/api/trainingsplan/get_stats/';
+            var url = 'http://jakob.ml:8080/tpbackend_1-1.0-SNAPSHOT/api/trainingsplan/get_stats/';
             var xmlHttp = new XMLHttpRequest();
 
             xmlHttp.open( "GET", url + value, false ); // false for synchronous request
@@ -1324,6 +1330,7 @@
                 ]
             },
             options: {
+                
                 line:{ fill: true},
                 ticks: {
                     beginAtZero: false,
@@ -1345,7 +1352,7 @@
                 },
                 legend: {
                     display: true,
-                    //position: 'bottom',
+                    onClick: (event, legendItem) => console.log(legendItem),
                     labels: {
                         fontSize: 20
                     }
@@ -1418,7 +1425,7 @@
 
         
         var xhr = new XMLHttpRequest();
-        var url = "http://jakob.ml:8080/tp_backend-1.0-SNAPSHOT/api/trainingsplan/send_preferences";
+        var url = "http://jakob.ml:8080/tpbackend_1-1.0-SNAPSHOT/api/trainingsplan/send_preferences";
         xhr.open("POST", url, true);
         xhr.setRequestHeader("Content-Type", "text/plain");
         var string = JSON.stringify(preferences);

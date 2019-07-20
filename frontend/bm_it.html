@@ -501,6 +501,8 @@
 
         if(!via_button)
         {
+            console.log("VALUE is set here: " + value)
+
             document.getElementById("additional-info_" + num_input).querySelector("#value_name").value = name;
             document.getElementById("additional-info_" + num_input).querySelector("#value_name").disabled = true;
             document.getElementById("additional-info_" + num_input).querySelector("#value_name").style.color = "gray";
@@ -525,6 +527,8 @@
         var num_last_elem;
         // All historic values of the bm
         var current_active_values = [];
+
+        console.log(active_bms.length);
         
         for(var i = 0; i < active_bms.length; i++)
         {
@@ -539,6 +543,10 @@
                 {
                     current_active_values.push(bm[j].value);
                 }
+
+                
+
+                console.log(current_active_values);
 
                 current_active_values.push(document.getElementById("additional-info_" + (i + 1)).querySelector("#value_value").value);
 
@@ -761,8 +769,6 @@
 
         for(var i = 0; i < bms.length; i++)
         {
-            console.log(bms[j])
-
             parsed_bm = JSON.parse(bms[i]);
 
             for(var j = 0; j < parsed_bm.length; j++)
@@ -779,6 +785,10 @@
                 if(j == 0)
                 {
                     bm_name = parsed_bm[j].value_name;
+                    bm_uom = parsed_bm[j].uom;
+                    bm_tod = parsed_bm[j].tod;
+
+                    bm_legend_name = bm_name + " [" + bm_uom + "]" + " - " + bm_tod;
                     
                     local_labels_numbers.push(parsed_bm.length);
                 }
@@ -788,7 +798,7 @@
             {
                 chart.data.datasets.push({
                     data: values,
-                    label: bm_name,
+                    label: bm_legend_name,
                     borderColor: border_color_array[i],
                     backgroundColor: border_color_array[i],
                     fill: false

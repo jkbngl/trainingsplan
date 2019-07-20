@@ -554,7 +554,7 @@
 
                 chart.data.datasets.push({
                     data: current_active_values,
-                    label: 'test',
+                    label: 'potential_value_not_show_in_legend',
                     borderColor: border_color_array[i],
                     backgroundColor: border_color_array[i],
                     borderDash: [10],
@@ -1364,7 +1364,11 @@
                     display: true,
                     onClick: (event, legendItem) => console.log(legendItem),
                     labels: {
-                        fontSize: 20
+                        fontSize: 20,
+                        filter: function(item, chart) {
+                            // Logic to remove a particular legend item goes here
+                            return !item.text.includes('potential_value_not_show_in_legend');
+                        }   
                     }
                 },
                 scales: {

@@ -257,8 +257,6 @@
             xhr.setRequestHeader("Content-Type", "text/plain");
             var string = JSON.stringify(jsonData);
             
-            console.log(jsonData);
-
             xhr.send(string);
 
             checkIfDataIsLoadedIntoDB(xhr);
@@ -527,8 +525,6 @@
 
         if(!via_button)
         {
-            console.log("VALUE is set here: " + value)
-
             document.getElementById("additional-info_" + num_input).querySelector("#value_name").value = name;
             document.getElementById("additional-info_" + num_input).querySelector("#value_name").disabled = true;
             document.getElementById("additional-info_" + num_input).querySelector("#value_name").style.color = "gray";
@@ -732,10 +728,42 @@
     {
         // Get the base_bm_id of the clicked bm
         var bm_id = document.getElementById("additional-info_" + num_bm).getAttribute("base_bm");
-
         var json_history_bm = JSON.parse(rest_get_historical_bm(bm_id));
+        var bm_name = document.getElementById("additional-info_" + num_bm).querySelector("#value_name").value
 
-        console.log(json_history_bm);
+
+        Swal.fire({html:  parse_base_bm(json_history_bm, bm_name), customClass: mobile_swal});
+    }
+
+    // #67 newly added func
+    function parse_base_bm(json_bm, bm_name)
+    {
+        //  to_dispay += '<font color="green">Reps: ' + json.values[i].reps + "</font><br>";
+        var to_dispay = "<h2>" + bm_name.toUpperCase() + " [" + json_bm[0].uom + "]" + " - " + json_bm[0].tod + "</h2><br><br>";
+
+        for(var i = 0; i < json_bm.length; i++)
+        {
+            var date = new Date(json_bm[i].created).toUTCString()
+            to_dispay += (i + 1) + ". Entry on: " + date.split(' ').slice(1, 4).join(' ') + "<br>";
+
+            if(i > 0)
+                if(json_bm[i].value > json_bm[i - 1].value)
+                {
+                    to_dispay += '<font color="green">' + json_bm[i].value + "</font><br>";
+                }    
+                else if(json_bm[i].value < json_bm[i - 1].value)
+                {
+                    to_dispay += '<font color="red">' + json_bm[i].value + "</font><br>"; 
+                }
+                else
+                {
+                    to_dispay += '<font color="white">' + json_bm[i].value + "</font><br>"; 
+                }
+            else
+                to_dispay += '<font color="white">' + json_bm[i].value + "</font><br>"; 
+        } 
+        
+        return to_dispay;
     }
 
     function getCookie(cname) {
@@ -757,8 +785,6 @@
     // #67 Newly added func
     function rest_get_historical_bm(bm_id)
     {
-        console.log("mandatory param: " + bm_id)
-
         var request = new XMLHttpRequest();
         var url = 'http://jakob.ml:8080/tpbackend_1-1.0-SNAPSHOT/api/trainingsplan/get_historical_bm_values/';
         var xmlHttp = new XMLHttpRequest();
@@ -773,7 +799,6 @@
     // #67 changed function
     function clear_chart()
     {
-        console.log(chart);
         chart.destroy();
         //chart.reset();
         

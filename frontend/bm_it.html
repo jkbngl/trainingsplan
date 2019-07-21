@@ -743,24 +743,25 @@
 
         for(var i = 0; i < json_bm.length; i++)
         {
+            console.log(json_bm[i].note.length)
             var date = new Date(json_bm[i].created).toUTCString()
             to_dispay += (i + 1) + ". Entry on: " + date.split(' ').slice(1, 4).join(' ') + "<br>";
 
             if(i > 0)
                 if(json_bm[i].value > json_bm[i - 1].value)
                 {
-                    to_dispay += '<font color="green">' + json_bm[i].value + "</font><br>";
+                    to_dispay += '<font color="green">Value: ' + json_bm[i].value + (json_bm[i].note.length != 0 ? "<br>Note:" + json_bm[i].note : "") + "</font><br>";
                 }    
                 else if(json_bm[i].value < json_bm[i - 1].value)
                 {
-                    to_dispay += '<font color="red">' + json_bm[i].value + "</font><br>"; 
+                    to_dispay += '<font color="red">' + json_bm[i].value + (json_bm[i].note.length != 0 ? "<br>Note:" + json_bm[i].note : "") + "</font><br>"; 
                 }
                 else
                 {
-                    to_dispay += '<font color="white">' + json_bm[i].value + "</font><br>"; 
+                    to_dispay += '<font color="white">' + json_bm[i].value + (json_bm[i].note.length != 0 ? "<br>Note:" + json_bm[i].note : "") + "</font><br>"; 
                 }
             else
-                to_dispay += '<font color="white">' + json_bm[i].value + "</font><br>"; 
+                to_dispay += '<font color="white">' + json_bm[i].value + (json_bm[i].note.length != 0 ? "<br>Note:" + json_bm[i].note : "") + "</font><br>"; 
         } 
         
         return to_dispay;

@@ -165,7 +165,7 @@
 
         <div class="page__toggle" style="margin-left: 10%; margin-top: 25%;">
             <label class="toggle">
-            <input id="chart-type" onchange="closeNav();" onclick="update_bm_chart(get_active_bms());" class="toggle__input" type="checkbox">
+            <input id="chart-type" onchange="closeNav();" onclick="clear_chart();update_bm_chart(get_active_bms());" class="toggle__input" type="checkbox">
             <span class="toggle__label">
                 <span class="toggle__text">Bar Chart 
                     <i class="fas fa-info-circle" rel="tooltip" title="Change between the normal line chart and the bar chart to analyze your data" id="info-step-2"></i>
@@ -806,8 +806,12 @@
     // #67 changed function
     function clear_chart()
     {
+        console.log(chart);
+
+        chart.reset();
+        chart.clear();
         chart.destroy();
-        //chart.reset();
+
         
         if(document.getElementById("chart-type").checked)
             chart = create_chart("bar");

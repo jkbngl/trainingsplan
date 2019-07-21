@@ -352,6 +352,31 @@
         build_page();
     }
 
+    // #67 newly added func
+    function set_bm_as_deactivated_as_callback_from_chart(event, bm_name)
+    {
+        // At first its undefined so set it as defined at the beginnning
+        if(chart.data.datasets[bm_name.datasetIndex]['_meta'][0].hidden === false)
+            chart.data.datasets[bm_name.datasetIndex]['_meta'][0].hidden = true;
+        else
+            ;
+
+        if(chart.data.datasets[bm_name.datasetIndex]['_meta'][0].hidden)
+        {
+            console.log("was active, will set hidden")
+            chart.data.datasets[bm_name.datasetIndex]['_meta'][0].hidden = true;
+        }
+        else if(!chart.data.datasets[bm_name.datasetIndex]['_meta'][0].hidden)
+        {
+            console.log("was active, will set visible")
+            chart.data.datasets[bm_name.datasetIndex]['_meta'][0].hidden = false;
+        }
+
+        console.log(chart.data.datasets[bm_name.datasetIndex]['_meta'][0].hidden)
+
+        document.getElementById("additional-info_" + (bm_name.datasetIndex + 1)).querySelector("#reps_box").checked = false;
+    }
+
     function download() 
     {
         if(num_ex > 0)
@@ -489,6 +514,7 @@
                 </label> \
                 <span class="select-bar"></span> \
             </div> \
+            <button class="button" id="visualize_progress_button" onclick="show_progress_dialog(' + num_input + ')" style="margin-right: 1%"><i class="fas fa-info-circle"></i></button> \
             <button class="button" id="delete_button" onclick="delete_and_reoder(' + num_input + ')" style="margin-right: 1%"><i class="fas fa-trash"></i></button> \
         </div>';
 
@@ -699,6 +725,17 @@
         bms = xmlHttp.responseText;
 
         return JSON.parse(bms);
+    }
+
+    // #67 newly added func
+    function show_progress_dialog(num_bm)
+    {
+        // Get the base_bm_id of the clicked bm
+        var bm_id = document.getElementById("additional-info_" + num_bm).getAttribute("base_bm");
+
+        var json_history_bm = JSON.parse(rest_get_historical_bm(bm_id));
+
+        console.log(json_history_bm);
     }
 
     function getCookie(cname) {
@@ -1362,7 +1399,7 @@
                 },
                 legend: {
                     display: true,
-                    onClick: (event, legendItem) => console.log(legendItem),
+                    onClick: (event, legendItem, third) => set_bm_as_deactivated_as_callback_from_chart(event, legendItem),
                     labels: {
                         fontSize: 20,
                         filter: function(item, chart) {

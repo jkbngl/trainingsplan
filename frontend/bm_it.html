@@ -165,7 +165,7 @@
 
         <div class="page__toggle" style="margin-left: 10%; margin-top: 25%;">
             <label class="toggle">
-            <input id="chart-type" onchange="closeNav();" onclick="clear_chart();update_bm_chart(get_active_bms());" class="toggle__input" type="checkbox">
+            <input id="chart-type" onchange="closeNav();" onclick="clear_chart(); update_bm_chart(get_active_bms());" class="toggle__input" type="checkbox">
             <span class="toggle__label">
                 <span class="toggle__text">Bar Chart 
                     <i class="fas fa-info-circle" rel="tooltip" title="Change between the normal line chart and the bar chart to analyze your data" id="info-step-2"></i>
@@ -182,14 +182,11 @@
             <button onclick="keycloak.logout()" class="button" value="username ..." id="username" style="top: 10px;"></button>
     </div>​
 
-    
-
-
     <div id="div-line-chart" style="position: relative; margin-top: 2.5%; height: 60vh;">
         <canvas id="line-chart" height="100"></canvas>
     </div>
 
-    <button id="add-new-input" onclick="closeNav(); add_html_input(true)" class="button" style="width:20%; margin:auto; display:block; margin-bottom: 1%" >Add <i class="fas fa-plus-circle"></i></a> </button>
+    <button id="add-new-input" onclick="closeNav(); add_html_input(true)" class="button" style="width:20%; margin:auto; display:block; margin-bottom: 4%" >Add <i class="fas fa-plus-circle"></i></a> </button>
 
     <div id="container_bm">
        <!-- Here come all the dinamically created bms-->
@@ -1451,7 +1448,8 @@
                             beginAtZero: true
                         }
                     }]
-                }/*,
+                },
+                /*
                 tooltips: {
                     enabled: true,
                     mode: 'single',
@@ -1462,9 +1460,9 @@
                             return tooltipItems.xLabel + " | " + label;
                         }
                     }
-                },            
+                },            */
                 responsive: true,
-                maintainAspectRatio: false*/
+                maintainAspectRatio: false
             }
         });
 
@@ -1549,68 +1547,21 @@
 
         document.getElementById("headerforbuttons").style.height = "100px";
         chart.options.legend.labels.fontSize = 30;
-        
-        document.getElementById("weight-slider").style.width = "90%";
-        document.getElementById("reps-slider").style.width = "90%";
-        document.getElementById("sets-slider").style.width = "90%";
-        document.getElementById("maxrep-slider").style.width = "90%";
-        
+
         document.getElementById("div-line-chart").style.marginTop = "5%";
 
-        document.getElementById("checkboxes-text").style.fontSize = "30px";
-        document.getElementById("checkboxes-text").style.marginBottom = "10%";
-        document.getElementById("check-1").style.width = "60%";
-        document.getElementById("check-2").style.width = "60%";
-        document.getElementById("check-3").style.width = "60%";
-        document.getElementById("check-4").style.width = "60%";
 
-        document.getElementById("select-text").style.fontSize = "30px";
-        document.getElementById("select-text").innerHTML = "1. Exercise";
-        
-        if(document.getElementById("info-checks"))
-            document.getElementById("info-checks").remove();
-        
-        if(document.getElementById("info-factors"))
-            document.getElementById("info-factors").remove();
-
-        document.getElementById("factors-text").style.fontSize = "30px";
-        document.getElementById("factors-text").innerHTML = "3. Change the factors";
-
-        document.getElementById("weight-slider-button").style.fontSize = "28px";
-        document.getElementById("reps-slider-button").style.fontSize = "28px";
-        document.getElementById("sets-slider-button").style.fontSize = "28px";
-        document.getElementById("maxrep-slider-button").style.fontSize = "28px";
-
-        document.getElementById("selects").style.marginTop = "10%";
-        
 
         if(after_startup)
         {
             console.log("customized");
-            document.getElementById("progress-text").style.fontSize = "30px";
+            //document.getElementById("progress-text").style.fontSize = "30px";
             
+            /*
             if(document.getElementById("info-progress"))
                 document.getElementById("info-progress").remove();
+                */
         }
-
-        /*
-        document.getElementById("weight-slider").style.height = "2.5%";
-        document.getElementById("reps-slider").style.height = "2.5%";
-        document.getElementById("sets-slider").style.height = "2.5%";
-        document.getElementById("maxrep-slider").style.height = "2.5%";
-        */
-
-        document.getElementById("weight-slider").style.float = "left";
-        document.getElementById("reps-slider").style.float = "left";
-        document.getElementById("sets-slider").style.float = "left";
-        document.getElementById("maxrep-slider").style.float = "left";
-
-        //document.getElementById("weight-slider-div").style.padding = "200px"; doesnt need as it is the first
-        document.getElementById("reps-slider-div").style.marginTop = "80px";
-        document.getElementById("sets-slider-div").style.marginTop = "80px";
-        document.getElementById("max-slider-div").style.marginTop = "80px";
-
-        document.getElementById("max-slider-div").style.marginTop = "80px";
 
 
         var buttons = document.getElementsByTagName("button");

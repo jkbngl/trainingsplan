@@ -967,25 +967,32 @@
     function check_roles(assigned_roles)
     {
         var roles = [];
-
-        console.log(assigned_roles);
+        var pos = 0;
 
         for(var i = 0; i < assigned_roles.length; i++)
         {
-            if(assigned_roles[i] == 'paid_account' || assigned_roles[i] == 'friend_account')
-                roles[0] = assigned_roles[i];
+            if(assigned_roles[i] != 'admin' && assigned_roles[i] != 'offline_access' && assigned_roles[i] != 'uma_authorization' && assigned_roles[i] != 'user')
+            {
+                roles[pos] = assigned_roles[i];
+                pos++;
+            } 
         }
 
         var superaccount = (roles.indexOf("friend_account") > -1) || (roles.indexOf("paid_account") > -1);
 
+        console.log(roles);
+
         if(!superaccount)
         {
-            alert("Access denied!");
-            window.location.href='index.html'
-        }
-        else
-        {
-            //alert("Access granted!");
+            if(roles.includes("bm_it_access") != true)
+            {
+                alert("Access denied!");
+                window.location.href='index.html';
+            }
+            else
+            {
+                //alert("Access granted!");
+            }
         }
     }
     

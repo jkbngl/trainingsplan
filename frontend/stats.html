@@ -446,19 +446,33 @@
     function check_roles(assigned_roles)
     {
         var roles = [];
+        var pos = 0;
+
 
         for(var i = 0; i < assigned_roles.length; i++)
         {
-            if(assigned_roles[i] == 'paid_account' || assigned_roles[i] == 'friend_account')
-                roles[0] = assigned_roles[i];
+            if(assigned_roles[i] != 'admin' && assigned_roles[i] != 'offline_access' && assigned_roles[i] != 'uma_authorization' && assigned_roles[i] != 'user')
+            {
+                roles[pos] = assigned_roles[i];
+                pos++;
+            } 
         }
 
         var superaccount = (roles.indexOf("friend_account") > -1) || (roles.indexOf("paid_account") > -1);
 
+        console.log(roles.includes("stats_access"))
+
         if(!superaccount)
         {
-            alert("Access denied!");
-            window.location.href='index.html'
+            if(roles.includes("stats_access") != true)
+            {
+                alert("Access denied!");
+                window.location.href='index.html';
+            }
+            else
+            {
+                //alert("Access granted!");
+            }
         }
         else
         {
@@ -470,7 +484,7 @@
     function get_available_ex()
     {
         var request = new XMLHttpRequest();
-        var url = 'http://jakob.ml:8080/tp_backend-1.0-SNAPSHOT/api/trainingsplan/get_possible_base_exs/';
+        var url = 'http://jakob.ml:8080/tpbackend_1-1.0-SNAPSHOT/api/trainingsplan/get_possible_base_exs/';
         var username = getusername();
 
         try
@@ -509,7 +523,7 @@
     function append_preferences()
     {
         var request = new XMLHttpRequest();
-        var url = 'http://jakob.ml:8080/tp_backend-1.0-SNAPSHOT/api/trainingsplan/get_preferences/';
+        var url = 'http://jakob.ml:8080/tpbackend_1-1.0-SNAPSHOT/api/trainingsplan/get_preferences/';
         var xmlHttp = new XMLHttpRequest();
 
         xmlHttp.open( "GET", url + getusername(), false ); // false for synchronous request
@@ -606,7 +620,7 @@
         try
         {
             var request = new XMLHttpRequest();
-            var url = 'http://jakob.ml:8080/tp_backend-1.0-SNAPSHOT/api/trainingsplan/get_stats/';
+            var url = 'http://jakob.ml:8080/tpbackend_1-1.0-SNAPSHOT/api/trainingsplan/get_stats/';
             var xmlHttp = new XMLHttpRequest();
 
             xmlHttp.open( "GET", url + value, false ); // false for synchronous request
@@ -712,8 +726,11 @@
         console.log(all_ex);
         */
 
+        // If one ex active show dates of active
         var local_labels_date = [];
+        // if multiple ex active show amount of datapoints
         var local_labels_numbers = [];
+        
         var json_ex = JSON.parse(all_ex);
 
         for(var i = 0; i < json_ex.values.length; i++)
@@ -934,6 +951,8 @@
     {
         console.log(window.bar);
 
+
+        
         chart.destroy();
 
         /*chart.reset();
@@ -1134,7 +1153,7 @@
 
         
         var xhr = new XMLHttpRequest();
-        var url = "http://jakob.ml:8080/tp_backend-1.0-SNAPSHOT/api/trainingsplan/send_preferences";
+        var url = "http://jakob.ml:8080/tpbackend_1-1.0-SNAPSHOT/api/trainingsplan/send_preferences";
         xhr.open("POST", url, true);
         xhr.setRequestHeader("Content-Type", "text/plain");
         var string = JSON.stringify(preferences);

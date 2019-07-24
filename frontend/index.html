@@ -442,6 +442,7 @@
             }
         }
         
+        // This part sets how many plans the user already has and then in check_allowed_to_add_plan it is checked if the user is allowed to add another one
         var request = new XMLHttpRequest();
         var url = 'http://jakob.ml:8080/tpbackend_1-1.0-SNAPSHOT/api/trainingsplan/getAmountOfPlans/';
         var username = getusername();

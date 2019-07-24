@@ -192,7 +192,7 @@
     <button onclick="restore_plan(-1, false)"                              class="button" style="top: 10px; width:80%; margin-left: 10%;">                 <i class="fas fa-trash-restore-alt"></i> Restore Plans</button>
     <button id="stats-button" onclick="window.location.href='stats.html'"  class="button" style="top: 10px; width:80%; margin-left: 10%; margin-top: 20%;"><i class="fas fa-chart-line">       </i> Stats</button>
     <button id="bm-button" onclick="window.location.href='bm_it.html'"     class="button" style="top: 10px; width:80%; margin-left: 10%;">                 <i class="fas fa-weight"></i>       </i> BM-IT</button>
-    <button id="logout-button" onclick="keycloak.logout()"                 class="button" style="top: 10px; width:80%; margin-left: 10%;">                 <i class="fas fa-sign-out-alt">     </i> Logout</button>
+    <button id="logout-button" onclick="keycloak.logout()"                 class="button" style="top: 10px; width:80%; margin-left: 10%; margin-top: 20%;"><i class="fas fa-sign-out-alt">     </i> Logout</button>
     
 </div>
 
@@ -309,7 +309,7 @@
     function append_preferences()
     {
         var request = new XMLHttpRequest();
-        var url = 'http://jakob.ml:8080/tp_backend-1.0-SNAPSHOT/api/trainingsplan/get_preferences/';
+        var url = 'http://jakob.ml:8080/tpbackend_1-1.0-SNAPSHOT/api/trainingsplan/get_preferences/';
         var xmlHttp = new XMLHttpRequest();
 
         xmlHttp.open( "GET", url + getusername(), false ); // false for synchronous request
@@ -407,12 +407,18 @@
     {
         if(full_check)
         {
+            // array with all tp relevant roles in it
             var roles = [];
+            // needed to store only the tp relevant roles in the array
+            var pos = 0;
 
             for(var i = 0; i < assigned_roles.length; i++)
             {
-                if(assigned_roles[i] == 'paid_account' || assigned_roles[i] == 'friend_account')
-                    roles[0] = assigned_roles[i];
+                if(assigned_roles[i] != 'admin' && assigned_roles[i] != 'offline_access' && assigned_roles[i] != 'uma_authorization' && assigned_roles[i] != 'user')
+                {
+                    roles[pos] = assigned_roles[i];
+                    pos++;
+                }    
             }
 
             var superaccount = (roles.indexOf("friend_account") > -1) || (roles.indexOf("paid_account") > -1);
@@ -420,13 +426,24 @@
             if(!superaccount)
             {
                 document.getElementById("stats-button").style.display = "none";         // Remove the stats button
+                document.getElementById("bm-button").style.display = "none";         // Remove the stats button
                 document.getElementById("logout-button").style.marginTop = "20%";       // Add a matching margin to the button instead of stats which is not existent
                 maximum_allowed_plans = 2;                                              // Allow only two plans per not super user
+            }
+
+            if(roles.indexOf("bm_it_access") > -1 && !superaccount)
+            {
+                document.getElementById("bm-button").style.display = "inline";         // Add the bm button
+            }
+
+            if(roles.indexOf("stats_access") > -1 && !superaccount)
+            {
+                document.getElementById("stats-button").style.display = "inline";      // Add the stats button
             }
         }
         
         var request = new XMLHttpRequest();
-        var url = 'http://jakob.ml:8080/tp_backend-1.0-SNAPSHOT/api/trainingsplan/getAmountOfPlans/';
+        var url = 'http://jakob.ml:8080/tpbackend_1-1.0-SNAPSHOT/api/trainingsplan/getAmountOfPlans/';
         var username = getusername();
 
         try 
@@ -437,9 +454,9 @@
             xmlHttp.send(null);
             amount_plans = xmlHttp.responseText;
         }
-        catch(err) {
-            console.log("error - " + err);
-            
+        catch(err) 
+        {
+            console.log("error - " + err);    
             display_error('error', 'Oops...', 'The backend seems to be unavailable!');
         }
     }
@@ -592,7 +609,7 @@
     function doesPlanNameExists(plannamelocal)
     {
         var request = new XMLHttpRequest();
-        var url = 'http://jakob.ml:8080/tp_backend-1.0-SNAPSHOT/api/trainingsplan/getPlansByUser/';
+        var url = 'http://jakob.ml:8080/tpbackend_1-1.0-SNAPSHOT/api/trainingsplan/getPlansByUser/';
         var plan = '';
         var username = getusername();
 
@@ -751,7 +768,7 @@
         if(delete_bool)
         {
             var xhr = new XMLHttpRequest();
-            var url = "http://jakob.ml:8080/tp_backend-1.0-SNAPSHOT/api/trainingsplan/delete_plan";
+            var url = "http://jakob.ml:8080/tpbackend_1-1.0-SNAPSHOT/api/trainingsplan/delete_plan";
             xhr.open("POST", url, true);
             xhr.setRequestHeader("Content-Type", "text/plain");
 
@@ -759,7 +776,7 @@
         }
         else
         {
-            showDialog('http://jakob.ml:8080/tp_backend-1.0-SNAPSHOT/api/trainingsplan/getPlansByUser/', 0, false, true);
+            showDialog('http://jakob.ml:8080/tpbackend_1-1.0-SNAPSHOT/api/trainingsplan/getPlansByUser/', 0, false, true);
         }
     }
 
@@ -769,7 +786,7 @@
         if(delete_bool)
         {
             var xhr = new XMLHttpRequest();
-            var url = "http://jakob.ml:8080/tp_backend-1.0-SNAPSHOT/api/trainingsplan/restore_plan";
+            var url = "http://jakob.ml:8080/tpbackend_1-1.0-SNAPSHOT/api/trainingsplan/restore_plan";
             xhr.open("POST", url, true);
             xhr.setRequestHeader("Content-Type", "text/plain");
 
@@ -777,7 +794,7 @@
         }
         else
         {
-            showDialog('http://jakob.ml:8080/tp_backend-1.0-SNAPSHOT/api/trainingsplan/getPlansByUser/', 1, false, false);
+            showDialog('http://jakob.ml:8080/tpbackend_1-1.0-SNAPSHOT/api/trainingsplan/getPlansByUser/', 1, false, false);
         }
     }
 
@@ -842,7 +859,7 @@
                                     show_warning = false;
                             
                                 var xhr = new XMLHttpRequest();
-                                var url = "http://jakob.ml:8080/tp_backend-1.0-SNAPSHOT/api/trainingsplan/send_preferences";
+                                var url = "http://jakob.ml:8080/tpbackend_1-1.0-SNAPSHOT/api/trainingsplan/send_preferences";
                                 xhr.open("POST", url, true);
                                 xhr.setRequestHeader("Content-Type", "text/plain");
                                 var string = JSON.stringify(preferences);
@@ -862,7 +879,7 @@
                             // OK was clicked so send it anyway what with the checkbox happened
                             var jsondata = getExercises();
                             var xhr = new XMLHttpRequest();
-                            var url = "http://jakob.ml:8080/tp_backend-1.0-SNAPSHOT/api/trainingsplan/sendPlan";
+                            var url = "http://jakob.ml:8080/tpbackend_1-1.0-SNAPSHOT/api/trainingsplan/sendPlan";
                             xhr.open("POST", url, true);
                             xhr.setRequestHeader("Content-Type", "text/plain");
                             //var data = JSON.stringify(jsondata);
@@ -889,7 +906,7 @@
                 {
                     /*
                         var xhr = new XMLHttpRequest();
-                        var url = "http://jakob.ml:8080/tp_backend-1.0-SNAPSHOT/api/trainingsplan/send_preferences";
+                        var url = "http://jakob.ml:8080/tpbackend_1-1.0-SNAPSHOT/api/trainingsplan/send_preferences";
                         xhr.open("POST", url, true);
                         xhr.setRequestHeader("Content-Type", "text/plain");
                         var string = JSON.stringify(preferences);
@@ -897,7 +914,7 @@
                     */
                     var jsondata = getExercises();
                     var xhr = new XMLHttpRequest();
-                    var url = "http://jakob.ml:8080/tp_backend-1.0-SNAPSHOT/api/trainingsplan/sendPlan";
+                    var url = "http://jakob.ml:8080/tpbackend_1-1.0-SNAPSHOT/api/trainingsplan/sendPlan";
                     xhr.open("POST", url, true);
                     xhr.setRequestHeader("Content-Type", "text/plain");
                     var data = JSON.stringify(jsondata);
@@ -997,7 +1014,7 @@
     {
         var request = new XMLHttpRequest();
 
-        var url = 'http://jakob.ml:8080/tp_backend-1.0-SNAPSHOT/api/trainingsplan/getPlansByUser/';
+        var url = 'http://jakob.ml:8080/tpbackend_1-1.0-SNAPSHOT/api/trainingsplan/getPlansByUser/';
         var username = getusername();
         var planid;
 
@@ -1012,13 +1029,13 @@
 
                 if(json.plans.length > 1 && onlogon == false) // if more than 1 day than load all plans
                 {
-                    showDialog('http://jakob.ml:8080/tp_backend-1.0-SNAPSHOT/api/trainingsplan/getPlansByUser/', 0, true, null);
+                    showDialog('http://jakob.ml:8080/tpbackend_1-1.0-SNAPSHOT/api/trainingsplan/getPlansByUser/', 0, true, null);
                 }
                 else
                 {
                     if(this.response != '{"username": "' + username + '","plans": []}')
                     {
-                        plan = getPlan('http://jakob.ml:8080/tp_backend-1.0-SNAPSHOT/api/trainingsplan/getNewestPlan/' + username);
+                        plan = getPlan('http://jakob.ml:8080/tpbackend_1-1.0-SNAPSHOT/api/trainingsplan/getNewestPlan/' + username);
                         var data = JSON.parse(plan);
                         printjson(data, plan);
                     }
@@ -1085,7 +1102,7 @@
 
                             if(!isNaN(parseFloat(value)) && !isNaN(value - 0))
                             {
-                                plan = getPlan('http://jakob.ml:8080/tp_backend-1.0-SNAPSHOT/api/trainingsplan/getPlanByUserAndPlan/' + username + '/' + value);
+                                plan = getPlan('http://jakob.ml:8080/tpbackend_1-1.0-SNAPSHOT/api/trainingsplan/getPlanByUserAndPlan/' + username + '/' + value);
                                 var data = JSON.parse(plan);
                                 
                                 // the dialog for loading a plan from the db was active and now display the new data
@@ -1144,7 +1161,7 @@
     function getPlanID()
     {
         var request = new XMLHttpRequest();
-        var url = 'http://jakob.ml:8080/tp_backend-1.0-SNAPSHOT/api/trainingsplan/getPlanIdByUsernameAndPlanname/';
+        var url = 'http://jakob.ml:8080/tpbackend_1-1.0-SNAPSHOT/api/trainingsplan/getPlanIdByUsernameAndPlanname/';
         var username = getusername();
 
         var xmlHttp = new XMLHttpRequest();
@@ -1164,7 +1181,7 @@
         {
             try{
                 setTimeout(function(){
-                    var url = 'http://jakob.ml:8080/tp_backend-1.0-SNAPSHOT/api/trainingsplan/getPlanByUserAndPlan/' + username + '/' + currentPlanId;
+                    var url = 'http://jakob.ml:8080/tpbackend_1-1.0-SNAPSHOT/api/trainingsplan/getPlanByUserAndPlan/' + username + '/' + currentPlanId;
 
                     var xmlHttp = new XMLHttpRequest();
                     xmlHttp.open( "GET", url, false ); // false for synchronous request
@@ -1189,7 +1206,7 @@
         var request = new XMLHttpRequest();
         var username = getusername();
 
-        var url = 'http://jakob.ml:8080/tp_backend-1.0-SNAPSHOT/api/trainingsplan/getAmountOfPlans/' + username + '/' + num;
+        var url = 'http://jakob.ml:8080/tpbackend_1-1.0-SNAPSHOT/api/trainingsplan/getAmountOfPlans/' + username + '/' + num;
 
         var xmlHttp = new XMLHttpRequest();
         xmlHttp.open( "GET", url, false ); // false for synchronous request

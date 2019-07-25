@@ -381,7 +381,9 @@
 
     function download() 
     {
-        if(num_ex > 0)
+        var amount_bms = get_amount_inputs();
+                
+        if(amount_bms > 0)
         {
             // Get the data to save the file with different names #
             // TODO read active_ex_in_chart and add ex names

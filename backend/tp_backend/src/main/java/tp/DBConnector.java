@@ -286,13 +286,14 @@ public class DBConnector
     @Path("/send_bm_values")
     public String send_bm_values(String msg) throws JSONException, SQLException
     {
+        String return_text  = " ";
         System.out.println("(send_bm_values) - " + msg);
         ParserFromDB p1 = new ParserFromDB();
         ParserIntoDB p2 = new ParserIntoDB();
 
-        p2.parse_bm(msg, ParserFromDB.connectToDB(p1.connectionString, p1.user, p1.password));
+        return_text = p2.parse_bm(msg, ParserFromDB.connectToDB(p1.connectionString, p1.user, p1.password));
 
-        return "ok";
+        return return_text;
     }
 
     // http://jakob.ml:8080/tp_backend-1.0-SNAPSHOT/api/trainingsplan/get_uoms

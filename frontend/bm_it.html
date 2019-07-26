@@ -261,14 +261,13 @@
         }
         else
         {
-            display_error('error', 'Name, UOM and TOD have to be selected', 'dont know');
+            display_error('error', 'Name, UNIT and TOD have to be selected', 'dont know');
         }
     }
 
     // #67 Newly added func
     function checkIfDataIsLoadedIntoDB(xhr)
     {
-
         swal.fire({
           title: 'Saving your Data...',
           allowEscapeKey: false,
@@ -284,15 +283,27 @@
             if(xhr.status == 200){
                 console.log("POST worked, data send, reload page with new data: " + xhr.status);
                 
-                swal.fire({
-                    title: 'Your bms were saved!',
-                    type: 'success',
-                    //position: 'top-end',
-                    timer: 1000,
-                    customClass: mobile_swal,
-                    showCancelButton: false,
-                    showConfirmButton: false
-                });
+                
+                console.log("RESPONSE: " + xhr.responseText);
+
+                if(xhr.responseText == "ok")
+                {
+                    swal.fire({
+                        title: 'Your bms were saved!',
+                        type: 'success',
+                        //position: 'top-end',
+                        timer: 1000,
+                        customClass: mobile_swal,
+                        showCancelButton: false,
+                        showConfirmButton: false
+                    });
+                }
+                else if(xhr.responseText.includes("Same bm does already exist"))
+                {
+                    console.log("CATCHED")
+                    display_error("error", xhr.responseText, "You entered a bm which is already existent in its unique combination");
+                }
+                
                 
                 on_save();
             }
@@ -502,7 +513,7 @@
                     <option value="" selected></option> \
                 </select> \
                 <span class="select-highlight"></span> \
-                <label id="select-text" style="font-size: 22px;" class="select-label">UOM \
+                <label id="select-text" style="font-size: 22px;" class="select-label">UNIT \
                 <i class="fas fa-info-circle" rel="tooltip" title="Select an exercise from this list to have the history (if existent) of your data displayed in the chart above  " id="info-step-1"></i> \
                     </label> \
                 <span class="select-bar"></span> \
@@ -817,8 +828,6 @@
     // #67 changed function
     function clear_chart()
     {
-        console.log(chart);
-
         chart.reset();
         chart.clear();
         chart.destroy();
@@ -1422,9 +1431,6 @@
         // console.log(chart_type)
         if(typeof chart_type == 'undefined')
             chart_type = 'line';
-
-
-        console.log("GOING TO CREATE - " + chart_type)
 
         var chart = new Chart(document.getElementById("line-chart"), {
             type: chart_type,

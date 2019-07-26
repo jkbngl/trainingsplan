@@ -249,15 +249,23 @@
 
         if(jsonData.stats[0].tod.length > 0 && jsonData.stats[0].uom.length > 0 && jsonData.stats[0].name.length > 0)
         {
-            var xhr = new XMLHttpRequest();
-            var url = "http://jakob.ml:8080/tpbackend_1-1.0-SNAPSHOT/api/trainingsplan/send_bm_values";
-            xhr.open("POST", url, true);
-            xhr.setRequestHeader("Content-Type", "text/plain");
-            var string = JSON.stringify(jsonData);
-            
-            xhr.send(string);
+            try
+            {
+                var xhr = new XMLHttpRequest();
+                var url = "http://jakob.ml:8080/tpbackend_1-1.0-SNAPSHOT/api/trainingsplan/send_bm_values";
+                xhr.open("POST", url, true);
+                xhr.setRequestHeader("Content-Type", "text/plain");
+                var string = JSON.stringify(jsonData);
+                
+                xhr.send(string);
 
-            checkIfDataIsLoadedIntoDB(xhr);
+                checkIfDataIsLoadedIntoDB(xhr);
+            }
+            catch(err)
+            {
+                console.error(err);
+                display_error('error', 'Oops...', 'The backend seems to be unavailable!')
+            }
         }
         else
         {
@@ -457,29 +465,44 @@
     // #67 Newly added func
     function rest_uoms()
     {
-        var request = new XMLHttpRequest();
-        var url = 'http://jakob.ml:8080/tpbackend_1-1.0-SNAPSHOT/api/trainingsplan/get_uoms/';
-        var xmlHttp = new XMLHttpRequest();
+        try
+        {
+            var request = new XMLHttpRequest();
+            var url = 'http://jakob.ml:8080/tpbackend_1-1.0-SNAPSHOT/api/trainingsplan/get_uoms/';
+            var xmlHttp = new XMLHttpRequest();
 
-        xmlHttp.open( "GET", url, false ); // false for synchronous request
-        xmlHttp.send( null );
-        uoms = xmlHttp.responseText;
+            xmlHttp.open( "GET", url, false ); // false for synchronous request
+            xmlHttp.send( null );
+            uoms = xmlHttp.responseText;
 
-        return JSON.parse(uoms);
+            return JSON.parse(uoms);
+        }
+        catch(err)
+        {
+            console.error(err);
+            display_error('error', 'Oops...', 'The backend seems to be unavailable!')
+        }
     }
 
     // #67 Newly added func
     function rest_tods()
     {
-        var request = new XMLHttpRequest();
-        var url = 'http://jakob.ml:8080/tpbackend_1-1.0-SNAPSHOT/api/trainingsplan/get_tods/';
-        var xmlHttp = new XMLHttpRequest();
+        try
+        {
+            var url = 'http://jakob.ml:8080/tpbackend_1-1.0-SNAPSHOT/api/trainingsplan/get_tods/';
+            var xmlHttp = new XMLHttpRequest();
 
-        xmlHttp.open( "GET", url, false ); // false for synchronous request
-        xmlHttp.send( null );
-        tods = xmlHttp.responseText;
-        
-        return JSON.parse(tods);
+            xmlHttp.open( "GET", url, false ); // false for synchronous request
+            xmlHttp.send( null );
+            tods = xmlHttp.responseText;
+            
+            return JSON.parse(tods);
+        }
+        catch(err)
+        {
+            console.error(err);
+            display_error('error', 'Oops...', 'The backend seems to be unavailable!')
+        }
     }
 
     // #67 Newly added func
@@ -729,15 +752,22 @@
     // #67 Newly added func
     function rest_get_bms()
     {
-        var request = new XMLHttpRequest();
-        var url = 'http://jakob.ml:8080/tpbackend_1-1.0-SNAPSHOT/api/trainingsplan/get_bm_values/';
-        var xmlHttp = new XMLHttpRequest();
-
-        xmlHttp.open( "GET", url + getusername(), false ); // false for synchronous request
-        xmlHttp.send( null );
-        bms = xmlHttp.responseText;
-
-        return JSON.parse(bms);
+        try
+        {
+            var url = 'http://jakob.ml:8080/tpbackend_1-1.0-SNAPSHOT/api/trainingsplan/get_bm_values/';
+            var xmlHttp = new XMLHttpRequest();
+        
+            xmlHttp.open( "GET", url + getusername(), false ); // false for synchronous request
+            xmlHttp.send( null );
+            bms = xmlHttp.responseText;
+        
+            return JSON.parse(bms);
+        }
+        catch(err)
+        {
+            console.error(err);
+            display_error('error', 'Oops...', 'The backend seems to be unavailable!')
+        }
     }
 
     // #67 newly added func
@@ -814,15 +844,22 @@
     // #67 Newly added func
     function rest_get_historical_bm(bm_id)
     {
-        var request = new XMLHttpRequest();
-        var url = 'http://jakob.ml:8080/tpbackend_1-1.0-SNAPSHOT/api/trainingsplan/get_historical_bm_values/';
-        var xmlHttp = new XMLHttpRequest();
+        try
+        {
+            var url = 'http://jakob.ml:8080/tpbackend_1-1.0-SNAPSHOT/api/trainingsplan/get_historical_bm_values/';
+            var xmlHttp = new XMLHttpRequest();
 
-        xmlHttp.open( "GET", url + getusername() + "/" + bm_id, false ); // false for synchronous request
-        xmlHttp.send( null );
-        history_bms = xmlHttp.responseText;
+            xmlHttp.open( "GET", url + getusername() + "/" + bm_id, false ); // false for synchronous request
+            xmlHttp.send( null );
+            history_bms = xmlHttp.responseText;
 
-        return history_bms;
+            return history_bms;
+        }
+        catch(err)
+        {
+            console.error(err);
+            display_error('error', 'Oops...', 'The backend seems to be unavailable!')
+        }
     }
 
     // #67 changed function
@@ -1010,7 +1047,6 @@
 
     function append_preferences()
     {
-        var request = new XMLHttpRequest();
         var url = 'http://jakob.ml:8080/tpbackend_1-1.0-SNAPSHOT/api/trainingsplan/get_preferences/';
         var xmlHttp = new XMLHttpRequest();
 

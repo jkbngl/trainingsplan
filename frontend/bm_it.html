@@ -691,9 +691,14 @@
     // #67  newly added func
     function set_dataset_and_button(index, bool)
     {
+        // String does not work so I need to parse it to a javascript object
         var myBool = JSON.parse(bool);
 
         document.getElementById("additional-info_" + (index + 1)).querySelector("#reps_box").checked = myBool;
+        chart.data.datasets[index]['_meta'][0].hidden = !myBool;    // Hidden so turn it arount
+
+        // In order that it is displayed correctly in the chart I need to update the chart so that it is also visible not only in the background
+        chart.update();
     }
 
     // #67  newly added func

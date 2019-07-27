@@ -637,13 +637,28 @@
     }
 
     // #67  newly added func
-    function set_cookie(cname, exdays) {
-        
+    function set_cookie(cname, exdays) 
+    {    
+        var amount_days = get_amount_inputs();
         var d = new Date();
         d.setTime(d.getTime() + (exdays*24*60*60*1000));
         var expires = "expires=" + d.toGMTString();
         
-        document.cookie = cname + "=" + 5 + ";" + expires + ";path=/";
+        // Dont comment in, only in case all coockies should be deleted, for testing purpose
+        //deleteAllCookies();
+
+        for(var i = 0; i < amount_days; i++)
+        {
+            document.cookie = cname + "_"+ i + "=" + document.getElementById("additional-info_" + (i + 1)).querySelector("#reps_box").checked + ";" + expires + ";path=/";
+        }    
+
+        console.log(document.cookie);
+    }
+
+    // #67  newly added func
+    function deleteAllCookies() 
+    {
+        document.cookie.split(";").forEach(function(c) { document.cookie = c.replace(/^ +/, "").replace(/=.*/, "=;expires=" + new Date().toUTCString() + ";path=/"); });
     }
 
     // #67  newly added func
@@ -730,6 +745,7 @@
         active_bm = get_active_bms();
 
         update_bm_chart(active_bm);
+        getCookie()
 
         // If the user has currently no bms present load one single input field and add the uoms and tods from the backend
         // append_combo("additional-info_1");
@@ -825,12 +841,17 @@
         chart.update();   
     }
 
-    function getCookie(cname) {
+    // #67 changed func
+    function get_cookie(cname) 
+    {
         var name = cname + "=";
         var decodedCookie = decodeURIComponent(document.cookie);
         var ca = decodedCookie.split(';');
-        for(var i = 0; i < ca.length; i++) {
+        
+        for(var i = 0; i < ca.length; i++) 
+        {
             var c = ca[i];
+
             while (c.charAt(0) == ' ') {
                 c = c.substring(1);
             }
@@ -838,6 +859,7 @@
                 return c.substring(name.length, c.length);
             }
         }
+
         return "";
     }
 
@@ -962,38 +984,6 @@
         }
     }
 
-    // Changing is only possible with the last choosen ex so use this number
-    // TODO: will maybe be changed later - add value to buttons of ex and return the value to this function
-    function update_chart()
-    {
-        if(num_ex > 0)
-        {
-            var values = [];
-            var length = get_amount_inputs();
-
-            for(var j = 0; j <= length; j++)
-            {
-                var length_of_chart = chart.data.datasets[j].data.length;
-                // Get the last added exercise
-                var data = active_bm[j];
-
-                values = get_value(data);
-
-                console.log(data);    
-            
-                for(var i = 0; i < length_of_chart; i++)
-                {
-                    chart.data.datasets[j].data[i] = values[i];
-                }
-            }
-
-            console.log("---------------------------"); 
-            
-
-            chart.update();
-        }
-    }
-
     function reset_settings()
     {
         document.getElementById("weight-slider").value = 1;
@@ -1012,6 +1002,7 @@
         document.getElementById("max_rep_box").checked = false;
     }
 
+    // #67 changed func
     function check_roles(assigned_roles)
     {
         var roles = [];
@@ -1045,84 +1036,6 @@
     }
     
 
-    function append_preferences()
-    {
-        var url = 'http://jakob.ml:8080/tpbackend_1-1.0-SNAPSHOT/api/trainingsplan/get_preferences/';
-        var xmlHttp = new XMLHttpRequest();
-
-        xmlHttp.open( "GET", url + getusername(), false ); // false for synchronous request
-        xmlHttp.send( null );
-        preferences = xmlHttp.responseText;
-
-        var json = JSON.parse(preferences);
-        
-        if(json.check_weight == 't')
-            document.getElementById("weight_box").checked = true;
-        else if(typeof json.check_weight == 'undefined')
-            document.getElementById("weight_box").checked = true;            
-        else
-            document.getElementById("weight_box").checked = false;
-
-        if(json.check_reps == 't')
-            document.getElementById("reps_box").checked = true;
-        else if(typeof json.check_reps == 'undefined')
-            document.getElementById("reps_box").checked = true;
-        else
-            document.getElementById("reps_box").checked = false;
-
-        if(json.check_sets == 't')
-            document.getElementById("sets_box").checked = true;
-        else if(typeof json.check_sets == 'undefined')
-            document.getElementById("sets_box").checked = true;
-        else
-            document.getElementById("sets_box").checked = false;
-
-        // if undefined dont set because default is unselected
-        if(json.check_maxrep == 't')
-            document.getElementById("max_rep_box").checked = true;
-        else
-            document.getElementById("max_rep_box").checked = false;
-
-        // if undefined dont set because default is unselected -
-        if(json.check_simple_view == 't')
-        {
-            document.getElementById("simplify-ui").checked = true;
-            simplify_ui();
-        }
-        else
-        {
-            document.getElementById("simplify-ui").checked = false;
-            simplify_ui();
-        }
-
-        // if undefined dont set because default is unselected
-        if(json.check_chart_type == 't')
-        {
-            document.getElementById("chart-type").checked = true;
-            create_chart("bar");
-        }
-        else
-        {
-            document.getElementById("chart-type").checked = false;
-            create_chart("line");
-        }
-
-        if(does_json_contain_data(json))
-        {
-            document.getElementById("weight-slider-button").innerHTML = 'Weight Faktor: ' + json.mul_weight + ' &nbsp&nbsp&nbsp';
-            document.getElementById("reps-slider-button").innerHTML = 'Reps Faktor: ' + json.mul_reps + ' &nbsp';
-            document.getElementById("sets-slider-button").innerHTML = 'Sets Faktor: ' + json.mul_sets + ' &nbsp';
-            document.getElementById("maxrep-slider-button").innerHTML = 'MaxRep Faktor: ' + json.mul_maxrep + ' &nbsp';
-
-            document.getElementById("weight-slider").value = json.mul_weight;
-            document.getElementById("reps-slider").value = json.mul_reps;
-            document.getElementById("sets-slider").value = json.mul_sets;
-            document.getElementById("maxrep-slider").value = json.mul_maxrep;
-        }
-
-        return json;
-    }
-
     function does_json_contain_data(object) 
     {
         for(var i in object)
@@ -1133,322 +1046,7 @@
         return false; 
     } 
 
-    function display_ex() {
-        var values = [];
-        var e = document.getElementById("select");
-        var value = e.options[e.selectedIndex].value;
-        var text = e.options[e.selectedIndex].text;
-
-        console.log(" exercise name + plan name: " + text)
-
-        try
-        {
-            var request = new XMLHttpRequest();
-            var url = 'http://jakob.ml:8080/tpbackend_1-1.0-SNAPSHOT/api/trainingsplan/get_stats/';
-            var xmlHttp = new XMLHttpRequest();
-
-            xmlHttp.open( "GET", url + value, false ); // false for synchronous request
-            xmlHttp.send( null );
-            available_ex = xmlHttp.responseText;
-
-            //console.log(available_ex);
-
-            var weight_box = document.getElementById("weight_box");
-            var reps_box = document.getElementById("reps_box");
-            var sets_box = document.getElementById("sets_box");
-            var max_rep_box = document.getElementById("max_rep_box");
-
-            values = get_value(available_ex, weight_box.checked, reps_box.checked, sets_box.checked, max_rep_box.checked);
-
-
-            // push the data into a global object which is accessible for the function which updates the chart dynamically
-            active_ex_in_chart.push(available_ex);
-
-            /*console.log(values);
-            console.log(text);
-            console.log(available_ex);*/
-
-            addData(values, text, available_ex);
-        }
-        catch(err)
-        {
-            console.error(err);
-            display_error('error', 'Oops...', 'There seems to be a problem with your data (this might happen if you type text into the weight, reps, sets or maxrep fields), maybe try another exercise!')
-        }
-    }
-
-    function get_value(json_ex, weight, reps, sets, max_rep) 
-    {
-        var json = JSON.parse(json_ex);
-        var values = [];
-
-        // default values are used if simplified mode is used
-        if(document.getElementById("simplify-ui").checked)
-        {
-            weight  = true;
-            reps    = true;
-            sets    = true;
-            max_rep = false;
-            var mul_weight = 1;
-            var mul_reps   = 1;
-            var mul_sets   = 1;
-        }
-        else
-        {
-            var mul_weight = document.getElementById("weight-slider").value;
-            var mul_reps   = document.getElementById("reps-slider").value;
-            var mul_sets   = document.getElementById("sets-slider").value;
-            var mul_max_rep = document.getElementById("maxrep-slider").value;
-        }
-        
-        for(var i = 0; i < json.values.length; i++) 
-        {
-            // to avoid multiplying * 0
-            values[i] = 1;
-
-            if(weight)
-                values[i] *= json.values[i].weight * mul_weight;
-            
-            if(reps)
-                values[i] *= json.values[i].reps * mul_reps;
-            
-            if(sets)
-                values[i] *= json.values[i].sets * mul_sets;
-            
-            if(max_rep)
-                values[i] *= json.values[i].max_rep * mul_max_rep;
-        }
-
-
-
-        return values;
-    }
-
-    function addData(values, ex_name, all_ex)
-    {
-        /*
-        console.log(values);
-        console.log(ex_name);
-        console.log(all_ex);
-        */
-
-        var local_labels_date = [];
-        var local_labels_numbers = [];
-        var json_ex = JSON.parse(all_ex);
-
-        for(var i = 0; i < json_ex.values.length; i++)
-        {
-            local_labels_date.push(json_ex.values[i].created);
-        }
-
-        chart.data.labels = local_labels_date;
-
-        if(document.getElementById("chart-type").checked == false)
-        {    
-            chart.data.datasets.push({
-                data: values,
-                label: ex_name,
-                borderColor: border_color_array[num_ex_color],
-                backgroundColor: border_color_array[num_ex_color],
-                fill: false
-            });
-
-            chart.data.labels = local_labels_date;
-        }
-        else
-        {
-            chart.data.datasets.push({
-                data: values,
-                label: ex_name,
-                backgroundColor: border_color_array[num_ex_color],
-            });
-        }   
-
-        if(num_ex_color == border_color_array.length - 1)
-            num_ex_color = 0;
-        else
-            num_ex_color++;
-
-        // needs to be checked before numbers gets increased
-        //change_div(all_ex, ex_name, false);
-    
-        
-        // needs to be checked before numbers gets increased
-        if(num_ex >= 1)
-        {
-            // Get longest exercise with most entries from chart and store it in a variable
-            for(var i = 0; i <= num_ex; i++)
-            {
-                var data = active_ex_in_chart[i];
-                var json = JSON.parse(data);
-
-                local_labels_numbers.push(json.values.length);
-            }
-
-            var max_num = Math.max.apply(Math, local_labels_numbers); 
-
-            local_labels_numbers = [];
-
-            for(var i = 1; i <= max_num; i++)
-                local_labels_numbers.push(i);
-
-            chart.data.labels = local_labels_numbers;
-        }    
-
-        num_ex++;
-
-        
-
-        chart.update({
-            duration: 900,
-            easing: 'easeInOutCubic'
-        });
-    }
-
-    function change_div(values, ex_name, reset)
-    {
-        if(reset)
-        {
-            document.getElementById("additional-info").innerHTML = "";
-            document.getElementById("additional-info").style.width = "0%";
-        }
-        else
-        {
-            if(num_ex == 0)
-            {
-                document.getElementById("additional-info").style.width = "25%";
-                document.getElementById("additional-info").innerHTML += "<p id='progress-text' style='margin-top: 5%; font-size: 22px; padding-bottom: 6px; color: #00ad5f; margin-right: 10%; margin-left: 10%; margin-bottom: 2%; border-bottom: 4px solid rgba(0,0,0, 0.12); border-right: 4px solid rgba(0,0,0, 0.12); text-align:center; '>4. Check your progress &nbsp <i id='info-progress' class='fas fa-info-circle' rel='tooltip' title='Click on one of the exercises to have a detailed view on how your volume changed' id='info-step-4'></i> "
-                    
-                // Needs to be called here to style the progress dialog which is created dynamically
-                if( isMobile.any() ) 
-                    customize_mobile(true);
-                else
-                ;
-            }    
-            
-            var json = JSON.parse(values);
-
-            document.getElementById("additional-info").innerHTML += '<button id="' + json.base_ex + '" class="button" style="top: 10px; width:80%; margin-left: 10%;">' + ex_name + '</button>'
-            document.getElementById(json.base_ex).setAttribute( "onClick", "Swal.fire({html: '" + parse_base_ex(values, ex_name) + "', customClass: mobile_swal});");
-
-            // Needs to be called here to style the progress dialog which is created dynamically
-            if(isMobile.any() ) 
-                document.getElementById(json.base_ex).style.fontSize = "20px";
-        }
-    }
-
-    function parse_base_ex(values, ex_name)
-    {
-        var json = JSON.parse(values);
-        var parse = ex_name + "<br><br><br>";
-
-        console.log(json);
-
-        for(var i = 0; i < json.values.length; i++)
-        {
-            parse += (i + 1) + ". Entry on: " + json.values[i].created + "<br>";
-            
-            /*if(i > 0)
-                if(typeof(json.values[i].weight) != 'undefined' && json.values[i].weight != null)
-                    if(parseFloat(json.values[i].weight.match(/[\d\.]+/)) > parseFloat(json.values[i - 1].weight.match(/[\d\.]+/)))
-                        parse += '<font color="green">Weight: ' + json.values[i].weight + "</font><br>";
-                    else if(parseFloat(json.values[i].weight.match(/[\d\.]+/)) < parseFloat(json.values[i - 1].weight.match(/[\d\.]+/)))
-                        parse += '<font color="red">Weight: ' + json.values[i].weight + "</font><br>";
-                    else
-                        parse += "Weight: " + json.values[i].weight + "<br>";
-                else
-                    parse += "Weight: " + json.values[i].weight + "<br>";
-            else
-                parse += "Weight: " + json.values[i].weight + "<br>";
-            
-            if(i > 0)
-                if(typeof(json.values[i].reps) != 'undefined' && json.values[i].reps != null)   
-                    if(parseFloat(json.values[i].reps.match(/[\d\.]+/)) > parseFloat(json.values[i - 1].reps.match(/[\d\.]+/)))
-                        parse += '<font color="green">Reps: ' + json.values[i].reps + "</font><br>";
-                    else if(parseFloat(json.values[i].reps.match(/[\d\.]+/)) < parseFloat(json.values[i - 1].reps.match(/[\d\.]+/)))
-                        parse += '<font color="red">Reps: ' + json.values[i].reps + "</font><br>";
-                    else
-                        parse += "Reps: " + json.values[i].reps + "<br>";
-                else
-                    parse += "Reps: " + json.values[i].reps + "<br>";
-            else
-                parse += "Reps: " + json.values[i].reps + "<br>";
-
-            
-            if(i > 0)
-                if(typeof(json.values[i].sets) != 'undefined' && json.values[i].sets != null)
-                    if(json.values[i].sets > json.values[i - 1].sets)
-                        parse += '<font color="green">Sets: ' + json.values[i].sets + "</font><br>";
-                    else if(json.values[i].sets < json.values[i - 1].sets)
-                        parse += '<font color="red">Sets: ' + json.values[i].sets + "</font><br>";
-                    else   
-                        parse += "Sets: " + json.values[i].sets + "<br>";
-                else
-                    parse += "Sets: " + json.values[i].sets + "<br>";
-            else
-                parse += "Sets: " + json.values[i].sets + "<br>";
-            
-            if(i > 0)
-                if(typeof(json.values[i].max_rep) != 'undefined' && json.values[i].max_rep != null)
-                    if(json.values[i].max_rep > json.values[i - 1].max_rep)
-                        parse += '<font color="green">Max Rep: ' + json.values[i].max_rep + "</font><br>";
-                    else if(json.values[i].max_rep < json.values[i - 1].max_rep)
-                        parse += '<font color="red">Max Rep: ' + json.values[i].max_rep + "</font><br>";
-                    else   
-                        parse += "Max Rep: " + json.values[i].max_rep + "<br>";
-                else
-                    parse += "Max Rep: " + json.values[i].max_rep + "<br>";
-            else
-                parse += "Max Rep: " + json.values[i].max_rep + "<br>";
-            */
-
-            if(i > 0)
-                if(parseFloat(json.values[i].weight.match(/[\d\.]+/)) > parseFloat(json.values[i - 1].weight.match(/[\d\.]+/)))
-                    parse += '<font color="green">Weight: ' + json.values[i].weight + "</font><br>";
-                else if(parseFloat(json.values[i].weight.match(/[\d\.]+/)) < parseFloat(json.values[i - 1].weight.match(/[\d\.]+/)))
-                    parse += '<font color="red">Weight: ' + json.values[i].weight + "</font><br>"; 
-                else
-                    parse += "Weight: " + json.values[i].weight + "<br>";
-            else
-                parse += "Weight: " + json.values[i].weight + "<br>";
-
-            if(i > 0)
-                if(parseFloat(json.values[i].reps.match(/[\d\.]+/)) > parseFloat(json.values[i - 1].reps.match(/[\d\.]+/)))
-                    parse += '<font color="green">Reps: ' + json.values[i].reps + "</font><br>";
-                else if(parseFloat(json.values[i].reps.match(/[\d\.]+/)) < parseFloat(json.values[i - 1].reps.match(/[\d\.]+/)))
-                    parse += '<font color="red">Reps: ' + json.values[i].reps + "</font><br>";
-                else
-                    parse += "Reps: " + json.values[i].reps + "<br>";
-            else
-                parse += "Reps: " + json.values[i].reps + "<br>";
-
-            
-            if(i > 0)
-                if(parseFloat(json.values[i].sets.match(/[\d\.]+/)) > parseFloat(json.values[i - 1].sets.match(/[\d\.]+/)))
-                    parse += '<font color="green">Sets: ' + json.values[i].sets + "</font><br>";
-                else if(parseFloat(json.values[i].sets.match(/[\d\.]+/)) < parseFloat(json.values[i - 1].sets.match(/[\d\.]+/)))
-                    parse += '<font color="red">Sets: ' + json.values[i].sets + "</font><br>";
-                else   
-                    parse += "Sets: " + json.values[i].sets + "<br>";
-            else
-                parse += "Sets: " + json.values[i].sets + "<br>";
-            
-            if(i > 0)
-                if(parseFloat(json.values[i].max_rep.match(/[\d\.]+/)) > parseFloat(json.values[i - 1].max_rep.match(/[\d\.]+/)))
-                    parse += '<font color="green">Max Rep: ' + json.values[i].max_rep + "</font><br>";
-                else if(parseFloat(json.values[i].max_rep.match(/[\d\.]+/)) < parseFloat(json.values[i - 1].max_rep.match(/[\d\.]+/)))
-                    parse += '<font color="red">Max Rep: ' + json.values[i].max_rep + "</font><br>";
-                else   
-                    parse += "Max Rep: " + json.values[i].max_rep + "<br>";
-            else
-                parse += "Max Rep: " + json.values[i].max_rep + "<br>";
-
-            parse += "<br>"
-
-        }
-
-        return parse;
-    }
+   
 
     var labels = [1,2,3,4,5,6,7,8];
     var border_color_array = [ "#18AD5F" // green
@@ -1534,11 +1132,6 @@
         });
 
         return chart;
-    }
-
-    function get_data_per_exercise_and_step(index, name)
-    {
-        
     }
 
     function openNav()
@@ -1726,79 +1319,6 @@
 
         setCookie("partly_check_simplfied_ui", document.getElementById("checks-checkbox-ui").checked, 90);
         setCookie("partly_factor_simplfied_ui", document.getElementById("factors-checkbox-ui").checked, 90);
-    }
-
-    function setCookie(cname,cvalue,exdays) {
-        var d = new Date();
-        d.setTime(d.getTime() + (exdays*24*60*60*1000));
-        var expires = "expires=" + d.toGMTString();
-        document.cookie = cname + "=" + cvalue + ";" + expires + ";path=/";
-    }
-
-    function getCookie(cname) {
-        var name = cname + "=";
-        var decodedCookie = decodeURIComponent(document.cookie);
-        var ca = decodedCookie.split(';');
-        for(var i = 0; i < ca.length; i++) {
-            var c = ca[i];
-            while (c.charAt(0) == ' ') {
-                c = c.substring(1);
-            }
-            if (c.indexOf(name) == 0) {
-                return c.substring(name.length, c.length);
-            }
-        }
-        return "";
-    }
-
-    function checkCookie() {
-        var partly_check_simplfied_ui = getCookie("partly_check_simplfied_ui");
-        var partly_factor_simplfied_ui = getCookie("partly_factor_simplfied_ui");
-
-        if (partly_check_simplfied_ui != "" && partly_factor_simplfied_ui != "") 
-        {
-            console.log(partly_factor_simplfied_ui);
-            console.log(partly_check_simplfied_ui);
-
-            if(partly_check_simplfied_ui == "true")
-                document.getElementById("checks-checkbox-ui").checked = true;
-            else
-                document.getElementById("checks-checkbox-ui").checked = false;
-
-            if(partly_factor_simplfied_ui == "true")
-                document.getElementById("factors-checkbox-ui").checked = true;
-            else
-                document.getElementById("factors-checkbox-ui").checked = false;
-
-
-            if(partly_check_simplfied_ui == "true" && partly_factor_simplfied_ui == "true")
-            {
-                console.log("0");
-                document.getElementById("simplify-ui").checked = false;
-                simplify_ui();
-            }
-            else if(partly_check_simplfied_ui == "true" && partly_factor_simplfied_ui == "false")
-            {
-                console.log("1");
-                // document.getElementById("selects").style.width = "30%";
-                document.getElementById("selects").style.marginLeft = "10%";
-            
-                document.getElementById("checks").style.display = "inline";
-                document.getElementById("factors").style.display = "none";
-            }    
-            else if(partly_check_simplfied_ui == "false" && partly_factor_simplfied_ui == "true")
-            {
-                console.log("2");
-                // document.getElementById("selects").style.width = "30%";
-                document.getElementById("selects").style.marginLeft = "10%";
-            
-                document.getElementById("checks").style.display = "none";
-                document.getElementById("factors").style.display = "inline";
-            }
-        } else {
-            setCookie("partly_check_simplfied_ui", document.getElementById("checks-checkbox-ui").checked, 90);
-            setCookie("partly_factor_simplfied_ui", document.getElementById("factors-checkbox-ui").checked, 90);
-        }
     }
 </script>
 </html>

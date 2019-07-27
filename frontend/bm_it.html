@@ -599,7 +599,7 @@
             num_last_elem = bm.length - 1;
 
 
-            if(bm[num_last_elem].value != document.getElementById("additional-info_" + (i + 1)).querySelector("#value_value").value)
+            if(bm[num_last_elem].value != document.getElementById("additional-info_" + (i + 1)).querySelector("#value_value").value && document.getElementById("additional-info_" + (i + 1)).querySelector("#reps_box").checked)
             {
                 for(var j = 0; j < num_last_elem + 1; j++)
                 {

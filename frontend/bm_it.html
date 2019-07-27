@@ -370,6 +370,8 @@
     // #67 newly added func
     function set_bm_as_deactivated_as_callback_from_chart(event, bm_name)
     {
+        
+
         // At first its undefined so set it as defined at the beginnning
         if(chart.data.datasets[bm_name.datasetIndex]['_meta'][0].hidden === false)
             chart.data.datasets[bm_name.datasetIndex]['_meta'][0].hidden = false;   // At first it is always active, so set it to hidden true, which is active
@@ -395,7 +397,7 @@
 
         chart.update();
 
-        
+        set_cookie('active', 90);
     }
 
     function download() 

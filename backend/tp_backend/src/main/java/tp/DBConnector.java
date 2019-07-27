@@ -257,7 +257,7 @@ public class DBConnector
         System.out.println("(get_bm_values) - " + username);
 
         ParserFromDB p = new ParserFromDB();
-        user_values = ParserFromDB.get_bm_values(username, ParserFromDB.connectToDB(p.connectionString, p.user, p.password));
+        user_values = ParserFromDB.get_bm_values(username, ParserFromDB.connectToDB(p.connectionString, p.user, p.password), true);
 
         return user_values;
     }

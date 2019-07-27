@@ -586,7 +586,7 @@ public class ParserFromDB
         return json.toString();
     }
 
-    public static String get_bm_values(String username, Connection connection) throws SQLException, JSONException
+    public static String get_bm_values(String username, Connection connection, Boolean can_be_closed) throws SQLException, JSONException
     {
         JSONArray array = new JSONArray();
 
@@ -644,6 +644,9 @@ public class ParserFromDB
 
         System.out.println("get_bm_values: " + array);
 
+        // Connection here cannot be closed due to a dependency from parserintodb.check_for_deleted_bms
+        if(can_be_closed)
+            connection.close();
         return array.toString();
     }
 

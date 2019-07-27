@@ -645,7 +645,7 @@
         var expires = "expires=" + d.toGMTString();
         
         // Dont comment in, only in case all coockies should be deleted, for testing purpose
-        //deleteAllCookies();
+        //delete_all_cookies();
 
         for(var i = 0; i < amount_days; i++)
         {
@@ -656,9 +656,44 @@
     }
 
     // #67  newly added func
-    function deleteAllCookies() 
+    function delete_all_cookies() 
     {
         document.cookie.split(";").forEach(function(c) { document.cookie = c.replace(/^ +/, "").replace(/=.*/, "=;expires=" + new Date().toUTCString() + ";path=/"); });
+    }
+
+    // #67 changed func
+    function get_cookie(cname, index) 
+    {
+        var name = cname + index + "=";
+        var decodedCookie = decodeURIComponent(document.cookie);
+        var ca = decodedCookie.split(';');
+        
+        for(var i = 0; i < ca.length; i++) 
+        {
+            var c = ca[i];
+
+            while (c.charAt(0) == ' ') 
+            {
+                c = c.substring(1);
+            }
+
+            if (c.indexOf(name) == 0) 
+            {
+                set_dataset_and_button(index, c.substring(name.length, c.length));
+                return c.substring(name.length, c.length);
+            }
+        }
+
+        console.log("NO COOKIES FOUND");
+        return "";
+    }
+
+    // #67  newly added func
+    function set_dataset_and_button(index, bool)
+    {
+        var myBool = JSON.parse(bool);
+
+        document.getElementById("additional-info_" + (index + 1)).querySelector("#reps_box").checked = myBool;
     }
 
     // #67  newly added func
@@ -729,7 +764,7 @@
             {
 
                 console.log(bms[i])
-                // TODO load from cookies if active or not
+                
 
                 add_html_input(false, bms[i].id, true, bms[i].value_name, bms[i].value, bms[i].uom, bms[i].tod, bms[i].note, bms[i].base_bm_value)
             }
@@ -745,11 +780,18 @@
         active_bm = get_active_bms();
 
         update_bm_chart(active_bm);
-        getCookie()
+
+        // TODO load from cookies if active or not
+        var length = get_amount_inputs();
+        for(var i = 0; i < length; i++)
+            get_cookie("active_", i);
+
 
         // If the user has currently no bms present load one single input field and add the uoms and tods from the backend
         // append_combo("additional-info_1");
     }
+
+    
 
     // #67 newly added func
     function get_active_bms()
@@ -839,28 +881,6 @@
         });
 
         chart.update();   
-    }
-
-    // #67 changed func
-    function get_cookie(cname) 
-    {
-        var name = cname + "=";
-        var decodedCookie = decodeURIComponent(document.cookie);
-        var ca = decodedCookie.split(';');
-        
-        for(var i = 0; i < ca.length; i++) 
-        {
-            var c = ca[i];
-
-            while (c.charAt(0) == ' ') {
-                c = c.substring(1);
-            }
-            if (c.indexOf(name) == 0) {
-                return c.substring(name.length, c.length);
-            }
-        }
-
-        return "";
     }
 
     // #67 Newly added func

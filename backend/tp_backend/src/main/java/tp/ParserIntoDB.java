@@ -957,7 +957,10 @@ public class ParserIntoDB
                 System.out.println("Same bm does already exist");
 
                 // Return can not stay here, because if multiple
-                return_text = "Same bm does already exist - " + bm_name + " UNIT: " + uom + " - TOD: " + tod ;
+                if(return_text.equals("ok"))
+                    return_text = "Same bm does already exist - " + bm_name + " UNIT: " + uom + " - TOD: " + tod ;
+                else
+                    return_text += "\n\nSame bm does already exist - " + bm_name + " UNIT: " + uom + " - TOD: " + tod ;
             }
             else
             {
@@ -1001,7 +1004,7 @@ public class ParserIntoDB
             }
         }
 
-        //connection.close();
+        connection.close();
         return return_text;
     }
 

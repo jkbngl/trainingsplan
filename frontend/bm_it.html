@@ -520,7 +520,7 @@
         container.innerHTML = '<div id="additional-info_' + num_input + '" value="' + id + '" base_bm="' + base_bm + '" style="width: 100%; margin-bottom: 3%; display: flex; flex-direction: row; flex-wrap: nowrap;justify-content: space-between;"> \
             <div id="check-2" class="page__toggle"  style="margin-top: 10px; margin: auto;  margin-left:1%; "> \
                 <label class="toggle"> \
-                    <input id="reps_box" onchange="closeNav();" onclick="set_cookie(\'active\', 90); toggle_chart_datasets();"  class="toggle__input" type="checkbox" checked> \
+                    <input id="reps_box" onchange="closeNav();" onclick="set_cookie(\'active\', 90); toggle_chart_datasets(); show_potential()"  class="toggle__input" type="checkbox" checked> \
                     <span class="toggle__label"> \
                         <span class="toggle__text">Active</span> \
                     </span> \
@@ -605,8 +605,6 @@
                 {
                     current_active_values.push(bm[j].value);
                 }
-
-                
 
                 console.log(current_active_values);
 

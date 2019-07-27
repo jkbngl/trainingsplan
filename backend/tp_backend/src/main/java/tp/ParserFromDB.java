@@ -733,6 +733,7 @@ public class ParserFromDB
 
         System.out.println(base_bm_id);
 
+        connection.close();
         return array.toString();
     }
 
@@ -752,6 +753,7 @@ public class ParserFromDB
             array.put(resultset.getString(1));
         }
 
+        connection.close();
         return array.toString();
     }
 
@@ -770,6 +772,7 @@ public class ParserFromDB
             array.put(resultset.getString(1));
         }
 
+        connection.close();
         return array.toString();
     }
 }

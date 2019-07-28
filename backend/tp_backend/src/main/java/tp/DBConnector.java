@@ -15,7 +15,7 @@ public class DBConnector
     @Produces(MediaType.TEXT_PLAIN)
     public String getMessage()
     {
-        return "Hello, World! 3";
+        return "Hello - from TP";
     }
 
     @POST
@@ -101,7 +101,6 @@ public class DBConnector
         p.restore_plan(id, connection);
 
         connection.close();
-
         return "ok";
     }
 
@@ -288,6 +287,7 @@ public class DBConnector
     {
         String return_text  = " ";
         System.out.println("(send_bm_values) - " + msg);
+
         ParserFromDB p1 = new ParserFromDB();
         ParserIntoDB p2 = new ParserIntoDB();
 

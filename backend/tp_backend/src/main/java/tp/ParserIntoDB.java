@@ -1247,13 +1247,18 @@ public class ParserIntoDB
             set_bm_deleted(connection, Integer.parseInt(active_bms_list.get(i)));
 
         // connection.close();
-        //System.out.println("To delete:" + active_bms_list.toString());
+        System.out.println("TO DELETE:" + active_bms_list.toString());
     }
 
     public void set_bm_deleted(Connection connection, int id) throws SQLException
     {
+        // I need the base_bm to delete all historical bms and not just the newest
+        int base_bm_id = -1;
+
+        base_bm_id = get_base_bm(connection, id);
+
         PreparedStatement st = connection.prepareStatement("update tp_bm_it set deprecated = 2, changed = current_timestamp where id = (?)");
-        st.setInt(1, id);
+        st.setInt(1, base_bm_id);
 
         st.executeUpdate();
         st.close();

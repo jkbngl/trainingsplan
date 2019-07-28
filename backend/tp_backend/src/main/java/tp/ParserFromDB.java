@@ -717,8 +717,6 @@ public class ParserFromDB
         {
             JSONObject json = new JSONObject();
 
-            System.out.println(resultset.getString(3));
-
             json.put ("id", resultset.getString(1));
             json.put ("base_bm_id", resultset.getString(2));
             json.put ("userid_fk", resultset.getString(3));
@@ -733,8 +731,6 @@ public class ParserFromDB
 
             array.put(json);
         }
-
-        System.out.println(base_bm_id);
 
         connection.close();
         return array.toString();

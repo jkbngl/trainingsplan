@@ -119,7 +119,7 @@
 <body>
     <div class="fixed-background blue-gradient-bg"></div>
 
-    <div id="mySidenav" class="sidenav">
+    <div id="mySidenav" class="sidenav" style="z-index:2;">
         <button id="open-nav-button" onclick="closeNav()"                      class="button" style="float:right; float:top; margin-right: 10%; margin-bottom: 15%" ><i class="fas fa-bars"></i></a>
         <!--<a href="#">About</a>-->
         <!--<button onclick="receivePlanfromDB(false)" class="button" style=" top: 10px; width:80%; margin-left: 10%;">Load Plan</button>
@@ -175,7 +175,7 @@
         </div>
     </div>
 
-    <div id = "headerforbuttons" style="display: flex; justify-content: space-between; position:fixed; width:100%">
+    <div id = "headerforbuttons" style="display: flex; justify-content: space-between; position:fixed; width:100%; z-index:1;">
         <button onclick="openNav()" class="button" style="top: 10px;"><i class="fas fa-bars"></i></span>
             <button onclick="window.location.href='index.html'" class="button" style="top: 10px;" ><i class="fas fa-home"></i> Home</button>
             <button onclick="save()" class="button" style="top: 10px;" ><i class="far fa-save"></i> Save</button>

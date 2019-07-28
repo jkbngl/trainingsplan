@@ -229,10 +229,10 @@
     function save()
     {
         var amount_stats = get_amount_inputs();
-
         var jsonData = {
             stats: []
         };
+        var allowed_to_save = false;
 
         for(let i = 1; i <= amount_stats; i++)
         {
@@ -247,29 +247,50 @@
             });
         }
 
-        if(jsonData.stats[0].tod.length > 0 && jsonData.stats[0].uom.length > 0 && jsonData.stats[0].name.length > 0)
-        {
-            try
-            {
-                var xhr = new XMLHttpRequest();
-                var url = "http://jakob.ml:8080/tpbackend_1-1.0-SNAPSHOT/api/trainingsplan/send_bm_values";
-                xhr.open("POST", url, true);
-                xhr.setRequestHeader("Content-Type", "text/plain");
-                var string = JSON.stringify(jsonData);
-                
-                xhr.send(string);
 
-                checkIfDataIsLoadedIntoDB(xhr);
-            }
-            catch(err)
+        for(let i = 0; i < amount_stats; i++)
+        {
+            if(jsonData.stats[i].tod.length > 0 && jsonData.stats[i].uom.length > 0 && jsonData.stats[i].name.length > 0)
             {
-                console.error(err);
-                display_error('error', 'Oops...', 'The backend seems to be unavailable!')
+                allowed_to_save = true;
             }
+            else
+            {
+                allowed_to_save = false;
+               
+            }
+        }
+        
+
+        if(allowed_to_save)
+        {
+            send_bm_data_to_backend(jsonData)
         }
         else
         {
             display_error('error', 'Name, UNIT and TOD have to be selected', 'dont know');
+        }
+    }
+
+    // #67 Newly added func
+    function send_bm_data_to_backend(jsonData)
+    {
+        try
+        {
+            var xhr = new XMLHttpRequest();
+            var url = "http://jakob.ml:8080/tpbackend_1-1.0-SNAPSHOT/api/trainingsplan/send_bm_values";
+            xhr.open("POST", url, true);
+            xhr.setRequestHeader("Content-Type", "text/plain");
+            var string = JSON.stringify(jsonData);
+            
+            xhr.send(string);
+
+            checkIfDataIsLoadedIntoDB(xhr);
+        }
+        catch(err)
+        {
+            console.error(err);
+            display_error('error', 'Oops...', 'The backend seems to be unavailable!')
         }
     }
 

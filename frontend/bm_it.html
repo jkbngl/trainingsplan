@@ -182,7 +182,7 @@
             <button onclick="keycloak.logout()" class="button" value="username ..." id="username" style="top: 10px;"></button>
     </div>​
 
-    <div id="div-line-chart" style="position: relative; margin-top: 2.5%; height: 60vh;">
+    <div id="div-line-chart" style="position: relative; margin-top: 2.5%; height: 60vh; z-index: 0">
         <canvas id="line-chart" height="100"></canvas>
     </div>
     <button id="clear-potential" onclick="closeNav(); clear_potential(true)" class="button" style="display: inline-block; position: absolute; right: 0; margin-bottom: 4%; margin-right: 1%" >Clear Potential <!--<i style="display: inline-block;" class="fas fa-trash"></i>--></button>
@@ -233,6 +233,7 @@
             stats: []
         };
         var allowed_to_save = false;
+        var values_are_numeric = false;
 
         for(let i = 1; i <= amount_stats; i++)
         {
@@ -259,16 +260,33 @@
                 allowed_to_save = false;
                
             }
+            
+            if(isNaN(jsonData.stats[i].value))
+            {
+                values_are_numeric = false;
+            }
+            else
+            {
+                values_are_numeric = true;
+            }
+
+            if(!values_are_numeric || !allowed_to_save)
+                break;
         }
         
 
-        if(allowed_to_save)
+        if(allowed_to_save && values_are_numeric)
         {
             send_bm_data_to_backend(jsonData)
         }
         else
         {
-            display_error('error', 'Name, UNIT and TOD have to be selected', 'dont know');
+            if(!allowed_to_save && !values_are_numeric)
+                display_error('error', 'Name, UNIT and TOD have to be selected and values must be numeric and may not contain letters', 'dont know');
+            else if(!allowed_to_save && values_are_numeric)
+                display_error('error', 'Name, UNIT and TOD have to be selected', 'dont know');
+            else if(!values_are_numeric && allowed_to_save)
+                display_error('error', 'Values must be numeric and may not contain letters!', 'dont know');
         }
     }
 

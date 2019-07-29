@@ -405,24 +405,25 @@
     // #67 newly added func
     function set_bm_as_deactivated_as_callback_from_chart(event, bm_name)
     {
-        
+        var meta_data_id = chart.getDatasetMeta(bm_name.datasetIndex).controller.chart.id;
+
         // At first its undefined so set it as defined at the beginnning
-        if(chart.data.datasets[bm_name.datasetIndex]['_meta'][0].hidden === false)
-            chart.data.datasets[bm_name.datasetIndex]['_meta'][0].hidden = false;   // At first it is always active, so set it to hidden true, which is active
+        if(chart.data.datasets[bm_name.datasetIndex]['_meta'][meta_data_id].hidden === false)
+            chart.data.datasets[bm_name.datasetIndex]['_meta'][meta_data_id].hidden = false;   // At first it is always active, so set it to hidden true, which is active
         else
             ;
 
-        if(chart.data.datasets[bm_name.datasetIndex]['_meta'][0].hidden)
+        if(chart.data.datasets[bm_name.datasetIndex]['_meta'][meta_data_id].hidden)
         {
-            chart.data.datasets[bm_name.datasetIndex]['_meta'][0].hidden = false;
+            chart.data.datasets[bm_name.datasetIndex]['_meta'][meta_data_id].hidden = false;
             document.getElementById("additional-info_" + (bm_name.datasetIndex + 1)).querySelector("#reps_box").checked = true;
         }
-        else if(!chart.data.datasets[bm_name.datasetIndex]['_meta'][0].hidden)
+        else if(!chart.data.datasets[bm_name.datasetIndex]['_meta'][meta_data_id].hidden)
         {
             // If the chart goes from the active state into hidden state
             console.log("CALLED HERE as callback from chart legend");
             clear_potential(false, bm_name.datasetIndex);
-            chart.data.datasets[bm_name.datasetIndex]['_meta'][0].hidden = true;
+            chart.data.datasets[bm_name.datasetIndex]['_meta'][meta_data_id].hidden = true;
             document.getElementById("additional-info_" + (bm_name.datasetIndex + 1)).querySelector("#reps_box").checked = false;
         }
 
@@ -703,22 +704,25 @@
             if (c.indexOf(name) == 0) 
             {
                 set_dataset_and_button(index, c.substring(name.length, c.length));
-                return c.substring(name.length, c.length);
+                //return c.substring(name.length, c.length);
             }
         }
 
         console.log("NO COOKIES FOUND");
-        return "";
+        //return "";
     }
 
     // #67  newly added func
     function set_dataset_and_button(index, bool)
     {
+        var meta_data_id = chart.getDatasetMeta(index).controller.chart.id;
+
         // String does not work so I need to parse it to a javascript object
         var myBool = JSON.parse(bool);
 
+        
         document.getElementById("additional-info_" + (index + 1)).querySelector("#reps_box").checked = myBool;
-        chart.data.datasets[index]['_meta'][0].hidden = !myBool;    // Hidden so turn it arount
+        chart.data.datasets[index]['_meta'][meta_data_id].hidden = !myBool;    // Hidden so turn it around
 
         // In order that it is displayed correctly in the chart I need to update the chart so that it is also visible not only in the background
         chart.update();
@@ -731,16 +735,18 @@
 
         for(var i = 0; i < length; i++)
         {
+            var meta_data_id = chart.getDatasetMeta(i).controller.chart.id;
+
             if(!document.getElementById("additional-info_" + (i + 1)).querySelector("#reps_box").checked)
             {
-                chart.data.datasets[i]['_meta'][0].hidden = true;
+                chart.data.datasets[i]['_meta'][meta_data_id].hidden = true;
 
                 // clear the potential of the bm as well and not only the active - the ones which are not active
                 clear_potential(false, i);
             }
             else
             {
-                chart.data.datasets[i]['_meta'][0].hidden = false;
+                chart.data.datasets[i]['_meta'][meta_data_id].hidden = false;
             }    
             
             chart.update();
@@ -797,10 +803,6 @@
             // Load his bms from the backend into the frontend
             for(var i = 0; i < bms.length; i ++)
             {
-
-                console.log(bms[i])
-                
-
                 add_html_input(false, bms[i].id, true, bms[i].value_name, bms[i].value, bms[i].uom, bms[i].tod, bms[i].note, bms[i].base_bm_value)
             }
         }
@@ -919,7 +921,7 @@
         }
         else
         {
-            console.log("going to clear: " + bm_id)
+            //console.log("going to clear: " + bm_id)
             // Remove only the datasets defined in the function call
             chart.data.datasets = chart.data.datasets.filter(function(obj) {
                 return (obj.label != 'potential_value_not_show_in_legend_' + bm_id); 

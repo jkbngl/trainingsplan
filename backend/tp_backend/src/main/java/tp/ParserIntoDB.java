@@ -1247,7 +1247,6 @@ public class ParserIntoDB
             set_bm_deleted(connection, Integer.parseInt(active_bms_list.get(i)));
 
         // connection.close();
-        System.out.println("TO DELETE:" + active_bms_list.toString());
     }
 
     public void set_bm_deleted(Connection connection, int id) throws SQLException
@@ -1257,7 +1256,9 @@ public class ParserIntoDB
 
         base_bm_id = get_base_bm(connection, id);
 
-        PreparedStatement st = connection.prepareStatement("update tp_bm_it set deprecated = 2, changed = current_timestamp where id = (?)");
+        System.out.println("TO DELETE: " + base_bm_id);
+
+        PreparedStatement st = connection.prepareStatement("update tp_bm_it set deprecated = 2, changed = current_timestamp where base_bm_id = (?)");
         st.setInt(1, base_bm_id);
 
         st.executeUpdate();

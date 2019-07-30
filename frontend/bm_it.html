@@ -642,7 +642,7 @@
 
                 chart.data.datasets.push({
                     data: current_active_values,
-                    label: 'potential_value_not_show_in_legend_' + i,
+                    label: 'potential_value_number_' + i,
                     borderColor: border_color_array[i],
                     backgroundColor: border_color_array[i],
                     borderDash: [10],
@@ -916,7 +916,7 @@
         {
             // Remove all datasets with the configured chart name
             chart.data.datasets = chart.data.datasets.filter(function(obj) {
-                return (!obj.label.includes('potential_value_not_show_in_legend')); 
+                return (!obj.label.includes('potential_value_number_')); 
             });
         }
         else
@@ -924,7 +924,7 @@
             //console.log("going to clear: " + bm_id)
             // Remove only the datasets defined in the function call
             chart.data.datasets = chart.data.datasets.filter(function(obj) {
-                return (obj.label != 'potential_value_not_show_in_legend_' + bm_id); 
+                return (obj.label != 'potential_value_number_' + bm_id); 
             });
         }
 
@@ -1171,7 +1171,7 @@
                         fontSize: 20,
                         filter: function(item, chart) {
                             // Logic to remove a particular legend item goes here
-                            return !item.text.includes('potential_value_not_show_in_legend');
+                            return !item.text.includes('potential_value_number_');
                         }   
                     }
                 },

@@ -1176,9 +1176,9 @@
                     }
                 },
                 tooltips: {
-                    filter: function (tooltipItem, otheritem) {
-                        //console.log(tooltipItem, otheritem.datasets.length);
-                        return tooltipItem.datasetIndex === 0;
+                    filter: function (tooltipItem, otheritem) 
+                    {
+                        return !otheritem.datasets[tooltipItem.datasetIndex].label.includes("potential_value_number_")
                     }
                 },
                 scales: {

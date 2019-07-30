@@ -1175,6 +1175,12 @@
                         }   
                     }
                 },
+                tooltips: {
+                    filter: function (tooltipItem, otheritem) {
+                        //console.log(tooltipItem, otheritem.datasets.length);
+                        return tooltipItem.datasetIndex === 0;
+                    }
+                },
                 scales: {
                     yAxes: [{
                         ticks: {

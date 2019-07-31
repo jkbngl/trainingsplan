@@ -145,7 +145,7 @@
             <label class="toggle">
             <input id="factors-checkbox-ui" onclick="simplify_ui_partly(); save_settings();" class="toggle__input" type="checkbox">
             <span class="toggle__label">
-                <span class="toggle__text">Show Factors 
+                <span class="toggle__text">Show Unit 
                     <i class="fas fa-info-circle" rel="tooltip" title="If this checkbox is active you can access the part of the advanced ui where you can change the factors per attribute" id="info-step-2"></i>
                 </span>
             </span>
@@ -156,7 +156,7 @@
             <label class="toggle">
             <input id="checks-checkbox-ui" onclick="simplify_ui_partly(); save_settings();" class="toggle__input" type="checkbox">
             <span class="toggle__label">
-                <span class="toggle__text">Show Checks
+                <span class="toggle__text">Show Time of Day
                     <i class="fas fa-info-circle" rel="tooltip" title="If this checkbox is active you can access the part of the advanced ui where you can change the attributes that should be used to calc the data in the chart" id="info-step-2"></i>
                 </span>
             </span>
@@ -552,7 +552,7 @@
             id = "defaultvaluetoignore";
 
         container.innerHTML = '<div id="additional-info_' + num_input + '" value="' + id + '" base_bm="' + base_bm + '" style="width: 100%; margin-bottom: 3%; display: flex; flex-direction: row; flex-wrap: nowrap;justify-content: space-between;"> \
-            <div id="check-2" class="page__toggle"  style="margin-top: 10px; margin: auto;  margin-left:1%; "> \
+            <div id="check-2" class="page__toggle"  style="margin-top: 10px; margin: auto;  margin-left:1%; z-index:1;"> \
                 <label class="toggle"> \
                     <input id="reps_box" onchange="closeNav();" onclick="set_cookie(\'active\', 90); toggle_chart_datasets(); show_potential()"  class="toggle__input" type="checkbox" checked> \
                     <span class="toggle__label"> \

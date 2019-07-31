@@ -128,7 +128,6 @@
         <!--<button onclick="save_settings(); update_chart();"                  class="button" style="top: 10px; width:80%; margin-left: 10%; margin-top: 20%;"><i class="far fa-save"></i> Save Preferences</button>-->
         <button onclick="window.location.href='stats.html'" class="button" id="stats-button" style="top: 10px; width:80%; margin-left: 10%;"><i class="fas fa-chart-line"></i> Stats</button>
         <button onclick="download();" class="button" style="top: 10px; width:80%; margin-left: 10%; margin-top: 20%;"><i class="fas fa-file-export"></i> Export</button>
-        <button onclick="keycloak.logout('/trainingsplanorwhateveritdoesntworkanyway'); kc.logout()"class="button" style="top: 10px; width:80%; margin-left: 10%; "><i class="fas fa-sign-out-alt"></i> Logout</button>
 
         <div class="page__toggle" style="margin-left: 10%; margin-top: 12%;">
             <label class="toggle">
@@ -173,6 +172,8 @@
             </span>
             </label>
         </div>
+
+        <button onclick="keycloak.logout('/trainingsplanorwhateveritdoesntworkanyway'); kc.logout()"class="button" style="top: 10px; width:80%; margin-left: 10%; margin-top: 20%"><i class="fas fa-sign-out-alt"></i> Logout</button>
     </div>
 
     <div id = "headerforbuttons" style="display: flex; justify-content: space-between; position:fixed; width:100%; z-index:1;">

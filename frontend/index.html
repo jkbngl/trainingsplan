@@ -440,6 +440,9 @@
             {
                 document.getElementById("stats-button").style.display = "inline";      // Add the stats button
             }
+
+            if(document.getElementById("stats-button").style.display == "none" && document.getElementById("bm-button").style.display == "inline")
+                document.getElementById("bm-button").style.marginTop = "20%";
         }
         
         // This part sets how many plans the user already has and then in check_allowed_to_add_plan it is checked if the user is allowed to add another one

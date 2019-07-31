@@ -126,7 +126,7 @@
         <button onclick="cleanUpTables(); addTable(true);  closeNav();"class="button" style="top: 10px; width:80%; margin-left: 10%;">New Plan</button>-->
         <button onclick="window.location.href='index.html'" class="button" style="top: 10px; width:80%; margin-left: 10%;"><i class="fas fa-home"></i> Home</button>
         <!--<button onclick="save_settings(); update_chart();"                  class="button" style="top: 10px; width:80%; margin-left: 10%; margin-top: 20%;"><i class="far fa-save"></i> Save Preferences</button>-->
-        <button onclick="reset_settings(); save_settings()"class="button" style="top: 10px; width:80%; margin-left: 10%;"><i class="fas fa-hammer"></i> Reset</button>
+        <button onclick="window.location.href='stats.html'" class="button" id="stats-button" style="top: 10px; width:80%; margin-left: 10%;"><i class="fas fa-chart-line"></i> Stats</button>
         <button onclick="download();" class="button" style="top: 10px; width:80%; margin-left: 10%; margin-top: 20%;"><i class="fas fa-file-export"></i> Export</button>
         <button onclick="keycloak.logout('/trainingsplanorwhateveritdoesntworkanyway'); kc.logout()"class="button" style="top: 10px; width:80%; margin-left: 10%; "><i class="fas fa-sign-out-alt"></i> Logout</button>
 
@@ -1082,7 +1082,7 @@
             {
                 roles[pos] = assigned_roles[i];
                 pos++;
-            } 
+            }
         }
 
         var superaccount = (roles.indexOf("friend_account") > -1) || (roles.indexOf("paid_account") > -1);
@@ -1096,9 +1096,13 @@
                 alert("Access denied!");
                 window.location.href='index.html';
             }
+            else if(roles.includes("stats_access") != true)
+            {
+                document.getElementById("stats-button").style.display = "none";
+            }
             else
             {
-                //alert("Access granted!");
+                ;
             }
         }
     }
@@ -1176,9 +1180,9 @@
                     }
                 },
                 tooltips: {
-                    filter: function (tooltipItem, otheritem) 
+                    filter: function (tooltip_item, all_items) 
                     {
-                        return !otheritem.datasets[tooltipItem.datasetIndex].label.includes("potential_value_number_")
+                        return !all_items.datasets[tooltip_item.datasetIndex].label.includes("potential_value_number_");
                     }
                 },
                 scales: {
@@ -1188,18 +1192,6 @@
                         }
                     }]
                 },
-                /*
-                tooltips: {
-                    enabled: true,
-                    mode: 'single',
-                    callbacks: {
-                        label: function(tooltipItems, data) { 
-                            var label = data.datasets[tooltipItems.datasetIndex].label || '';
-                            get_data_per_exercise_and_step(tooltipItems.xLabel, label);
-                            return tooltipItems.xLabel + " | " + label;
-                        }
-                    }
-                },            */
                 responsive: true,
                 maintainAspectRatio: false
             }

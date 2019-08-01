@@ -1226,7 +1226,7 @@ public class ParserIntoDB
         String username = send_bms.getJSONObject(0).getString("username");
         ParserFromDB check_active_bms_checker = new ParserFromDB();
         // Store all his active bms in a jsonarray
-        JSONArray active_bms = new JSONArray(check_active_bms_checker.get_bm_values(username, connection, false));
+        JSONArray active_bms = new JSONArray(check_active_bms_checker.get_bm_values(username, 0, connection, false));
         // Store both the send and the active bms in a arraylist
         List<String> send_bms_list = new ArrayList<String>();
         List<String> active_bms_list = new ArrayList<String>();

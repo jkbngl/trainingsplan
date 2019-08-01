@@ -586,7 +586,7 @@ public class ParserFromDB
         return json.toString();
     }
 
-    public static String get_bm_values(String username, Connection connection, Boolean can_be_closed) throws SQLException, JSONException
+    public static String get_bm_values(String username, int activeness, Connection connection, Boolean can_be_closed) throws SQLException, JSONException
     {
         JSONArray array = new JSONArray();
 
@@ -607,7 +607,8 @@ public class ParserFromDB
                        "join    tp_tods tod on tod.id = b.tod " +
                        "where   u.username = ? " +
                        "and     base_bm_id > 0" +
-                       "and     deprecated < 2 " +
+                       // "and     deprecated <  2 " +
+                       "and     deprecated " + (activeness == 0 ? " < 2 " : (activeness == 1 ? " > 1 " : " < 99 ")) + // 0 -> active, 1 = deleted, 2 -> all
                        "group by  b.base_bm_id " +
                        "        , b.userid_fk " +
                        "        , u.username " +

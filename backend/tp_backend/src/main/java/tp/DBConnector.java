@@ -247,16 +247,24 @@ public class DBConnector
     }
 
     // http://jakob.ml:8080/tp_backend-1.0-SNAPSHOT/api/trainingsplan/get_bm_values/15
-    @Path("get_bm_values/{username}")
+    @Path("get_bm_values/{username}/{activeness}")
     @GET
     @Produces("text/plain")
-    public String get_bm_values(@PathParam("username") String username) throws JSONException, SQLException
+    public String get_bm_values(@PathParam("username") String username, @PathParam("activeness") int activeness) throws JSONException, SQLException
     {
+        /*
+        * activeness:
+        *   0 -> active
+        *   1 -> delete
+        *   2 -> all
+        *
+        *
+        * */
         String user_values = "";
-        System.out.println("(get_bm_values) - " + username);
+        System.out.println("(get_bm_values) - " + username + " - activeness: " + activeness);
 
         ParserFromDB p = new ParserFromDB();
-        user_values = ParserFromDB.get_bm_values(username, ParserFromDB.connectToDB(p.connectionString, p.user, p.password), true);
+        user_values = ParserFromDB.get_bm_values(username, activeness, ParserFromDB.connectToDB(p.connectionString, p.user, p.password), true);
 
         return user_values;
     }

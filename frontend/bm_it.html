@@ -279,9 +279,9 @@
         else
         {
             if(!allowed_to_save && !values_are_numeric)
-                display_error('error', 'Name, UNIT and TOD have to be selected and values must be numeric and may not contain letters', 'dont know');
+                display_error('error', 'Name, UNIT and time of day have to be selected and values must be numeric and may not contain letters', 'dont know');
             else if(!allowed_to_save && values_are_numeric)
-                display_error('error', 'Name, UNIT and TOD have to be selected', 'dont know');
+                display_error('error', 'Name, UNIT and time of day have to be selected', 'dont know');
             else if(!values_are_numeric && allowed_to_save)
                 display_error('error', 'Values must be numeric and may not contain letters!', 'dont know');
         }

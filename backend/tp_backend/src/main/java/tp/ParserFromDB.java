@@ -591,36 +591,37 @@ public class ParserFromDB
         JSONArray array = new JSONArray();
 
         String query = "select  b.base_bm_id  newest_id " +
-                "      , b.userid_fk   userid " +
-                "      , b.value_name " +
-                "      , uom.uom_name " +
-                "      , tod.tod_name " +
-                "      , max(b.value) " +    // This value is not used, as the max is not correct but rather the actual, which might be lower than the max
-                "      , max(b.referenced_bm_id) " +
-                "      , max(b.created) " +
-                "      , max(b.changed)" +
-                "      , max(b.id)" +
-                "from    tp_bm_it b " +
-                "join    tp_user u on u.id = b.userid_fk " +
-                "join    tp_uoms uom on uom.id = b.uom " +
-                "join    tp_tods tod on tod.id = b.tod " +
-                "where   u.username = ? " +
-                "and     base_bm_id > 0" +
-                "and     deprecated < 2 " +
-                "group by  b.base_bm_id " +
-                "        , b.userid_fk " +
-                "        , u.username " +
-                "        , b.value_name " +
-                "        , uom.uom_name " +
-                "        , tod.tod_name " +
-                ";";
+                       "      , b.userid_fk   userid " +
+                       "      , b.value_name " +
+                       "      , uom.uom_name " +
+                       "      , tod.tod_name " +
+                       "      , max(b.value) " +    // This value is not used, as the max is not correct but rather the actual, which might be lower than the max
+                       "      , max(b.referenced_bm_id) " +
+                       "      , max(b.created) " +
+                       "      , max(b.changed)" +
+                       "      , max(b.id) " +
+                       "      , ROUND(avg(b.deprecated)) activeness " +
+                       "from    tp_bm_it b " +
+                       "join    tp_user u on u.id = b.userid_fk " +
+                       "join    tp_uoms uom on uom.id = b.uom " +
+                       "join    tp_tods tod on tod.id = b.tod " +
+                       "where   u.username = ? " +
+                       "and     base_bm_id > 0" +
+                       "and     deprecated < 2 " +
+                       "group by  b.base_bm_id " +
+                       "        , b.userid_fk " +
+                       "        , u.username " +
+                       "        , b.value_name " +
+                       "        , uom.uom_name " +
+                       "        , tod.tod_name " +
+                       ";";
 
         PreparedStatement pstmt = connection.prepareStatement(query);
         pstmt.setString(1, username);
         ResultSet resultset = pstmt.executeQuery();
 
 
-
+        System.out.println(pstmt.toString());
 
         while (resultset.next())
         {
@@ -638,6 +639,7 @@ public class ParserFromDB
             json.put ("changed", resultset.getString(9));
             json.put ("id", resultset.getString(10));
             json.put("note", get_note(connection, resultset.getString(10)));
+            json.put("activeness", resultset.getString(11));
 
             array.put(json);
         }

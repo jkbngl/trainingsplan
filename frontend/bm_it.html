@@ -127,7 +127,9 @@
         <button onclick="window.location.href='index.html'" class="button" style="top: 10px; width:80%; margin-left: 10%;"><i class="fas fa-home"></i> Home</button>
         <!--<button onclick="save_settings(); update_chart();"                  class="button" style="top: 10px; width:80%; margin-left: 10%; margin-top: 20%;"><i class="far fa-save"></i> Save Preferences</button>-->
         <button onclick="window.location.href='stats.html'" class="button" id="stats-button" style="top: 10px; width:80%; margin-left: 10%;"><i class="fas fa-chart-line"></i> Stats</button>
-        <button onclick="download();" class="button" style="top: 10px; width:80%; margin-left: 10%; margin-top: 20%;"><i class="fas fa-file-export"></i> Export</button>
+        
+        <button onclick="download();" class="button" style="top: 10px; width:80%; margin-left: 10%; margin-top: 20%;"><i class="fas fa-trash-restore-alt"></i> Restore</button>
+        <button onclick="download();" class="button" style="top: 10px; width:80%; margin-left: 10%;"><i class="fas fa-file-export"></i> Export</button>
 
         <div class="page__toggle" style="margin-left: 10%; margin-top: 12%;">
             <label class="toggle">
@@ -853,7 +855,7 @@
             var url = 'http://jakob.ml:8080/tpbackend_1-1.0-SNAPSHOT/api/trainingsplan/get_bm_values/';
             var xmlHttp = new XMLHttpRequest();
         
-            xmlHttp.open( "GET", url + getusername(), false ); // false for synchronous request
+            xmlHttp.open( "GET", url + getusername() + "/0", false ); // false for synchronous request
             xmlHttp.send( null );
             bms = xmlHttp.responseText;
         

@@ -281,9 +281,9 @@
         else
         {
             if(!allowed_to_save && !values_are_numeric)
-                display_error('error', 'Name, UNIT and time of day have to be selected and values must be numeric and may not contain letters', 'dont know');
+                display_error('error', 'Name, unit and time of day have to be selected and values must be numeric and may not contain letters', 'dont know');
             else if(!allowed_to_save && values_are_numeric)
-                display_error('error', 'Name, UNIT and time of day have to be selected', 'dont know');
+                display_error('error', 'Name, unit and time of day have to be selected', 'dont know');
             else if(!values_are_numeric && allowed_to_save)
                 display_error('error', 'Values must be numeric and may not contain letters!', 'dont know');
         }
@@ -573,7 +573,7 @@
                     <option value="" selected></option> \
                 </select> \
                 <span class="select-highlight"></span> \
-                <label id="select-text" style="font-size: 22px;" class="select-label">UNIT \
+                <label id="select-text" style="font-size: 22px;" class="select-label">Unit \
                 <i class="fas fa-info-circle" rel="tooltip" title="Select an exercise from this list to have the history (if existent) of your data displayed in the chart above  " id="info-step-1"></i> \
                     </label> \
                 <span class="select-bar"></span> \

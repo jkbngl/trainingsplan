@@ -93,8 +93,7 @@
                 
                     document.getElementById("username").innerHTML = username + ' <i class="fas fa-sign-out-alt"></i>';
 
-                    build_page();           
-                             
+                    build_page();                                        
                 
                     if( isMobile.any() ) 
                         customize_mobile();
@@ -433,16 +432,12 @@
                 active_bm++;
                 name_active_bm = chart.data.datasets[i].label;
                 index_active_bm = chart.data.datasets[i]['_meta'][meta_data_id].dataset._datasetIndex;
-                console.log(chart.data.datasets[i].data.length)
                 local_labels_numbers.push(chart.data.datasets[i].data.length)
             }    
         }
 
         if(active_bm == 1)
         {
-            console.log(name_active_bm);
-            console.log(index_active_bm);
-            
             historic_data = JSON.parse(rest_get_historical_bm(document.getElementById("additional-info_" + (index_active_bm + 1)).getAttribute("base_bm")));
 
             for(var i = 0; i < historic_data.length; i++)
@@ -456,6 +451,7 @@
                     new_labels.push("potential");
             }
 
+            console.log("set date labels in new func");
             chart.data.labels = new_labels;
         }
         else
@@ -469,9 +465,12 @@
 
             local_labels_numbers.push("potential");
 
+            console.log("set num labels in new func");
             chart.data.labels = local_labels_numbers;
-            // TODO set the labels back correctly
         }
+
+        console.log("set labels correctly");
+
     }
 
     // #67 newly added func
@@ -900,12 +899,10 @@
         for(var i = 0; i < length; i++)
             get_cookie("active_", i);
 
-
-        // If the user has currently no bms present load one single input field and add the uoms and tods from the backend
-        // append_combo("additional-info_1");
+        
+        set_labels();
+        chart.update()
     }
-
-    
 
     // #67 newly added func
     function get_active_bms()
@@ -1106,12 +1103,14 @@
                     fill: false
                 });
 
+                /*
                 if(bms.length == 1)
                 {
+                    console.log("set date labels in old func");
                     chart.data.labels = local_labels_date;
                 }
                 else
-                {    
+                {
                     var max_num = Math.max.apply(Math, local_labels_numbers);
                     local_labels_numbers = [];
                     
@@ -1120,9 +1119,11 @@
                         local_labels_numbers.push(k);
                         
 
+                    console.log("set num labels in old func");
                     chart.data.labels = local_labels_numbers;
                 }
-                
+                */
+               
                 chart.update();
             }
             

@@ -128,7 +128,7 @@
         <!--<button onclick="save_settings(); update_chart();"                  class="button" style="top: 10px; width:80%; margin-left: 10%; margin-top: 20%;"><i class="far fa-save"></i> Save Preferences</button>-->
         <button onclick="window.location.href='stats.html'" class="button" id="stats-button" style="top: 10px; width:80%; margin-left: 10%;"><i class="fas fa-chart-line"></i> Stats</button>
         
-        <button onclick="download();" class="button" style="top: 10px; width:80%; margin-left: 10%; margin-top: 20%;"><i class="fas fa-trash-restore-alt"></i> Restore</button>
+        <button onclick="restore_bm();" class="button" style="top: 10px; width:80%; margin-left: 10%; margin-top: 20%;"><i class="fas fa-trash-restore-alt"></i> Restore</button>
         <button onclick="download();" class="button" style="top: 10px; width:80%; margin-left: 10%;"><i class="fas fa-file-export"></i> Export</button>
 
         <div class="page__toggle" style="margin-left: 10%; margin-top: 12%;">
@@ -405,6 +405,58 @@
         build_page();
     }
 
+    // #67 Newly added func
+    function check_for_only_one_chart_available_for_label()
+    {
+        // id which needs to be defined to get the metadata(hidden) of the lines/ bars
+        var meta_data_id;
+        // All bms to loop through them
+        var all_bms = get_amount_inputs();
+        // Amount of active to check if only one is active
+        var active_bm = 0;
+        // The name and the index of the active bm, gets overwritten when multiple are active, which does not matter as we then dont use it
+        var name_active_bm;
+        var index_active_bm;
+        // Historic data to set the labels accordingly
+        var historic_data;
+        // If there is only one bm active anymore 
+        var new_labels = [];
+
+        for(var i = 0; i < all_bms; i++)
+        {
+            meta_data_id = chart.getDatasetMeta(i).controller.chart.id;
+         
+            if(!chart.data.datasets[i]['_meta'][meta_data_id].hidden)
+            {
+                active_bm++;
+                name_active_bm = chart.data.datasets[i].label;
+                index_active_bm = chart.data.datasets[i]['_meta'][meta_data_id].dataset._datasetIndex;
+            }    
+        }
+
+        if(active_bm == 1)
+        {
+            console.log(name_active_bm);
+            console.log(index_active_bm);
+            
+            historic_data = JSON.parse(rest_get_historical_bm(document.getElementById("additional-info_" + (index_active_bm + 1)).getAttribute("base_bm")));
+
+            for(var i = 0; i < historic_data.length; i++)
+            {
+                var date = new Date(historic_data[i].created).toUTCString()
+                date = date.split(' ').slice(1, 4).join(' ')
+
+                new_labels.push(date)
+            }
+
+            chart.data.labels = new_labels;
+        }
+        else
+        {
+            // TODO set the labels back correctly
+        }
+    }
+
     // #67 newly added func
     function set_bm_as_deactivated_as_callback_from_chart(event, bm_name)
     {
@@ -430,11 +482,14 @@
             document.getElementById("additional-info_" + (bm_name.datasetIndex + 1)).querySelector("#reps_box").checked = false;
         }
 
+        check_for_only_one_chart_available_for_label();
+
         chart.update();
 
         set_cookie('active', 90);
     }
-
+    
+    // #67 changed func
     function download() 
     {
         var amount_bms = get_amount_inputs();
@@ -750,7 +805,9 @@
             else
             {
                 chart.data.datasets[i]['_meta'][meta_data_id].hidden = false;
-            }    
+            }
+
+            check_for_only_one_chart_available_for_label();
             
             chart.update();
         }
@@ -877,7 +934,10 @@
         var bm_name = document.getElementById("additional-info_" + num_bm).querySelector("#value_name").value
 
 
-        Swal.fire({html:  parse_base_bm(json_history_bm, bm_name), customClass: mobile_swal});
+        Swal.fire({
+            html:  parse_base_bm(json_history_bm, bm_name)
+          , customClass: mobile_swal
+        });
     }
 
     // #67 newly added func
@@ -1109,7 +1169,79 @@
             }
         }
     }
+
+
+    // #67 changed func
+    function restore_bm()
+    {
+        var deleted_bms = load_deleted_bm();
+        var parsed_bms = {};
+
+        for(var i = 0; i < deleted_bms.length; i++)
+        {
+            var date = new Date(deleted_bms[i].created).toUTCString()
+            date = date.split(' ').slice(1, 5).join(' ');
+
+            var columnName = deleted_bms[i].base_bm_value;
+            parsed_bms[columnName] = date + ' - ' +  deleted_bms[i].value_name;
+        }
+
+        console.log(parsed_bms);
+
+        
+        const {value: fruit} = Swal.fire({
+            title: 'Select a bm',
+            input: 'select',
+            inputOptions: parsed_bms,
+            inputPlaceholder: 'Select a plan...',
+            customClass: mobile_swal,
+            showCancelButton: true,
+            
+            inputValidator: (value) => {
+                return new Promise((resolve) => 
+                {
+                    console.log(value);
+                    console.log(typeof value);
+
+                    if(!isNaN(parseFloat(value)) && !isNaN(value - 0))
+                    {
+                        // TODO send POST to restore
+                        on_save();
+                    }
+                    else
+                    {
+                        console.log("nothing selected");
+                    }
+                    
+                    // As I am not using the await keyword, close it with this
+                    swal.close();
+                })
+            }
+        });
+        
+    }
     
+    // #67 changed func
+    function load_deleted_bm()
+    {
+        try
+        {
+            var url = 'http://jakob.ml:8080/tpbackend_1-1.0-SNAPSHOT/api/trainingsplan/get_bm_values/';
+            var xmlHttp = new XMLHttpRequest();
+        
+            xmlHttp.open( "GET", url + getusername() + "/1", false ); // false for synchronous request
+            xmlHttp.send( null );
+            bms = xmlHttp.responseText;
+        
+            return JSON.parse(bms);
+        }
+        catch(err)
+        {
+            console.error(err);
+            display_error('error', 'Oops...', 'The backend seems to be unavailable!')
+        }
+    }
+
 
     function does_json_contain_data(object) 
     {
@@ -1160,12 +1292,7 @@
                     stepSize: 1,
                     padding: 10,
                     fontFamily: 'Karla, sans-serif',
-                    maxRotation: 0/*,
-                    callback: function(value, index, values) {
-                        if (value !== 5.03) {
-                            return values[index]
-                        }
-                    }*/
+                    maxRotation: 0
                 },
                 title: {
                     display: false,

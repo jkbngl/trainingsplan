@@ -406,7 +406,7 @@
     }
 
     // #67 Newly added func
-    function check_for_only_one_chart_available_for_label()
+    function set_labels()
     {
         // id which needs to be defined to get the metadata(hidden) of the lines/ bars
         var meta_data_id;
@@ -421,16 +421,20 @@
         var historic_data;
         // If there is only one bm active anymore 
         var new_labels = [];
+        // length of longest bm 
+        var local_labels_numbers = [];
 
         for(var i = 0; i < all_bms; i++)
         {
             meta_data_id = chart.getDatasetMeta(i).controller.chart.id;
-         
+            
             if(!chart.data.datasets[i]['_meta'][meta_data_id].hidden)
             {
                 active_bm++;
                 name_active_bm = chart.data.datasets[i].label;
                 index_active_bm = chart.data.datasets[i]['_meta'][meta_data_id].dataset._datasetIndex;
+                console.log(chart.data.datasets[i].data.length)
+                local_labels_numbers.push(chart.data.datasets[i].data.length)
             }    
         }
 
@@ -446,13 +450,26 @@
                 var date = new Date(historic_data[i].created).toUTCString()
                 date = date.split(' ').slice(1, 4).join(' ')
 
-                new_labels.push(date)
+                new_labels.push(date);
+
+                if(i == historic_data.length - 1)
+                    new_labels.push("potential");
             }
 
             chart.data.labels = new_labels;
         }
         else
         {
+            var max_num = Math.max.apply(Math, local_labels_numbers);
+            local_labels_numbers = [];
+                    
+            // Start at 0 to have 1 extra space for potential
+            for(var k = 0; k <= max_num; k++)
+                local_labels_numbers.push(k);
+
+            local_labels_numbers.push("potential");
+
+            chart.data.labels = local_labels_numbers;
             // TODO set the labels back correctly
         }
     }
@@ -482,7 +499,7 @@
             document.getElementById("additional-info_" + (bm_name.datasetIndex + 1)).querySelector("#reps_box").checked = false;
         }
 
-        check_for_only_one_chart_available_for_label();
+        set_labels();
 
         chart.update();
 
@@ -807,7 +824,7 @@
                 chart.data.datasets[i]['_meta'][meta_data_id].hidden = false;
             }
 
-            check_for_only_one_chart_available_for_label();
+            set_labels();
             
             chart.update();
         }
@@ -1105,9 +1122,10 @@
 
                     chart.data.labels = local_labels_numbers;
                 }
-
+                
                 chart.update();
-            }        
+            }
+            
 
             // Clear for next bm
             values = [];

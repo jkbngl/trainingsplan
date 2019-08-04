@@ -459,8 +459,7 @@
             var max_num = Math.max.apply(Math, local_labels_numbers);
             local_labels_numbers = [];
                     
-            // Start at 0 to have 1 extra space for potential
-            for(var k = 0; k <= max_num; k++)
+            for(var k = 0; k < max_num; k++)
                 local_labels_numbers.push(k);
 
             local_labels_numbers.push("potential");
@@ -1123,7 +1122,7 @@
                     chart.data.labels = local_labels_numbers;
                 }
                 */
-               
+
                 chart.update();
             }
             

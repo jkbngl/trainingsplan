@@ -423,6 +423,8 @@
         // length of longest bm 
         var local_labels_numbers = [];
 
+        console.log(chart);
+
         for(var i = 0; i < all_bms; i++)
         {
             meta_data_id = chart.getDatasetMeta(i).controller.chart.id;
@@ -433,7 +435,7 @@
                 name_active_bm = chart.data.datasets[i].label;
                 index_active_bm = chart.data.datasets[i]['_meta'][meta_data_id].dataset._datasetIndex;
                 local_labels_numbers.push(chart.data.datasets[i].data.length)
-            }    
+            } 
         }
 
         if(active_bm == 1)
@@ -715,7 +717,7 @@
 
                 chart.data.datasets.push({
                     data: current_active_values,
-                    label: 'potential_value_number_' + i,
+                    label: 'potential for ' + document.getElementById("additional-info_" + (i + 1)).querySelector("#value_name").value,
                     borderColor: border_color_array[i],
                     backgroundColor: border_color_array[i],
                     borderDash: [10],
@@ -1323,13 +1325,14 @@
                         fontSize: 20,
                         filter: function(item, chart) {
                             // Logic to remove a particular legend item goes here
-                            return !item.text.includes('potential_value_number_');
+                            return !item.text.includes('potential for');
                         }   
                     }
                 },
                 tooltips: {
                     filter: function (tooltip_item, all_items) 
                     {
+                        console.log(all_items);
                         return !all_items.datasets[tooltip_item.datasetIndex].label.includes("potential_value_number_");
                     }
                 },

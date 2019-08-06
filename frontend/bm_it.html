@@ -103,7 +103,6 @@
             }
             catch(err)
             {
-                console.log("error");
                 display_error("error", "Ooops...", "Error with Authentification, please try again at a later point");
                 window.stop() 
             }
@@ -326,10 +325,7 @@
         var counter = 0;
         var check = function(){
             if(xhr.status == 200){
-                console.log("POST worked, data send, reload page with new data: " + xhr.status);
-                
-                
-                console.log("RESPONSE: " + xhr.responseText);
+                console.log("POST worked, data send, reload page with new data: " + xhr.status + " - " + xhr.responseText);
 
                 if(xhr.responseText == "ok")
                 {
@@ -382,7 +378,7 @@
                     });
                 }
 
-                console.log("waiting");
+                //console.log("waiting");
                 counter++;
                 setTimeout(check, 100); // check again in a second
             }
@@ -453,7 +449,6 @@
                     new_labels.push("potential");
             }
 
-            console.log("set date labels in new func");
             chart.data.labels = new_labels;
         }
         else
@@ -466,12 +461,8 @@
 
             local_labels_numbers.push("potential");
 
-            console.log("set num labels in new func");
             chart.data.labels = local_labels_numbers;
         }
-
-        console.log("set labels correctly");
-
     }
 
     // #67 newly added func
@@ -493,7 +484,6 @@
         else if(!chart.data.datasets[bm_name.datasetIndex]['_meta'][meta_data_id].hidden)
         {
             // If the chart goes from the active state into hidden state
-            console.log("CALLED HERE as callback from chart legend");
             clear_potential(false, bm_name.datasetIndex);
             chart.data.datasets[bm_name.datasetIndex]['_meta'][meta_data_id].hidden = true;
             document.getElementById("additional-info_" + (bm_name.datasetIndex + 1)).querySelector("#reps_box").checked = false;
@@ -839,13 +829,14 @@
         // If the last one was deleted nothing needs to be changed
         if(num_to_delete == current_active_amount)
         {
-            console.log("nothing to reorder")
+            //console.log("nothing to reorder")
+            ;
         }    
         else
         {
             for(var i = num_to_delete; i <= current_active_amount; i++)
             {
-                console.log("current_active_amount: " + current_active_amount + " | num_to_delete: " + num_to_delete + " | i: " + i)
+                //console.log("current_active_amount: " + current_active_amount + " | num_to_delete: " + num_to_delete + " | i: " + i)
                 
                 // 1 can not be set to 0
                 if(i > 1)
@@ -963,7 +954,6 @@
 
         for(var i = 0; i < json_bm.length; i++)
         {
-            console.log(json_bm[i].note.length)
             var date = new Date(json_bm[i].created).toUTCString()
             to_dispay += (i + 1) + ". Entry on: " + date.split(' ').slice(1, 4).join(' ') + "<br>";
 
@@ -1206,7 +1196,6 @@
             parsed_bms[columnName] = date + ' - ' +  deleted_bms[i].value_name;
         }
 
-        console.log(parsed_bms);
 
         const {value: fruit} = Swal.fire({
             title: 'Select a bm',
@@ -1219,8 +1208,7 @@
             inputValidator: (value) => {
                 return new Promise((resolve) => 
                 {
-                    console.log(value);
-                    console.log(typeof value);
+                    //console.log(value);
 
                     if(!isNaN(parseFloat(value)) && !isNaN(value - 0))
                     {
@@ -1336,7 +1324,6 @@
                 tooltips: {
                     filter: function (tooltip_item, all_items) 
                     {
-                        console.log(all_items);
                         return !all_items.datasets[tooltip_item.datasetIndex].label.includes("potential_value_number_");
                     }
                 },
@@ -1436,8 +1423,6 @@
         chart.options.legend.labels.fontSize = 30;
 
         document.getElementById("div-line-chart").style.marginTop = "5%";
-
-
 
         if(after_startup)
         {

@@ -1208,7 +1208,6 @@
 
         console.log(parsed_bms);
 
-        
         const {value: fruit} = Swal.fire({
             title: 'Select a bm',
             input: 'select',
@@ -1225,7 +1224,12 @@
 
                     if(!isNaN(parseFloat(value)) && !isNaN(value - 0))
                     {
-                        // TODO send POST to restore
+                        var xhr = new XMLHttpRequest();
+                        var url = "http://jakob.ml:8080/tpbackend_1-1.0-SNAPSHOT/api/trainingsplan/restore_bm";
+                        xhr.open("POST", url, true);
+                        xhr.setRequestHeader("Content-Type", "text/plain");
+
+                        xhr.send(value);
                         on_save();
                     }
                     else

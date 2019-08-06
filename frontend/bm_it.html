@@ -707,7 +707,7 @@
 
                 chart.data.datasets.push({
                     data: current_active_values,
-                    label: 'potential for ' + document.getElementById("additional-info_" + (i + 1)).querySelector("#value_name").value,
+                    label: 'potential for ' + document.getElementById("additional-info_" + (i + 1)).querySelector("#value_name").value + ' [' + document.getElementById("additional-info_" + (i + 1)).querySelector("#select_1").value + '] - ' + document.getElementById("additional-info_" + (i + 1)).querySelector("#select_2").value,
                     borderColor: border_color_array[i],
                     backgroundColor: border_color_array[i],
                     borderDash: [10],
@@ -814,8 +814,8 @@
                 chart.data.datasets[i]['_meta'][meta_data_id].hidden = false;
             }
 
-            set_labels();
-            
+            set_labels();            
+
             chart.update();
         }
     }
@@ -893,6 +893,7 @@
 
         
         set_labels();
+        
         chart.update()
     }
 
@@ -984,7 +985,7 @@
         {
             // Remove all datasets with the configured chart name
             chart.data.datasets = chart.data.datasets.filter(function(obj) {
-                return (!obj.label.includes('potential_value_number_')); 
+                return (!obj.label.includes('potential for')); 
             });
         }
         else
@@ -992,7 +993,7 @@
             //console.log("going to clear: " + bm_id)
             // Remove only the datasets defined in the function call
             chart.data.datasets = chart.data.datasets.filter(function(obj) {
-                return (obj.label != 'potential_value_number_' + bm_id); 
+                return (obj.label != 'potential for' + bm_id); 
             });
         }
 
@@ -1316,7 +1317,7 @@
                     labels: {
                         fontSize: 20,
                         filter: function(item, chart) {
-                            // Logic to remove a particular legend item goes here
+                            // Logic to remove a particular legend item
                             return !item.text.includes('potential for');
                         }   
                     }
@@ -1324,7 +1325,8 @@
                 tooltips: {
                     filter: function (tooltip_item, all_items) 
                     {
-                        return !all_items.datasets[tooltip_item.datasetIndex].label.includes("potential_value_number_");
+                        // Check how this can be solved, show on last index but not on the others
+                        return !all_items.datasets[tooltip_item.datasetIndex].label.includes("potential_for");
                     }
                 },
                 scales: {

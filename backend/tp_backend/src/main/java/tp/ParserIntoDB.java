@@ -1265,5 +1265,34 @@ public class ParserIntoDB
         st.close();
         // connection.close();
     }
+
+    public String restore_bm(int id, Connection connection) throws SQLException
+    {
+        PreparedStatement st1 = connection.prepareStatement("update  tp_bm_it " +
+                                                                "set     deprecated = 1 " +
+                                                                "where   base_bm_id = ?; ");
+
+        PreparedStatement st2 = connection.prepareStatement("update  tp_bm_it " +
+                                                                "set     deprecated = 0 " +
+                                                                "where   base_bm_id = ? " +
+                                                                "and     id = ( select  max(id) max_id " +
+                                                                "               from    tp_bm_it " +
+                                                                "               where   base_bm_id = ? " +
+                                                                ");");
+
+        st1.setInt(1, id);
+        st2.setInt(1, id);
+        st2.setInt(2, id);
+
+
+        st1.executeUpdate();
+        st2.executeUpdate();
+
+        st1.close();
+        st2.close();
+
+        connection.close();
+        return "ok";
+    }
 }
 

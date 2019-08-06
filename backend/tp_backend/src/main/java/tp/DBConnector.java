@@ -333,4 +333,20 @@ public class DBConnector
 
         return tods;
     }
+
+    @POST
+    @Consumes("text/plain")
+    @Produces("text/plain")
+    @Path("/restore_bm")
+    public String restore_bm(int id) throws JSONException, SQLException
+    {
+        String return_text  = " ";
+        System.out.println("(restore_bm) - " + id);
+
+        ParserIntoDB p = new ParserIntoDB();
+
+        return_text = p.restore_bm(id, ParserFromDB.connectToDB(p.connectionString, p.user, p.password));
+
+        return return_text;
+    }
 }

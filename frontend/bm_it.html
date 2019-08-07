@@ -630,7 +630,7 @@
             <input type="number" ' + (!via_button && num_input <= 1 ? 'autofocus' : '') + ' onchange="show_potential()" id="value_value" class="input_bm" placeholder="&nbsp; Value of input ..."      style="text-align:center; background: transparent; border-radius: 25px; border: 2px solid #00ad5f; color:#00ad5f; width: 15%; font-size: 18px;font-family: Century Gothic; margin-right:2%"> \
             <input type="text" id="note" class="input_bm" placeholder="&nbsp; Note ..." style="text-align:center; background: transparent; border-radius: 25px; border: 2px solid #00ad5f; color:#00ad5f; width: 25%; font-size: 18px;font-family: Century Gothic; margin-right:2%; "> \
             \
-            <div class="select" style="border-bottom: 4px solid rgba(0,0,0, 0.12); border-right: 4px solid rgba(0,0,0, 0.12); margin-right: 5%"> \
+            <div class="select" id="select-options_nr-1" style="border-bottom: 4px solid rgba(0,0,0, 0.12); border-right: 4px solid rgba(0,0,0, 0.12); margin-right: 5%"> \
                 <select id= "select_1" onchange="closeNav();" class="select-text" required > \
                     <option value="" selected>select ...</option> \
                 </select> \
@@ -641,7 +641,7 @@
                 <span class="select-bar"></span> \
             </div> \
              \
-            <div class="select" style="border-bottom: 4px solid rgba(0,0,0, 0.12); border-right: 4px solid rgba(0,0,0, 0.12); margin-right: 5%"> \
+            <div class="select" id="select-options_nr-2" style="border-bottom: 4px solid rgba(0,0,0, 0.12); border-right: 4px solid rgba(0,0,0, 0.12); margin-right: 5%"> \
                 <select id= "select_2" onchange="closeNav();" class="select-text" required > \
                     <option value="" selected>select ...</option> \
                 </select> \
@@ -1478,20 +1478,32 @@
 
     function simplify_ui()
     {
+        var length = get_amount_inputs();
+
         document.getElementById("checks-checkbox-ui").checked = false;
         document.getElementById("factors-checkbox-ui").checked = false;
 
         if(document.getElementById("simplify-ui").checked)
-        {          
+        {   
+
+            for(var i = 1;  i <= length; i++)
+            {
+                document.getElementById("additional-info_" + i).querySelector("#select-options_nr-1").style.display = "none";
+                document.getElementById("additional-info_" + i).querySelector("#select-options_nr-2").style.display = "none";
+            }
+
+            /*       
             // document.getElementById("selects").style.width = "30%";
             document.getElementById("selects").style.marginLeft = "38%";
 
             document.getElementById("checks").style.display = "none";
             document.getElementById("factors").style.display = "none";
             //  document.getElementById("additional-info").style.display = "none";
+            */
         }    
         else
         {
+            /*
             document.getElementById("selects").style.marginLeft = "5%";
 
             document.getElementById("checks").style.display = "inline";
@@ -1500,6 +1512,7 @@
             
             document.getElementById("checks-checkbox-ui").checked = true;
             document.getElementById("factors-checkbox-ui").checked = true;
+            */
         }   
     }
 

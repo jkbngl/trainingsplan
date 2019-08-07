@@ -43,6 +43,11 @@ Login
 Contact me to ask for access for educational purposes or buy an access via:
 * TODO
 
+## Get access to BodyMass Input-Tool ##
+
+Contact me to ask for access for educational purposes or buy an access via:
+* TODO
+
 - - - -
 
 ## Usage ##

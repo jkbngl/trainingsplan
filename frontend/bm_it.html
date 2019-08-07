@@ -632,10 +632,10 @@
             \
             <div class="select" style="border-bottom: 4px solid rgba(0,0,0, 0.12); border-right: 4px solid rgba(0,0,0, 0.12); margin-right: 5%"> \
                 <select id= "select_1" onchange="closeNav();" class="select-text" required > \
-                    <option value="" selected></option> \
+                    <option value="" selected>select ...</option> \
                 </select> \
                 <span class="select-highlight"></span> \
-                <label id="select-text" style="font-size: 22px;" class="select-label">Unit \
+                <label id="select-text" style="font-size: 22px; top: -30px;  right: -20px;" class="select-label">Unit \
                 <i class="fas fa-info-circle" rel="tooltip" title="Select an exercise from this list to have the history (if existent) of your data displayed in the chart above  " id="info-step-1"></i> \
                     </label> \
                 <span class="select-bar"></span> \
@@ -643,10 +643,10 @@
              \
             <div class="select" style="border-bottom: 4px solid rgba(0,0,0, 0.12); border-right: 4px solid rgba(0,0,0, 0.12); margin-right: 5%"> \
                 <select id= "select_2" onchange="closeNav();" class="select-text" required > \
-                    <option value="" selected></option> \
+                    <option value="" selected>select ...</option> \
                 </select> \
                 <span class="select-highlight"></span> \
-                <label id="select-text" style="font-size: 22px;" class="select-label">Time of Day \
+                <label id="select-text" style="font-size: 22px; top: -30px;  right: -20px;" class="select-label">Time of Day \
                 <i class="fas fa-info-circle" rel="tooltip" title="Select an exercise from this list to have the history (if existent) of your data displayed in the chart above  " id="info-step-1"></i> \
                 </label> \
                 <span class="select-bar"></span> \
@@ -893,8 +893,20 @@
 
         
         set_labels();
-        
+        set_selects_disabled();
         chart.update()
+    }
+
+    // #67 newly added func
+    function set_selects_disabled()
+    {
+        var length = get_amount_inputs();
+
+        for(var i = 1; i <= length; i++)
+        {
+            document.getElementById("additional-info_" + i).querySelector("#select_1").disabled = true;
+            document.getElementById("additional-info_" + i).querySelector("#select_2").disabled = true;
+        }
     }
 
     // #67 newly added func
@@ -1326,6 +1338,7 @@
                     filter: function (tooltip_item, all_items) 
                     {
                         // Check how this can be solved, show on last index but not on the others
+                        console.log(tooltip_item)
                         return !all_items.datasets[tooltip_item.datasetIndex].label.includes("potential_for");
                     }
                 },

@@ -22,19 +22,19 @@
 	</p>
 </div>
 
-## Screenshots ##
-Data Input
+# Screenshots
+## Data Input
 ![alt text](https://raw.githubusercontent.com/jkbngl/trainingsplan/master/pictures/oOLGYnu%20-%20Imgur.png)
 
 
-Stats
+## Stats
 
 ![alt text](https://raw.githubusercontent.com/jkbngl/trainingsplan/master/pictures/new_chart_with_dates.png)
 ![alt text](https://raw.githubusercontent.com/jkbngl/trainingsplan/master/pictures/new_chart_with_dates_line.png)
 ![alt text](https://raw.githubusercontent.com/jkbngl/trainingsplan/master/pictures/barchart_with_check_progess_dialog.png)
 
 
-Login
+## Login
 
 ![alt text](https://raw.githubusercontent.com/jkbngl/trainingsplan/master/pictures/background_improved.png)
 - - - -

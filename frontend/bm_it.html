@@ -142,7 +142,7 @@
 
         <div class="page__toggle" style="margin-left: 20%; margin-top: 7%;">
             <label class="toggle">
-            <input id="factors-checkbox-ui" onclick="simplify_ui_partly(); save_settings();" class="toggle__input" type="checkbox">
+            <input id="unit-checkbox-ui" onclick="simplify_ui_partly(); save_settings();" class="toggle__input" type="checkbox">
             <span class="toggle__label">
                 <span class="toggle__text">Show Unit 
                     <i class="fas fa-info-circle" rel="tooltip" title="If this checkbox is active you can access the part of the advanced ui where you can change the factors per attribute" id="info-step-2"></i>
@@ -153,7 +153,7 @@
 
         <div class="page__toggle" style="margin-left: 20%; margin-top: 5%;">
             <label class="toggle">
-            <input id="checks-checkbox-ui" onclick="simplify_ui_partly(); save_settings();" class="toggle__input" type="checkbox">
+            <input id="tod-checkbox-ui" onclick="simplify_ui_partly(); save_settings();" class="toggle__input" type="checkbox">
             <span class="toggle__label">
                 <span class="toggle__text">Show Time of Day
                     <i class="fas fa-info-circle" rel="tooltip" title="If this checkbox is active you can access the part of the advanced ui where you can change the attributes that should be used to calc the data in the chart" id="info-step-2"></i>
@@ -1480,8 +1480,8 @@
     {
         var length = get_amount_inputs();
 
-        document.getElementById("checks-checkbox-ui").checked = false;
-        document.getElementById("factors-checkbox-ui").checked = false;
+        document.getElementById("tod-checkbox-ui").checked = false;
+        document.getElementById("unit-checkbox-ui").checked = false;
 
         if(document.getElementById("simplify-ui").checked)
         {   
@@ -1490,8 +1490,6 @@
             {
                 document.getElementById("additional-info_" + i).querySelector("#select-options_nr-1").style.display = "none";
                 document.getElementById("additional-info_" + i).querySelector("#select-options_nr-2").style.display = "none";
-
-                // Todo define if note and info button should also be removed
             }
 
             /*       
@@ -1509,8 +1507,6 @@
             {
                 document.getElementById("additional-info_" + i).querySelector("#select-options_nr-1").style.display = "inline";
                 document.getElementById("additional-info_" + i).querySelector("#select-options_nr-2").style.display = "inline";
-
-                // Todo define if note and info button should also be removed
             }
             /*
             document.getElementById("selects").style.marginLeft = "5%";
@@ -1519,55 +1515,56 @@
             document.getElementById("factors").style.display = "inline";
             document.getElementById("additional-info").style.display = "inline";
             
-            document.getElementById("checks-checkbox-ui").checked = true;
-            document.getElementById("factors-checkbox-ui").checked = true;
+            document.getElementById("tod-checkbox-ui").checked = true;
+            document.getElementById("unit-checkbox-ui").checked = true;
             */
         }   
     }
 
     function simplify_ui_partly()
     {
+        var length = get_amount_inputs();
         // As i activate some part of the advanced ui, it is no longer the simplified view, so deactivate it
         document.getElementById("simplify-ui").checked = false;
 
         // If both are checked, use the simplify_ui function to set everything back to normal, but activate the buttons to make it look 
-        if(document.getElementById("checks-checkbox-ui").checked && document.getElementById("factors-checkbox-ui").checked)
+        if(document.getElementById("tod-checkbox-ui").checked && document.getElementById("unit-checkbox-ui").checked)
         {
             document.getElementById("simplify-ui").checked = false;
             simplify_ui();
         }
-        else if(document.getElementById("checks-checkbox-ui").checked && !document.getElementById("factors-checkbox-ui").checked)
+        else if(document.getElementById("tod-checkbox-ui").checked && !document.getElementById("unit-checkbox-ui").checked)
         {
-            // document.getElementById("selects").style.width = "30%";
-            document.getElementById("selects").style.marginLeft = "10%";
-
-            document.getElementById("checks").style.display = "inline";
-            document.getElementById("factors").style.display = "none";
+            for(var i = 1;  i <= length; i++)
+            {
+                document.getElementById("additional-info_" + i).querySelector("#select-options_nr-1").style.display = "none";
+                document.getElementById("additional-info_" + i).querySelector("#select-options_nr-2").style.display = "inline";
+            }
         }    
-        else if(!document.getElementById("checks-checkbox-ui").checked && document.getElementById("factors-checkbox-ui").checked)
+        else if(!document.getElementById("tod-checkbox-ui").checked && document.getElementById("unit-checkbox-ui").checked)
         {
-            // document.getElementById("selects").style.width = "30%";
-            document.getElementById("selects").style.marginLeft = "10%";
-
-            document.getElementById("checks").style.display = "none";
-            document.getElementById("factors").style.display = "inline";
+            for(var i = 1;  i <= length; i++)
+            {
+                document.getElementById("additional-info_" + i).querySelector("#select-options_nr-1").style.display = "inline";
+                document.getElementById("additional-info_" + i).querySelector("#select-options_nr-2").style.display = "none";
+            }
         }
         else 
         {
             document.getElementById("simplify-ui").checked = false;
 
-            document.getElementById("selects").style.marginLeft = "5%";
-
-            document.getElementById("checks").style.display = "inline";
-            document.getElementById("factors").style.display = "inline";
-            document.getElementById("additional-info").style.display = "inline";
+            for(var i = 1;  i <= length; i++)
+            {
+                document.getElementById("additional-info_" + i).querySelector("#select-options_nr-1").style.display = "inline";
+                document.getElementById("additional-info_" + i).querySelector("#select-options_nr-2").style.display = "inline";
+            }
         }
 
         var date = new Date();
         date.setTime(date.getTime());
 
-        setCookie("partly_check_simplfied_ui", document.getElementById("checks-checkbox-ui").checked, 90);
-        setCookie("partly_factor_simplfied_ui", document.getElementById("factors-checkbox-ui").checked, 90);
+        //setCookie("partly_check_simplfied_ui", document.getElementById("tod-checkbox-ui").checked, 90);
+        //setCookie("partly_factor_simplfied_ui", document.getElementById("unit-checkbox-ui").checked, 90);
     }
 </script>
 </html>

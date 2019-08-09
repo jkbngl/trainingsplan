@@ -1338,7 +1338,7 @@
                     filter: function (tooltip_item, all_items) 
                     {
                         // Check how this can be solved, show on last index but not on the others
-                        console.log(tooltip_item)
+                        //console.log(tooltip_item)
                         return !all_items.datasets[tooltip_item.datasetIndex].label.includes("potential_for");
                     }
                 },
@@ -1385,18 +1385,18 @@
         var preferences = {}; 
 
         preferences.username = getusername(); 
-        preferences.check_weight = document.getElementById("weight_box").checked;
-        preferences.check_reps = document.getElementById("reps_box").checked;
-        preferences.check_sets = document.getElementById("sets_box").checked;
-        preferences.check_maxrep = document.getElementById("max_rep_box").checked;
-        preferences.check_simple_view = document.getElementById('simplify-ui').checked;
-        preferences.check_chart_type  = document.getElementById('chart-type').checked;        
-        preferences.check_dialog_save = "ignore";     
-
-        preferences.mul_weight = document.getElementById('weight-slider').value;
-        preferences.mul_reps = document.getElementById('reps-slider').value;
-        preferences.mul_sets = document.getElementById('sets-slider').value;
-        preferences.mul_maxrep = document.getElementById('maxrep-slider').value;
+        // preferences.check_weight = document.getElementById("weight_box").checked;
+        // preferences.check_reps = document.getElementById("reps_box").checked;
+        // preferences.check_sets = document.getElementById("sets_box").checked;
+        // preferences.check_maxrep = document.getElementById("max_rep_box").checked;
+        // preferences.check_simple_view = document.getElementById('simplify-ui').checked;
+        // preferences.check_chart_type  = document.getElementById('chart-type').checked;        
+        // preferences.check_dialog_save = "ignore";     
+// 
+        // preferences.mul_weight = document.getElementById('weight-slider').value;
+        // preferences.mul_reps = document.getElementById('reps-slider').value;
+        // preferences.mul_sets = document.getElementById('sets-slider').value;
+        // preferences.mul_maxrep = document.getElementById('maxrep-slider').value;
 
         
         var xhr = new XMLHttpRequest();
@@ -1505,6 +1505,13 @@
         }    
         else
         {
+            for(var i = 1;  i <= length; i++)
+            {
+                document.getElementById("additional-info_" + i).querySelector("#select-options_nr-1").style.display = "inline";
+                document.getElementById("additional-info_" + i).querySelector("#select-options_nr-2").style.display = "inline";
+
+                // Todo define if note and info button should also be removed
+            }
             /*
             document.getElementById("selects").style.marginLeft = "5%";
 

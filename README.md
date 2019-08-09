@@ -23,20 +23,20 @@
 </div>
 
 # Screenshots
+
+## Login
+![alt text](https://raw.githubusercontent.com/jkbngl/trainingsplan/master/pictures/background_improved.png)
+
 ## Data Input
 ![alt text](https://raw.githubusercontent.com/jkbngl/trainingsplan/master/pictures/oOLGYnu%20-%20Imgur.png)
 
 
 ## Stats
-
 ![alt text](https://raw.githubusercontent.com/jkbngl/trainingsplan/master/pictures/new_chart_with_dates.png)
 ![alt text](https://raw.githubusercontent.com/jkbngl/trainingsplan/master/pictures/new_chart_with_dates_line.png)
 ![alt text](https://raw.githubusercontent.com/jkbngl/trainingsplan/master/pictures/barchart_with_check_progess_dialog.png)
 
 
-## Login
-
-![alt text](https://raw.githubusercontent.com/jkbngl/trainingsplan/master/pictures/background_improved.png)
 - - - -
 ## Get access to stats ##
 

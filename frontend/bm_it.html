@@ -229,7 +229,7 @@
         var jsonData = {
             stats: []
         };
-        var allowed_to_save = false;
+        var uom_and_tod_filled = false;
         var values_are_numeric = false;
 
         for(let i = 1; i <= amount_stats; i++)
@@ -250,11 +250,11 @@
         {
             if(jsonData.stats[i].tod.length > 0 && jsonData.stats[i].uom.length > 0 && jsonData.stats[i].name.length > 0)
             {
-                allowed_to_save = true;
+                uom_and_tod_filled = true;
             }
             else
             {
-                allowed_to_save = false;
+                uom_and_tod_filled = false;
                
             }
             
@@ -267,22 +267,22 @@
                 values_are_numeric = true;
             }
 
-            if(!values_are_numeric || !allowed_to_save)
+            if(!values_are_numeric || !uom_and_tod_filled)
                 break;
         }
         
 
-        if(allowed_to_save && values_are_numeric)
+        if(uom_and_tod_filled && values_are_numeric)
         {
             send_bm_data_to_backend(jsonData)
         }
         else
         {
-            if(!allowed_to_save && !values_are_numeric)
+            if(!uom_and_tod_filled && !values_are_numeric)
                 display_error('error', 'Name, unit and time of day have to be selected and values must be numeric and may not contain letters', 'dont know');
-            else if(!allowed_to_save && values_are_numeric)
+            else if(!uom_and_tod_filled && values_are_numeric)
                 display_error('error', 'Name, unit and time of day have to be selected', 'dont know');
-            else if(!values_are_numeric && allowed_to_save)
+            else if(!values_are_numeric && uom_and_tod_filled)
                 display_error('error', 'Values must be numeric and may not contain letters!', 'dont know');
         }
     }

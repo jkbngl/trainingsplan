@@ -271,19 +271,78 @@
                 break;
         }
         
-
-        if(uom_and_tod_filled && values_are_numeric)
+        if(document.getElementById("simplify-ui").checked)
         {
-            send_bm_data_to_backend(jsonData)
+            if(values_are_numeric)
+            {
+                // values have to be numeric as well here
+                // TODO set unset tod and uoms to default values
+                for(let i = 0; i < amount_stats; i++)
+                {
+
+                    if(jsonData.stats[i].tod.length <= 0)
+                        jsonData.stats[i].tod = 'after waking up'
+                    
+                    if(jsonData.stats[i].uom <= 0)
+                        jsonData.stats[i].uom = 'cm'
+                }
+            }
+            else
+            {
+                display_error('error', 'Values must be numeric and may not contain letters!', 'dont know');
+            }
+        }
+        else if(document.getElementById("tod-checkbox-ui").checked)
+        {
+            if(values_are_numeric)
+            {
+                // values have to be numeric as well here
+                // TODO set unset tod and uoms to default values
+                for(let i = 0; i < amount_stats; i++)
+                {
+
+                    if(jsonData.stats[i].tod.length <= 0)
+                        jsonData.stats[i].tod = 'after waking up'                    
+                }
+            }
+            else
+            {
+                display_error('error', 'Values must be numeric and may not contain letters!', 'dont know');
+            }
+        }
+        else if(document.getElementById("uom-checkbox-ui").checked)
+        {
+            if(values_are_numeric)
+            {
+                // values have to be numeric as well here
+                // TODO set unset tod and uoms to default values
+                for(let i = 0; i < amount_stats; i++)
+                {
+
+                    if(jsonData.stats[i].tod.length <= 0)
+                        jsonData.stats[i].tod = 'after waking up'
+                }
+            }
+            else
+            {
+                display_error('error', 'Values must be numeric and may not contain letters!', 'dont know');
+            }
         }
         else
         {
-            if(!uom_and_tod_filled && !values_are_numeric)
-                display_error('error', 'Name, unit and time of day have to be selected and values must be numeric and may not contain letters', 'dont know');
-            else if(!uom_and_tod_filled && values_are_numeric)
-                display_error('error', 'Name, unit and time of day have to be selected', 'dont know');
-            else if(!values_are_numeric && uom_and_tod_filled)
-                display_error('error', 'Values must be numeric and may not contain letters!', 'dont know');
+            if(uom_and_tod_filled && values_are_numeric)
+            {
+                send_bm_data_to_backend(jsonData)
+            }
+            else
+            {
+                if(!uom_and_tod_filled && !values_are_numeric)
+                    display_error('error', 'Name, unit and time of day have to be selected and values must be numeric and may not contain letters', 'dont know');
+                else if(!uom_and_tod_filled && values_are_numeric)
+                    display_error('error', 'Name, unit and time of day have to be selected', 'dont know');
+                else if(!values_are_numeric && uom_and_tod_filled)
+                    display_error('error', 'Values must be numeric and may not contain letters!', 'dont know');
+            }
         }
     }
 

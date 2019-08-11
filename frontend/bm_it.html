@@ -298,7 +298,7 @@
         }
         else if(document.getElementById("tod-checkbox-ui").checked)
         {
-            console.log("TOD grayed out");
+            console.log("unit grayed out");
 
             if(values_are_numeric)
             {
@@ -306,9 +306,9 @@
                 // TODO set unset tod and uoms to default values
                 for(let i = 0; i < amount_stats; i++)
                 {
-
-                    if(jsonData.stats[i].tod.length <= 0)
-                        jsonData.stats[i].tod = 'after waking up'                    
+                    if(jsonData.stats[i].uom.length <= 0)
+                        jsonData.stats[i].uom = 'cm';
+                            
                 }
 
                 send_bm_data_to_backend(jsonData);
@@ -320,7 +320,7 @@
         }
         else if(document.getElementById("unit-checkbox-ui").checked)
         {
-            console.log("unit grayed out");
+            console.log("tod grayed out");
 
             if(values_are_numeric)
             {
@@ -328,9 +328,8 @@
                 // TODO set unset tod and uoms to default values
                 for(let i = 0; i < amount_stats; i++)
                 {
-
-                    if(jsonData.stats[i].uom.length <= 0)
-                        jsonData.stats[i].uom = 'cm';
+                    if(jsonData.stats[i].tod.length <= 0)
+                        jsonData.stats[i].tod = 'after waking up'            
                 }
 
                 console.log(jsonData);

@@ -273,6 +273,8 @@
         
         if(document.getElementById("simplify-ui").checked)
         {
+            console.log("FULL SIMPLE INTERFACE active");
+
             if(values_are_numeric)
             {
                 // values have to be numeric as well here
@@ -286,6 +288,8 @@
                     if(jsonData.stats[i].uom <= 0)
                         jsonData.stats[i].uom = 'cm'
                 }
+
+                send_bm_data_to_backend(jsonData);
             }
             else
             {
@@ -294,6 +298,8 @@
         }
         else if(document.getElementById("tod-checkbox-ui").checked)
         {
+            console.log("TOD grayed out");
+
             if(values_are_numeric)
             {
                 // values have to be numeric as well here
@@ -304,14 +310,18 @@
                     if(jsonData.stats[i].tod.length <= 0)
                         jsonData.stats[i].tod = 'after waking up'                    
                 }
+
+                send_bm_data_to_backend(jsonData);
             }
             else
             {
                 display_error('error', 'Values must be numeric and may not contain letters!', 'dont know');
             }
         }
-        else if(document.getElementById("uom-checkbox-ui").checked)
+        else if(document.getElementById("unit-checkbox-ui").checked)
         {
+            console.log("unit grayed out");
+
             if(values_are_numeric)
             {
                 // values have to be numeric as well here
@@ -319,9 +329,13 @@
                 for(let i = 0; i < amount_stats; i++)
                 {
 
-                    if(jsonData.stats[i].tod.length <= 0)
-                        jsonData.stats[i].tod = 'after waking up'
+                    if(jsonData.stats[i].uom.length <= 0)
+                        jsonData.stats[i].uom = 'cm';
                 }
+
+                console.log(jsonData);
+
+                send_bm_data_to_backend(jsonData);
             }
             else
             {
@@ -330,6 +344,8 @@
         }
         else
         {
+            console.log("NO SIMPLE INTERFACE active")
+
             if(uom_and_tod_filled && values_are_numeric)
             {
                 send_bm_data_to_backend(jsonData)

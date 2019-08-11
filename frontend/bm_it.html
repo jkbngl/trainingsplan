@@ -751,6 +751,20 @@
             document.getElementById("additional-info_" + num_input).querySelector("#select_2").value = select_tod;
             //document.getElementById("additional-info_" + num_input).querySelector("#select_2").disabled = true;
         }
+
+        if(document.getElementById("simplify-ui").checked)
+        {
+            document.getElementById("additional-info_" + num_input).querySelector("#select-options_nr-1").style.display = "none";
+            document.getElementById("additional-info_" + num_input).querySelector("#select-options_nr-2").style.display = "none";
+        }
+        else if(document.getElementById("unit-checkbox-ui").checked)
+        {
+            document.getElementById("additional-info_" + num_input).querySelector("#select-options_nr-2").style.display = "none";
+        }
+        else if(document.getElementById("tod-checkbox-ui").checked)
+        {
+            document.getElementById("additional-info_" + num_input).querySelector("#select-options_nr-1").style.display = "none";
+        }
     }
 
     // #67 newly added func

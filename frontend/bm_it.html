@@ -166,7 +166,7 @@
 
         <div class="page__toggle" style="margin-left: 10%; margin-top: 25%;">
             <label class="toggle">
-            <input id="chart-type" onchange="closeNav();" onclick="clear_chart(); update_bm_chart(get_active_bms());" class="toggle__input" type="checkbox">
+            <input id="chart-type" onchange="closeNav();" onclick="clear_chart(); update_bm_chart(get_active_bms()); set_cookie('chart_type', 90)" class="toggle__input" type="checkbox">
             <span class="toggle__label">
                 <span class="toggle__text">Bar Chart 
                     <i class="fas fa-info-circle" rel="tooltip" title="Change between the normal line chart and the bar chart to analyze your data" id="info-step-2"></i>
@@ -207,7 +207,7 @@
     var chart;
     
     // global variable to handle the creation and destruction of different chart easily, line = default
-    // var chart_type = 'line';
+    //var chart_type = 'line';
 
     // Here the class is set for the swal to use, depending on mobile or desktop, desktop leave empty - mobile is set in customize_mobile
     var mobile_swal = '';             
@@ -494,8 +494,6 @@
         var new_labels = [];
         // length of longest bm 
         var local_labels_numbers = [];
-
-        console.log(chart);
 
         for(var i = 0; i < all_bms; i++)
         {
@@ -819,19 +817,32 @@
 
     // #67  newly added func
     function set_cookie(cname, exdays) 
-    {    
-        var amount_days = get_amount_inputs();
+    {
         var d = new Date();
         d.setTime(d.getTime() + (exdays*24*60*60*1000));
         var expires = "expires=" + d.toGMTString();
-        
-        // Dont comment in, only in case all coockies should be deleted, for testing purpose - should never be commented in in production
-        //delete_all_cookies();
 
-        for(var i = 0; i < amount_days; i++)
+        // Dont comment in, only in case all coockies should be deleted, for testing purpose - should never be commented in in production
+            //delete_all_cookies();
+
+        if(cname == 'active')
         {
-            document.cookie = cname + "_"+ i + "=" + document.getElementById("additional-info_" + (i + 1)).querySelector("#reps_box").checked + ";" + expires + ";path=/";
-        }    
+            var amount_days = get_amount_inputs();
+
+            for(var i = 0; i < amount_days; i++)
+            {
+                document.cookie = cname + "_"+ i + "=" + document.getElementById("additional-info_" + (i + 1)).querySelector("#reps_box").checked + ";" + expires + ";path=/";
+            }    
+        }
+        else if(cname == 'chart_type')
+        {
+            document.cookie = cname + "=" + chart.config.type + ";" + expires + ";path=/";
+        }
+        else if(cname == 'interface_type')
+        {
+            console.log("TODO");
+        }
+        
     }
 
     // #67  newly added func
@@ -1451,35 +1462,6 @@
     {
         document.getElementById("mySidenav").style.width = "0";
     }
-
-    function save_settings()
-    {
-        var preferences = {}; 
-
-        preferences.username = getusername(); 
-        // preferences.check_weight = document.getElementById("weight_box").checked;
-        // preferences.check_reps = document.getElementById("reps_box").checked;
-        // preferences.check_sets = document.getElementById("sets_box").checked;
-        // preferences.check_maxrep = document.getElementById("max_rep_box").checked;
-        // preferences.check_simple_view = document.getElementById('simplify-ui').checked;
-        // preferences.check_chart_type  = document.getElementById('chart-type').checked;        
-        // preferences.check_dialog_save = "ignore";     
- 
-        // preferences.mul_weight = document.getElementById('weight-slider').value;
-        // preferences.mul_reps = document.getElementById('reps-slider').value;
-        // preferences.mul_sets = document.getElementById('sets-slider').value;
-        // preferences.mul_maxrep = document.getElementById('maxrep-slider').value;
-
-        
-        var xhr = new XMLHttpRequest();
-        var url = "http://jakob.ml:8080/tpbackend_1-1.0-SNAPSHOT/api/trainingsplan/send_preferences";
-        xhr.open("POST", url, true);
-        xhr.setRequestHeader("Content-Type", "text/plain");
-        var string = JSON.stringify(preferences);
-
-        xhr.send(string);
-        //alert("Preferences saved!");
-    }
     
     // #67 still used func
     var isMobile = {
@@ -1601,7 +1583,9 @@
             document.getElementById("tod-checkbox-ui").checked = true;
             document.getElementById("unit-checkbox-ui").checked = true;
             */
-        }   
+        }
+
+        set_cookie("interface_type", 90);
     }
 
     // #67 changed func
@@ -1647,8 +1631,7 @@
         var date = new Date();
         date.setTime(date.getTime());
 
-        //setCookie("partly_check_simplfied_ui", document.getElementById("tod-checkbox-ui").checked, 90);
-        //setCookie("partly_factor_simplfied_ui", document.getElementById("unit-checkbox-ui").checked, 90);
+        set_cookie("interface_type", 90);
     }
 </script>
 </html>

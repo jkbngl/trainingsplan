@@ -128,7 +128,9 @@
         
         <button onclick="restore_bm();" class="button" style="top: 10px; width:80%; margin-left: 10%; margin-top: 20%;"><i class="fas fa-trash-restore-alt"></i> Restore</button>
         <button onclick="download();" class="button" style="top: 10px; width:80%; margin-left: 10%;"><i class="fas fa-file-export"></i> Export</button>
+        <button onclick="reset_settings();" class="button" style="top: 10px; width:80%; margin-left: 10%; margin-top: 20%;"><i class="fas fa-hammer"></i> Reset Settings</button>
 
+        
         <div class="page__toggle" style="margin-left: 10%; margin-top: 12%;">
             <label class="toggle">
             <input id="simplify-ui" onchange="closeNav();" onclick="simplify_ui(); save_settings();" class="toggle__input" type="checkbox">
@@ -1355,7 +1357,7 @@
         }
     }
 
-
+    // #67 still used func
     function does_json_contain_data(object) 
     {
         for(var i in object)
@@ -1365,8 +1367,6 @@
         
         return false; 
     } 
-
-   
 
     var labels = [1,2,3,4,5,6,7,8];
     var border_color_array = [ "#18AD5F" // green
@@ -1379,7 +1379,8 @@
                              , "#f63f01" // orange
                              //, "#F9F7F3" // white 
                              ];
-
+    
+    // #67 changed func
     function create_chart(chart_type)
     {
         // console.log(chart_type)
@@ -1451,6 +1452,7 @@
         return chart;
     }
 
+    // #67 still used func
     function openNav()
     {
         if( isMobile.any() ) 
@@ -1462,7 +1464,7 @@
             document.getElementById("mySidenav").style.width = "250px";
         }   
     }
-
+    // #67 still used func
     function closeNav()
     {
         document.getElementById("mySidenav").style.width = "0";
@@ -1496,7 +1498,8 @@
         xhr.send(string);
         //alert("Preferences saved!");
     }
-
+    
+    // #67 still used func
     var isMobile = {
         Android: function() {
             return navigator.userAgent.match(/Android/i);
@@ -1518,6 +1521,7 @@
         }
     };
 
+    // #67 still used func
     function customize_mobile(after_startup)
     {
         mobile_swal = 'mobile_swal';
@@ -1564,6 +1568,14 @@
         }
     }
 
+    function reset_settings()
+    {
+        document.getElementById("simplify-ui").checked = false;
+
+        simplify_ui();
+    }
+
+    // #67 changed func
     function simplify_ui()
     {
         var length = get_amount_inputs();
@@ -1609,6 +1621,7 @@
         }   
     }
 
+    // #67 changed func
     function simplify_ui_partly()
     {
         var length = get_amount_inputs();

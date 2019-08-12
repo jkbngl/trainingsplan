@@ -120,10 +120,7 @@
     <div id="mySidenav" class="sidenav" style="z-index:2;">
         <button id="open-nav-button" onclick="closeNav()"                      class="button" style="float:right; float:top; margin-right: 10%; margin-bottom: 15%" ><i class="fas fa-bars"></i></a>
         <!--<a href="#">About</a>-->
-        <!--<button onclick="receivePlanfromDB(false)" class="button" style=" top: 10px; width:80%; margin-left: 10%;">Load Plan</button>
-        <button onclick="cleanUpTables(); addTable(true);  closeNav();"class="button" style="top: 10px; width:80%; margin-left: 10%;">New Plan</button>-->
         <button onclick="window.location.href='index.html'" class="button" style="top: 10px; width:80%; margin-left: 10%;"><i class="fas fa-home"></i> Home</button>
-        <!--<button onclick="save_settings(); update_chart();"                  class="button" style="top: 10px; width:80%; margin-left: 10%; margin-top: 20%;"><i class="far fa-save"></i> Save Preferences</button>-->
         <button onclick="window.location.href='stats.html'" class="button" id="stats-button" style="top: 10px; width:80%; margin-left: 10%;"><i class="fas fa-chart-line"></i> Stats</button>
         
         <button onclick="restore_bm();" class="button" style="top: 10px; width:80%; margin-left: 10%; margin-top: 20%;"><i class="fas fa-trash-restore-alt"></i> Restore</button>
@@ -133,7 +130,7 @@
         
         <div class="page__toggle" style="margin-left: 10%; margin-top: 12%;">
             <label class="toggle">
-            <input id="simplify-ui" onchange="closeNav();" onclick="simplify_ui(); save_settings();" class="toggle__input" type="checkbox">
+            <input id="simplify-ui" onchange="closeNav();" onclick="simplify_ui();" class="toggle__input" type="checkbox">
             <span class="toggle__label">
                 <span class="toggle__text">Simple interface 
                     <i class="fas fa-info-circle" rel="tooltip" title="If simple Interface is turned on, the website will use the default values (check what the default settings are by clicking reset settings above, Attention: old settings will be lost) and in addition make the interface simpler by not showing the advanced settings" id="info-step-2"></i>
@@ -144,7 +141,7 @@
 
         <div class="page__toggle" style="margin-left: 20%; margin-top: 7%;">
             <label class="toggle">
-            <input id="unit-checkbox-ui" onclick="simplify_ui_partly(); save_settings();" class="toggle__input" type="checkbox">
+            <input id="unit-checkbox-ui" onclick="simplify_ui_partly();" class="toggle__input" type="checkbox">
             <span class="toggle__label">
                 <span class="toggle__text">Show Unit 
                     <i class="fas fa-info-circle" rel="tooltip" title="If this checkbox is active you can access the part of the advanced ui where you can change the factors per attribute" id="info-step-2"></i>
@@ -155,7 +152,7 @@
 
         <div class="page__toggle" style="margin-left: 20%; margin-top: 5%;">
             <label class="toggle">
-            <input id="tod-checkbox-ui" onclick="simplify_ui_partly(); save_settings();" class="toggle__input" type="checkbox">
+            <input id="tod-checkbox-ui" onclick="simplify_ui_partly();" class="toggle__input" type="checkbox">
             <span class="toggle__label">
                 <span class="toggle__text">Show Time of Day
                     <i class="fas fa-info-circle" rel="tooltip" title="If this checkbox is active you can access the part of the advanced ui where you can change the attributes that should be used to calc the data in the chart" id="info-step-2"></i>
@@ -840,9 +837,23 @@
         }
         else if(cname == 'interface_type')
         {
-            console.log("TODO");
-        }
-        
+            if(document.getElementById("simplify-ui").checked)
+            {
+                document.cookie = cname + "=simple_interface;" + expires + ";path=/";
+            }
+            else if(document.getElementById("unit-checkbox-ui").checked)
+            {
+                document.cookie = cname + "=simple_with_unit;" + expires + ";path=/";
+            }
+            else if(document.getElementById("tod-checkbox-ui").checked)
+            {
+                document.cookie = cname + "=simple_with_tod;" + expires + ";path=/";
+            }
+            else
+            {
+                document.cookie = cname + "=advanced_interface;" + expires + ";path=/";
+            }
+        }        
     }
 
     // #67  newly added func

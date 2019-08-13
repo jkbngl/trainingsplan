@@ -873,7 +873,7 @@
         {
             var name = cname + "=";
         }
-        
+
         var decodedCookie = decodeURIComponent(document.cookie);
         var ca = decodedCookie.split(';');
         
@@ -888,18 +888,24 @@
 
             if (c.indexOf(name) == 0) 
             {
+                var cookie_val = c.substring(name.length, c.length);
+
                 if(cname == 'active_')
                 {
-                    console.log("ACTIVE cookies (" + index + "): " + c.substring(name.length, c.length));
-                    set_dataset_and_button(index, c.substring(name.length, c.length));
+                    console.log("ACTIVE cookies (" + index + "): " + cookie_val);
+                    set_dataset_and_button(index, cookie_val);
                 }
                 else if(cname == 'interface_type')
                 {
-                    console.log("INTERFACE cookies: " + c.substring(name.length, c.length));
+                    console.log("INTERFACE cookies: " + cookie_val);
                 }
                 else if(cname == 'chart_type')
                 {
-                    console.log("CHART cookies: " + c.substring(name.length, c.length));
+                    if(cookie_val == 'bar')
+                        document.getElementById("chart-type").checked = true;
+
+                    update_bm_chart(get_active_bms());
+                    console.log("CHART cookies: " + cookie_val);
                 }
             }
         }          
@@ -1016,15 +1022,18 @@
 
         // TODO load from cookies if active or not
         var length = get_amount_inputs();
+        
         for(var i = 0; i < length; i++)
             get_cookie("active_", i);
 
-        get_cookie('interface_type');
-        get_cookie('chart_type');
+        
         
         set_labels();
         set_selects_disabled();
         chart.update()
+
+        get_cookie('interface_type');
+        get_cookie('chart_type');
     }
 
     // #67 newly added func

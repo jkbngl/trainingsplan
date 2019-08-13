@@ -916,7 +916,10 @@
                 {
                     // if the chart_type is bar set it to active, default is inactive which is line chart
                     if(cookie_val == 'bar')
+                    {
                         document.getElementById("chart-type").checked = true;
+                        chart_type = 'bar';
+                    }    
                     
                     // Then update the chart
                     update_bm_chart(get_active_bms());

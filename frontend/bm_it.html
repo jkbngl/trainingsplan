@@ -865,7 +865,15 @@
     // #67 changed func
     function get_cookie(cname, index) 
     {
-        var name = cname + index + "=";
+        if(cname == 'active_')
+        {
+            var name = cname + index + "=";
+        }
+        else
+        {
+            var name = cname + "=";
+        }
+        
         var decodedCookie = decodeURIComponent(document.cookie);
         var ca = decodedCookie.split(';');
         
@@ -880,13 +888,21 @@
 
             if (c.indexOf(name) == 0) 
             {
-                set_dataset_and_button(index, c.substring(name.length, c.length));
-                //return c.substring(name.length, c.length);
+                if(cname == 'active_')
+                {
+                    console.log("ACTIVE cookies (" + index + "): " + c.substring(name.length, c.length));
+                    set_dataset_and_button(index, c.substring(name.length, c.length));
+                }
+                else if(cname == 'interface_type')
+                {
+                    console.log("INTERFACE cookies: " + c.substring(name.length, c.length));
+                }
+                else if(cname == 'chart_type')
+                {
+                    console.log("CHART cookies: " + c.substring(name.length, c.length));
+                }
             }
-        }
-
-        console.log("NO COOKIES FOUND");
-        //return "";
+        }          
     }
 
     // #67  newly added func
@@ -1003,6 +1019,8 @@
         for(var i = 0; i < length; i++)
             get_cookie("active_", i);
 
+        get_cookie('interface_type');
+        get_cookie('chart_type');
         
         set_labels();
         set_selects_disabled();

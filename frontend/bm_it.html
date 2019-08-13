@@ -865,14 +865,11 @@
     // #67 changed func
     function get_cookie(cname, index) 
     {
+        // the active cookies can be more than one so we need to add the index
         if(cname == 'active_')
-        {
             var name = cname + index + "=";
-        }
         else
-        {
             var name = cname + "=";
-        }
 
         var decodedCookie = decodeURIComponent(document.cookie);
         var ca = decodedCookie.split(';');
@@ -892,20 +889,37 @@
 
                 if(cname == 'active_')
                 {
-                    console.log("ACTIVE cookies (" + index + "): " + cookie_val);
+                    // Set the active cookies
                     set_dataset_and_button(index, cookie_val);
                 }
                 else if(cname == 'interface_type')
                 {
+                    if(cookie_val == 'simple_interface')
+                    {
+                        document.getElementById("simplify-ui").checked = true;
+                        simplify_ui();
+                    }
+                    else if(cookie_val == 'simple_with_unit')
+                    {
+                        document.getElementById("unit-checkbox-ui").checked = true;
+                        simplify_ui_partly();
+                        
+                    }
+                    else if(cookie_val == 'simple_with_tod')
+                    {
+                        document.getElementById("tod-checkbox-ui").checked = true;
+                        simplify_ui_partly();
+                    }
                     console.log("INTERFACE cookies: " + cookie_val);
                 }
                 else if(cname == 'chart_type')
                 {
+                    // if the chart_type is bar set it to active, default is inactive which is line chart
                     if(cookie_val == 'bar')
                         document.getElementById("chart-type").checked = true;
-
+                    
+                    // Then update the chart
                     update_bm_chart(get_active_bms());
-                    console.log("CHART cookies: " + cookie_val);
                 }
             }
         }          

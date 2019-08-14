@@ -1654,7 +1654,12 @@
         if(document.getElementById("tod-checkbox-ui").checked && document.getElementById("unit-checkbox-ui").checked)
         {
             document.getElementById("simplify-ui").checked = false;
-            simplify_ui();
+            
+            for(var i = 1;  i <= length; i++)
+            {
+                document.getElementById("additional-info_" + i).querySelector("#select-options_nr-1").style.display = "inline";
+                document.getElementById("additional-info_" + i).querySelector("#select-options_nr-2").style.display = "inline";
+            }
         }
         else if(document.getElementById("tod-checkbox-ui").checked && !document.getElementById("unit-checkbox-ui").checked)
         {

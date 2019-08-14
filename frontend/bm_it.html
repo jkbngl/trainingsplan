@@ -841,13 +841,17 @@
             {
                 document.cookie = cname + "=simple_interface;" + expires + ";path=/";
             }
-            else if(document.getElementById("unit-checkbox-ui").checked)
+            else if(document.getElementById("unit-checkbox-ui").checked && !document.getElementById("tod-checkbox-ui").checked)
             {
                 document.cookie = cname + "=simple_with_unit;" + expires + ";path=/";
             }
-            else if(document.getElementById("tod-checkbox-ui").checked)
+            else if(document.getElementById("tod-checkbox-ui").checked && !document.getElementById("unit-checkbox-ui").checked)
             {
                 document.cookie = cname + "=simple_with_tod;" + expires + ";path=/";
+            }
+            else if(document.getElementById("tod-checkbox-ui").checked && document.getElementById("unit-checkbox-ui").checked)
+            {
+                document.cookie = cname + "=advanced_interface;" + expires + ";path=/";
             }
             else
             {
@@ -910,6 +914,12 @@
                         document.getElementById("tod-checkbox-ui").checked = true;
                         simplify_ui_partly();
                     }
+                    else if(cookie_val == 'advanced_interface')
+                    {
+                        document.getElementById("tod-checkbox-ui").checked = true;
+                        document.getElementById("unit-checkbox-ui").checked = true;
+                    }
+
                     console.log("INTERFACE cookies: " + cookie_val);
                 }
                 else if(cname == 'chart_type')

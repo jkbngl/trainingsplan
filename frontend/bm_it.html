@@ -126,7 +126,6 @@
         <button onclick="restore_bm();" class="button" style="top: 10px; width:80%; margin-left: 10%; margin-top: 20%;"><i class="fas fa-trash-restore-alt"></i> Restore</button>
         <button onclick="download();" class="button" style="top: 10px; width:80%; margin-left: 10%;"><i class="fas fa-file-export"></i> Export</button>
         <button onclick="reset_settings();" class="button" style="top: 10px; width:80%; margin-left: 10%; margin-top: 20%;"><i class="fas fa-hammer"></i> Reset Settings</button>
-
         
         <div class="page__toggle" style="margin-left: 10%; margin-top: 12%;">
             <label class="toggle">
@@ -207,7 +206,11 @@
     //var chart_type = 'line';
 
     // Here the class is set for the swal to use, depending on mobile or desktop, desktop leave empty - mobile is set in customize_mobile
-    var mobile_swal = '';             
+    var mobile_swal = '';           
+
+    // masterdata
+    var uoms = [];
+    var tods = [];
 
     // #67 Newly added func
     function get_amount_inputs()
@@ -635,43 +638,61 @@
     // #67 Newly added func
     function rest_uoms()
     {
-        try
+        if(uoms.length == 0)
         {
-            var request = new XMLHttpRequest();
-            var url = 'http://jakob.ml:8080/tpbackend_1-1.0-SNAPSHOT/api/trainingsplan/get_uoms/';
-            var xmlHttp = new XMLHttpRequest();
+            try
+            {
+                var request = new XMLHttpRequest();
+                var url = 'http://jakob.ml:8080/tpbackend_1-1.0-SNAPSHOT/api/trainingsplan/get_uoms/';
+                var xmlHttp = new XMLHttpRequest();
 
-            xmlHttp.open( "GET", url, false ); // false for synchronous request
-            xmlHttp.send( null );
-            uoms = xmlHttp.responseText;
+                xmlHttp.open( "GET", url, false ); // false for synchronous request
+                xmlHttp.send( null );
+                uoms = xmlHttp.responseText;
+                uoms = JSON.parse(uoms);
 
-            return JSON.parse(uoms);
+                return uoms;
+            }
+            catch(err)
+            {
+                console.error(err);
+                display_error('error', 'Oops...', 'The backend seems to be unavailable!')
+            }
         }
-        catch(err)
+        else
         {
-            console.error(err);
-            display_error('error', 'Oops...', 'The backend seems to be unavailable!')
+            return uoms;
         }
     }
 
     // #67 Newly added func
     function rest_tods()
     {
-        try
-        {
-            var url = 'http://jakob.ml:8080/tpbackend_1-1.0-SNAPSHOT/api/trainingsplan/get_tods/';
-            var xmlHttp = new XMLHttpRequest();
+        console.log(tods.length)
 
-            xmlHttp.open( "GET", url, false ); // false for synchronous request
-            xmlHttp.send( null );
-            tods = xmlHttp.responseText;
-            
-            return JSON.parse(tods);
-        }
-        catch(err)
+        if(tods.length == 0)
         {
-            console.error(err);
-            display_error('error', 'Oops...', 'The backend seems to be unavailable!')
+            try
+            {
+                var url = 'http://jakob.ml:8080/tpbackend_1-1.0-SNAPSHOT/api/trainingsplan/get_tods/';
+                var xmlHttp = new XMLHttpRequest();
+
+                xmlHttp.open( "GET", url, false ); // false for synchronous request
+                xmlHttp.send( null );
+                tods = xmlHttp.responseText;
+                tods = JSON.parse(tods);
+
+                return tods;
+            }
+            catch(err)
+            {
+                console.error(err);
+                display_error('error', 'Oops...', 'The backend seems to be unavailable!')
+            }
+        }
+        else
+        {
+            return tods;
         }
     }
 

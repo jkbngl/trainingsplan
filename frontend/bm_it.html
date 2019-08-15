@@ -211,6 +211,7 @@
     // masterdata
     var uoms = [];
     var tods = [];
+    var bms  = [];
 
     // #67 Newly added func
     function get_amount_inputs()
@@ -366,6 +367,7 @@
     // #67 Newly added func
     function send_bm_data_to_backend(jsonData)
     {
+        // POST, can not be replaced
         try
         {
             var xhr = new XMLHttpRequest();
@@ -638,6 +640,7 @@
     // #67 Newly added func
     function rest_uoms()
     {
+        // Has been refactored
         if(uoms.length == 0)
         {
             try
@@ -668,8 +671,7 @@
     // #67 Newly added func
     function rest_tods()
     {
-        console.log(tods.length)
-
+        // Has been refactored
         if(tods.length == 0)
         {
             try
@@ -1113,6 +1115,8 @@
     // #67 Newly added func
     function rest_get_bms()
     {
+        // Load of this data can not be replaced, because its dynamically and if a new bm is added or one is deleted we have to load them all again
+        // might work with a changed flag
         try
         {
             var url = 'http://jakob.ml:8080/tpbackend_1-1.0-SNAPSHOT/api/trainingsplan/get_bm_values/';
@@ -1121,8 +1125,10 @@
             xmlHttp.open( "GET", url + getusername() + "/0", false ); // false for synchronous request
             xmlHttp.send( null );
             bms = xmlHttp.responseText;
-        
-            return JSON.parse(bms);
+            
+            bms = JSON.parse(bms);
+
+            return bms;
         }
         catch(err)
         {
@@ -1202,6 +1208,8 @@
     // #67 Newly added func
     function rest_get_historical_bm(bm_id)
     {
+        // Load of this data can not be replaced, because its dynamically and if a new bm is added or one is deleted we have to load them all again
+        // might work with a changed flag
         try
         {
             var url = 'http://jakob.ml:8080/tpbackend_1-1.0-SNAPSHOT/api/trainingsplan/get_historical_bm_values/';
@@ -1394,6 +1402,7 @@
 
                     if(!isNaN(parseFloat(value)) && !isNaN(value - 0))
                     {
+                        // POST, can not be replaced
                         var xhr = new XMLHttpRequest();
                         var url = "http://jakob.ml:8080/tpbackend_1-1.0-SNAPSHOT/api/trainingsplan/restore_bm";
                         xhr.open("POST", url, true);
@@ -1418,6 +1427,8 @@
     // #67 changed func
     function load_deleted_bm()
     {
+        // Load of this data can not be replaced, because its dynamically and if a new bm is added or one is deleted we have to load them all again
+        // might work with a changed flag
         try
         {
             var url = 'http://jakob.ml:8080/tpbackend_1-1.0-SNAPSHOT/api/trainingsplan/get_bm_values/';

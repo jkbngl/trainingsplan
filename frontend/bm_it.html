@@ -818,7 +818,8 @@
                     data: current_active_values,
                     label: 'potential for ' + document.getElementById("additional-info_" + (i + 1)).querySelector("#value_name").value + ' [' + document.getElementById("additional-info_" + (i + 1)).querySelector("#select_1").value + '] - ' + document.getElementById("additional-info_" + (i + 1)).querySelector("#select_2").value,
                     borderColor: border_color_array[i],
-                    backgroundColor: border_color_array[i],
+                    //backgroundColor: border_color_array[i],
+                    backgroundColor: pattern.draw('zigzag', border_color_array[i]),
                     borderDash: [10],
                     fill: false
                 });
@@ -1299,8 +1300,7 @@
                     data: values,
                     label: bm_legend_name,
                     borderColor: border_color_array[i],
-                    //backgroundColor: border_color_array[i],
-                    backgroundColor: [pattern.draw('zigzag', '#1f77b4')],
+                    backgroundColor: border_color_array[i],
                     fill: false
                 });
 
@@ -1484,7 +1484,7 @@
             data: {
                 labels: labels,
                 datasets: [
-                    
+
                 ],
             },
             options: {

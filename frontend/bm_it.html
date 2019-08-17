@@ -556,14 +556,14 @@
         if(chart.data.datasets[bm_name.datasetIndex]['_meta'][meta_data_id].hidden)
         {
             chart.data.datasets[bm_name.datasetIndex]['_meta'][meta_data_id].hidden = false;
-            document.getElementById("additional-info_" + (bm_name.datasetIndex + 1)).querySelector("#reps_box").checked = true;
+            document.getElementById("additional-info_" + (bm_name.datasetIndex + 1)).querySelector("#active_box").checked = true;
         }
         else if(!chart.data.datasets[bm_name.datasetIndex]['_meta'][meta_data_id].hidden)
         {
             // If the chart goes from the active state into hidden state
             clear_potential(false, bm_name.datasetIndex);
             chart.data.datasets[bm_name.datasetIndex]['_meta'][meta_data_id].hidden = true;
-            document.getElementById("additional-info_" + (bm_name.datasetIndex + 1)).querySelector("#reps_box").checked = false;
+            document.getElementById("additional-info_" + (bm_name.datasetIndex + 1)).querySelector("#active_box").checked = false;
         }
 
         set_labels();
@@ -714,7 +714,7 @@
         container.innerHTML = '<div id="additional-info_' + num_input + '" value="' + id + '" base_bm="' + base_bm + '" style="width: 100%; margin-bottom: 3%; display: flex; flex-direction: row; flex-wrap: nowrap;justify-content: space-between;"> \
             <div id="check-2" class="page__toggle"  style="margin-top: 10px; margin: auto;  margin-left:1%; z-index:1;"> \
                 <label class="toggle"> \
-                    <input id="reps_box" onchange="closeNav();" onclick="set_cookie(\'active\', 90); toggle_chart_datasets(); show_potential()"  class="toggle__input" type="checkbox" checked> \
+                    <input id="active_box" onchange="closeNav();" onclick="set_cookie(\'active\', 90); toggle_chart_datasets(); show_potential()"  class="toggle__input" type="checkbox" checked> \
                     <span class="toggle__label"> \
                         <span class="toggle__text">Active</span> \
                     </span> \
@@ -805,7 +805,7 @@
             num_last_elem = bm.length - 1;
 
 
-            if(bm[num_last_elem].value != document.getElementById("additional-info_" + (i + 1)).querySelector("#value_value").value && document.getElementById("additional-info_" + (i + 1)).querySelector("#reps_box").checked)
+            if(bm[num_last_elem].value != document.getElementById("additional-info_" + (i + 1)).querySelector("#value_value").value && document.getElementById("additional-info_" + (i + 1)).querySelector("#active_box").checked)
             {
                 for(var j = 0; j < num_last_elem + 1; j++)
                 {
@@ -852,7 +852,7 @@
 
             for(var i = 0; i < amount_days; i++)
             {
-                document.cookie = cname + "_"+ i + "=" + document.getElementById("additional-info_" + (i + 1)).querySelector("#reps_box").checked + ";" + expires + ";path=/";
+                document.cookie = cname + "_"+ i + "=" + document.getElementById("additional-info_" + (i + 1)).querySelector("#active_box").checked + ";" + expires + ";path=/";
             }    
         }
         else if(cname == 'chart_type')
@@ -971,7 +971,7 @@
         var myBool = JSON.parse(bool);
 
         
-        document.getElementById("additional-info_" + (index + 1)).querySelector("#reps_box").checked = myBool;
+        document.getElementById("additional-info_" + (index + 1)).querySelector("#active_box").checked = myBool;
         chart.data.datasets[index]['_meta'][meta_data_id].hidden = !myBool;    // Hidden so turn it around
 
         // In order that it is displayed correctly in the chart I need to update the chart so that it is also visible not only in the background
@@ -987,7 +987,7 @@
         {
             var meta_data_id = chart.getDatasetMeta(i).controller.chart.id;
 
-            if(!document.getElementById("additional-info_" + (i + 1)).querySelector("#reps_box").checked)
+            if(!document.getElementById("additional-info_" + (i + 1)).querySelector("#active_box").checked)
             {
                 chart.data.datasets[i]['_meta'][meta_data_id].hidden = true;
 
@@ -1293,7 +1293,7 @@
 
             local_labels_date.push("potential");
             
-            if(document.getElementById("additional-info_" + (i + 1)).querySelector("#reps_box").checked)
+            if(document.getElementById("additional-info_" + (i + 1)).querySelector("#active_box").checked)
             {
                 chart.data.datasets.push({
                     data: values,
@@ -1483,11 +1483,9 @@
             type: chart_type,
             data: {
                 labels: labels,
-                datasets: [{
-                    backgroundColor: [
-                        pattern.draw('circle', '#36a2eb')
-                    ]
-                }],
+                datasets: [
+                    
+                ],
             },
             options: {
                 line:
@@ -1519,8 +1517,8 @@
                         fontSize: 20,
                         filter: function(item, chart) {
                             // Logic to remove a particular legend item
-                            console.log(item);
-                            // return !item.text.includes('potential for');
+                            //console.log(item);
+                            return !item.text.includes('potential for');
                         }   
                     }
                 },

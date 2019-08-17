@@ -27,6 +27,7 @@
     <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.7.1/css/all.css" integrity="sha384-fnmOCqbTlWIlj8LyTjo7mOUStjsKC4pOpQbqyi7RrhN7udi9RwhKkMHpvLbHG9Sr" crossorigin="anonymous">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.8.0/Chart.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@8"></script>
+    <script src="js/node_modules/patternomaly/dist/patternomaly.js"></script>
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@sweetalert2/theme-dark@1/dark.css">
 
 
@@ -1298,7 +1299,8 @@
                     data: values,
                     label: bm_legend_name,
                     borderColor: border_color_array[i],
-                    backgroundColor: border_color_array[i],
+                    //backgroundColor: border_color_array[i],
+                    backgroundColor: [pattern.draw('zigzag', '#1f77b4')],
                     fill: false
                 });
 
@@ -1481,13 +1483,21 @@
             type: chart_type,
             data: {
                 labels: labels,
-                datasets: [
-                    
-                ]
+                datasets: [{
+                    backgroundColor: [
+                        pattern.draw('circle', '#36a2eb')
+                    ]
+                }],
             },
             options: {
-                
-                line:{ fill: true},
+                line:
+                {
+                    fill: true
+                },
+                bar:
+                {
+                    fill: false
+                },
                 hidden: false,
                 ticks: {
                     beginAtZero: false,
@@ -1509,7 +1519,8 @@
                         fontSize: 20,
                         filter: function(item, chart) {
                             // Logic to remove a particular legend item
-                            return !item.text.includes('potential for');
+                            console.log(item);
+                            // return !item.text.includes('potential for');
                         }   
                     }
                 },

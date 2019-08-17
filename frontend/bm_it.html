@@ -163,7 +163,7 @@
 
         <div class="page__toggle" style="margin-left: 10%; margin-top: 25%;">
             <label class="toggle">
-            <input id="chart-type" onchange="closeNav();" onclick="clear_chart(); update_bm_chart(get_active_bms()); set_cookie('chart_type', 90)" class="toggle__input" type="checkbox">
+            <input id="chart-type" onchange="closeNav();" onclick="clear_chart(); update_bm_chart(get_active_bms()); set_cookie('chart_type', 90); set_labels(); chart.update()" class="toggle__input" type="checkbox">
             <span class="toggle__label">
                 <span class="toggle__text">Bar Chart 
                     <i class="fas fa-info-circle" rel="tooltip" title="Change between the normal line chart and the bar chart to analyze your data" id="info-step-2"></i>
@@ -506,7 +506,11 @@
             {
                 active_bm++;
                 name_active_bm = chart.data.datasets[i].label;
-                index_active_bm = chart.data.datasets[i]['_meta'][meta_data_id].dataset._datasetIndex;
+                if(chart.config.type == 'line')
+                    index_active_bm = chart.data.datasets[i]['_meta'][meta_data_id].dataset._datasetIndex;
+                else 
+                    index_active_bm = i;
+
                 local_labels_numbers.push(chart.data.datasets[i].data.length)
             } 
         }
@@ -797,9 +801,17 @@
         var num_last_elem;
         // All historic values of the bm
         var current_active_values = [];
+        // change background for potential depending on chart type
+        var background_attribute;
         
         for(var i = 0; i < active_bms.length; i++)
         {
+            // Has to be done inside loop because of i, which needs to color of the related bm
+            if(chart.config.type == 'line')
+                background_attribute = border_color_array[i]
+            else if(chart.config.type == 'bar')
+                background_attribute = pattern.draw('zigzag', border_color_array[i])
+
             // get the last value of the bm, the current one
             var bm = JSON.parse(active_bms[i])
             num_last_elem = bm.length - 1;
@@ -818,8 +830,7 @@
                     data: current_active_values,
                     label: 'potential for ' + document.getElementById("additional-info_" + (i + 1)).querySelector("#value_name").value + ' [' + document.getElementById("additional-info_" + (i + 1)).querySelector("#select_1").value + '] - ' + document.getElementById("additional-info_" + (i + 1)).querySelector("#select_2").value,
                     borderColor: border_color_array[i],
-                    //backgroundColor: border_color_array[i],
-                    backgroundColor: pattern.draw('zigzag', border_color_array[i]),
+                    backgroundColor: background_attribute,
                     borderDash: [10],
                     fill: false
                 });
@@ -829,7 +840,7 @@
                 chart.options.animation.duration = 0;
                 chart.update();
                 // Set it back to the old value
-                chart.options.duration = old_animation_duration;
+                chart.options.duration = old_animation_duration;    
                 
                 // Clean at the end
                 current_active_values = [];
@@ -958,6 +969,7 @@
                     
                     // Then update the chart
                     update_bm_chart(get_active_bms());
+                    set_labels();
                 }
             }
         }          
@@ -1071,6 +1083,7 @@
         active_bm = get_active_bms();
 
         update_bm_chart(active_bm);
+        console.log(chart.data.labels)
 
         // TODO load from cookies if active or not
         var length = get_amount_inputs();
@@ -1082,10 +1095,11 @@
         
         set_labels();
         set_selects_disabled();
-        chart.update()
-
+        
         get_cookie('interface_type');
         get_cookie('chart_type');
+
+        chart.update()
     }
 
     // #67 newly added func
@@ -1237,16 +1251,11 @@
         chart.clear();
         chart.destroy();
 
-        
         if(document.getElementById("chart-type").checked)
             chart = create_chart("bar");
         else
             chart = create_chart('line');
 
-        //change_div(0, 0, true);
-        //active_ex_in_chart = [];
-        //num_ex = 0;
-        // console.log(num_ex);
         return chart;
     }
 
@@ -1274,7 +1283,7 @@
                 values[j] = parsed_bm[j].value;                
 
                 dateString = new Date(parsed_bm[j].created).toUTCString();
-                local_labels_date.push(dateString.split(' ').slice(1, 4).join(' '));
+                //local_labels_date.push(dateString.split(' ').slice(1, 4).join(' '));
 
                 // console.log(parsed_bm[j].uom);
                 // console.log(parsed_bm[j].tod);
@@ -1288,11 +1297,11 @@
 
                     bm_legend_name = bm_name + " [" + bm_uom + "]" + " - " + bm_tod;
                     
-                    local_labels_numbers.push(parsed_bm.length);
+                    //local_labels_numbers.push(parsed_bm.length);
                 }
             }
 
-            local_labels_date.push("potential");
+            //local_labels_date.push("potential");
             
             if(document.getElementById("additional-info_" + (i + 1)).querySelector("#active_box").checked)
             {
@@ -1304,30 +1313,8 @@
                     fill: false
                 });
 
-                /*
-                if(bms.length == 1)
-                {
-                    console.log("set date labels in old func");
-                    chart.data.labels = local_labels_date;
-                }
-                else
-                {
-                    var max_num = Math.max.apply(Math, local_labels_numbers);
-                    local_labels_numbers = [];
-                    
-                    // Start at 0 to have 1 extra space for potential
-                    for(var k = 0; k <= max_num; k++)
-                        local_labels_numbers.push(k);
-                        
-
-                    console.log("set num labels in old func");
-                    chart.data.labels = local_labels_numbers;
-                }
-                */
-
                 chart.update();
-            }
-            
+            }            
 
             // Clear for next bm
             values = [];
@@ -1393,7 +1380,7 @@
             title: 'Select a bm',
             input: 'select',
             inputOptions: parsed_bms,
-            inputPlaceholder: 'Select a plan...',
+            inputPlaceholder: 'Select a bm...',
             customClass: mobile_swal,
             showCancelButton: true,
             
@@ -1475,7 +1462,8 @@
     // #67 changed func
     function create_chart(chart_type)
     {
-        // console.log(chart_type)
+        console.log(chart_type)
+        
         if(typeof chart_type == 'undefined')
             chart_type = 'line';
 
@@ -1491,10 +1479,6 @@
                 line:
                 {
                     fill: true
-                },
-                bar:
-                {
-                    fill: false
                 },
                 hidden: false,
                 ticks: {

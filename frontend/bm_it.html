@@ -163,7 +163,7 @@
 
         <div class="page__toggle" style="margin-left: 10%; margin-top: 25%;">
             <label class="toggle">
-            <input id="chart-type" onchange="closeNav();" onclick="clear_chart(); update_bm_chart(get_active_bms()); set_cookie('chart_type', 90); set_labels(); chart.update()" class="toggle__input" type="checkbox">
+            <input id="chart-type" onchange="closeNav();" onclick="clear_chart(); update_bm_chart(get_active_bms()); set_cookie('chart_type', 90); set_labels();" class="toggle__input" type="checkbox">
             <span class="toggle__label">
                 <span class="toggle__text">Bar Chart 
                     <i class="fas fa-info-circle" rel="tooltip" title="Change between the normal line chart and the bar chart to analyze your data" id="info-step-2"></i>
@@ -497,15 +497,27 @@
         var new_labels = [];
         // length of longest bm 
         var local_labels_numbers = [];
+        // depends on bar and line chart
+        var is_chart_active;
 
         for(var i = 0; i < all_bms; i++)
         {
-            meta_data_id = chart.getDatasetMeta(i).controller.chart.id;
+            if(chart.config.type == 'line')
+            {
+                meta_data_id = chart.getDatasetMeta(i).controller.chart.id;
+                is_chart_active = chart.data.datasets[i]['_meta'][meta_data_id].hidden
+            }
+            else
+            {
+                var meta = chart.getDatasetMeta(i);
+                is_chart_active = meta.data[i].hidden;
+            }
             
-            if(!chart.data.datasets[i]['_meta'][meta_data_id].hidden)
+            if(!is_chart_active)
             {
                 active_bm++;
                 name_active_bm = chart.data.datasets[i].label;
+
                 if(chart.config.type == 'line')
                     index_active_bm = chart.data.datasets[i]['_meta'][meta_data_id].dataset._datasetIndex;
                 else 
@@ -544,6 +556,8 @@
 
             chart.data.labels = local_labels_numbers;
         }
+
+        chart.update()
     }
 
     // #67 newly added func
@@ -968,6 +982,7 @@
                     }    
                     
                     // Then update the chart
+                    clear_chart()
                     update_bm_chart(get_active_bms());
                     set_labels();
                 }
@@ -1083,7 +1098,6 @@
         active_bm = get_active_bms();
 
         update_bm_chart(active_bm);
-        console.log(chart.data.labels)
 
         // TODO load from cookies if active or not
         var length = get_amount_inputs();

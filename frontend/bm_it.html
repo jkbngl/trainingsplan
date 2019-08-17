@@ -1316,16 +1316,22 @@
             }
 
             //local_labels_date.push("potential");
-            
-            if(document.getElementById("additional-info_" + (i + 1)).querySelector("#active_box").checked)
+
+            chart.data.datasets.push({
+                data: values,
+                label: bm_legend_name,
+                borderColor: border_color_array[i],
+                backgroundColor: border_color_array[i],
+                fill: false
+            });
+
+            // Needs to be done before as well to make sure that we can read the meta from this dataset
+            chart.update();
+
+            if(!document.getElementById("additional-info_" + (i + 1)).querySelector("#active_box").checked)
             {
-                chart.data.datasets.push({
-                    data: values,
-                    label: bm_legend_name,
-                    borderColor: border_color_array[i],
-                    backgroundColor: border_color_array[i],
-                    fill: false
-                });
+                var meta_data_id = chart.getDatasetMeta(i).controller.chart.id;
+                chart.data.datasets[i]['_meta'][meta_data_id].hidden = true;
 
                 chart.update();
             }            

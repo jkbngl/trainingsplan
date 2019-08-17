@@ -510,7 +510,7 @@
             else
             {
                 var meta = chart.getDatasetMeta(i);
-                is_chart_active = meta.data[i].hidden;
+                is_chart_active = meta.data[0].hidden;
             }
             
             if(!is_chart_active)
@@ -1481,9 +1481,7 @@
     
     // #67 changed func
     function create_chart(chart_type)
-    {
-        console.log(chart_type)
-        
+    {       
         if(typeof chart_type == 'undefined')
             chart_type = 'line';
 

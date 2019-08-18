@@ -505,7 +505,7 @@
             if(chart.config.type == 'line')
             {
                 meta_data_id = chart.getDatasetMeta(i).controller.chart.id;
-                is_chart_active = chart.data.datasets[i]['_meta'][meta_data_id].hidden
+                is_chart_active = chart.data.datasets[i]['_meta'][meta_data_id].hidden;
             }
             else
             {
@@ -796,11 +796,11 @@
             document.getElementById("additional-info_" + num_input).querySelector("#select-options_nr-1").style.display = "none";
             document.getElementById("additional-info_" + num_input).querySelector("#select-options_nr-2").style.display = "none";
         }
-        else if(document.getElementById("unit-checkbox-ui").checked)
+        else if(document.getElementById("unit-checkbox-ui").checked && !document.getElementById("tod-checkbox-ui").checked)
         {
             document.getElementById("additional-info_" + num_input).querySelector("#select-options_nr-2").style.display = "none";
         }
-        else if(document.getElementById("tod-checkbox-ui").checked)
+        else if(document.getElementById("tod-checkbox-ui").checked && !document.getElementById("unit-checkbox-ui").checked)
         {
             document.getElementById("additional-info_" + num_input).querySelector("#select-options_nr-1").style.display = "none";
         }

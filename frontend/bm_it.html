@@ -386,6 +386,8 @@
                 console.log("ERROR");
                 swal.close();
 
+
+                // Maybe refactor to the same as in the else clause, with error_string and concatenating, for the user this is better, for the programmer the other one
                 if(!name_filled && values_are_numeric && uom_filled)
                     display_error('error', 'Enter a name for the bm!', 'dont know');
                 else if(!name_filled && !values_are_numeric && uom_filled)
@@ -418,15 +420,17 @@
                 var error_string = '';
 
                 if(!uom_filled)
-                    error_string += 'Please select a unit - ';
+                    error_string += 'please select a unit and ';
                 if(!tod_filled)
-                    error_string += 'Please select a time of the day - ';
+                    error_string += 'please select a time of the day and ';
                 if(!values_are_numeric)
-                    error_string += 'Values must be numeric and may not contain letters - ';
+                    error_string += 'palues must be numeric and may not contain letters and ';
                 if(!name_filled)
-                    error_string += 'Please enter a name for the bm - ';
+                    error_string += 'please enter a name for the bm and ';
 
-                display_error('error', error_string.substring(0, error_string.length - 3) + "!", 'dont know');
+                error_string = error_string.charAt(0).toUpperCase() + error_string.slice(1);
+
+                display_error('error', error_string.substring(0, error_string.length - 5) + "!", 'dont know');
 
             }
         }

@@ -213,6 +213,7 @@
     var uoms = [];
     var tods = [];
     var bms  = [];
+    var potential_datasets = [];
 
     // #67 Newly added func
     function get_amount_inputs()
@@ -1332,6 +1333,18 @@
     // #67 changed function
     function clear_chart()
     {
+        // store the potentials before clearing the dataset
+        let length = chart.data.datasets.length;
+        potential_datasets = [];
+
+        for(let i = 0; i < length; i++)
+        {
+            if(chart.data.datasets[i].label.startsWith("potential for"))
+            {
+                potential_datasets.push(chart.data.datasets[i])
+            }
+        }
+
         chart.reset();
         chart.clear();
         chart.destroy();
@@ -1410,6 +1423,32 @@
             // Clear for next bm
             values = [];
             bm_name = '';
+        }
+
+        refill_potential();
+    }
+
+    function refill_potential()
+    {
+        console.log(potential_datasets)
+
+        
+        
+        for(let i = 0; i < potential_datasets.length; i++)
+        {
+            if(chart.config.type == 'line')
+                background_attribute = potential_datasets[i].backgroundColor
+            else if(chart.config.type == 'bar')
+                background_attribute = pattern.draw('zigzag', potential_datasets[i].backgroundColor)
+
+            chart.data.datasets.push({
+                data: potential_datasets[i].data,
+                label: potential_datasets[i].label,
+                borderColor: potential_datasets[i].borderColor,
+                backgroundColor: background_attribute,
+                borderDash: [10],
+                fill: false
+            });
         }
     }
 

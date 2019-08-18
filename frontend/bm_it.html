@@ -233,7 +233,9 @@
         var jsonData = {
             stats: []
         };
-        var uom_and_tod_filled = false;
+        var tod_filled = false;
+        var uom_filled = false;
+        var name_filled = false;
         var values_are_numeric = false;
 
         for(let i = 1; i <= amount_stats; i++)
@@ -252,14 +254,31 @@
 
         for(let i = 0; i < amount_stats; i++)
         {
-            if(jsonData.stats[i].tod.length > 0 && jsonData.stats[i].uom.length > 0 && jsonData.stats[i].name.length > 0)
+            if(jsonData.stats[i].tod.length > 0)
             {
-                uom_and_tod_filled = true;
+                tod_filled = true;
             }
             else
             {
-                uom_and_tod_filled = false;
-               
+                tod_filled = false;
+            }
+
+            if(jsonData.stats[i].uom.length > 0)
+            {
+                uom_filled = true;
+            }
+            else
+            {
+                uom_filled = false;
+            }
+
+            if(jsonData.stats[i].name.length > 0)
+            {
+                name_filled = true;
+            }
+            else
+            {
+                name_filled = false;
             }
             
             if(isNaN(jsonData.stats[i].value))
@@ -271,21 +290,23 @@
                 values_are_numeric = true;
             }
 
-            if(!values_are_numeric || !uom_and_tod_filled)
+            // If one values has an error - STOP
+            if(!values_are_numeric || !tod_filled || !uom_filled || !name_filled)
                 break;
         }
+
+        console.log(values_are_numeric + " | " + uom_filled + " | " + tod_filled + " | " + name_filled)
         
         if(document.getElementById("simplify-ui").checked)
         {
             console.log("FULL SIMPLE INTERFACE active");
 
-            if(values_are_numeric)
+            if(values_are_numeric && name_filled)
             {
                 // values have to be numeric as well here
                 // TODO set unset tod and uoms to default values
                 for(let i = 0; i < amount_stats; i++)
                 {
-
                     if(jsonData.stats[i].tod.length <= 0)
                         jsonData.stats[i].tod = 'after waking up'
                     
@@ -297,36 +318,56 @@
             }
             else
             {
-                display_error('error', 'Values must be numeric and may not contain letters!', 'dont know');
+                console.log("ERROR");
+
+                if(!name_filled)
+                    display_error('error', 'Enter a name for the bm!', 'dont know');
+                else if(!values_are_numeric)
+                    display_error('error', 'Values must be numeric and may not contain letters!', 'dont know');
             }
         }
-        else if(document.getElementById("tod-checkbox-ui").checked)
+        else if(document.getElementById("tod-checkbox-ui").checked && !document.getElementById("unit-checkbox-ui").checked)
         {
             console.log("unit grayed out");
 
-            if(values_are_numeric)
+            if(values_are_numeric && name_filled && tod_filled)
             {
                 // values have to be numeric as well here
                 // TODO set unset tod and uoms to default values
                 for(let i = 0; i < amount_stats; i++)
                 {
                     if(jsonData.stats[i].uom.length <= 0)
-                        jsonData.stats[i].uom = 'cm';
-                            
+                        jsonData.stats[i].uom = 'cm'; 
                 }
 
                 send_bm_data_to_backend(jsonData);
             }
             else
             {
-                display_error('error', 'Values must be numeric and may not contain letters!', 'dont know');
+                console.log("ERROR");
+                swal.close();
+
+                if(!name_filled && values_are_numeric && tod_filled)
+                    display_error('error', 'Enter a name for the bm!', 'dont know');
+                else if(!name_filled && !values_are_numeric && tod_filled)
+                    display_error('error', 'Enter a name for the bm and values must be numeric and may not contain letters!', 'dont know');
+                else if(!name_filled && !values_are_numeric && !tod_filled)
+                    display_error('error', 'Enter a name for the bm, values must be numeric and may not contain letters and you have to select a time of the day!', 'dont know');
+                else if(name_filled && !values_are_numeric && tod_filled)
+                    display_error('error', 'Values must be numeric and may not contain letters!', 'dont know');
+                else if(name_filled && !values_are_numeric && !tod_filled)
+                    display_error('error', 'Values must be numeric and may not contain letters and you have to select a time of the day!', 'dont know');
+                else if(name_filled && values_are_numeric && !tod_filled)
+                    display_error('error', 'You have to select a time of the day!', 'dont know');
+                else if(!name_filled && values_are_numeric && !tod_filled)
+                    display_error('error', 'Enter a name for the bm and you have to select a time of the day!', 'dont know');
             }
         }
-        else if(document.getElementById("unit-checkbox-ui").checked)
+        else if(document.getElementById("unit-checkbox-ui").checked && !document.getElementById("tod-checkbox-ui").checked)
         {
             console.log("tod grayed out");
 
-            if(values_are_numeric)
+            if(values_are_numeric && name_filled && uom_filled)
             {
                 // values have to be numeric as well here
                 // TODO set unset tod and uoms to default values
@@ -342,25 +383,51 @@
             }
             else
             {
-                display_error('error', 'Values must be numeric and may not contain letters!', 'dont know');
+                console.log("ERROR");
+                swal.close();
+
+                if(!name_filled && values_are_numeric && uom_filled)
+                    display_error('error', 'Enter a name for the bm!', 'dont know');
+                else if(!name_filled && !values_are_numeric && uom_filled)
+                    display_error('error', 'Enter a name for the bm and values must be numeric and may not contain letters!', 'dont know');
+                else if(!name_filled && !values_are_numeric && !uom_filled)
+                    display_error('error', 'Enter a name for the bm, values must be numeric and may not contain letters and you have to select a unit!', 'dont know');
+                else if(name_filled && !values_are_numeric && uom_filled)
+                    display_error('error', 'Values must be numeric and may not contain letters!', 'dont know');
+                else if(name_filled && !values_are_numeric && !uom_filled)
+                    display_error('error', 'Values must be numeric and may not contain letters and you have to select a unit!', 'dont know');
+                else if(name_filled && values_are_numeric && !uom_filled)
+                    display_error('error', 'You have to select a unit!', 'dont know');
+                else if(!name_filled && values_are_numeric && !uom_filled)
+                    display_error('error', 'Enter a name for the bm and you have to select a unit!', 'dont know');
             }
         }
         else
         {
             console.log("NO SIMPLE INTERFACE active")
 
-            if(uom_and_tod_filled && values_are_numeric)
+            if(uom_filled && tod_filled && values_are_numeric && name_filled)
             {
                 send_bm_data_to_backend(jsonData)
             }
             else
             {
-                if(!uom_and_tod_filled && !values_are_numeric)
-                    display_error('error', 'Name, unit and time of day have to be selected and values must be numeric and may not contain letters', 'dont know');
-                else if(!uom_and_tod_filled && values_are_numeric)
-                    display_error('error', 'Name, unit and time of day have to be selected', 'dont know');
-                else if(!values_are_numeric && uom_and_tod_filled)
-                    display_error('error', 'Values must be numeric and may not contain letters!', 'dont know');
+                console.log("ERROR");
+                swal.close();
+
+                var error_string = '';
+
+                if(!uom_filled)
+                    error_string += 'Please select a unit - ';
+                if(!tod_filled)
+                    error_string += 'Please select a time of the day - ';
+                if(!values_are_numeric)
+                    error_string += 'Values must be numeric and may not contain letters - ';
+                if(!name_filled)
+                    error_string += 'Please enter a name for the bm - ';
+
+                display_error('error', error_string.substring(0, error_string.length - 3) + "!", 'dont know');
+
             }
         }
     }

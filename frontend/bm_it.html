@@ -651,7 +651,7 @@
         else if(!chart.data.datasets[bm_name.datasetIndex]['_meta'][meta_data_id].hidden)
         {
             // If the chart goes from the active state into hidden state
-            clear_potential(false, bm_name.datasetIndex);
+            clear_potential(false, chart.data.datasets[bm_name.datasetIndex].label);
             chart.data.datasets[bm_name.datasetIndex]['_meta'][meta_data_id].hidden = true;
             document.getElementById("additional-info_" + (bm_name.datasetIndex + 1)).querySelector("#active_box").checked = false;
         }
@@ -908,6 +908,13 @@
                 for(var j = 0; j < num_last_elem + 1; j++)
                 {
                     current_active_values.push(bm[j].value);
+                }
+
+                // To show only the last bar
+                if(chart.config.type == 'bar')
+                {
+                    for(let j = 0; j < current_active_values.length; j++)
+                        current_active_values[j] = 0;
                 }
 
                 current_active_values.push(document.getElementById("additional-info_" + (i + 1)).querySelector("#value_value").value);
@@ -1297,10 +1304,12 @@
         }
         else
         {
+
+            console.log('potential for' + bm_id)
             //console.log("going to clear: " + bm_id)
             // Remove only the datasets defined in the function call
             chart.data.datasets = chart.data.datasets.filter(function(obj) {
-                return (obj.label != 'potential for' + bm_id); 
+                return (obj.label != 'potential for ' + bm_id); 
             });
         }
 
@@ -1425,14 +1434,12 @@
             bm_name = '';
         }
 
-        refill_potential();
+        //refill_potential();
     }
 
     function refill_potential()
     {
         console.log(potential_datasets)
-
-        
         
         for(let i = 0; i < potential_datasets.length; i++)
         {
@@ -1629,7 +1636,6 @@
                         fontSize: 20,
                         filter: function(item, chart) {
                             // Logic to remove a particular legend item
-                            //console.log(item);
                             return !item.text.includes('potential for');
                         }   
                     }

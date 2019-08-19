@@ -599,8 +599,6 @@
             } 
         }
 
-        console.log("Currently bms active: " + active_bm);
-
         if(active_bm == 1)
         {
             historic_data = JSON.parse(rest_get_historical_bm(document.getElementById("additional-info_" + (index_active_bm + 1)).getAttribute("base_bm")));
@@ -632,8 +630,6 @@
         }
 
         chart.update();
-
-        console.log("set labels");
     }
 
     // #67 newly added func
@@ -1074,7 +1070,6 @@
                         document.getElementById("unit-checkbox-ui").checked = true;
                     }
 
-                    console.log("INTERFACE cookies: " + cookie_val);
                 }
                 else if(cname == 'chart_type')
                 {

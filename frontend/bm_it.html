@@ -1084,7 +1084,7 @@
                         document.getElementById("chart-type").checked = true;
                         chart_type = 'bar';
                     }    
-                    
+
                     // Then update the chart
                     clear_chart()
                     update_bm_chart(get_active_bms());
@@ -1104,9 +1104,7 @@
         
         document.getElementById("additional-info_" + (index + 1)).querySelector("#active_box").checked = myBool;
         chart.data.datasets[index]['_meta'][meta_data_id].hidden = !myBool;    // Hidden so turn it around
-
-        console.log("bm nr: " + index + " will set hidden: " + !myBool)
-
+        
         var meta = chart.getDatasetMeta(index);
         meta.data[0].hidden = !myBool;
 
@@ -1464,6 +1462,9 @@
             {
                 var meta_data_id = chart.getDatasetMeta(i).controller.chart.id;
                 chart.data.datasets[i]['_meta'][meta_data_id].hidden = true;
+
+                var meta = chart.getDatasetMeta(i);
+                meta.data[0].hidden = !meta.data[0].hidden;
 
                 chart.update();
             }            

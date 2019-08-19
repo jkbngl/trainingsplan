@@ -599,6 +599,8 @@
             } 
         }
 
+        console.log("Currently bms active: " + active_bm);
+
         if(active_bm == 1)
         {
             historic_data = JSON.parse(rest_get_historical_bm(document.getElementById("additional-info_" + (index_active_bm + 1)).getAttribute("base_bm")));
@@ -629,7 +631,9 @@
             chart.data.labels = local_labels_numbers;
         }
 
-        chart.update()
+        chart.update();
+
+        console.log("set labels");
     }
 
     // #67 newly added func
@@ -645,14 +649,35 @@
 
         if(chart.data.datasets[bm_name.datasetIndex]['_meta'][meta_data_id].hidden)
         {
-            chart.data.datasets[bm_name.datasetIndex]['_meta'][meta_data_id].hidden = false;
+            if(chart.config.type == 'line')
+            {
+                chart.data.datasets[bm_name.datasetIndex]['_meta'][meta_data_id].hidden = false;
+            }
+            else
+            {
+                chart.data.datasets[bm_name.datasetIndex]['_meta'][meta_data_id].hidden = false;
+                var meta = chart.getDatasetMeta(bm_name.datasetIndex);
+                meta.data[0].hidden = !meta.data[0].hidden;
+            }
+
             document.getElementById("additional-info_" + (bm_name.datasetIndex + 1)).querySelector("#active_box").checked = true;
         }
         else if(!chart.data.datasets[bm_name.datasetIndex]['_meta'][meta_data_id].hidden)
         {
             // If the chart goes from the active state into hidden state
             clear_potential(false, chart.data.datasets[bm_name.datasetIndex].label);
-            chart.data.datasets[bm_name.datasetIndex]['_meta'][meta_data_id].hidden = true;
+
+            if(chart.config.type == 'line')
+            {
+                chart.data.datasets[bm_name.datasetIndex]['_meta'][meta_data_id].hidden = true;
+            }
+            else
+            {
+                chart.data.datasets[bm_name.datasetIndex]['_meta'][meta_data_id].hidden = true;
+                var meta = chart.getDatasetMeta(bm_name.datasetIndex);
+                meta.data[0].hidden = !meta.data[0].hidden;
+            }
+
             document.getElementById("additional-info_" + (bm_name.datasetIndex + 1)).querySelector("#active_box").checked = false;
         }
 
@@ -1076,10 +1101,14 @@
 
         // String does not work so I need to parse it to a javascript object
         var myBool = JSON.parse(bool);
-
         
         document.getElementById("additional-info_" + (index + 1)).querySelector("#active_box").checked = myBool;
         chart.data.datasets[index]['_meta'][meta_data_id].hidden = !myBool;    // Hidden so turn it around
+
+        console.log("bm nr: " + index + " will set hidden: " + !myBool)
+
+        var meta = chart.getDatasetMeta(index);
+        meta.data[0].hidden = !myBool;
 
         // In order that it is displayed correctly in the chart I need to update the chart so that it is also visible not only in the background
         chart.update();
@@ -1098,11 +1127,23 @@
             {
                 chart.data.datasets[i]['_meta'][meta_data_id].hidden = true;
 
+                if(chart.config.type == 'bar')
+                {
+                    var meta = chart.getDatasetMeta(i);
+                    meta.data[0].hidden = true;
+                }
+
                 // clear the potential of the bm as well and not only the active - the ones which are not active
                 clear_potential(false, i);
             }
             else
             {
+                if(chart.config.type == 'bar')
+                {
+                    var meta = chart.getDatasetMeta(i);
+                    meta.data[0].hidden = false;
+                }
+
                 chart.data.datasets[i]['_meta'][meta_data_id].hidden = false;
             }
 
@@ -1184,8 +1225,6 @@
         for(var i = 0; i < length; i++)
             get_cookie("active_", i);
 
-        
-        
         set_labels();
         set_selects_disabled();
         
@@ -1306,7 +1345,7 @@
         {
 
             console.log('potential for' + bm_id)
-            //console.log("going to clear: " + bm_id)
+            // console.log("going to clear: " + bm_id)
             // Remove only the datasets defined in the function call
             chart.data.datasets = chart.data.datasets.filter(function(obj) {
                 return (obj.label != 'potential for ' + bm_id); 

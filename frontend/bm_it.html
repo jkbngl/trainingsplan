@@ -1382,7 +1382,7 @@
         {
             if(chart.data.datasets[i].label.startsWith("potential for"))
             {
-                potential_datasets.push(chart.data.datasets[i])
+                potential_datasets.push([chart.data.datasets[i], chart.data.datasets[i]])
             }
         }
 
@@ -1469,28 +1469,48 @@
             bm_name = '';
         }
 
-        //refill_potential();
+        refill_potential();
+        chart.update();
     }
 
     function refill_potential()
     {
-        console.log(potential_datasets)
-        
         for(let i = 0; i < potential_datasets.length; i++)
         {
             if(chart.config.type == 'line')
-                background_attribute = potential_datasets[i].backgroundColor
-            else if(chart.config.type == 'bar')
-                background_attribute = pattern.draw('zigzag', potential_datasets[i].backgroundColor)
+            {
+                background_attribute = potential_datasets[i][1].backgroundColor
+                
+                console.log(potential_datasets[i][1].data)
+                console.log(potential_datasets[i][1].label)
+                console.log(potential_datasets[i][1].borderColor)
+                console.log(background_attribute)
 
-            chart.data.datasets.push({
-                data: potential_datasets[i].data,
-                label: potential_datasets[i].label,
-                borderColor: potential_datasets[i].borderColor,
-                backgroundColor: background_attribute,
-                borderDash: [10],
-                fill: false
-            });
+                chart.data.datasets.push({
+                    data: potential_datasets[i][1].data,
+                    label: potential_datasets[i][1].label,
+                    borderColor: potential_datasets[i][1].borderColor,
+                    backgroundColor: background_attribute,
+                    borderDash: [10],
+                    fill: false
+                });
+            }    
+            else if(chart.config.type == 'bar')
+            {
+                background_attribute = pattern.draw('zigzag', potential_datasets[i][0].backgroundColor)
+                console.log(potential_datasets[i][0].data)
+                console.log(potential_datasets[i][0].label)
+                console.log(potential_datasets[i][0].borderColor)
+
+                chart.data.datasets.push({
+                    data: potential_datasets[i][0].data,
+                    label: potential_datasets[i][0].label,
+                    borderColor: potential_datasets[i][0].borderColor,
+                    backgroundColor: background_attribute,
+                    borderDash: [10],
+                    fill: false
+                });
+            }
         }
     }
 
@@ -1671,7 +1691,11 @@
                         fontSize: 20,
                         filter: function(item, chart) {
                             // Logic to remove a particular legend item
-                            return !item.text.includes('potential for');
+                            if (item.text != null)
+                            {
+                                //console.log(item);
+                                return !item.text.includes('potential for');
+                            }
                         }   
                     }
                 },
@@ -1679,7 +1703,6 @@
                     filter: function (tooltip_item, all_items) 
                     {
                         // Check how this can be solved, show on last index but not on the others
-                        //console.log(tooltip_item)
                         return !all_items.datasets[tooltip_item.datasetIndex].label.includes("potential_for");
                     }
                 },

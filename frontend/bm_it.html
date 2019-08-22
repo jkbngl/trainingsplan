@@ -899,6 +899,30 @@
         }
     }
 
+    Array.prototype.equals = function (array) {
+        // if the other array is a falsy value, return
+        if (!array)
+            return false;
+
+        // compare lengths - can save a lot of time 
+        if (this.length != array.length)
+            return false;
+
+        for (var i = 0, l=this.length; i < l; i++) {
+            // Check if we have nested arrays
+            if (this[i] instanceof Array && array[i] instanceof Array) {
+                // recurse into the nested arrays
+                if (!this[i].equals(array[i]))
+                    return false;       
+            }           
+            else if (this[i] != array[i]) { 
+                // Warning - two different object instances will never be equal: {x:20} != {x:20}
+                return false;   
+            }           
+        }       
+        return true;
+    }
+
     // #67 newly added func
     function show_potential()
     {
@@ -910,6 +934,8 @@
         var current_active_values = [];
         // change background for potential depending on chart type
         var background_attribute;
+        //
+        var same_potential_was_already_added = false;
         
         for(var i = 0; i < active_bms.length; i++)
         {
@@ -931,6 +957,8 @@
                     current_active_values.push(bm[j].value);
                 }
 
+                
+
                 // To show only the last bar
                 if(chart.config.type == 'bar')
                 {
@@ -938,16 +966,29 @@
                         current_active_values[j] = 0;
                 }
 
-                current_active_values.push(document.getElementById("additional-info_" + (i + 1)).querySelector("#value_value").value);
+                for(var k = 0; k < chart.data.datasets.length; k++)
+                {
+                    if(chart.data.datasets[k].data.equals(current_active_values))
+                    {
+                        same_potential_was_already_added = true;
+                    }
+                }
 
-                chart.data.datasets.push({
-                    data: current_active_values,
-                    label: 'potential for ' + document.getElementById("additional-info_" + (i + 1)).querySelector("#value_name").value + ' [' + document.getElementById("additional-info_" + (i + 1)).querySelector("#select_1").value + '] - ' + document.getElementById("additional-info_" + (i + 1)).querySelector("#select_2").value,
-                    borderColor: border_color_array[i],
-                    backgroundColor: background_attribute,
-                    borderDash: [10],
-                    fill: false
-                });
+                if(!same_potential_was_already_added)
+                {
+                    current_active_values.push(document.getElementById("additional-info_" + (i + 1)).querySelector("#value_value").value);
+
+                    chart.data.datasets.push({
+                        data: current_active_values,
+                        label: 'potential for ' + document.getElementById("additional-info_" + (i + 1)).querySelector("#value_name").value + ' [' + document.getElementById("additional-info_" + (i + 1)).querySelector("#select_1").value + '] - ' + document.getElementById("additional-info_" + (i + 1)).querySelector("#select_2").value,
+                        borderColor: border_color_array[i],
+                        backgroundColor: background_attribute,
+                        borderDash: [10],
+                        fill: false
+                    });
+                }
+
+                
 
                 // Set the animation duration to 0 to not show that a new dataset has been added to chart 
                 var old_animation_duration = chart.options.animation.duration;
@@ -1382,7 +1423,7 @@
         {
             if(chart.data.datasets[i].label.startsWith("potential for"))
             {
-                potential_datasets.push([chart.data.datasets[i], chart.data.datasets[i]])
+                potential_datasets.push([chart.data.datasets[i],  chart.data.datasets[i]])
             }
         }
 
@@ -1691,11 +1732,7 @@
                         fontSize: 20,
                         filter: function(item, chart) {
                             // Logic to remove a particular legend item
-                            if (item.text != null)
-                            {
-                                //console.log(item);
-                                return !item.text.includes('potential for');
-                            }
+                            return !item.text.includes('potential for');
                         }   
                     }
                 },

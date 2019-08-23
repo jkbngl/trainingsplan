@@ -957,14 +957,14 @@
                     current_active_values.push(bm[j].value);
                 }
 
-                
-
                 // To show only the last bar
                 if(chart.config.type == 'bar')
                 {
                     for(let j = 0; j < current_active_values.length; j++)
                         current_active_values[j] = 0;
                 }
+
+                current_active_values.push(document.getElementById("additional-info_" + (i + 1)).querySelector("#value_value").value);
 
                 for(var k = 0; k < chart.data.datasets.length; k++)
                 {
@@ -974,9 +974,12 @@
                     }
                 }
 
+                console.log(same_potential_was_already_added)
+
                 if(!same_potential_was_already_added)
                 {
-                    current_active_values.push(document.getElementById("additional-info_" + (i + 1)).querySelector("#value_value").value);
+                    
+                    
 
                     chart.data.datasets.push({
                         data: current_active_values,
@@ -987,6 +990,8 @@
                         fill: false
                     });
                 }
+
+              
 
                 
 

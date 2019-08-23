@@ -163,7 +163,7 @@
 
         <div class="page__toggle" style="margin-left: 10%; margin-top: 25%;">
             <label class="toggle">
-            <input id="chart-type" onchange="closeNav();" onclick="clear_chart(); update_bm_chart(get_active_bms()); set_cookie('chart_type', 90); set_labels();" class="toggle__input" type="checkbox">
+            <input id="chart-type" onchange="closeNav();" onclick="clear_chart(); update_bm_chart(get_active_bms()); set_cookie('chart_type', 90); set_labels(); set_potentials_with_chart_change()" class="toggle__input" type="checkbox">
             <span class="toggle__label">
                 <span class="toggle__text">Bar Chart 
                     <i class="fas fa-info-circle" rel="tooltip" title="Change between the normal line chart and the bar chart to analyze your data" id="info-step-2"></i>
@@ -974,13 +974,8 @@
                     }
                 }
 
-                console.log(same_potential_was_already_added)
-
                 if(!same_potential_was_already_added)
                 {
-                    
-                    
-
                     chart.data.datasets.push({
                         data: current_active_values,
                         label: 'potential for ' + document.getElementById("additional-info_" + (i + 1)).querySelector("#value_name").value + ' [' + document.getElementById("additional-info_" + (i + 1)).querySelector("#select_1").value + '] - ' + document.getElementById("additional-info_" + (i + 1)).querySelector("#select_2").value,
@@ -1519,6 +1514,32 @@
         chart.update();
     }
 
+    // #67 newly added func
+    function set_potentials_with_chart_change()
+    {
+        var length = chart.data.datasets.length;
+
+        for(let i = 0; i < length; i++)
+        {
+            if(chart.data.datasets[i].label.startsWith("potential for"))
+            {
+                console.log(chart.data.datasets[i].label);
+
+                if(chart.config.type == 'bar')
+                {
+                    for(let j = 0; j < chart.data.datasets[i].data.slice(0, -1).length; j++)
+                        chart.data.datasets[i].data[j] = 0;
+                }
+                else if(chart.config.type == 'line')
+                {
+                    // Fina correct bm, and will datapoints which are zero with correct datapoints
+                    console.log("TODO");
+                }
+            }
+        }
+    }
+
+    
     function refill_potential()
     {
         for(let i = 0; i < potential_datasets.length; i++)
@@ -1527,11 +1548,6 @@
             {
                 background_attribute = potential_datasets[i][1].backgroundColor
                 
-                console.log(potential_datasets[i][1].data)
-                console.log(potential_datasets[i][1].label)
-                console.log(potential_datasets[i][1].borderColor)
-                console.log(background_attribute)
-
                 chart.data.datasets.push({
                     data: potential_datasets[i][1].data,
                     label: potential_datasets[i][1].label,
@@ -1544,9 +1560,6 @@
             else if(chart.config.type == 'bar')
             {
                 background_attribute = pattern.draw('zigzag', potential_datasets[i][0].backgroundColor)
-                console.log(potential_datasets[i][0].data)
-                console.log(potential_datasets[i][0].label)
-                console.log(potential_datasets[i][0].borderColor)
 
                 chart.data.datasets.push({
                     data: potential_datasets[i][0].data,

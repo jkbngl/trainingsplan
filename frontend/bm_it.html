@@ -1521,10 +1521,10 @@
 
         for(let i = 0; i < length; i++)
         {
-            if(chart.data.datasets[i].label.startsWith("potential for"))
-            {
-                console.log(chart.data.datasets[i].label);
+            var label = chart.data.datasets[i].label;
 
+            if(label.startsWith("potential for"))
+            {
                 if(chart.config.type == 'bar')
                 {
                     for(let j = 0; j < chart.data.datasets[i].data.slice(0, -1).length; j++)
@@ -1532,11 +1532,24 @@
                 }
                 else if(chart.config.type == 'line')
                 {
-                    // Fina correct bm, and will datapoints which are zero with correct datapoints
+                    // Find correct bm, and fill datapoints which are zero with correct datapoints
                     console.log("TODO");
+                    var without_potential = label.substring(14);
+
+                    for(let j = 0; j < chart.data.datasets.length; j++)
+                    {
+                        if(chart.data.datasets[j].label == without_potential)
+                        {
+                            var last_item = chart.data.datasets[i].data.pop();
+                            //chart.data.datasets[i].data = chart.data.datasets[j].data.push(last_item);
+                            console.log(chart.data.datasets[i])
+                        }
+                    }
                 }
             }
         }
+
+        chart.update();
     }
 
     

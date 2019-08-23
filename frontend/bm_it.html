@@ -1522,27 +1522,31 @@
         for(let i = 0; i < length; i++)
         {
             var label = chart.data.datasets[i].label;
+            console.log(chart.data.datasets[i].data);
 
             if(label.startsWith("potential for"))
             {
                 if(chart.config.type == 'bar')
                 {
-                    for(let j = 0; j < chart.data.datasets[i].data.slice(0, -1).length; j++)
+                    for(let j = 0; j < chart.data.datasets[i].data.length - 1; j++)
                         chart.data.datasets[i].data[j] = 0;
                 }
                 else if(chart.config.type == 'line')
                 {
                     // Find correct bm, and fill datapoints which are zero with correct datapoints
                     console.log("TODO");
-                    var without_potential = label.substring(14);
+                    var label_without_potential = label.substring(14);
 
                     for(let j = 0; j < chart.data.datasets.length; j++)
                     {
-                        if(chart.data.datasets[j].label == without_potential)
+                        console.log(label_without_potential)
+
+                        if(chart.data.datasets[j].label == label_without_potential)
                         {
-                            var last_item = chart.data.datasets[i].data.pop();
-                            //chart.data.datasets[i].data = chart.data.datasets[j].data.push(last_item);
-                            console.log(chart.data.datasets[i])
+                            for(let k = 0; k < chart.data.datasets[i].data.length - 1; k++)
+                                chart.data.datasets[i].data[k] = chart.data.datasets[j].data[k]
+
+                            break;
                         }
                     }
                 }

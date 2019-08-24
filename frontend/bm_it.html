@@ -971,8 +971,11 @@
                     if(chart.data.datasets[k].data.equals(current_active_values))
                     {
                         same_potential_was_already_added = true;
+                        break;
                     }
                 }
+
+                console.log(same_potential_was_already_added)
 
                 if(!same_potential_was_already_added)
                 {

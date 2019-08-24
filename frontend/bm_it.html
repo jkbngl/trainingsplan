@@ -296,11 +296,11 @@
                 break;
         }
 
-        console.log(values_are_numeric + " | " + uom_filled + " | " + tod_filled + " | " + name_filled)
+        //console.log(values_are_numeric + " | " + uom_filled + " | " + tod_filled + " | " + name_filled)
         
         if(document.getElementById("simplify-ui").checked)
         {
-            console.log("FULL SIMPLE INTERFACE active");
+            // console.log("FULL SIMPLE INTERFACE active");
 
             if(values_are_numeric && name_filled)
             {
@@ -329,7 +329,7 @@
         }
         else if(document.getElementById("tod-checkbox-ui").checked && !document.getElementById("unit-checkbox-ui").checked)
         {
-            console.log("unit grayed out");
+            // console.log("unit grayed out");
 
             if(values_are_numeric && name_filled && tod_filled)
             {
@@ -366,7 +366,7 @@
         }
         else if(document.getElementById("unit-checkbox-ui").checked && !document.getElementById("tod-checkbox-ui").checked)
         {
-            console.log("tod grayed out");
+            // console.log("tod grayed out");
 
             if(values_are_numeric && name_filled && uom_filled)
             {
@@ -407,7 +407,7 @@
         }
         else
         {
-            console.log("NO SIMPLE INTERFACE active")
+            // console.log("NO SIMPLE INTERFACE active")
 
             if(uom_filled && tod_filled && values_are_numeric && name_filled)
             {
@@ -415,7 +415,7 @@
             }
             else
             {
-                console.log("ERROR");
+                //console.log("ERROR");
                 swal.close();
 
                 var error_string = '';
@@ -941,8 +941,10 @@
         var potential_label = document.getElementById('additional-info_' + num_bm).querySelector("#value_name").value;
 
 
-        for(var i = 0; i < active_bms.length; i++)
-        {
+        i = num_bm -1;
+
+        //for(var i = 0; i < active_bms.length; i++)
+        //{
             // Has to be done inside loop because of i, which needs to color of the related bm
             if(chart.config.type == 'line')
                 background_attribute = border_color_array[i]
@@ -956,17 +958,13 @@
 
             if(bm[num_last_elem].value != document.getElementById("additional-info_" + (i + 1)).querySelector("#value_value").value && document.getElementById("additional-info_" + (i + 1)).querySelector("#active_box").checked)
             {
-                for(var j = 0; j < num_last_elem + 1; j++)
-                {
-                    current_active_values.push(bm[j].value);
-                }
-
-                // To show only the last bar and the others are zero/ flat
-                if(chart.config.type == 'bar')
-                {
-                    for(let j = 0; j < current_active_values.length; j++)
-                        current_active_values[j] = 0;
-                }
+                
+                if(chart.config.type == 'line')
+                    for(var j = 0; j < num_last_elem + 1; j++)
+                        current_active_values.push(bm[j].value);
+                else if(chart.config.type == 'bar')
+                    for(var j = 0; j < num_last_elem + 1; j++)
+                        current_active_values.push(0);
 
                 current_active_values.push(document.getElementById("additional-info_" + (i + 1)).querySelector("#value_value").value);
 
@@ -985,11 +983,6 @@
                         }
                     }
                 }
-
-                if(same_potential_was_already_added)
-                    console.log("SAME POTENTIAL WAS ALREADY ADDED - " + current_active_values);
-                else
-                    console.log("POTENTIAL WILL BE ADDED - " + current_active_values);
 
                 if(!same_potential_was_already_added)
                 {
@@ -1013,7 +1006,7 @@
                 // Clean at the end
                 current_active_values = [];
             }
-        }    
+        //}    
     }
 
     // #67  newly added func
@@ -1391,7 +1384,6 @@
         else
         {
 
-            console.log('potential for' + bm_id)
             // console.log("going to clear: " + bm_id)
             // Remove only the datasets defined in the function call
             chart.data.datasets = chart.data.datasets.filter(function(obj) {
@@ -1535,7 +1527,7 @@
         for(let i = 0; i < length; i++)
         {
             var label = chart.data.datasets[i].label;
-            console.log(chart.data.datasets[i].data);
+            //console.log(chart.data.datasets[i].data);
 
             if(label.startsWith("potential for"))
             {
@@ -1547,12 +1539,11 @@
                 else if(chart.config.type == 'line')
                 {
                     // Find correct bm, and fill datapoints which are zero with correct datapoints
-                    console.log("TODO");
                     var label_without_potential = label.substring(14);
 
                     for(let j = 0; j < chart.data.datasets.length; j++)
                     {
-                        console.log(label_without_potential)
+                        //console.log(label_without_potential)
 
                         if(chart.data.datasets[j].label == label_without_potential)
                         {

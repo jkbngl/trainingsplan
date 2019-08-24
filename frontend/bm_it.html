@@ -825,7 +825,7 @@
         container.innerHTML = '<div id="additional-info_' + num_input + '" value="' + id + '" base_bm="' + base_bm + '" style="width: 100%; margin-bottom: 3%; display: flex; flex-direction: row; flex-wrap: nowrap;justify-content: space-between;"> \
             <div id="check-2" class="page__toggle"  style="margin-top: 10px; margin: auto;  margin-left:1%; z-index:1;"> \
                 <label class="toggle"> \
-                    <input id="active_box" onchange="closeNav();" onclick="set_cookie(\'active\', 90); toggle_chart_datasets(); show_potential()"  class="toggle__input" type="checkbox" checked> \
+                    <input id="active_box" onchange="closeNav();" onclick="set_cookie(\'active\', 90); toggle_chart_datasets(); show_potential(' + num_input + ')"  class="toggle__input" type="checkbox" checked> \
                     <span class="toggle__label"> \
                         <span class="toggle__text">Active</span> \
                     </span> \
@@ -833,7 +833,7 @@
             </div> \
             \
             <input type="text" ' + ( via_button                   ? 'autofocus' : '') + ' id="value_name"  class="input_bm" placeholder="&nbsp; Enter the name of input value ..." style="text-align:center; background: transparent; border-radius: 25px; border: 2px solid #00ad5f; color:#00ad5f; width: 25%; font-size: 18px;font-family: Century Gothic; margin-right:2%; margin-left:2%; "> \
-            <input type="number" ' + (!via_button && num_input <= 1 ? 'autofocus' : '') + ' onchange="show_potential()" id="value_value" class="input_bm" placeholder="&nbsp; Value of input ..."      style="text-align:center; background: transparent; border-radius: 25px; border: 2px solid #00ad5f; color:#00ad5f; width: 15%; font-size: 18px;font-family: Century Gothic; margin-right:2%"> \
+            <input type="number" ' + (!via_button && num_input <= 1 ? 'autofocus' : '') + ' onchange="show_potential(' + num_input + ')" id="value_value" class="input_bm" placeholder="&nbsp; Value of input ..."      style="text-align:center; background: transparent; border-radius: 25px; border: 2px solid #00ad5f; color:#00ad5f; width: 15%; font-size: 18px;font-family: Century Gothic; margin-right:2%"> \
             <input type="text" id="note" class="input_bm" placeholder="&nbsp; Note ..." style="text-align:center; background: transparent; border-radius: 25px; border: 2px solid #00ad5f; color:#00ad5f; width: 25%; font-size: 18px;font-family: Century Gothic; margin-right:2%; "> \
             \
             <div class="select" id="select-options_nr-1" style="border-bottom: 4px solid rgba(0,0,0, 0.12); border-right: 4px solid rgba(0,0,0, 0.12); margin-right: 5%"> \
@@ -920,11 +920,12 @@
                 return false;   
             }           
         }       
+
         return true;
     }
 
     // #67 newly added func
-    function show_potential()
+    function show_potential(num_bm)
     {
         // get the send bms
         var active_bms = get_active_bms();
@@ -934,9 +935,12 @@
         var current_active_values = [];
         // change background for potential depending on chart type
         var background_attribute;
-        //
+        // to keep track which potentials where already added
         var same_potential_was_already_added = false;
-        
+        //
+        var potential_label = document.getElementById('additional-info_' + num_bm).querySelector("#value_name").value;
+
+
         for(var i = 0; i < active_bms.length; i++)
         {
             // Has to be done inside loop because of i, which needs to color of the related bm
@@ -957,7 +961,7 @@
                     current_active_values.push(bm[j].value);
                 }
 
-                // To show only the last bar
+                // To show only the last bar and the others are zero/ flat
                 if(chart.config.type == 'bar')
                 {
                     for(let j = 0; j < current_active_values.length; j++)
@@ -968,14 +972,24 @@
 
                 for(var k = 0; k < chart.data.datasets.length; k++)
                 {
-                    if(chart.data.datasets[k].data.equals(current_active_values))
+                    if(chart.data.datasets[k].label.startsWith("potential for " + potential_label))
                     {
-                        same_potential_was_already_added = true;
-                        break;
+                        if(chart.data.datasets[k].data.equals(current_active_values))
+                        {
+                            same_potential_was_already_added = true;
+                            //break;
+                        }
+                        else
+                        {
+
+                        }
                     }
                 }
 
-                console.log(same_potential_was_already_added)
+                if(same_potential_was_already_added)
+                    console.log("SAME POTENTIAL WAS ALREADY ADDED - " + current_active_values);
+                else
+                    console.log("POTENTIAL WILL BE ADDED - " + current_active_values);
 
                 if(!same_potential_was_already_added)
                 {
@@ -988,10 +1002,6 @@
                         fill: false
                     });
                 }
-
-              
-
-                
 
                 // Set the animation duration to 0 to not show that a new dataset has been added to chart 
                 var old_animation_duration = chart.options.animation.duration;

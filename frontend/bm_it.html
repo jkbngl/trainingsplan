@@ -133,7 +133,7 @@
             <input id="simplify-ui" onchange="closeNav();" onclick="simplify_ui();" class="toggle__input" type="checkbox">
             <span class="toggle__label">
                 <span class="toggle__text">Simple interface 
-                    <i class="fas fa-info-circle" rel="tooltip" title="If simple Interface is turned on, the website will use the default values (check what the default settings are by clicking reset settings above, Attention: old settings will be lost) and in addition make the interface simpler by not showing the advanced settings" id="info-step-2"></i>
+                    <i class="fas fa-info-circle" rel="tooltip" title="If the simple interface is active, you no longer can select the unit and the time of the day for you inputs, they will default to unit = cm and time of day = after waking up" id="info-step-2"></i>
                 </span>
             </span>
             </label>
@@ -144,7 +144,7 @@
             <input id="unit-checkbox-ui" onclick="simplify_ui_partly();" class="toggle__input" type="checkbox">
             <span class="toggle__label">
                 <span class="toggle__text">Show Unit 
-                    <i class="fas fa-info-circle" rel="tooltip" title="If this checkbox is active you can access the part of the advanced ui where you can change the factors per attribute" id="info-step-2"></i>
+                    <i class="fas fa-info-circle" rel="tooltip" title="If this checkbox is active you can still set the unit of your inputs but dont have to set the time of the day of your inputs" id="info-step-2"></i>
                 </span>
             </span>
             </label>
@@ -155,7 +155,7 @@
             <input id="tod-checkbox-ui" onclick="simplify_ui_partly();" class="toggle__input" type="checkbox">
             <span class="toggle__label">
                 <span class="toggle__text">Show Time of Day
-                    <i class="fas fa-info-circle" rel="tooltip" title="If this checkbox is active you can access the part of the advanced ui where you can change the attributes that should be used to calc the data in the chart" id="info-step-2"></i>
+                    <i class="fas fa-info-circle" rel="tooltip" title="If this checkbox is active you can still set the time of the day of your inputs but dont have to set the unit of your inputs" id="info-step-2"></i>
                 </span>
             </span>
             </label>
@@ -842,7 +842,7 @@
                 </select> \
                 <span class="select-highlight"></span> \
                 <label id="select-text" style="font-size: 22px; top: -30px;  right: -20px;" class="select-label">Unit \
-                <i class="fas fa-info-circle" rel="tooltip" title="Select an exercise from this list to have the history (if existent) of your data displayed in the chart above  " id="info-step-1"></i> \
+                    <i class="fas fa-info-circle" rel="tooltip" title="Select an exercise from this list to have the history (if existent) of your data displayed in the chart above  " id="info-unit-step-' + num_input + '"></i> \
                     </label> \
                 <span class="select-bar"></span> \
             </div> \
@@ -853,7 +853,7 @@
                 </select> \
                 <span class="select-highlight"></span> \
                 <label id="select-text" style="font-size: 22px; top: -30px;  right: -20px;" class="select-label">Time of Day \
-                <i class="fas fa-info-circle" rel="tooltip" title="Select an exercise from this list to have the history (if existent) of your data displayed in the chart above  " id="info-step-1"></i> \
+                <i class="fas fa-info-circle" rel="tooltip" title="Select an exercise from this list to have the history (if existent) of your data displayed in the chart above  " id="info-tod-step-' + num_input + '"></i> \
                 </label> \
                 <span class="select-bar"></span> \
             </div> \
@@ -1399,21 +1399,30 @@
     {
         // Load of this data can not be replaced, because its dynamically and if a new bm is added or one is deleted we have to load them all again
         // might work with a changed flag
-        try
+        if(bm_id == 'undefined')
         {
-            var url = 'http://jakob.ml:8080/tpbackend_1-1.0-SNAPSHOT/api/trainingsplan/get_historical_bm_values/';
-            var xmlHttp = new XMLHttpRequest();
-
-            xmlHttp.open( "GET", url + getusername() + "/" + bm_id, false ); // false for synchronous request
-            xmlHttp.send( null );
-            history_bms = xmlHttp.responseText;
-
-            return history_bms;
+            return "[{}]"
         }
-        catch(err)
+        else
         {
-            console.error(err);
-            display_error('error', 'Oops...', 'The backend seems to be unavailable!')
+            try
+            {
+                var url = 'http://jakob.ml:8080/tpbackend_1-1.0-SNAPSHOT/api/trainingsplan/get_historical_bm_values/';
+                var xmlHttp = new XMLHttpRequest();
+
+                xmlHttp.open( "GET", url + getusername() + "/" + bm_id, false ); // false for synchronous request
+                xmlHttp.send( null );
+                history_bms = xmlHttp.responseText;
+
+                console.log(history_bms)
+
+                return history_bms;
+            }
+            catch(err)
+            {
+                console.error(err);
+                display_error('error', 'Oops...', 'The backend seems to be unavailable!')
+            }
         }
     }
 
@@ -1856,6 +1865,10 @@
         chart.options.legend.labels.fontSize = 30;
 
         document.getElementById("div-line-chart").style.marginTop = "5%";
+        document.getElementById("clear-potential").innerHTML = "Potential <i style='display: inline-block;' class='fas fa-trash'></i>";
+        document.getElementById("clear-potential").style.fontSize = "28px";
+        document.getElementById("add-new-input").style.fontSize = "28px";
+        document.getElementById("additional-info_1").style.marginTop = "2%";
 
         if(after_startup)
         {

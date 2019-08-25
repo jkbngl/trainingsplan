@@ -1548,13 +1548,20 @@
                         if(chart.data.datasets[j].label == label_without_potential)
                         {
                             for(let k = 0; k < chart.data.datasets[i].data.length - 1; k++)
-                                chart.data.datasets[i].data[k] = chart.data.datasets[j].data[k]
+                                chart.data.datasets[i].data[k] = chart.data.datasets[j].data[k];
+
+                            chart.data.datasets[i].backgroundColor = chart.data.datasets[j].backgroundColor;
 
                             break;
                         }
                     }
                 }
             }
+        }
+
+        for(let i = 0; i < chart.data.datasets.length; i++)
+        {
+            console.log(chart.data.datasets[i].backgroundColor)
         }
 
         chart.update();

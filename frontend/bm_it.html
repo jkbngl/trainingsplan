@@ -842,7 +842,7 @@
                 </select> \
                 <span class="select-highlight"></span> \
                 <label id="select-text" style="font-size: 22px; top: -30px;  right: -20px;" class="select-label">Unit \
-                    <i class="fas fa-info-circle" rel="tooltip" title="Select an exercise from this list to have the history (if existent) of your data displayed in the chart above  " id="info-unit-step-' + num_input + '"></i> \
+                    <i class="fas fa-info-circle" rel="tooltip" title="Select a unit from this box, this might be cm, kg or foot, it tells you the unit of your input" id="info-unit-step-' + num_input + '"></i> \
                     </label> \
                 <span class="select-bar"></span> \
             </div> \
@@ -853,11 +853,11 @@
                 </select> \
                 <span class="select-highlight"></span> \
                 <label id="select-text" style="font-size: 22px; top: -30px;  right: -20px;" class="select-label">Time of Day \
-                <i class="fas fa-info-circle" rel="tooltip" title="Select an exercise from this list to have the history (if existent) of your data displayed in the chart above  " id="info-tod-step-' + num_input + '"></i> \
+                <i class="fas fa-info-circle" rel="tooltip" title="Select a time of the day on which you will measure this input, our body varies a lot during the day so it is important to always choose the sime timings to see a trend in the data" id="info-tod-step-' + num_input + '"></i> \
                 </label> \
                 <span class="select-bar"></span> \
             </div> \
-            <button class="button" id="visualize_progress_button" onclick="show_progress_dialog(' + num_input + ')" style="margin-right: 1%"><i class="fas fa-info-circle"></i></button> \
+            <button class="button" id="visualize_progress_button" onclick="show_progress_dialog(' + num_input + ')" style="margin-right: 1%"></button> \
             <button class="button" id="delete_button" onclick="delete_and_reoder(' + num_input + ')" style="margin-right: 1%"><i class="fas fa-trash"></i></button> \
         </div>';
 

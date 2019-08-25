@@ -1547,9 +1547,11 @@
 
                         if(chart.data.datasets[j].label == label_without_potential)
                         {
+                            // set the correct datapoints
                             for(let k = 0; k < chart.data.datasets[i].data.length - 1; k++)
                                 chart.data.datasets[i].data[k] = chart.data.datasets[j].data[k];
 
+                            // set the background color because in the bar chart it has this zigged pattern while in line it is just "dashed"
                             chart.data.datasets[i].backgroundColor = chart.data.datasets[j].backgroundColor;
 
                             break;
@@ -1558,12 +1560,7 @@
                 }
             }
         }
-
-        for(let i = 0; i < chart.data.datasets.length; i++)
-        {
-            console.log(chart.data.datasets[i].backgroundColor)
-        }
-
+    
         chart.update();
     }
 

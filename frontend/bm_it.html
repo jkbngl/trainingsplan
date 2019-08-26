@@ -1279,11 +1279,19 @@
     {
         var length = get_amount_inputs();
 
-        for(var i = 1; i <= length; i++)
+        if(length == 1 && document.getElementById("additional-info_" + 1).querySelector("#value_name").value.length == 0)
         {
-            document.getElementById("additional-info_" + i).querySelector("#select_1").disabled = true;
-            document.getElementById("additional-info_" + i).querySelector("#select_2").disabled = true;
+            ;
         }
+        else
+        {
+            for(var i = 1; i <= length; i++)
+            {
+                document.getElementById("additional-info_" + i).querySelector("#select_1").disabled = true;
+                document.getElementById("additional-info_" + i).querySelector("#select_2").disabled = true;
+            }
+        }
+        
     }
 
     // #67 newly added func

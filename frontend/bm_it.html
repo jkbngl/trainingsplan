@@ -646,9 +646,13 @@
 
         if(chart.data.datasets[bm_name.datasetIndex]['_meta'][meta_data_id].hidden)
         {
+            document.getElementById("additional-info_" + (bm_name.datasetIndex + 1)).querySelector("#active_box").checked = true;
+
+
             if(chart.config.type == 'line')
             {
                 chart.data.datasets[bm_name.datasetIndex]['_meta'][meta_data_id].hidden = false;
+                show_potential(bm_name.datasetIndex + 1);
             }
             else
             {
@@ -657,7 +661,6 @@
                 meta.data[0].hidden = !meta.data[0].hidden;
             }
 
-            document.getElementById("additional-info_" + (bm_name.datasetIndex + 1)).querySelector("#active_box").checked = true;
         }
         else if(!chart.data.datasets[bm_name.datasetIndex]['_meta'][meta_data_id].hidden)
         {
@@ -941,8 +944,9 @@
         //
         var potential_label = document.getElementById('additional-info_' + num_bm).querySelector("#value_name").value;
 
+        console.log(num_bm)
 
-        i = num_bm -1;
+        i = num_bm - 1;
 
         //for(var i = 0; i < active_bms.length; i++)
         //{
@@ -955,7 +959,6 @@
             // get the last value of the bm, the current one
             var bm = JSON.parse(active_bms[i])
             num_last_elem = bm.length - 1;
-
 
             if(bm[num_last_elem].value != document.getElementById("additional-info_" + (i + 1)).querySelector("#value_value").value && document.getElementById("additional-info_" + (i + 1)).querySelector("#active_box").checked)
             {

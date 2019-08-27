@@ -163,7 +163,7 @@
 
         <div class="page__toggle" style="margin-left: 10%; margin-top: 25%;">
             <label class="toggle">
-            <input id="chart-type" onchange="closeNav();" onclick="clear_chart(); update_bm_chart(get_active_bms()); set_cookie('chart_type', 90); set_labels(); set_potentials_with_chart_change()" class="toggle__input" type="checkbox">
+            <input id="chart-type" onchange="closeNav();" onclick="clear_chart(); update_bm_chart(get_active_bms(false)); set_cookie('chart_type', 90); set_labels(); set_potentials_with_chart_change()" class="toggle__input" type="checkbox">
             <span class="toggle__label">
                 <span class="toggle__text">Bar Chart 
                     <i class="fas fa-info-circle" rel="tooltip" title="Change between the normal line chart and the bar chart to analyze your data" id="info-step-2"></i>
@@ -214,6 +214,7 @@
     var tods = [];
     var bms  = [];
     var potential_datasets = [];
+    var history_bms;
 
     // #67 Newly added func
     function get_amount_inputs()
@@ -601,7 +602,7 @@
 
         if(active_bm == 1)
         {
-            historic_data = JSON.parse(rest_get_historical_bm(document.getElementById("additional-info_" + (index_active_bm + 1)).getAttribute("base_bm")));
+            historic_data = JSON.parse(rest_get_historical_bm(document.getElementById("additional-info_" + (index_active_bm + 1)).getAttribute("base_bm"), true));
 
             for(var i = 0; i < historic_data.length; i++)
             {
@@ -928,7 +929,7 @@
     function show_potential(num_bm)
     {
         // get the send bms
-        var active_bms = get_active_bms();
+        var active_bms = get_active_bms(false);
         // Amount of elements in the currentyl active bms
         var num_last_elem;
         // All historic values of the bm
@@ -1129,7 +1130,7 @@
 
                     // Then update the chart
                     clear_chart()
-                    update_bm_chart(get_active_bms());
+                    update_bm_chart(get_active_bms(true));
                     set_labels();
                 }
             }
@@ -1174,7 +1175,7 @@
                 }
 
                 // clear the potential of the bm as well and not only the active - the ones which are not active
-                clear_potential(false, i);
+                clear_potential(false, chart.data.datasets[i].label);
             }
             else
             {
@@ -1255,7 +1256,7 @@
 
         active_bm = [];
 
-        active_bm = get_active_bms();
+        active_bm = get_active_bms(true);
 
         update_bm_chart(active_bm);
 
@@ -1295,14 +1296,14 @@
     }
 
     // #67 newly added func
-    function get_active_bms()
+    function get_active_bms(force)
     {
         var amount_bms = get_amount_inputs();
         active_bm = [];
 
         for(var i = 1; i <= amount_bms; i++)
         {
-            active_bm.push(rest_get_historical_bm(document.getElementById("additional-info_" + i).getAttribute("base_bm")));
+            active_bm.push(rest_get_historical_bm(document.getElementById("additional-info_" + i).getAttribute("base_bm"), force));
         }
 
         return active_bm;
@@ -1338,7 +1339,7 @@
     {
         // Get the base_bm_id of the clicked bm
         var bm_id = document.getElementById("additional-info_" + num_bm).getAttribute("base_bm");
-        var json_history_bm = JSON.parse(rest_get_historical_bm(bm_id));
+        var json_history_bm = JSON.parse(rest_get_historical_bm(bm_id), false);
         var bm_name = document.getElementById("additional-info_" + num_bm).querySelector("#value_name").value
 
 
@@ -1391,8 +1392,7 @@
         }
         else
         {
-
-            // console.log("going to clear: " + bm_id)
+            console.log("going to clear: " + bm_id)
             // Remove only the datasets defined in the function call
             chart.data.datasets = chart.data.datasets.filter(function(obj) {
                 return (obj.label != 'potential for ' + bm_id); 
@@ -1403,7 +1403,7 @@
     }
 
     // #67 Newly added func
-    function rest_get_historical_bm(bm_id)
+    function rest_get_historical_bm(bm_id, force)
     {
         // Load of this data can not be replaced, because its dynamically and if a new bm is added or one is deleted we have to load them all again
         // might work with a changed flag
@@ -1413,23 +1413,28 @@
         }
         else
         {
-            try
+            if(true)
             {
-                var url = 'http://jakob.ml:8080/tpbackend_1-1.0-SNAPSHOT/api/trainingsplan/get_historical_bm_values/';
-                var xmlHttp = new XMLHttpRequest();
+                try
+                {
+                    var url = 'http://jakob.ml:8080/tpbackend_1-1.0-SNAPSHOT/api/trainingsplan/get_historical_bm_values/';
+                    var xmlHttp = new XMLHttpRequest();
 
-                xmlHttp.open( "GET", url + getusername() + "/" + bm_id, false ); // false for synchronous request
-                xmlHttp.send( null );
-                history_bms = xmlHttp.responseText;
+                    xmlHttp.open( "GET", url + getusername() + "/" + bm_id, false ); // false for synchronous request
+                    xmlHttp.send( null );
+                    history_bms = xmlHttp.responseText;
 
-                console.log(history_bms)
-
-                return history_bms;
+                    return history_bms;
+                }
+                catch(err)
+                {
+                    console.error(err);
+                    display_error('error', 'Oops...', 'The backend seems to be unavailable!')
+                }
             }
-            catch(err)
+            else
             {
-                console.error(err);
-                display_error('error', 'Oops...', 'The backend seems to be unavailable!')
+                return history_bms;
             }
         }
     }

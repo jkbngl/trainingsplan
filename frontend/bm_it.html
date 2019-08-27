@@ -659,6 +659,7 @@
                 chart.data.datasets[bm_name.datasetIndex]['_meta'][meta_data_id].hidden = false;
                 var meta = chart.getDatasetMeta(bm_name.datasetIndex);
                 meta.data[0].hidden = !meta.data[0].hidden;
+                show_potential(bm_name.datasetIndex + 1);
             }
 
         }
@@ -943,8 +944,6 @@
         var same_potential_was_already_added = false;
         //
         var potential_label = document.getElementById('additional-info_' + num_bm).querySelector("#value_name").value;
-
-        console.log(num_bm)
 
         i = num_bm - 1;
 

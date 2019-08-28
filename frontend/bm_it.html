@@ -945,71 +945,73 @@
         //
         var potential_label = document.getElementById('additional-info_' + num_bm).querySelector("#value_name").value;
 
+        console.log("START");
+
         i = num_bm - 1;
 
-        //for(var i = 0; i < active_bms.length; i++)
-        //{
-            // Has to be done inside loop because of i, which needs to color of the related bm
+        
+        // Has to be done inside loop because of i, which needs to color of the related bm
+        if(chart.config.type == 'line')
+            background_attribute = border_color_array[i]
+        else if(chart.config.type == 'bar')
+            background_attribute = pattern.draw('zigzag', border_color_array[i])
+
+        // get the last value of the bm, the current one
+        var bm = JSON.parse(active_bms[i])
+        num_last_elem = bm.length - 1;
+
+        if(bm[num_last_elem].value != document.getElementById("additional-info_" + (i + 1)).querySelector("#value_value").value && document.getElementById("additional-info_" + (i + 1)).querySelector("#active_box").checked)
+        {
+            
             if(chart.config.type == 'line')
-                background_attribute = border_color_array[i]
+                for(var j = 0; j < num_last_elem + 1; j++)
+                    current_active_values.push(bm[j].value);
             else if(chart.config.type == 'bar')
-                background_attribute = pattern.draw('zigzag', border_color_array[i])
+                for(var j = 0; j < num_last_elem + 1; j++)
+                    current_active_values.push(0);
 
-            // get the last value of the bm, the current one
-            var bm = JSON.parse(active_bms[i])
-            num_last_elem = bm.length - 1;
+            current_active_values.push(document.getElementById("additional-info_" + (i + 1)).querySelector("#value_value").value);
 
-            if(bm[num_last_elem].value != document.getElementById("additional-info_" + (i + 1)).querySelector("#value_value").value && document.getElementById("additional-info_" + (i + 1)).querySelector("#active_box").checked)
+            for(var k = 0; k < chart.data.datasets.length; k++)
             {
-                
-                if(chart.config.type == 'line')
-                    for(var j = 0; j < num_last_elem + 1; j++)
-                        current_active_values.push(bm[j].value);
-                else if(chart.config.type == 'bar')
-                    for(var j = 0; j < num_last_elem + 1; j++)
-                        current_active_values.push(0);
-
-                current_active_values.push(document.getElementById("additional-info_" + (i + 1)).querySelector("#value_value").value);
-
-                for(var k = 0; k < chart.data.datasets.length; k++)
+                if(chart.data.datasets[k].label.startsWith("potential for " + potential_label))
                 {
-                    if(chart.data.datasets[k].label.startsWith("potential for " + potential_label))
+                    if(chart.data.datasets[k].data.equals(current_active_values))
                     {
-                        if(chart.data.datasets[k].data.equals(current_active_values))
-                        {
-                            same_potential_was_already_added = true;
-                            //break;
-                        }
-                        else
-                        {
+                        same_potential_was_already_added = true;
+                        //break;
+                    }
+                    else
+                    {
 
-                        }
                     }
                 }
-
-                if(!same_potential_was_already_added)
-                {
-                    chart.data.datasets.push({
-                        data: current_active_values,
-                        label: 'potential for ' + document.getElementById("additional-info_" + (i + 1)).querySelector("#value_name").value + ' [' + document.getElementById("additional-info_" + (i + 1)).querySelector("#select_1").value + '] - ' + document.getElementById("additional-info_" + (i + 1)).querySelector("#select_2").value,
-                        borderColor: border_color_array[i],
-                        backgroundColor: background_attribute,
-                        borderDash: [10],
-                        fill: false
-                    });
-                }
-
-                // Set the animation duration to 0 to not show that a new dataset has been added to chart 
-                var old_animation_duration = chart.options.animation.duration;
-                chart.options.animation.duration = 0;
-                chart.update();
-                // Set it back to the old value
-                chart.options.duration = old_animation_duration;    
-                
-                // Clean at the end
-                current_active_values = [];
             }
-        //}    
+
+            if(!same_potential_was_already_added)
+            {
+                chart.data.datasets.push({
+                    data: current_active_values,
+                    label: 'potential for ' + document.getElementById("additional-info_" + (i + 1)).querySelector("#value_name").value + ' [' + document.getElementById("additional-info_" + (i + 1)).querySelector("#select_1").value + '] - ' + document.getElementById("additional-info_" + (i + 1)).querySelector("#select_2").value,
+                    borderColor: border_color_array[i],
+                    backgroundColor: background_attribute,
+                    borderDash: [10],
+                    fill: false
+                });
+            }
+
+            // Set the animation duration to 0 to not show that a new dataset has been added to chart 
+            var old_animation_duration = chart.options.animation.duration;
+            chart.options.animation.duration = 0;
+            chart.update();
+            // Set it back to the old value
+            chart.options.duration = old_animation_duration;    
+            
+            // Clean at the end
+            current_active_values = [];
+        }
+
+        console.log("END");
     }
 
     // #67  newly added func

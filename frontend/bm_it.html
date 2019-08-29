@@ -945,7 +945,7 @@
         //
         var potential_label = document.getElementById('additional-info_' + num_bm).querySelector("#value_name").value;
 
-        console.log("START");
+        var t0 = performance.now();
 
         i = num_bm - 1;
 
@@ -1011,7 +1011,10 @@
             current_active_values = [];
         }
 
-        console.log("END");
+        var t1 = performance.now();
+        if((t1 - t0) > 100)
+            console.log("Calculating potential took: " + (t1 - t0) + " milliseconds.")
+
     }
 
     // #67  newly added func

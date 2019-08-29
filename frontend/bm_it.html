@@ -173,7 +173,7 @@
         </div>
 
         <p style="margin-left: 10%; margin-bottom: 5%; color:#00ad5f; font-family: Century Gothic; font-size: 125%">Show N Datapoints:</p>
-        <input type="text" id="n-datapoints-to-show" onkeydown="set_datapoints_chart(this)" class="input_bm" placeholder="&nbsp; N Datapoints ..." style="text-align:center; background: transparent; border-radius: 10px; border: 2px solid #00ad5f; color:#00ad5f; width: 80%; font-size: 18px; font-family: Century Gothic; height: 5%; width:80%; margin-left: 10%; margin-top: 2%"> 
+        <input type="number" id="n-datapoints-to-show" onkeydown="set_datapoints_chart(this)" class="input_bm" placeholder="&nbsp; N Datapoints ..." style="text-align:center; background: transparent; border-radius: 10px; border: 2px solid #00ad5f; color:#00ad5f; width: 80%; font-size: 18px; font-family: Century Gothic; height: 5%; width:80%; margin-left: 10%; margin-top: 2%"> 
         
         
         <button onclick="keycloak.logout('/trainingsplanorwhateveritdoesntworkanyway'); kc.logout()"class="button" style="top: 10px; width:80%; margin-left: 10%; margin-top: 20%"><i class="fas fa-sign-out-alt"></i> Logout</button>
@@ -445,9 +445,11 @@
 
     function set_datapoints_chart(data) 
     {
-        if(event.key === 'Enter') {
-        console.log(data.value);        
-    }
+        if(event.key === 'Enter')
+        {
+            console.log(data.value);    
+            console.log(chart.options.XLabels)
+        }
     }
 
     // #67 Newly added func

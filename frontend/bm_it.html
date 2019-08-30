@@ -447,9 +447,23 @@
     {
         if(event.key === 'Enter')
         {
-            console.log(data.value);    
-            console.log(chart.options.XLabels)
+            let val = data.value;
+            let length = chart.data.datasets.length;
+
+            for(let i = 0; i < length; i++)
+            {
+                console.log(val);
+                console.log(chart.data.datasets[i].data.length);
+
+                if(val < chart.data.datasets[i].data.length)
+                    chart.data.datasets[i].data.length = val;
+            }
+            
+            set_labels()
+            chart.update();
         }
+
+        
     }
 
     // #67 Newly added func

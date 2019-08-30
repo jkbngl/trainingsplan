@@ -449,17 +449,15 @@
         {
             let val = data.value;
             let length = chart.data.datasets.length;
+            let chart_type = chart.optionstype;
+            // chart.options.scales.xAxes[0].ticks.max = val;
+            // console.log(chart.options.scales.xAxes[0].ticks.max)
 
-            for(let i = 0; i < length; i++)
-            {
-                console.log(val);
-                console.log(chart.data.datasets[i].data.length);
+            //clear_chart();
+            //create_chart(chart_type, val);
 
-                if(val < chart.data.datasets[i].data.length)
-                    chart.data.datasets[i].data.length = val;
-            }
             
-            set_labels()
+            //set_labels()
             chart.update();
         }
 
@@ -1793,10 +1791,13 @@
                              ];
     
     // #67 changed func
-    function create_chart(chart_type)
+    function create_chart(chart_type, num_datapoints)
     {       
         if(typeof chart_type == 'undefined')
             chart_type = 'line';
+        
+        if(typeof num_datapoints == 'undefined')
+            num_datapoints = 50;
 
         var chart = new Chart(document.getElementById("line-chart"), {
             type: chart_type,
@@ -1852,7 +1853,10 @@
                     xAxes: [{
                         ticks: {
                             autoSkip: true,
-                            autoSkipPadding: 8
+                            autoSkipPadding: 8,
+                            beginAtZero: true,
+                            min: 0,
+                            max: 50
                         }
                     }]
                 },

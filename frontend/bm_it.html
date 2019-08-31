@@ -450,11 +450,13 @@
             let val = data.value;
             let length = chart.data.datasets.length;
             let chart_type = chart.optionstype;
-            // chart.options.scales.xAxes[0].ticks.max = val;
+            chart.options.scales.xAxes[0].ticks.max = val;
             // console.log(chart.options.scales.xAxes[0].ticks.max)
 
             //clear_chart();
             //create_chart(chart_type, val);
+
+            console.log(chart.config.data)
 
             
             //set_labels()

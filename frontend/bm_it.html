@@ -447,18 +447,16 @@
     {
         if(event.key === 'Enter')
         {
-            let val = data.value;
+            // as it is a string + the chart starts at 0 not 1
+            let val = parseInt(data.value) - 1;
             let length = chart.data.datasets.length;
             let chart_type = chart.optionstype;
 
-            chart.options.scales.xAxes[0].ticks.max = parseInt(val);  
+            chart.options.scales.xAxes[0].ticks.max = val;  
 
 
             console.log(chart.config.options.scales.xAxes[0].ticks.max)
 
-            
-            //set_labels()
-            //chart.render();
             chart.update();
 
         }

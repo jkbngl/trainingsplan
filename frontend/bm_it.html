@@ -443,9 +443,11 @@
         }
     }
 
-    function set_datapoints_chart(data) 
+    function set_datapoints_chart(data, force) 
     {
-        if(event.key === 'Enter')
+        console.log(typeof data.value)
+
+        if(event.key === 'Enter' || force)
         {
             // as it is a string + the chart starts at 0 not 1
             let val = parseInt(data.value) - 1;
@@ -1962,6 +1964,9 @@
         document.getElementById("simplify-ui").checked = false;
 
         simplify_ui();
+
+        document.getElementById("n-datapoints-to-show").value = '';
+        set_datapoints_chart("", true);
     }
 
     // #67 changed func

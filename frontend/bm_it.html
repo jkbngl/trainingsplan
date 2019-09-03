@@ -452,16 +452,13 @@
             let length = chart.data.datasets.length;
             let chart_type = chart.optionstype;
 
-            chart.options.scales.xAxes[0].ticks.max = val;  
+            chart.options.scales.xAxes[0].ticks.max = val;
 
 
-            console.log(chart.config.options.scales.xAxes[0].ticks.max)
+            console.log(chart.config.options.scales.xAxes)
 
             chart.update();
-
         }
-
-        
     }
 
     // #67 Newly added func
@@ -1396,7 +1393,7 @@
             if(i > 0)
                 if(json_bm[i].value > json_bm[i - 1].value)
                 {
-                    to_dispay += '<font color="green">Value: ' + json_bm[i].value + (json_bm[i].note.length != 0 ? "<br>Note:" + json_bm[i].note : "") + "</font><br>";
+                    to_dispay += '<font color="green">' + json_bm[i].value + (json_bm[i].note.length != 0 ? "<br>Note:" + json_bm[i].note : "") + "</font><br>";
                 }    
                 else if(json_bm[i].value < json_bm[i - 1].value)
                 {

@@ -172,7 +172,7 @@
             </label>
         </div>
 
-        <p style="margin-left: 10%; margin-bottom: 5%; color:#00ad5f; font-family: Century Gothic; font-size: 125%">Show N Datapoints:</p>
+        <p style="margin-left: 10%; margin-bottom: 5%; color:#00ad5f; font-family: Century Gothic; font-size: 125%">Show N Datapoints (beta):</p>
         <input type="number" id="n-datapoints-to-show" onkeydown="set_datapoints_chart(this)" class="input_bm" placeholder="&nbsp; N Datapoints ..." style="text-align:center; background: transparent; border-radius: 10px; border: 2px solid #00ad5f; color:#00ad5f; width: 80%; font-size: 18px; font-family: Century Gothic; height: 5%; width:80%; margin-left: 10%; margin-top: 2%"> 
         
         
@@ -445,21 +445,23 @@
 
     function set_datapoints_chart(data, force) 
     {
-        console.log(typeof data.value)
-
         if(event.key === 'Enter' || force)
         {
-            // as it is a string + the chart starts at 0 not 1
-            let val = parseInt(data.value) - 1;
-            let length = chart.data.datasets.length;
-            let chart_type = chart.optionstype;
+            // reload the whole page, with only 
+            on_save();
 
-            chart.options.scales.xAxes[0].ticks.max = val;
-
-
-            console.log(chart.config.options.scales.xAxes)
-
-            chart.update();
+            // // as it is a string + the chart starts at 0 not 1
+            // let val = parseInt(data.value) - 1;
+            // let length = chart.data.datasets.length;
+            // let chart_type = chart.optionstype;
+// 
+            // chart.options.scales.xAxes[0].ticks.max = val;
+            // for(let i = 0; i < length; i++)
+            //     chart.data.datasets[i].data = chart.data.datasets[i].data.slice(-(val + 1));
+// 
+            // console.log(chart.config.options.scales.xAxes[0].ticks.max)
+// 
+            // chart.update();
         }
     }
 
@@ -1335,9 +1337,17 @@
 
         for(var i = 1; i <= amount_bms; i++)
         {
+            //active_bm.push(JSON.parse(rest_get_historical_bm(document.getElementById("additional-info_" + i).getAttribute("base_bm"), force)).slice(-10));
+
             active_bm.push(rest_get_historical_bm(document.getElementById("additional-info_" + i).getAttribute("base_bm"), force));
+            
+            // console.log(JSON.parse(rest_get_historical_bm(document.getElementById("additional-info_" + i).getAttribute("base_bm"), force)).slice(-10));
+            // console.log(JSON.parse(active_bm[i - 1]).slice(-10));
+            //active_bm[i - 1] = JSON.parse(active_bm[i - 1]).slice(-10);
         }
 
+        console.log(JSON.stringify(active_bm));
+        
         return active_bm;
     }
 
@@ -1855,7 +1865,9 @@
                             autoSkipPadding: 8,
                             beginAtZero: true,
                             min: 0,
-                            max: 50
+                            max: 50,
+                            // type: 'time',
+                            // distribution: 'linear'
                         }
                     }]
                 },

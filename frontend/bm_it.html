@@ -447,20 +447,22 @@
     {
         if(event.key === 'Enter' || force)
         {
-            // reload the whole page, with only 
-            on_save();
 
-            // // as it is a string + the chart starts at 0 not 1
-            // let val = parseInt(data.value) - 1;
+            // as it is a string + the chart starts at 0 not 1
+            let val = parseInt(data.value) - 1;
+            
+            // reload the whole page, with only 
+            on_save(val + 1);
+
             // let length = chart.data.datasets.length;
             // let chart_type = chart.optionstype;
-// 
+            // 
             // chart.options.scales.xAxes[0].ticks.max = val;
             // for(let i = 0; i < length; i++)
             //     chart.data.datasets[i].data = chart.data.datasets[i].data.slice(-(val + 1));
-// 
+            // 
             // console.log(chart.config.options.scales.xAxes[0].ticks.max)
-// 
+            // 
             // chart.update();
         }
     }
@@ -569,14 +571,14 @@
     }
 
     // #67 Newly added func
-    function on_save()
+    function on_save(num)
     {
         var num_input = get_amount_inputs();
 
         document.getElementById("container_bm").innerHTML = '';
         
         clear_chart();  
-        build_page();
+        build_page(num);
     }
 
     // #67 Newly added func
@@ -1267,7 +1269,7 @@
     }
 
     // #67 Newly added func
-    function build_page()
+    function build_page(num)
     {
         // empty String bms which will in case there are any contain the json object with the bms in it
         var bms = '';
@@ -1290,7 +1292,7 @@
 
         active_bm = [];
 
-        active_bm = get_active_bms(true);
+        active_bm = get_active_bms(true, num);
 
         update_bm_chart(active_bm);
 
@@ -1330,16 +1332,17 @@
     }
 
     // #67 newly added func
-    function get_active_bms(force)
+    function get_active_bms(force, num)
     {
         var amount_bms = get_amount_inputs();
         active_bm = [];
 
         for(var i = 1; i <= amount_bms; i++)
         {
-            active_bm.push(JSON.stringify(JSON.parse(rest_get_historical_bm(document.getElementById("additional-info_" + i).getAttribute("base_bm"), force)).slice(-10)));
-
-            //active_bm.push(rest_get_historical_bm(document.getElementById("additional-info_" + i).getAttribute("base_bm"), force));
+            if(num > 0)
+                active_bm.push(JSON.stringify(JSON.parse(rest_get_historical_bm(document.getElementById("additional-info_" + i).getAttribute("base_bm"), force)).slice(-(num))));
+            else
+                active_bm.push(rest_get_historical_bm(document.getElementById("additional-info_" + i).getAttribute("base_bm"), force));
             
             // console.log(JSON.parse(rest_get_historical_bm(document.getElementById("additional-info_" + i).getAttribute("base_bm"), force)).slice(-10));
             // console.log(JSON.parse(active_bm[i - 1]).slice(-10));

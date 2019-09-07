@@ -1000,6 +1000,17 @@
                 for(var j = 0; j < num_last_elem + 1; j++)
                     current_active_values.push(0);
 
+            if(document.getElementById('n-datapoints-to-show').value.length > 0)
+            {
+                let val = document.getElementById('n-datapoints-to-show').value;
+                
+                console.log(current_active_values)
+                
+                current_active_values = current_active_values.slice(-(val));
+
+                console.log(current_active_values)
+            }  
+
             current_active_values.push(document.getElementById("additional-info_" + (i + 1)).querySelector("#value_value").value);
 
             for(var k = 0; k < chart.data.datasets.length; k++)
@@ -1016,15 +1027,7 @@
 
                     }
                 }
-            }
-
-            if(document.getElementById('n-datapoints-to-show').value.length > 0)
-            {
-                let val = document.getElementById('n-datapoints-to-show').value;
-
-                current_active_values = current_active_values.slice(-(val));
-
-            }    
+            }  
 
             if(!same_potential_was_already_added)
             {

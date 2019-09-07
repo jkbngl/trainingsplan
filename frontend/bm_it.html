@@ -961,8 +961,7 @@
     // #67 newly added func
     function show_potential(num_bm)
     {
-        console.log(document.getElementById('n-datapoints-to-show').value);
-
+        
         // get the send bms
         var active_bms = get_active_bms(false);
         // Amount of elements in the currentyl active bms
@@ -1018,6 +1017,14 @@
                     }
                 }
             }
+
+            if(document.getElementById('n-datapoints-to-show').value.length > 0)
+            {
+                let val = document.getElementById('n-datapoints-to-show').value;
+
+                current_active_values = current_active_values.slice(-(val));
+
+            }    
 
             if(!same_potential_was_already_added)
             {
@@ -1351,7 +1358,7 @@
             //active_bm[i - 1] = JSON.parse(active_bm[i - 1]).slice(-10);
         }
 
-        console.log(active_bm);
+        //console.log(active_bm);
         
         return active_bm;
     }

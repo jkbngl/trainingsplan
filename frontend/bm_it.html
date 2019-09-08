@@ -453,6 +453,7 @@
             
             // reload the whole page, with only 
             on_save(val + 1);
+            clear_potential(true);
 
             // let length = chart.data.datasets.length;
             // let chart_type = chart.optionstype;
@@ -642,6 +643,19 @@
 
                 if(i == historic_data.length - 1)
                     new_labels.push("potential");
+            }
+
+            if(document.getElementById('n-datapoints-to-show').value.length > 0)
+            {
+                let val = parseInt(document.getElementById('n-datapoints-to-show').value) + 1;
+
+                console.log(val)
+                console.log(new_labels)
+
+                new_labels = new_labels.slice(-(val));
+
+                console.log(new_labels)
+
             }
 
             chart.data.labels = new_labels;

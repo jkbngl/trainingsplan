@@ -172,7 +172,7 @@
             </label>
         </div>
 
-        <p style="margin-left: 10%; margin-bottom: 5%; color:#00ad5f; font-family: Century Gothic; font-size: 125%">Show N Datapoints (beta):</p>
+        <p style="margin-left: 10%; color:#00ad5f; font-family: Century Gothic; font-size: 125%">Show N Datapoints (beta):</p>
         <input type="number" id="n-datapoints-to-show" onkeydown="set_datapoints_chart(this)" class="input_bm" placeholder="&nbsp; N Datapoints ..." style="text-align:center; background: transparent; border-radius: 10px; border: 2px solid #00ad5f; color:#00ad5f; width: 80%; font-size: 18px; font-family: Century Gothic; height: 5%; width:80%; margin-left: 10%; margin-top: 2%"> 
         
         
@@ -572,14 +572,14 @@
     }
 
     // #67 Newly added func
-    function on_save(num)
+    function on_save()
     {
         var num_input = get_amount_inputs();
 
         document.getElementById("container_bm").innerHTML = '';
-        
+
         clear_chart();  
-        build_page(num);
+        build_page();
     }
 
     // #67 Newly added func
@@ -648,14 +648,8 @@
             if(document.getElementById('n-datapoints-to-show').value.length > 0)
             {
                 let val = parseInt(document.getElementById('n-datapoints-to-show').value) + 1;
-
-                console.log(val)
-                console.log(new_labels)
-
+                
                 new_labels = new_labels.slice(-(val));
-
-                console.log(new_labels)
-
             }
 
             chart.data.labels = new_labels;
@@ -1295,7 +1289,7 @@
     }
 
     // #67 Newly added func
-    function build_page(num)
+    function build_page()
     {
         // empty String bms which will in case there are any contain the json object with the bms in it
         var bms = '';
@@ -1318,7 +1312,7 @@
 
         active_bm = [];
 
-        active_bm = get_active_bms(true, num);
+        active_bm = get_active_bms(true);
 
         update_bm_chart(active_bm);
 
@@ -1358,8 +1352,11 @@
     }
 
     // #67 newly added func
-    function get_active_bms(force, num)
+    function get_active_bms(force)
     {
+        let num = document.getElementById("n-datapoints-to-show").value;
+        console.log(this)
+
         var amount_bms = get_amount_inputs();
         active_bm = [];
 

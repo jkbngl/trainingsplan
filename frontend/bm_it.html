@@ -220,6 +220,7 @@
     var bms  = [];
     var potential_datasets = [];
     var history_bms;
+    var potential_values = [];
 
     // #67 Newly added func
     function get_amount_inputs()
@@ -442,18 +443,26 @@
             }
         }
     }
-
+    
+    // #67 Newly added func
     function set_datapoints_chart(data, force) 
     {
         if(event.key === 'Enter' || force)
         {
-
             // as it is a string + the chart starts at 0 not 1
             let val = parseInt(data.value) - 1;
+            let length = get_amount_inputs();
             
             // reload the whole page, with only 
+            save_potential_values();
             on_save(val + 1);
             clear_potential(true);
+
+            for(let i = 0; i < length; i++)
+                if(document.getElementById("additional-info_" + (i + 1)).querySelector("#active_box").checked = true)
+                {
+                    show_potential(i + 1);
+                }    
 
             // let length = chart.data.datasets.length;
             // let chart_type = chart.optionstype;
@@ -467,6 +476,38 @@
             // chart.update();
         }
     }
+
+    // #67 Newly added func
+    function save_potential_values()
+    {
+        let length = get_amount_inputs();
+
+        // clear in case a new bm was added
+        potential_values = [];
+        
+        for(let i = 1; i <= length; i++)
+        {
+            potential_values.push(document.getElementById("additional-info_" + i).querySelector("#value_value").value);
+        }
+
+        console.log("save_potential_values - " + potential_values);
+    }
+
+    // #67 Newly added func
+    function re_add_potential_values()
+    {
+        let length = get_amount_inputs();
+        
+        for(let i = 1; i <= length; i++)
+        {            
+            if(potential_values[i - 1] != null)
+                document.getElementById("additional-info_" + i).querySelector("#value_value").value = potential_values[i - 1];
+            
+        }
+
+        //console.log("re_add_potential_values - " + potential_values);
+    }
+
 
     // #67 Newly added func
     function send_bm_data_to_backend(jsonData)
@@ -576,9 +617,12 @@
     {
         var num_input = get_amount_inputs();
 
+        save_potential_values();
+
         document.getElementById("container_bm").innerHTML = '';
 
         clear_chart();  
+
         build_page();
     }
 
@@ -969,7 +1013,6 @@
     // #67 newly added func
     function show_potential(num_bm)
     {
-        
         // get the send bms
         var active_bms = get_active_bms(false);
         // Amount of elements in the currentyl active bms
@@ -980,11 +1023,10 @@
         var background_attribute;
         // to keep track which potentials where already added
         var same_potential_was_already_added = false;
-        //
+        // label which the potential will have
         var potential_label = document.getElementById('additional-info_' + num_bm).querySelector("#value_name").value;
 
         var t0 = performance.now();
-
         i = num_bm - 1;
 
         
@@ -998,9 +1040,9 @@
         var bm = JSON.parse(active_bms[i])
         num_last_elem = bm.length - 1;
 
+        // If the value was changed and the bm is active
         if(bm[num_last_elem].value != document.getElementById("additional-info_" + (i + 1)).querySelector("#value_value").value && document.getElementById("additional-info_" + (i + 1)).querySelector("#active_box").checked)
         {
-            
             if(chart.config.type == 'line')
                 for(var j = 0; j < num_last_elem + 1; j++)
                     current_active_values.push(bm[j].value);
@@ -1010,13 +1052,8 @@
 
             if(document.getElementById('n-datapoints-to-show').value.length > 0)
             {
-                let val = document.getElementById('n-datapoints-to-show').value;
-                
-                console.log(current_active_values)
-                
+                let val = document.getElementById('n-datapoints-to-show').value;                
                 current_active_values = current_active_values.slice(-(val));
-
-                console.log(current_active_values)
             }  
 
             current_active_values.push(document.getElementById("additional-info_" + (i + 1)).querySelector("#value_value").value);
@@ -1035,7 +1072,7 @@
 
                     }
                 }
-            }  
+            }
 
             if(!same_potential_was_already_added)
             {
@@ -1310,6 +1347,10 @@
             add_html_input(true);
         }
 
+        console.log("CALLING re_add_potential_values")
+        re_add_potential_values();
+        console.log(potential_values)
+
         active_bm = [];
 
         active_bm = get_active_bms(true);
@@ -1327,6 +1368,8 @@
         
         get_cookie('interface_type');
         get_cookie('chart_type');
+
+        
 
         chart.update()
     }
@@ -1355,7 +1398,6 @@
     function get_active_bms(force)
     {
         let num = document.getElementById("n-datapoints-to-show").value;
-        console.log(this)
 
         var amount_bms = get_amount_inputs();
         active_bm = [];

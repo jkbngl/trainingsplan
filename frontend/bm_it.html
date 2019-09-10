@@ -102,9 +102,9 @@
                         ;
 
                     // Initialisation on startup
-                    //setTimeout(function (){
-                    //    chart.update();
-                    //}, 500); 
+                    setTimeout(function (){
+                        chart.update();
+                    }, 199); 
                 }
             }
             catch(err)
@@ -1910,10 +1910,7 @@
                             autoSkip: true,
                             autoSkipPadding: 8,
                             beginAtZero: true,
-                            min: 0,
-                            //max: 50,
-                            // type: 'time',
-                            // distribution: 'linear'
+                            min: 0
                         }
                     }]
                 },

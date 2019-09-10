@@ -1449,36 +1449,53 @@
     {
         //  to_dispay += '<font color="green">Reps: ' + json.values[i].reps + "</font><br>";
         let to_dispay = "<h2>" + bm_name.toUpperCase() + " [" + json_bm[0].uom + "]" + " - " + json_bm[0].tod + "</h2><br><br>";
-
         let n_datapoints_to_show = document.getElementById("n-datapoints-to-show").value > 0 ? document.getElementById("n-datapoints-to-show").value : Infinity;
+        const opacity_v = .5;
 
         console.log(n_datapoints_to_show)
 
         for(let i = 0; i < json_bm.length; i++)
         {
+            
+            let date = new Date(json_bm[i].created).toUTCString()
             if(i > json_bm.length - n_datapoints_to_show)
-            {
-                let date = new Date(json_bm[i].created).toUTCString()
                 to_dispay += (i + 1) + ". Entry on: " + date.split(' ').slice(1, 4).join(' ') + "<br>";
+            else
+                to_dispay += '<font style="opacity: ' + opacity_v + '" color="green">' + (i + 1) + ". Entry on: " + date.split(' ').slice(1, 4).join(' ') + "<br>"+ "</font>";
 
-                if(i > 0)
+            if(i > 0)
+            {
+                if(json_bm[i].value > json_bm[i - 1].value)
                 {
-                    if(json_bm[i].value > json_bm[i - 1].value)
-                    {
+                    if(i > json_bm.length - n_datapoints_to_show)
                         to_dispay += '<font color="green">' + json_bm[i].value + (json_bm[i].note.length != 0 ? "<br>Note:" + json_bm[i].note : "") + "</font><br>";
-                    }    
-                    else if(json_bm[i].value < json_bm[i - 1].value)
-                    {
-                        to_dispay += '<font color="red">' + json_bm[i].value + (json_bm[i].note.length != 0 ? "<br>Note:" + json_bm[i].note : "") + "</font><br>"; 
-                    }
                     else
-                    {
-                        to_dispay += '<font color="white">' + json_bm[i].value + (json_bm[i].note.length != 0 ? "<br>Note:" + json_bm[i].note : "") + "</font><br>"; 
-                    }
+                        to_dispay += '<font style="opacity: ' + opacity_v + '" color="green">' + json_bm[i].value + (json_bm[i].note.length != 0 ? "<br>Note:" + json_bm[i].note : "") + "</font><br>";
+                }    
+                else if(json_bm[i].value < json_bm[i - 1].value)
+                {
+                    if(i > json_bm.length - n_datapoints_to_show)
+                        to_dispay += '<font color="red">' + json_bm[i].value + (json_bm[i].note.length != 0 ? "<br>Note:" + json_bm[i].note : "") + "</font><br>"; 
+                    else
+                        to_dispay += '<font style="opacity: ' + opacity_v + '" color="red">' + json_bm[i].value + (json_bm[i].note.length != 0 ? "<br>Note:" + json_bm[i].note : "") + "</font><br>"; 
                 }
                 else
-                    to_dispay += '<font color="white">' + json_bm[i].value + (json_bm[i].note.length != 0 ? "<br>Note:" + json_bm[i].note : "") + "</font><br>"; 
+                {
+                    if(i > json_bm.length - n_datapoints_to_show)
+                        to_dispay += '<font color="white">' + json_bm[i].value + (json_bm[i].note.length != 0 ? "<br>Note:" + json_bm[i].note : "") + "</font><br>"; 
+                    else
+                        to_dispay += '<font style="opacity: ' + opacity_v + '" color="white">' + json_bm[i].value + (json_bm[i].note.length != 0 ? "<br>Note:" + json_bm[i].note : "") + "</font><br>"; 
+                }
             }
+            else
+            {
+                if(i > json_bm.length - n_datapoints_to_show)
+                    to_dispay += '<font color="white">' + json_bm[i].value + (json_bm[i].note.length != 0 ? "<br>Note:" + json_bm[i].note : "") + "</font><br>"; 
+                else
+                    to_dispay += '<font style="opacity: ' + opacity_v + '" color="white">' + json_bm[i].value + (json_bm[i].note.length != 0 ? "<br>Note:" + json_bm[i].note : "") + "</font><br>"; 
+            }
+                
+           
         } 
         
         return to_dispay;

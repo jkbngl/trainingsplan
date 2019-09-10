@@ -100,6 +100,11 @@
                         customize_mobile();
                     else
                         ;
+
+                    // Initialisation on startup
+                    //setTimeout(function (){
+                    //    chart.update();
+                    //}, 500); 
                 }
             }
             catch(err)
@@ -201,15 +206,10 @@
 
 <script>
     // Object to store data for all actively displayed data in chart
-    var active_bm = [
-
-    ];
+    var active_bm = [];
 
     // global variable to handle the creation and destruction of chart easily
     var chart;
-    
-    // global variable to handle the creation and destruction of different chart easily, line = default
-    //var chart_type = 'line';
 
     // Here the class is set for the swal to use, depending on mobile or desktop, desktop leave empty - mobile is set in customize_mobile
     var mobile_swal = '';           
@@ -459,21 +459,12 @@
             clear_potential(true);
 
             for(let i = 0; i < length; i++)
+            {
                 if(document.getElementById("additional-info_" + (i + 1)).querySelector("#active_box").checked = true)
                 {
                     show_potential(i + 1);
                 }    
-
-            // let length = chart.data.datasets.length;
-            // let chart_type = chart.optionstype;
-            // 
-            // chart.options.scales.xAxes[0].ticks.max = val;
-            // for(let i = 0; i < length; i++)
-            //     chart.data.datasets[i].data = chart.data.datasets[i].data.slice(-(val + 1));
-            // 
-            // console.log(chart.config.options.scales.xAxes[0].ticks.max)
-            // 
-            // chart.update();
+            }
         }
     }
 
@@ -1594,10 +1585,6 @@
                 values[j] = parsed_bm[j].value;                
 
                 dateString = new Date(parsed_bm[j].created).toUTCString();
-                //local_labels_date.push(dateString.split(' ').slice(1, 4).join(' '));
-
-                // console.log(parsed_bm[j].uom);
-                // console.log(parsed_bm[j].tod);
 
                 // Once
                 if(j == 0)
@@ -1607,12 +1594,8 @@
                     bm_tod = parsed_bm[j].tod;
 
                     bm_legend_name = bm_name + " [" + bm_uom + "]" + " - " + bm_tod;
-                    
-                    //local_labels_numbers.push(parsed_bm.length);
                 }
             }
-
-            //local_labels_date.push("potential");
 
             chart.data.datasets.push({
                 data: values,
@@ -1625,6 +1608,7 @@
             // Needs to be done before as well to make sure that we can read the meta from this dataset
             chart.update();
 
+            // If the bm is not active, deacticate it
             if(!document.getElementById("additional-info_" + (i + 1)).querySelector("#active_box").checked)
             {
                 var meta_data_id = chart.getDatasetMeta(i).controller.chart.id;
@@ -1927,7 +1911,7 @@
                             autoSkipPadding: 8,
                             beginAtZero: true,
                             min: 0,
-                            max: 50,
+                            //max: 50,
                             // type: 'time',
                             // distribution: 'linear'
                         }

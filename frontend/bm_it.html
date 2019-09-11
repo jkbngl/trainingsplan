@@ -31,7 +31,7 @@
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@sweetalert2/theme-dark@1/dark.css">
 
 
-    <script src="http://jakob.ml:8081/auth/js/keycloak.js"></script> 
+    <script src="http://jakob.ml/auth/js/keycloak.js"></script> 
     <script>
         var keycloak;
 
@@ -460,7 +460,7 @@
 
             for(let i = 0; i < length; i++)
             {
-                if(document.getElementById("additional-info_" + (i + 1)).querySelector("#active_box").checked = true)
+                if(document.getElementById("additional-info_" + (i + 1)).querySelector("#active_box").checked == true)
                 {
                     show_potential(i + 1);
                 }    

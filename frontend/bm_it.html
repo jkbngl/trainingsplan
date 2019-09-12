@@ -178,7 +178,7 @@
         </div>
 
         <p style="margin-left: 10%; color:#00ad5f; font-family: Century Gothic; font-size: 125%">Show N Datapoints:</p>
-        <input type="number" id="n-datapoints-to-show" onkeydown="set_datapoints_chart(this)" class="input_bm" placeholder="&nbsp; N Datapoints ..." style="text-align:center; background: transparent; border-radius: 10px; border: 2px solid #00ad5f; color:#00ad5f; width: 80%; font-size: 18px; font-family: Century Gothic; height: 5%; width:80%; margin-left: 10%; margin-top: 2%"> 
+        <input type="number" id="n-datapoints-to-show" onkeydown="set_datapoints_chart(this.value, false)" class="input_bm" placeholder="&nbsp; N Datapoints ..." style="text-align:center; background: transparent; border-radius: 10px; border: 2px solid #00ad5f; color:#00ad5f; width: 80%; font-size: 18px; font-family: Century Gothic; height: 5%; width:80%; margin-left: 10%; margin-top: 2%"> 
         
         
         <button onclick="keycloak.logout('/trainingsplanorwhateveritdoesntworkanyway'); kc.logout()"class="button" style="top: 10px; width:80%; margin-left: 10%; margin-top: 20%"><i class="fas fa-sign-out-alt"></i> Logout</button>
@@ -450,12 +450,16 @@
         if(event.key === 'Enter' || force)
         {
             // as it is a string + the chart starts at 0 not 1
-            let val = parseInt(data.value) - 1;
+            let val = parseInt(data) - 1;
             let length = get_amount_inputs();
             
+            // already done in on_save funx
+            // save_potential_values(); 
+            
             // reload the whole page, with only 
-            save_potential_values();
-            on_save(val + 1);
+            on_save(false);
+
+
             clear_potential(true);
 
             for(let i = 0; i < length; i++)
@@ -465,6 +469,8 @@
                     show_potential(i + 1);
                 }    
             }
+
+            set_cookie("n_datapoints", 90);
         }
     }
 
@@ -600,7 +606,7 @@
     }
 
     // #67 Newly added func
-    function on_save()
+    function on_save(reget_datapoint_cookie)
     {
         var num_input = get_amount_inputs();
 
@@ -610,7 +616,7 @@
 
         clear_chart();  
 
-        build_page();
+        build_page(reget_datapoint_cookie);
     }
 
     // #67 Newly added func
@@ -1135,7 +1141,11 @@
             {
                 document.cookie = cname + "=advanced_interface;" + expires + ";path=/";
             }
-        }        
+        }
+        else if(cname == 'n_datapoints')
+        {
+            document.cookie = cname + "='" + document.getElementById("n-datapoints-to-show").value +"';" + expires + ";path=/";
+        }      
     }
 
     // #67  newly added func
@@ -1155,15 +1165,12 @@
 
         var decodedCookie = decodeURIComponent(document.cookie);
         var ca = decodedCookie.split(';');
-        
+
         for(var i = 0; i < ca.length; i++) 
         {
             var c = ca[i];
 
-            while (c.charAt(0) == ' ') 
-            {
-                c = c.substring(1);
-            }
+            c = c.trim();
 
             if (c.indexOf(name) == 0) 
             {
@@ -1212,6 +1219,12 @@
                     clear_chart()
                     update_bm_chart(get_active_bms(true));
                     set_labels();
+                }
+                else if(cname == 'n_datapoints')
+                {
+                    parsed_val = parseInt(cookie_val.substring(1, cookie_val.length-1));
+                    document.getElementById("n-datapoints-to-show").value = parsed_val;
+                    set_datapoints_chart(parsed_val, true);
                 }
             }
         }          
@@ -1313,7 +1326,7 @@
     }
 
     // #67 Newly added func
-    function build_page()
+    function build_page(reget_datapoint_cookie)
     {
         // empty String bms which will in case there are any contain the json object with the bms in it
         var bms = '';
@@ -1354,8 +1367,9 @@
         get_cookie('interface_type');
         get_cookie('chart_type');
 
-        
-
+        if(reget_datapoint_cookie != false)
+            get_cookie('n_datapoints');
+           
         chart.update()
     }
 

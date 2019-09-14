@@ -10,6 +10,21 @@ select {
 }
 
 /*
+input[type=text] {
+  border: 0;
+  width: calc(100% - 2px);
+  margin-left:1px;
+  box-shadow: -8px 10px 0px -7px #2f3331, 8px 10px 0px -7px #2f3331;
+  -webkit-transition: box-shadow 0.3s;
+  transition: box-shadow 0.3s;
+}
+
+input[type=text]:focus {
+  outline: none;
+  box-shadow: -8px 10px 0px -7px #058147, 8px 10px 0px -7px #058147;
+}
+*/
+/*
 P.S: if you like my content maybe you will become a donator and donate some money? That helps me to create new awesome materials. https://www.paypal.me/melnik909
 */
 
@@ -23,6 +38,33 @@ melnik909@ya.ru
 LEVEL 1. CORE STYLES
 =====
 */
+
+.tooltip {
+  position: relative;
+  display: inline-block;
+  border-bottom: 1px dotted black;
+}
+
+.tooltip .tooltiptext {
+  visibility: hidden;
+  width: 120px;
+  background-color: black;
+  color: #fff;
+  text-align: center;
+  border-radius: 6px;
+  padding: 5px 0;
+  
+  /* Position the tooltip */
+  position: absolute;
+  z-index: 1;
+  top: -5px;
+  left: 105%;
+}
+
+.tooltip:hover .tooltiptext {
+  visibility: visible;
+}
+
 .mobile_p p.mobile_p,  p.mobile_p {
   font-size: 30px;
 }
@@ -391,7 +433,7 @@ LEVEL 3. SETTINGS
 	font-size: 18px;
 	font-weight: normal;
 	position: absolute;
-	pointer-events: none;
+	/*pointer-events: none;*/
 	left: 0;
 	top: 10px;
 	transition: 0.2s ease all;
@@ -455,7 +497,7 @@ LEVEL 3. SETTINGS
 	width: 100px;
 	top: 25%;
 	left: 0;
-	pointer-events: none;
+	/*pointer-events: none;*/
   opacity: 0.5;
   color: #00ad5f;
 
@@ -476,7 +518,7 @@ select option {
 	font-size: 18px;
 	font-weight: normal;
 	position: absolute;
-	pointer-events: none;
+	/*pointer-events: none;*/
 	left: 0;
 	top: 10px;
 	transition: 0.2s ease all;

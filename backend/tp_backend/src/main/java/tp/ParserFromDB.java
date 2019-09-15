@@ -112,22 +112,22 @@ public class ParserFromDB
         if(!planIDgiven)
         {
             String query = "select  e.day_fk "
-                    + ", e.id"
-                    + ", e.name"
-                    + ", e.weight"
-                    + ", e.reps"
-                    + ", e.sets"
-                    + ", e.max_rep"
-                    + ", e.pausetime "
-                    + ", e.note "
-                    + "from tp_user u "
-                    + "join tp_plan p      on u.id = p.userid_fk "
-                    + "join tp_day d       on p.id = d.plan_fk "
-                    + "join tp_exercise e  on d.id = e.day_fk "
-                    + "where username = ?"
-                    + "and p.id = (?)"
-                    + "and deprecated = 0"
-                    + "order by day_fk";
+                         + ", e.id"
+                         + ", e.name"
+                         + ", e.weight"
+                         + ", e.reps"
+                         + ", e.sets"
+                         + ", e.max_rep"
+                         + ", e.pausetime "
+                         + ", e.note "
+                         + "from tp_user u "
+                         + "join tp_plan p      on u.id = p.userid_fk "
+                         + "join tp_day d       on p.id = d.plan_fk "
+                         + "join tp_exercise e  on d.id = e.day_fk "
+                         + "where username = ?"
+                         + "and p.id = (?)"
+                         + "and deprecated = 0"
+                         + "order by day_fk, base_ex";
 
             pstmt = connection.prepareStatement(query);
             pstmt.setString(1, username);
@@ -150,7 +150,7 @@ public class ParserFromDB
                     + "join tp_exercise e  on d.id = e.day_fk "
                     + "where p.id = (?)"
                     + "and deprecated = 0"
-                    + "order by day_fk";
+                    + "order by day_fk, base_ex";
 
             pstmt = connection.prepareStatement(query);
             pstmt.setInt(1, planID);
@@ -607,7 +607,6 @@ public class ParserFromDB
                        "join    tp_tods tod on tod.id = b.tod " +
                        "where   u.username = ? " +
                        "and     base_bm_id > 0" +
-                       // "and     deprecated <  2 " +
                        "and     deprecated " + (activeness == 0 ? " < 2 " : (activeness == 1 ? " > 1 " : " < 99 ")) + // 0 -> active, 1 = deleted, 2 -> all
                        "group by  b.base_bm_id " +
                        "        , b.userid_fk " +

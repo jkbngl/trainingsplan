@@ -9,15 +9,12 @@
            font-size: 35px;
            height: 5vh;
         }
-
         /*.mobile_p p.mobile_p,  p.mobile_p {
            font-size: 30px;
         }*/
-
         .mobile_span span.mobile_span,  span.mobile_span {
            font-size: 30px;
         }
-
         .mobile_label label.mobile_label,  label.mobile_label {
            font-size: 30px;
         }
@@ -34,21 +31,16 @@
     <script src="http://jakob.ml/auth/js/keycloak.js"></script> 
     <script>
         var keycloak;
-
         function display_error(type, title, message)
         {
             var footer = '<hr style="height: 2px; background-color:#666;"><br>';
-
             console.log(message);
-
             if(message.includes('backend') && message.includes('unavailable') || message.includes('Authentification'))
                 footer += message + '<br><br><a href onclick="location.reload()">Reload the Page!</button><br>';
-
             if(type == 'error')
                 footer += '<a href="https://github.com/jkbngl/trainingsplan/issues/new">If you think this is not correct please open a github issue!</a>'
                 
             footer += '<br><br><hr style="height: 2px; background-color:#666;"><br>';
-
             Swal.fire({
               type: type,
               customClass: mobile_swal,
@@ -56,7 +48,6 @@
               html: footer
             })
         }
-
         document.addEventListener('DOMContentLoaded',function(){
             try
             {
@@ -69,11 +60,8 @@
                       swal.showLoading();
                     }
                 });
-
                 keycloak = Keycloak();
-
                 keycloak.init({ onLoad: 'login-required' })
-
                 keycloak.init().success(
                     function(authenticated) 
                     {
@@ -82,7 +70,6 @@
                 ).error(function() {
                     // alert('failed to initialize');
                 });
-
                 keycloak.onAuthSuccess = function() 
                 { 
                     swal.close();
@@ -93,14 +80,12 @@
                     check_roles(keycloak.realmAccess.roles);
                 
                     document.getElementById("username").innerHTML = username + ' <i class="fas fa-sign-out-alt"></i>';
-
                     build_page();                                        
                 
                     if( isMobile.any() ) 
                         customize_mobile();
                     else
                         ;
-
                     // Initialisation on startup
                     setTimeout(function (){
                         chart.update();
@@ -113,7 +98,6 @@
                 window.stop() 
             }
         });
-
         function getusername()
         {
             return username;
@@ -207,13 +191,10 @@
 <script>
     // Object to store data for all actively displayed data in chart
     var active_bm = [];
-
     // global variable to handle the creation and destruction of chart easily
     var chart;
-
     // Here the class is set for the swal to use, depending on mobile or desktop, desktop leave empty - mobile is set in customize_mobile
     var mobile_swal = '';           
-
     // masterdata
     var uoms = [];
     var tods = [];
@@ -221,19 +202,15 @@
     var potential_datasets = [];
     var history_bms;
     var potential_values = [];
-
     // #67 Newly added func
     function get_amount_inputs()
     {
         // Get the main_div with all the stats inside
         var main_div = document.getElementById('container_bm');
-
         // Divided by 4 because there are additionally 4 divs in the main divs
         var amount_stats = main_div.getElementsByTagName('div').length;
-
         return amount_stats / 4;
     }
-
     // #67 Newly added func
     function save()
     {
@@ -245,7 +222,6 @@
         var uom_filled = false;
         var name_filled = false;
         var values_are_numeric = false;
-
         for(let i = 1; i <= amount_stats; i++)
         {
             jsonData.stats.push({ 
@@ -258,8 +234,6 @@
                 "tod"      : document.getElementById("additional-info_" + i).querySelector("#select_2").options[document.getElementById("additional-info_" + i).querySelector("#select_2").selectedIndex].value
             });
         }
-
-
         for(let i = 0; i < amount_stats; i++)
         {
             if(jsonData.stats[i].tod.length > 0)
@@ -270,7 +244,6 @@
             {
                 tod_filled = false;
             }
-
             if(jsonData.stats[i].uom.length > 0)
             {
                 uom_filled = true;
@@ -279,7 +252,6 @@
             {
                 uom_filled = false;
             }
-
             if(jsonData.stats[i].name.length > 0)
             {
                 name_filled = true;
@@ -297,18 +269,15 @@
             {
                 values_are_numeric = true;
             }
-
             // If one values has an error - STOP
             if(!values_are_numeric || !tod_filled || !uom_filled || !name_filled)
                 break;
         }
-
         //console.log(values_are_numeric + " | " + uom_filled + " | " + tod_filled + " | " + name_filled)
         
         if(document.getElementById("simplify-ui").checked)
         {
             // console.log("FULL SIMPLE INTERFACE active");
-
             if(values_are_numeric && name_filled)
             {
                 // values have to be numeric as well here
@@ -321,13 +290,11 @@
                     if(jsonData.stats[i].uom <= 0)
                         jsonData.stats[i].uom = 'cm'
                 }
-
                 send_bm_data_to_backend(jsonData);
             }
             else
             {
                 console.log("ERROR");
-
                 if(!name_filled)
                     display_error('error', 'Enter a name for the bm!', 'dont know');
                 else if(!values_are_numeric)
@@ -337,7 +304,6 @@
         else if(document.getElementById("tod-checkbox-ui").checked && !document.getElementById("unit-checkbox-ui").checked)
         {
             // console.log("unit grayed out");
-
             if(values_are_numeric && name_filled && tod_filled)
             {
                 // values have to be numeric as well here
@@ -347,14 +313,12 @@
                     if(jsonData.stats[i].uom.length <= 0)
                         jsonData.stats[i].uom = 'cm'; 
                 }
-
                 send_bm_data_to_backend(jsonData);
             }
             else
             {
                 console.log("ERROR");
                 swal.close();
-
                 if(!name_filled && values_are_numeric && tod_filled)
                     display_error('error', 'Enter a name for the bm!', 'dont know');
                 else if(!name_filled && !values_are_numeric && tod_filled)
@@ -374,7 +338,6 @@
         else if(document.getElementById("unit-checkbox-ui").checked && !document.getElementById("tod-checkbox-ui").checked)
         {
             // console.log("tod grayed out");
-
             if(values_are_numeric && name_filled && uom_filled)
             {
                 // values have to be numeric as well here
@@ -384,17 +347,13 @@
                     if(jsonData.stats[i].tod.length <= 0)
                         jsonData.stats[i].tod = 'after waking up'            
                 }
-
                 console.log(jsonData);
-
                 send_bm_data_to_backend(jsonData);
             }
             else
             {
                 console.log("ERROR");
                 swal.close();
-
-
                 // Maybe refactor to the same as in the else clause, with error_string and concatenating, for the user this is better, for the programmer the other one
                 if(!name_filled && values_are_numeric && uom_filled)
                     display_error('error', 'Enter a name for the bm!', 'dont know');
@@ -415,7 +374,6 @@
         else
         {
             // console.log("NO SIMPLE INTERFACE active")
-
             if(uom_filled && tod_filled && values_are_numeric && name_filled)
             {
                 send_bm_data_to_backend(jsonData)
@@ -424,9 +382,7 @@
             {
                 //console.log("ERROR");
                 swal.close();
-
                 var error_string = '';
-
                 if(!uom_filled)
                     error_string += 'please select a unit and ';
                 if(!tod_filled)
@@ -435,11 +391,8 @@
                     error_string += 'palues must be numeric and may not contain letters and ';
                 if(!name_filled)
                     error_string += 'please enter a name for the bm and ';
-
                 error_string = error_string.charAt(0).toUpperCase() + error_string.slice(1);
-
                 display_error('error', error_string.substring(0, error_string.length - 5) + "!", 'dont know');
-
             }
         }
     }
@@ -458,10 +411,7 @@
             
             // reload the whole page, with only 
             on_save(false);
-
-
             clear_potential(true);
-
             for(let i = 0; i < length; i++)
             {
                 if(document.getElementById("additional-info_" + (i + 1)).querySelector("#active_box").checked == true)
@@ -469,16 +419,13 @@
                     show_potential(i + 1);
                 }    
             }
-
             set_cookie("n_datapoints", 90);
         }
     }
-
     // #67 Newly added func
     function save_potential_values()
     {
         let length = get_amount_inputs();
-
         // clear in case a new bm was added
         potential_values = [];
         
@@ -487,7 +434,6 @@
             potential_values.push(document.getElementById("additional-info_" + i).querySelector("#value_value").value);
         }
     }
-
     // #67 Newly added func
     function re_add_potential_values()
     {
@@ -500,8 +446,6 @@
             
         }
     }
-
-
     // #67 Newly added func
     function send_bm_data_to_backend(jsonData)
     {
@@ -515,7 +459,6 @@
             var string = JSON.stringify(jsonData);
             
             xhr.send(string);
-
             checkIfDataIsLoadedIntoDB(xhr);
         }
         catch(err)
@@ -524,7 +467,6 @@
             display_error('error', 'Oops...', 'The backend seems to be unavailable!')
         }
     }
-
     // #67 Newly added func
     function checkIfDataIsLoadedIntoDB(xhr)
     {
@@ -537,12 +479,10 @@
             swal.showLoading();
           }
         });
-
         var counter = 0;
         var check = function(){
             if(xhr.status == 200){
                 console.log("POST worked, data send, reload page with new data: " + xhr.status + " - " + xhr.responseText);
-
                 if(xhr.responseText == "ok")
                 {
                     swal.fire({
@@ -593,7 +533,6 @@
                       }
                     });
                 }
-
                 //console.log("waiting");
                 counter++;
                 setTimeout(check, 100); // check again in a second
@@ -604,21 +543,15 @@
         if(counter < 100)
             check();
     }
-
     // #67 Newly added func
     function on_save(reget_datapoint_cookie)
     {
         var num_input = get_amount_inputs();
-
         save_potential_values();
-
         document.getElementById("container_bm").innerHTML = '';
-
         clear_chart();  
-
         build_page(reget_datapoint_cookie);
     }
-
     // #67 Newly added func
     function set_labels()
     {
@@ -639,7 +572,6 @@
         var local_labels_numbers = [];
         // depends on bar and line chart
         var is_chart_active;
-
         for(var i = 0; i < all_bms; i++)
         {
             if(chart.config.type == 'line')
@@ -657,38 +589,30 @@
             {
                 active_bm++;
                 name_active_bm = chart.data.datasets[i].label;
-
                 if(chart.config.type == 'line')
                     index_active_bm = chart.data.datasets[i]['_meta'][meta_data_id].dataset._datasetIndex;
                 else 
                     index_active_bm = i;
-
                 local_labels_numbers.push(chart.data.datasets[i].data.length)
             } 
         }
-
         if(active_bm == 1)
         {
             historic_data = JSON.parse(rest_get_historical_bm(document.getElementById("additional-info_" + (index_active_bm + 1)).getAttribute("base_bm"), true));
-
             for(var i = 0; i < historic_data.length; i++)
             {
                 var date = new Date(historic_data[i].created).toUTCString()
                 date = date.split(' ').slice(1, 4).join(' ')
-
                 new_labels.push(date);
-
                 if(i == historic_data.length - 1)
                     new_labels.push("potential");
             }
-
             if(document.getElementById('n-datapoints-to-show').value.length > 0)
             {
                 let val = parseInt(document.getElementById('n-datapoints-to-show').value) + 1;
                 
                 new_labels = new_labels.slice(-(val));
             }
-
             chart.data.labels = new_labels;
         }
         else
@@ -698,31 +622,23 @@
                     
             for(var k = 0; k < max_num; k++)
                 local_labels_numbers.push(k);
-
             local_labels_numbers.push("potential");
-
             chart.data.labels = local_labels_numbers;
         }
-
         chart.update();
     }
-
     // #67 newly added func
     function set_bm_as_deactivated_as_callback_from_chart(event, bm_name)
     {
         var meta_data_id = chart.getDatasetMeta(bm_name.datasetIndex).controller.chart.id;
-
         // At first its undefined so set it as defined at the beginnning
         if(chart.data.datasets[bm_name.datasetIndex]['_meta'][meta_data_id].hidden === false)
             chart.data.datasets[bm_name.datasetIndex]['_meta'][meta_data_id].hidden = false;   // At first it is always active, so set it to hidden true, which is active
         else
             ;
-
         if(chart.data.datasets[bm_name.datasetIndex]['_meta'][meta_data_id].hidden)
         {
             document.getElementById("additional-info_" + (bm_name.datasetIndex + 1)).querySelector("#active_box").checked = true;
-
-
             if(chart.config.type == 'line')
             {
                 chart.data.datasets[bm_name.datasetIndex]['_meta'][meta_data_id].hidden = false;
@@ -735,13 +651,11 @@
                 meta.data[0].hidden = !meta.data[0].hidden;
                 show_potential(bm_name.datasetIndex + 1);
             }
-
         }
         else if(!chart.data.datasets[bm_name.datasetIndex]['_meta'][meta_data_id].hidden)
         {
             // If the chart goes from the active state into hidden state
             clear_potential(false, chart.data.datasets[bm_name.datasetIndex].label);
-
             if(chart.config.type == 'line')
             {
                 chart.data.datasets[bm_name.datasetIndex]['_meta'][meta_data_id].hidden = true;
@@ -752,14 +666,10 @@
                 var meta = chart.getDatasetMeta(bm_name.datasetIndex);
                 meta.data[0].hidden = !meta.data[0].hidden;
             }
-
             document.getElementById("additional-info_" + (bm_name.datasetIndex + 1)).querySelector("#active_box").checked = false;
         }
-
         set_labels();
-
         chart.update();
-
         set_cookie('active', 90);
     }
     
@@ -788,26 +698,21 @@
             alert("Nothing to export!");
         }
     }
-
     function get_date()
     {
         var today = new Date();
         var dd = String(today.getDate()).padStart(2, '0');
         var mm = String(today.getMonth() + 1).padStart(2, '0'); //January is 0!
         var yyyy = today.getFullYear();
-
         return mm + '_' + dd + '_' + yyyy;
     }
-
     // #67 Newly added func
     function append_combo(div)
     {
         var json_uoms = rest_uoms();
         var json_tods = rest_tods();
-
         var s_1 = document.getElementById(div).querySelector("#select_1");
         var s_2 = document.getElementById(div).querySelector("#select_2");
-
         
         for(var i = 0; i < json_uoms.length; i++) 
         {
@@ -817,7 +722,6 @@
             opt.id = 'option_element';
             s_1.appendChild(opt);
         }
-
         for(var i = 0; i < json_tods.length; i++) 
         {            
             var opt = document.createElement('option');
@@ -839,12 +743,10 @@
                 var request = new XMLHttpRequest();
                 var url = 'http://jakob.ml:8080/tpbackend_1-1.0-SNAPSHOT/api/trainingsplan/get_uoms/';
                 var xmlHttp = new XMLHttpRequest();
-
                 xmlHttp.open( "GET", url, false ); // false for synchronous request
                 xmlHttp.send( null );
                 uoms = xmlHttp.responseText;
                 uoms = JSON.parse(uoms);
-
                 return uoms;
             }
             catch(err)
@@ -858,7 +760,6 @@
             return uoms;
         }
     }
-
     // #67 Newly added func
     function rest_tods()
     {
@@ -869,12 +770,10 @@
             {
                 var url = 'http://jakob.ml:8080/tpbackend_1-1.0-SNAPSHOT/api/trainingsplan/get_tods/';
                 var xmlHttp = new XMLHttpRequest();
-
                 xmlHttp.open( "GET", url, false ); // false for synchronous request
                 xmlHttp.send( null );
                 tods = xmlHttp.responseText;
                 tods = JSON.parse(tods);
-
                 return tods;
             }
             catch(err)
@@ -888,7 +787,6 @@
             return tods;
         }
     }
-
     // #67 Newly added func
     function add_html_input(via_button, id, active_or_not, name, value, select_uom, select_tod, note, base_bm)
     {
@@ -900,7 +798,6 @@
         
         if(via_button)
             id = "defaultvaluetoignore";
-
         container.innerHTML = '<div id="additional-info_' + num_input + '" value="' + id + '" base_bm="' + base_bm + '" style="width: 100%; margin-bottom: 3%; display: flex; flex-direction: row; flex-wrap: nowrap;justify-content: space-between;"> \
             <div id="check-2" class="page__toggle"  style="margin-top: 10px; margin: auto;  margin-left:1%; z-index:1;"> \
                 <label class="toggle"> \
@@ -939,30 +836,22 @@
             <button class="button" id="visualize_progress_button" onclick="show_progress_dialog(' + num_input + ')" style="margin-right: 1%"><i class="fas fa-info-circle"></i></button> \
             <button class="button" id="delete_button" onclick="delete_and_reoder(' + num_input + ')" style="margin-right: 1%"><i class="fas fa-trash"></i></button> \
         </div>';
-
         document.getElementById("container_bm").appendChild(container);
-
         const node = document.getElementById("div_to_delete");
         node.replaceWith(...node.childNodes);
-
         append_combo("additional-info_" + num_input);
-
         if(!via_button)
         {
             document.getElementById("additional-info_" + num_input).querySelector("#value_name").value = name;
             document.getElementById("additional-info_" + num_input).querySelector("#value_name").disabled = true;
             document.getElementById("additional-info_" + num_input).querySelector("#value_name").style.color = "gray";
-
             document.getElementById("additional-info_" + num_input).querySelector("#value_value").value = value;
             document.getElementById("additional-info_" + num_input).querySelector("#note").value = note;
-
             document.getElementById("additional-info_" + num_input).querySelector("#select_1").value = select_uom;
             //document.getElementById("additional-info_" + num_input).querySelector("#select_1").disabled = true;
-
             document.getElementById("additional-info_" + num_input).querySelector("#select_2").value = select_tod;
             //document.getElementById("additional-info_" + num_input).querySelector("#select_2").disabled = true;
         }
-
         if(document.getElementById("simplify-ui").checked)
         {
             document.getElementById("additional-info_" + num_input).querySelector("#select-options_nr-1").style.display = "none";
@@ -977,16 +866,13 @@
             document.getElementById("additional-info_" + num_input).querySelector("#select-options_nr-1").style.display = "none";
         }
     }
-
     Array.prototype.equals = function (array) {
         // if the other array is a falsy value, return
         if (!array)
             return false;
-
         // compare lengths - can save a lot of time 
         if (this.length != array.length)
             return false;
-
         for (var i = 0, l=this.length; i < l; i++) {
             // Check if we have nested arrays
             if (this[i] instanceof Array && array[i] instanceof Array) {
@@ -999,10 +885,8 @@
                 return false;   
             }           
         }       
-
         return true;
     }
-
     // #67 newly added func
     function show_potential(num_bm)
     {
@@ -1018,21 +902,17 @@
         var same_potential_was_already_added = false;
         // label which the potential will have
         var potential_label = document.getElementById('additional-info_' + num_bm).querySelector("#value_name").value;
-
         var t0 = performance.now();
         i = num_bm - 1;
-
         
         // Has to be done inside loop because of i, which needs to color of the related bm
         if(chart.config.type == 'line')
             background_attribute = border_color_array[i]
         else if(chart.config.type == 'bar')
             background_attribute = pattern.draw('zigzag', border_color_array[i])
-
         // get the last value of the bm, the current one
         var bm = JSON.parse(active_bms[i])
         num_last_elem = bm.length - 1;
-
         // If the value was changed and the bm is active
         if(bm[num_last_elem].value != document.getElementById("additional-info_" + (i + 1)).querySelector("#value_value").value && document.getElementById("additional-info_" + (i + 1)).querySelector("#active_box").checked)
         {
@@ -1042,15 +922,12 @@
             else if(chart.config.type == 'bar')
                 for(var j = 0; j < num_last_elem + 1; j++)
                     current_active_values.push(0);
-
             if(document.getElementById('n-datapoints-to-show').value.length > 0)
             {
                 let val = document.getElementById('n-datapoints-to-show').value;                
                 current_active_values = current_active_values.slice(-(val));
             }  
-
             current_active_values.push(document.getElementById("additional-info_" + (i + 1)).querySelector("#value_value").value);
-
             for(var k = 0; k < chart.data.datasets.length; k++)
             {
                 if(chart.data.datasets[k].label.startsWith("potential for " + potential_label))
@@ -1062,11 +939,9 @@
                     }
                     else
                     {
-
                     }
                 }
             }
-
             if(!same_potential_was_already_added)
             {
                 chart.data.datasets.push({
@@ -1078,7 +953,6 @@
                     fill: false
                 });
             }
-
             // Set the animation duration to 0 to not show that a new dataset has been added to chart 
             var old_animation_duration = chart.options.animation.duration;
             chart.options.animation.duration = 0;
@@ -1089,27 +963,21 @@
             // Clean at the end
             current_active_values = [];
         }
-
         var t1 = performance.now();
         if((t1 - t0) > 100)
             console.log("Calculating potential took: " + (t1 - t0) + " milliseconds.")
-
     }
-
     // #67  newly added func
     function set_cookie(cname, exdays) 
     {
         var d = new Date();
         d.setTime(d.getTime() + (exdays*24*60*60*1000));
         var expires = "expires=" + d.toGMTString();
-
         // Dont comment in, only in case all coockies should be deleted, for testing purpose - should never be commented in in production
             //delete_all_cookies();
-
         if(cname == 'active')
         {
             var amount_days = get_amount_inputs();
-
             for(var i = 0; i < amount_days; i++)
             {
                 document.cookie = cname + "_"+ i + "=" + document.getElementById("additional-info_" + (i + 1)).querySelector("#active_box").checked + ";" + expires + ";path=/";
@@ -1147,13 +1015,11 @@
             document.cookie = cname + "='" + document.getElementById("n-datapoints-to-show").value +"';" + expires + ";path=/";
         }      
     }
-
     // #67  newly added func
     function delete_all_cookies() 
     {
         document.cookie.split(";").forEach(function(c) { document.cookie = c.replace(/^ +/, "").replace(/=.*/, "=;expires=" + new Date().toUTCString() + ";path=/"); });
     }
-
     // #67 changed func
     function get_cookie(cname, index) 
     {
@@ -1162,20 +1028,15 @@
             var name = cname + index + "=";
         else
             var name = cname + "=";
-
         var decodedCookie = decodeURIComponent(document.cookie);
         var ca = decodedCookie.split(';');
-
         for(var i = 0; i < ca.length; i++) 
         {
             var c = ca[i];
-
             c = c.trim();
-
             if (c.indexOf(name) == 0) 
             {
                 var cookie_val = c.substring(name.length, c.length);
-
                 if(cname == 'active_')
                 {
                     // Set the active cookies
@@ -1204,7 +1065,6 @@
                         document.getElementById("tod-checkbox-ui").checked = true;
                         document.getElementById("unit-checkbox-ui").checked = true;
                     }
-
                 }
                 else if(cname == 'chart_type')
                 {
@@ -1214,7 +1074,6 @@
                         document.getElementById("chart-type").checked = true;
                         chart_type = 'bar';
                     }    
-
                     // Then update the chart
                     clear_chart()
                     update_bm_chart(get_active_bms(true));
@@ -1229,12 +1088,10 @@
             }
         }          
     }
-
     // #67  newly added func
     function set_dataset_and_button(index, bool)
     {
         var meta_data_id = chart.getDatasetMeta(index).controller.chart.id;
-
         // String does not work so I need to parse it to a javascript object
         var myBool = JSON.parse(bool);
         
@@ -1243,30 +1100,24 @@
         
         var meta = chart.getDatasetMeta(index);
         meta.data[0].hidden = !myBool;
-
         // In order that it is displayed correctly in the chart I need to update the chart so that it is also visible not only in the background
         chart.update();
     }
-
     // #67  newly added func
     function toggle_chart_datasets()
     {
         var length = get_amount_inputs();
-
         for(var i = 0; i < length; i++)
         {
             var meta_data_id = chart.getDatasetMeta(i).controller.chart.id;
-
             if(!document.getElementById("additional-info_" + (i + 1)).querySelector("#active_box").checked)
             {
                 chart.data.datasets[i]['_meta'][meta_data_id].hidden = true;
-
                 if(chart.config.type == 'bar')
                 {
                     var meta = chart.getDatasetMeta(i);
                     meta.data[0].hidden = true;
                 }
-
                 // clear the potential of the bm as well and not only the active - the ones which are not active
                 clear_potential(false, chart.data.datasets[i].label);
             }
@@ -1277,22 +1128,17 @@
                     var meta = chart.getDatasetMeta(i);
                     meta.data[0].hidden = false;
                 }
-
                 chart.data.datasets[i]['_meta'][meta_data_id].hidden = false;
             }
-
             set_labels();            
-
             chart.update();
         }
     }
-
     // 67 newly added function
     function delete_and_reoder(num_to_delete)
     {
         var current_active_amount = get_amount_inputs();
         document.getElementById("additional-info_" + num_to_delete).remove();
-
         // If the last one was deleted nothing needs to be changed
         if(num_to_delete == current_active_amount)
         {
@@ -1324,15 +1170,12 @@
         }
     
     }
-
     // #67 Newly added func
     function build_page(reget_datapoint_cookie)
     {
         // empty String bms which will in case there are any contain the json object with the bms in it
         var bms = '';
-
         bms = rest_get_bms();
-
         if(bms.length > 0)
         {
             // Load his bms from the backend into the frontend
@@ -1346,38 +1189,29 @@
             // Add one single new when the user has none yet
             add_html_input(true);
         }
-
         re_add_potential_values();
-
         active_bm = [];
-
         active_bm = get_active_bms(true);
-
         update_bm_chart(active_bm);
-
         // TODO load from cookies if active or not
         var length = get_amount_inputs();
         
         for(var i = 0; i < length; i++)
             get_cookie("active_", i);
-
         set_labels();
         set_selects_disabled();
         
         get_cookie('interface_type');
         get_cookie('chart_type');
-
         if(reget_datapoint_cookie != false)
             get_cookie('n_datapoints');
            
         chart.update()
     }
-
     // #67 newly added func
     function set_selects_disabled()
     {
         var length = get_amount_inputs();
-
         if(length == 1 && document.getElementById("additional-info_" + 1).querySelector("#value_name").value.length == 0)
         {
             ;
@@ -1392,15 +1226,12 @@
         }
         
     }
-
     // #67 newly added func
     function get_active_bms(force)
     {
         let num = document.getElementById("n-datapoints-to-show").value;
-
         var amount_bms = get_amount_inputs();
         active_bm = [];
-
         for(var i = 1; i <= amount_bms; i++)
         {
             if(num > 0)
@@ -1412,12 +1243,10 @@
             // console.log(JSON.parse(active_bm[i - 1]).slice(-10));
             //active_bm[i - 1] = JSON.parse(active_bm[i - 1]).slice(-10);
         }
-
         //console.log(active_bm);
         
         return active_bm;
     }
-
     // #67 Newly added func
     function rest_get_bms()
     {
@@ -1433,7 +1262,6 @@
             bms = xmlHttp.responseText;
             
             bms = JSON.parse(bms);
-
             return bms;
         }
         catch(err)
@@ -1442,7 +1270,6 @@
             display_error('error', 'Oops...', 'The backend seems to be unavailable!')
         }
     }
-
     // #67 newly added func
     function show_progress_dialog(num_bm)
     {
@@ -1450,14 +1277,11 @@
         var bm_id = document.getElementById("additional-info_" + num_bm).getAttribute("base_bm");
         var json_history_bm = JSON.parse(rest_get_historical_bm(bm_id), false);
         var bm_name = document.getElementById("additional-info_" + num_bm).querySelector("#value_name").value
-
-
         Swal.fire({
             html:  parse_base_bm(json_history_bm, bm_name)
           , customClass: mobile_swal
         });
     }
-
     // #67 newly added func
     function parse_base_bm(json_bm, bm_name)
     {
@@ -1465,9 +1289,7 @@
         let to_dispay = "<h2>" + bm_name.toUpperCase() + " [" + json_bm[0].uom + "]" + " - " + json_bm[0].tod + "</h2><br><br>";
         let n_datapoints_to_show = document.getElementById("n-datapoints-to-show").value > 0 ? document.getElementById("n-datapoints-to-show").value : Infinity;
         const opacity_v = .5;
-
         console.log(n_datapoints_to_show)
-
         for(let i = 0; i < json_bm.length; i++)
         {
             
@@ -1476,7 +1298,6 @@
                 to_dispay += (i + 1) + ". Entry on: " + date.split(' ').slice(1, 4).join(' ') + "<br>";
             else
                 to_dispay += '<font style="opacity: ' + opacity_v + '" color="green">' + (i + 1) + ". Entry on: " + date.split(' ').slice(1, 4).join(' ') + "<br>"+ "</font>";
-
             if(i > 0)
             {
                 if(json_bm[i].value > json_bm[i - 1].value)
@@ -1514,7 +1335,6 @@
         
         return to_dispay;
     }
-
     // #67 newly added func
     function clear_potential(full, bm_id)
     {
@@ -1533,10 +1353,8 @@
                 return (obj.label != 'potential for ' + bm_id); 
             });
         }
-
         chart.update();   
     }
-
     // #67 Newly added func
     function rest_get_historical_bm(bm_id, force)
     {
@@ -1554,11 +1372,9 @@
                 {
                     var url = 'http://jakob.ml:8080/tpbackend_1-1.0-SNAPSHOT/api/trainingsplan/get_historical_bm_values/';
                     var xmlHttp = new XMLHttpRequest();
-
                     xmlHttp.open( "GET", url + getusername() + "/" + bm_id, false ); // false for synchronous request
                     xmlHttp.send( null );
                     history_bms = xmlHttp.responseText;
-
                     return history_bms;
                 }
                 catch(err)
@@ -1573,14 +1389,12 @@
             }
         }
     }
-
     // #67 changed function
     function clear_chart()
     {
         // store the potentials before clearing the dataset
         let length = chart.data.datasets.length;
         potential_datasets = [];
-
         for(let i = 0; i < length; i++)
         {
             if(chart.data.datasets[i].label.startsWith("potential for"))
@@ -1588,19 +1402,15 @@
                 potential_datasets.push([chart.data.datasets[i],  chart.data.datasets[i]])
             }
         }
-
         chart.reset();
         chart.clear();
         chart.destroy();
-
         if(document.getElementById("chart-type").checked)
             chart = create_chart("bar");
         else
             chart = create_chart('line');
-
         return chart;
     }
-
     // #67 Newly added func
     function update_bm_chart(bms)
     {
@@ -1608,35 +1418,28 @@
             chart = create_chart("bar");
         else
             chart = create_chart("line");
-
         var values = [];
         var bm_name = '';
         // If one ex active show dates of active
         var local_labels_date = [];
         // if multiple ex active show amount of datapoints
         var local_labels_numbers = [];
-
         for(var i = 0; i < bms.length; i++)
         {
             parsed_bm = JSON.parse(bms[i]);
-
             for(var j = 0; j < parsed_bm.length; j++)
             {
                 values[j] = parsed_bm[j].value;                
-
                 dateString = new Date(parsed_bm[j].created).toUTCString();
-
                 // Once
                 if(j == 0)
                 {
                     bm_name = parsed_bm[j].value_name;
                     bm_uom = parsed_bm[j].uom;
                     bm_tod = parsed_bm[j].tod;
-
                     bm_legend_name = bm_name + " [" + bm_uom + "]" + " - " + bm_tod;
                 }
             }
-
             chart.data.datasets.push({
                 data: values,
                 label: bm_legend_name,
@@ -1644,41 +1447,32 @@
                 backgroundColor: border_color_array[i],
                 fill: false
             });
-
             // Needs to be done before as well to make sure that we can read the meta from this dataset
             chart.update();
-
             // If the bm is not active, deacticate it
             if(!document.getElementById("additional-info_" + (i + 1)).querySelector("#active_box").checked)
             {
                 var meta_data_id = chart.getDatasetMeta(i).controller.chart.id;
                 chart.data.datasets[i]['_meta'][meta_data_id].hidden = true;
-
                 var meta = chart.getDatasetMeta(i);
                 meta.data[0].hidden = !meta.data[0].hidden;
-
                 chart.update();
             }            
-
             // Clear for next bm
             values = [];
             bm_name = '';
         }
-
         refill_potential();
         chart.update();
     }
-
     // #67 newly added func
     function set_potentials_with_chart_change()
     {
         var length = chart.data.datasets.length;
-
         for(let i = 0; i < length; i++)
         {
             var label = chart.data.datasets[i].label;
             //console.log(chart.data.datasets[i].data);
-
             if(label.startsWith("potential for"))
             {
                 if(chart.config.type == 'bar')
@@ -1690,20 +1484,16 @@
                 {
                     // Find correct bm, and fill datapoints which are zero with correct datapoints
                     var label_without_potential = label.substring(14);
-
                     for(let j = 0; j < chart.data.datasets.length; j++)
                     {
                         //console.log(label_without_potential)
-
                         if(chart.data.datasets[j].label == label_without_potential)
                         {
                             // set the correct datapoints
                             for(let k = 0; k < chart.data.datasets[i].data.length - 1; k++)
                                 chart.data.datasets[i].data[k] = chart.data.datasets[j].data[k];
-
                             // set the background color because in the bar chart it has this zigged pattern while in line it is just "dashed"
                             chart.data.datasets[i].backgroundColor = chart.data.datasets[j].backgroundColor;
-
                             break;
                         }
                     }
@@ -1713,7 +1503,6 @@
     
         chart.update();
     }
-
     
     function refill_potential()
     {
@@ -1735,7 +1524,6 @@
             else if(chart.config.type == 'bar')
             {
                 background_attribute = pattern.draw('zigzag', potential_datasets[i][0].backgroundColor)
-
                 chart.data.datasets.push({
                     data: potential_datasets[i][0].data,
                     label: potential_datasets[i][0].label,
@@ -1747,13 +1535,11 @@
             }
         }
     }
-
     // #67 changed func
     function check_roles(assigned_roles)
     {
         var roles = [];
         var pos = 0;
-
         for(var i = 0; i < assigned_roles.length; i++)
         {
             if(assigned_roles[i] != 'admin' && assigned_roles[i] != 'offline_access' && assigned_roles[i] != 'uma_authorization' && assigned_roles[i] != 'user')
@@ -1762,11 +1548,8 @@
                 pos++;
             }
         }
-
         var superaccount = (roles.indexOf("friend_account") > -1) || (roles.indexOf("paid_account") > -1);
-
         console.log(roles);
-
         if(!superaccount)
         {
             if(roles.includes("bm_it_access") != true)
@@ -1784,24 +1567,18 @@
             }
         }
     }
-
-
     // #67 changed func
     function restore_bm()
     {
         var deleted_bms = load_deleted_bm();
         var parsed_bms = {};
-
         for(var i = 0; i < deleted_bms.length; i++)
         {
             var date = new Date(deleted_bms[i].created).toUTCString()
             date = date.split(' ').slice(1, 5).join(' ');
-
             var columnName = deleted_bms[i].base_bm_value;
             parsed_bms[columnName] = date + ' - ' +  deleted_bms[i].value_name;
         }
-
-
         const {value: fruit} = Swal.fire({
             title: 'Select a bm',
             input: 'select',
@@ -1814,7 +1591,6 @@
                 return new Promise((resolve) => 
                 {
                     //console.log(value);
-
                     if(!isNaN(parseFloat(value)) && !isNaN(value - 0))
                     {
                         // POST, can not be replaced
@@ -1822,7 +1598,6 @@
                         var url = "http://jakob.ml:8080/tpbackend_1-1.0-SNAPSHOT/api/trainingsplan/restore_bm";
                         xhr.open("POST", url, true);
                         xhr.setRequestHeader("Content-Type", "text/plain");
-
                         xhr.send(value);
                         on_save();
                     }
@@ -1861,7 +1636,6 @@
             display_error('error', 'Oops...', 'The backend seems to be unavailable!')
         }
     }
-
     // #67 still used func
     function does_json_contain_data(object) 
     {
@@ -1872,7 +1646,6 @@
         
         return false; 
     } 
-
     var labels = [1,2,3,4,5,6,7,8];
     var border_color_array = [ "#18AD5F" // green
                              , "#BD000A" // burning red
@@ -1893,13 +1666,11 @@
         
         if(typeof num_datapoints == 'undefined')
             num_datapoints = 50;
-
         var chart = new Chart(document.getElementById("line-chart"), {
             type: chart_type,
             data: {
                 labels: labels,
                 datasets: [
-
                 ],
             },
             options: {
@@ -1958,10 +1729,8 @@
                 maintainAspectRatio: false
             }
         });
-
         return chart;
     }
-
     // #67 still used func
     function openNav()
     {
@@ -2001,21 +1770,17 @@
             return (isMobile.Android() || isMobile.BlackBerry() || isMobile.iOS() || isMobile.Opera() || isMobile.Windows());
         }
     };
-
     // #67 still used func
     function customize_mobile(after_startup)
     {
         mobile_swal = 'mobile_swal';
-
         document.getElementById("headerforbuttons").style.height = "100px";
         chart.options.legend.labels.fontSize = 30;
-
         document.getElementById("div-line-chart").style.marginTop = "5%";
         document.getElementById("clear-potential").innerHTML = "Potential <i style='display: inline-block;' class='fas fa-trash'></i>";
         document.getElementById("clear-potential").style.fontSize = "28px";
         document.getElementById("add-new-input").style.fontSize = "28px";
         document.getElementById("additional-info_1").style.marginTop = "2%";
-
         if(after_startup)
         {
             console.log("customized");
@@ -2026,40 +1791,43 @@
                 document.getElementById("info-progress").remove();
                 */
         }
-
-
         var buttons = document.getElementsByTagName("button");
         for(var i = 0, il = buttons.length; i < il; i++)
         {
             buttons[i].className += " mobile_button";
         }
-
         var spans = document.getElementsByTagName("span");
         for(var i = 0, il = spans.length; i < il; i++)
         {
             spans[i].className += " mobile_span";
         }
-
         var ps = document.getElementsByTagName("p");
         for(var i = 0, il = ps.length; i < il; i++)
         {
             ps[i].className += " mobile_p";
         }
-
         var labels = document.getElementsByTagName("label");
         for(var i = 0, il = labels.length; i < il; i++)
         {
             //labels[i].className += " mobile_label";
         }
+
+        swal.fire({
+            title: "Simplified!",
+            text: "As you are on a mobile device we deactivated the additional inputs, you can reactivate them in the settings.",
+            type: "success",
+            timer: 4000
+        });
+
+        document.getElementById("simplify-ui").checked = true;
+        simplify_ui();
     }
 
     // #67 newly added func
     function reset_settings()
     {
         document.getElementById("simplify-ui").checked = false;
-
         simplify_ui();
-
         document.getElementById("n-datapoints-to-show").value = '';
         set_cookie("n_datapoints", 90);
         set_datapoints_chart("", true);
@@ -2069,23 +1837,18 @@
     function simplify_ui()
     {
         var length = get_amount_inputs();
-
         document.getElementById("tod-checkbox-ui").checked = false;
         document.getElementById("unit-checkbox-ui").checked = false;
-
         if(document.getElementById("simplify-ui").checked)
         {   
-
             for(var i = 1;  i <= length; i++)
             {
                 document.getElementById("additional-info_" + i).querySelector("#select-options_nr-1").style.display = "none";
                 document.getElementById("additional-info_" + i).querySelector("#select-options_nr-2").style.display = "none";
             }
-
             /*       
             // document.getElementById("selects").style.width = "30%";
             document.getElementById("selects").style.marginLeft = "38%";
-
             document.getElementById("checks").style.display = "none";
             document.getElementById("factors").style.display = "none";
             //  document.getElementById("additional-info").style.display = "none";
@@ -2100,7 +1863,6 @@
             }
             /*
             document.getElementById("selects").style.marginLeft = "5%";
-
             document.getElementById("checks").style.display = "inline";
             document.getElementById("factors").style.display = "inline";
             document.getElementById("additional-info").style.display = "inline";
@@ -2109,17 +1871,14 @@
             document.getElementById("unit-checkbox-ui").checked = true;
             */
         }
-
         set_cookie("interface_type", 90);
     }
-
     // #67 changed func
     function simplify_ui_partly()
     {
         var length = get_amount_inputs();
         // As i activate some part of the advanced ui, it is no longer the simplified view, so deactivate it
         document.getElementById("simplify-ui").checked = false;
-
         // If both are checked, use the simplify_ui function to set everything back to normal, but activate the buttons to make it look 
         if(document.getElementById("tod-checkbox-ui").checked && document.getElementById("unit-checkbox-ui").checked)
         {
@@ -2150,17 +1909,14 @@
         else 
         {
             document.getElementById("simplify-ui").checked = false;
-
             for(var i = 1;  i <= length; i++)
             {
                 document.getElementById("additional-info_" + i).querySelector("#select-options_nr-1").style.display = "inline";
                 document.getElementById("additional-info_" + i).querySelector("#select-options_nr-2").style.display = "inline";
             }
         }
-
         var date = new Date();
         date.setTime(date.getTime());
-
         set_cookie("interface_type", 90);
     }
 </script>

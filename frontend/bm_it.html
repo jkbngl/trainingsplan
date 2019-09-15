@@ -1014,6 +1014,10 @@
         {
             document.cookie = cname + "='" + document.getElementById("n-datapoints-to-show").value +"';" + expires + ";path=/";
         }      
+        else if(cname == 'dont_show_warning')
+        {
+            document.cookie = cname + "='" + false +"';" + expires + ";path=/";
+        }
     }
     // #67  newly added func
     function delete_all_cookies() 
@@ -1084,6 +1088,10 @@
                     parsed_val = parseInt(cookie_val.substring(1, cookie_val.length-1));
                     document.getElementById("n-datapoints-to-show").value = parsed_val;
                     set_datapoints_chart(parsed_val, true);
+                }
+                else if(cname == 'dont_show_warning')
+                {
+                    return false;
                 }
             }
         }          
@@ -1813,83 +1821,45 @@
             //labels[i].className += " mobile_label";
         }
 
-        swal.fire({
-           title: 'Simplified!',
-           text: 'As you are on a mobile device we deactivated the additional inputs, you can reactivate them in the settings.',
-           type: 'success',
-            showCancelButton: true,
-            confirmButtonText: "Confirm!",
-            cancelButtonText: "Dont show again!",
-            closeOnConfirm: false,
-            closeOnCancel: false,
-            timer: 4000,
-        }).then(
-            function(dismiss)
-            {
-                if(dismiss.value == true)
+        if(get_cookie("dont_show_warning") != false)
+        {
+            swal.fire({
+               title: 'Simplified!',
+               text: 'As you are on a mobile device we deactivated the additional inputs, you can reactivate them in the settings.',
+               type: 'success',
+                showCancelButton: true,
+                confirmButtonText: "Confirm!",
+                cancelButtonText: "Dont show again!",
+                closeOnConfirm: false,
+                closeOnCancel: false,
+                timer: 4000,
+            }).then(
+                function(dismiss)
                 {
-                    // TODO set new cookie here
-                    console.log("CONFIRM");
-                }
-                else
+                    if(dismiss.value == true)
+                    {
+                        // TODO set new cookie here
+                        console.log("CONFIRM");
+                    }
+                    else
+                    {
+                        // TODO set new cookie here
+                        console.log("CANCEL");
+                        set_cookie("dont_show_warning", 90);
+                    }
+                }, function(dismiss)
                 {
-                    // TODO set new cookie here
-                    console.log("CANCEL");
+                    console.log(dismiss);
+                    if(dismiss == 'cancel'){
+                        console.log("CANCEL");
+                    }
                 }
-            }, function(dismiss)
-            {
-                console.log(dismiss);
-                if(dismiss == 'cancel'){
-                    console.log("CANCEL");
-                }
-            }
-        );
-
-        //const {value: fruit} = swal.fire({
-        //    title: "Simplified!",
-        //    text: "As you are on a mobile device we deactivated the additional inputs, you can reactivate them in the settings.",
-        //    type: "success",
-        //    showCancelButton: true,
-        //    confirmButtonText: "Confirm!",
-        //    cancelButtonText: "Dont show again!",
-        //    closeOnConfirm: false,
-        //    closeOnCancel: false,
-        //    //timer: 4000,
-        //    inputValidator: (value) => {
-        //        
-        //        console.log(value)
-        //        return new Promise((resolve) => 
-        //        {
-        //            //console.log(value);
-        //            if(!isNaN(parseFloat(value)) && !isNaN(value - 0))
-        //            {
-        //                // POST, can not be replaced
-        //                var xhr = new XMLHttpRequest();
-        //                var url = "http://jakob.ml:8080/tpbackend_1-1.0-SNAPSHOT/api/trainingsplan/restore_bm";
-        //                xhr.open("POST", url, true);
-        //                xhr.setRequestHeader("Content-Type", "text/plain");
-        //                xhr.send(value);
-        //                on_save();
-        //            }
-        //            else
-        //            {
-        //                console.log("nothing selected");
-        //            }
-        //            
-        //            // As I am not using the await keyword, close it with this
-        //            swal.close();
-        //        })
-        //    }
-        //});
-
-        //swal.fire({
-        //    title: "Simplified!",
-        //    text: "As you are on a mobile device we deactivated the additional inputs, you can reactivate them in the settings.",
-        //    type: "success",
-        //});
+            );
+        }
 
         document.getElementById("simplify-ui").checked = true;
         simplify_ui();
+        
     }
 
     // #67 newly added func

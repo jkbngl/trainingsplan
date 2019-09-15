@@ -1579,6 +1579,7 @@
             var columnName = deleted_bms[i].base_bm_value;
             parsed_bms[columnName] = date + ' - ' +  deleted_bms[i].value_name;
         }
+
         const {value: fruit} = Swal.fire({
             title: 'Select a bm',
             input: 'select',
@@ -1813,11 +1814,79 @@
         }
 
         swal.fire({
-            title: "Simplified!",
-            text: "As you are on a mobile device we deactivated the additional inputs, you can reactivate them in the settings.",
-            type: "success",
-            timer: 4000
-        });
+           title: 'Simplified!',
+           text: 'As you are on a mobile device we deactivated the additional inputs, you can reactivate them in the settings.',
+           type: 'success',
+            showCancelButton: true,
+            confirmButtonText: "Confirm!",
+            cancelButtonText: "Dont show again!",
+            closeOnConfirm: false,
+            closeOnCancel: false,
+            timer: 4000,
+        }).then(
+            function(dismiss)
+            {
+                if(dismiss.value == true)
+                {
+                    // TODO set new cookie here
+                    console.log("CONFIRM");
+                }
+                else
+                {
+                    // TODO set new cookie here
+                    console.log("CANCEL");
+                }
+            }, function(dismiss)
+            {
+                console.log(dismiss);
+                if(dismiss == 'cancel'){
+                    console.log("CANCEL");
+                }
+            }
+        );
+
+        //const {value: fruit} = swal.fire({
+        //    title: "Simplified!",
+        //    text: "As you are on a mobile device we deactivated the additional inputs, you can reactivate them in the settings.",
+        //    type: "success",
+        //    showCancelButton: true,
+        //    confirmButtonText: "Confirm!",
+        //    cancelButtonText: "Dont show again!",
+        //    closeOnConfirm: false,
+        //    closeOnCancel: false,
+        //    //timer: 4000,
+        //    inputValidator: (value) => {
+        //        
+        //        console.log(value)
+        //        return new Promise((resolve) => 
+        //        {
+        //            //console.log(value);
+        //            if(!isNaN(parseFloat(value)) && !isNaN(value - 0))
+        //            {
+        //                // POST, can not be replaced
+        //                var xhr = new XMLHttpRequest();
+        //                var url = "http://jakob.ml:8080/tpbackend_1-1.0-SNAPSHOT/api/trainingsplan/restore_bm";
+        //                xhr.open("POST", url, true);
+        //                xhr.setRequestHeader("Content-Type", "text/plain");
+        //                xhr.send(value);
+        //                on_save();
+        //            }
+        //            else
+        //            {
+        //                console.log("nothing selected");
+        //            }
+        //            
+        //            // As I am not using the await keyword, close it with this
+        //            swal.close();
+        //        })
+        //    }
+        //});
+
+        //swal.fire({
+        //    title: "Simplified!",
+        //    text: "As you are on a mobile device we deactivated the additional inputs, you can reactivate them in the settings.",
+        //    type: "success",
+        //});
 
         document.getElementById("simplify-ui").checked = true;
         simplify_ui();

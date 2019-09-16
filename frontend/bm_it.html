@@ -1827,29 +1827,34 @@
                title: 'Simplified!',
                text: 'As you are on a mobile device we deactivated the additional inputs, you can reactivate them in the settings.',
                type: 'success',
-                showCancelButton: true,
-                confirmButtonText: "Confirm!",
-                cancelButtonText: "Dont show again!",
-                closeOnConfirm: false,
-                closeOnCancel: false,
-                timer: 4000,
+               showCancelButton: true,
+               confirmButtonText: "Confirm!",
+               cancelButtonText: "Dont show again!",
+               closeOnConfirm: false,
+               closeOnCancel: false,
+               timer: 4000,
             }).then(
                 function(dismiss)
                 {
+                    console.log(dismiss);
+
                     if(dismiss.value == true)
                     {
-                        // TODO set new cookie here
                         console.log("CONFIRM");
+                    }
+                    else if(dismiss.value == 'cancel')
+                    {
+                        console.log("CANCEL");
+                        set_cookie("dont_show_warning", 90);
                     }
                     else
                     {
-                        // TODO set new cookie here
-                        console.log("CANCEL");
-                        set_cookie("dont_show_warning", 90);
+                        console.log("BACKDROPPED");
                     }
                 }, function(dismiss)
                 {
                     console.log(dismiss);
+
                     if(dismiss == 'cancel'){
                         console.log("CANCEL");
                     }

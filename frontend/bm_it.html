@@ -968,7 +968,7 @@
             console.log("Calculating potential took: " + (t1 - t0) + " milliseconds.")
     }
     // #67  newly added func
-    function set_cookie(cname, exdays) 
+    function set_cookie(cname, exdays, value) 
     {
         var d = new Date();
         d.setTime(d.getTime() + (exdays*24*60*60*1000));
@@ -1014,9 +1014,11 @@
         {
             document.cookie = cname + "='" + document.getElementById("n-datapoints-to-show").value +"';" + expires + ";path=/";
         }      
-        else if(cname == 'dont_show_warning')
+        else if(cname == 'show_warning_cookie')
         {
-            document.cookie = cname + "='" + false +"';" + expires + ";path=/";
+            console.log(value);
+
+            document.cookie = cname + "=" + value +";" + expires + ";path=/";
         }
     }
     // #67  newly added func
@@ -1089,9 +1091,11 @@
                     document.getElementById("n-datapoints-to-show").value = parsed_val;
                     set_datapoints_chart(parsed_val, true);
                 }
-                else if(cname == 'dont_show_warning')
+                else if(cname == 'show_warning_cookie')
                 {
-                    return false;
+                    parsed_val = cookie_val;
+
+                    return JSON.parse(parsed_val);
                 }
             }
         }          
@@ -1821,7 +1825,9 @@
             //labels[i].className += " mobile_label";
         }
 
-        if(get_cookie("dont_show_warning") != false)
+        console.log(get_cookie("show_warning_cookie"));
+
+        if(get_cookie("show_warning_cookie") != false)
         {
             swal.fire({
                title: 'Simplified!',
@@ -1836,20 +1842,21 @@
             }).then(
                 function(dismiss)
                 {
-                    console.log(dismiss);
-
                     if(dismiss.value == true)
                     {
                         console.log("CONFIRM");
+                        set_cookie("show_warning_cookie", 90, true);
+
                     }
-                    else if(dismiss.value == 'cancel')
+                    else if(dismiss.dismiss == 'cancel')
                     {
                         console.log("CANCEL");
-                        set_cookie("dont_show_warning", 90);
+                        set_cookie("show_warning_cookie", 90, false);
                     }
                     else
                     {
-                        console.log("BACKDROPPED");
+                        console.log(dismiss);
+                        //console.log("BACKDROPPED");
                     }
                 }, function(dismiss)
                 {

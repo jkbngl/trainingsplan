@@ -40,7 +40,7 @@
             console.log(message);
 
             if(message.includes('backend') && message.includes('unavailable') || message.includes('Authentification'))
-                footer += message + '<br><br><a href onclick="location.reload()">Reload the Page!</button><br>';
+                footer += message + '<br><br><a href onclick="location.reload()">Reload the Page?</button><br>';
 
             if(type == 'error')
                 footer += '<a href="https://github.com/jkbngl/trainingsplan/issues/new">If you think this is not correct please open a github issue!</a>'
@@ -144,7 +144,7 @@
         <!--<button onclick="receivePlanfromDB(false)" class="button" style=" top: 10px; width:80%; margin-left: 10%;">Load Plan</button>
         <button onclick="cleanUpTables(); addTable(true);  closeNav();"class="button" style="top: 10px; width:80%; margin-left: 10%;">New Plan</button>-->
         <button onclick="window.location.href='index.html'" class="button" style="top: 10px; width:80%; margin-left: 10%;"><i class="fas fa-home"></i> Home</button>
-        <button onclick="window.location.href='bm_it.html'" class="button" id="bm-it-button" style="top: 10px; width:80%; margin-left: 10%;"><i class="fas fa-chart-line"></i> BM-IT</button>
+        <button onclick="window.location.href='bm_it.html'" class="button" id="bm-it-button" style="top: 10px; width:80%; margin-left: 10%;"><i class="fas fa-chart-line"></i> Body Tracker</button>
         
                 
        

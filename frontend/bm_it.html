@@ -1827,6 +1827,10 @@
 
         console.log(get_cookie("show_warning_cookie"));
 
+        // TODO Logic:
+        // If the show_warning_cookie has never been set show the warning always
+        // if the show_warning_cookie is true and the interface_type cookie is simple_interface
+        // Else show the interface_type cookie
         if(get_cookie("show_warning_cookie") != false)
         {
             swal.fire({

@@ -121,7 +121,7 @@
             <label class="toggle">
             <input id="simplify-ui" onchange="closeNav();" onclick="simplify_ui();" class="toggle__input" type="checkbox">
             <span class="toggle__label">
-                <span class="toggle__text">Simple interface 
+                <span class="toggle__text" id="simple-interface-text">Simple interface 
                     <i class="fas fa-info-circle" rel="tooltip" title="If the simple interface is active, you no longer can select the unit and the time of the day for you inputs, they will default to unit = cm and time of day = after waking up" id="info-step-2"></i>
                 </span>
             </span>
@@ -132,7 +132,7 @@
             <label class="toggle">
             <input id="unit-checkbox-ui" onclick="simplify_ui_partly();" class="toggle__input" type="checkbox">
             <span class="toggle__label">
-                <span class="toggle__text">Show Unit 
+                <span class="toggle__text" id="show-unit-text">Show Unit 
                     <i class="fas fa-info-circle" rel="tooltip" title="If this checkbox is active you can still set the unit of your inputs but dont have to set the time of the day of your inputs" id="info-step-2"></i>
                 </span>
             </span>
@@ -143,7 +143,7 @@
             <label class="toggle">
             <input id="tod-checkbox-ui" onclick="simplify_ui_partly();" class="toggle__input" type="checkbox">
             <span class="toggle__label">
-                <span class="toggle__text">Show Time of Day
+                <span class="toggle__text" id="show-tod-text">Show Time of Day
                     <i class="fas fa-info-circle" rel="tooltip" title="If this checkbox is active you can still set the time of the day of your inputs but dont have to set the unit of your inputs" id="info-step-2"></i>
                 </span>
             </span>
@@ -154,7 +154,7 @@
             <label class="toggle">
             <input id="chart-type" onchange="closeNav();" onclick="clear_chart(); update_bm_chart(get_active_bms(false)); set_cookie('chart_type', 90); set_labels(); set_potentials_with_chart_change()" class="toggle__input" type="checkbox">
             <span class="toggle__label">
-                <span class="toggle__text">Bar Chart 
+                <span class="toggle__text" id="bar-chart-text">Bar Chart 
                     <i class="fas fa-info-circle" rel="tooltip" title="Change between the normal line chart and the bar chart to analyze your data" id="info-step-2"></i>
                 </span>
             </span>
@@ -1795,6 +1795,12 @@
         document.getElementById("add-new-input").style.fontSize = "28px";
         document.getElementById("additional-info_1").style.marginTop = "2%";
         document.getElementById("n-datapoints-to-show").style.height = "3%";
+        document.getElementById("simple-interface-text").innerHTML = "Simple interface";
+        document.getElementById("show-unit-text").innerHTML = "Show Unit";
+        document.getElementById("show-tod-text").innerHTML = "Show Time of Day";
+        document.getElementById("bar-chart-text").innerHTML = "Bar Chart";
+
+
         if(after_startup)
         {
             console.log("customized");

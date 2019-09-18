@@ -36,7 +36,7 @@
             var footer = '<hr style="height: 2px; background-color:#666;"><br>';
             console.log(message);
             if(message.includes('backend') && message.includes('unavailable') || message.includes('Authentification'))
-                footer += message + '<br><br><a href onclick="location.reload()">Reload the Page!</button><br>';
+                footer += message + '<br><br><a href onclick="location.reload()">Reload the Page?</button><br>';
             if(type == 'error')
                 footer += '<a href="https://github.com/jkbngl/trainingsplan/issues/new">If you think this is not correct please open a github issue!</a>'
                 
@@ -808,7 +808,7 @@
                 </label> \
             </div> \
             \
-            <input type="text" ' + ( via_button                   ? 'autofocus' : '') + ' id="value_name"  class="input_bm" placeholder="&nbsp; Enter the name of input value ..." style="text-align:center; background: transparent; border-radius: 25px; border: 2px solid #00ad5f; color:#00ad5f; width: 25%; font-size: 18px;font-family: Century Gothic; margin-right:2%; margin-left:2%; "> \
+            <input type="text" ' + ( via_button                   ? 'autofocus' : '') + ' id="value_name"   placeholder="&nbsp; Enter the name of input value ..." style="text-align:center; background: transparent; border-radius: 25px; border: 2px solid #00ad5f; color:#00ad5f; width: 25%; font-size: 18px;font-family: Century Gothic; margin-right:2%; margin-left:2%; "> \
             <input type="number" ' + (!via_button && num_input <= 1 ? 'autofocus' : '') + ' onchange="show_potential(' + num_input + ')" id="value_value" class="input_bm" placeholder="&nbsp; Value of input ..."      style="text-align:center; background: transparent; border-radius: 25px; border: 2px solid #00ad5f; color:#00ad5f; width: 15%; font-size: 18px;font-family: Century Gothic; margin-right:2%"> \
             <input type="text" id="note" class="input_bm" placeholder="&nbsp; Note ..." style="text-align:center; background: transparent; border-radius: 25px; border: 2px solid #00ad5f; color:#00ad5f; width: 25%; font-size: 18px;font-family: Century Gothic; margin-right:2%; "> \
             \

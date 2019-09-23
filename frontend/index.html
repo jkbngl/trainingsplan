@@ -53,43 +53,59 @@
     <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.7.1/css/all.css" integrity="sha384-fnmOCqbTlWIlj8LyTjo7mOUStjsKC4pOpQbqyi7RrhN7udi9RwhKkMHpvLbHG9Sr" crossorigin="anonymous">
     <link rel="shortcut icon" href="./favicon.ico?">
 
-    <!--
-    <link   href = "https://code.jquery.com/ui/1.10.4/themes/ui-lightness/jquery-ui.css" rel = "stylesheet">
-    <script src  = "https://code.jquery.com/jquery-1.10.2.js" ></script>
-    <script src  = "https://code.jquery.com/ui/1.10.4/jquery-ui.js"></script>
-    
-
-    <script>
-        var availableTutorials  =  [
-               "ActionScript",
-               "Bootstrap",
-               "C",
-               "C++",
-            ];
-        
-        $(function() {
-            $("#tags").autocomplete({
-               source: availableTutorials
-            });
-            console.log("FOUND");
-        });
-
-        $.myjQuery = function() {
-            $('#tags').autocomplete(availableTutorials);
-            //console.log("worked");
-         };
-      </script>
-    -->
     <meta name="msapplication-TileColor" content="#ffffff">
     <meta name="theme-color" content="#ffffff">
 
     <!--<script src="https://cdn.jsdelivr.net/npm/sweetalert2@8"></script>-->
     <script src="js/sweetalert.js"></script>
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@sweetalert2/theme-dark@1/dark.css">
-    <script src="http://jakob.ml/auth/js/keycloak.js"></script> 
+    <!--<script src="http://jakob.ml:8081/auth/js/keycloak.js"></script> -->
+
+    <script type="text/javascript"> 
+        var JSLink = "http://" + document.location.host + ":8081/auth/js/keycloak.js";
+        var JSElement = document.createElement('script');
+        JSElement.src = JSLink;
+        JSElement.onload = OnceLoaded;
+        document.getElementsByTagName('head')[0].appendChild(JSElement);
+
+        function OnceLoaded() {
+            hostname = document.location.host;
+            keycloak = Keycloak();
+
+            keycloak.init({ onLoad: 'login-required' })
+
+            keycloak.init().success(
+                function(authenticated) 
+                {
+                    // alert(authenticated ? 'authenticated' : 'not authenticated');
+                }
+            ).error(function() {
+                // alert('failed to initialize');
+            });
+
+            keycloak.onAuthSuccess = function() 
+            { 
+                swal.close();
+
+                // alert('Successfully authenticated'); 
+                console.log('Successfully authenticated'); 
+            
+                username = keycloak.idTokenParsed.preferred_username;
+                username = username.toLowerCase();
+                document.getElementById("username").innerHTML = username + ' <i class="fas fa-sign-out-alt"></i>';
+                
+                zoomOutMobile();
+                cleanUpTables();
+                receivePlanfromDB(true);
+                check_roles(keycloak.realmAccess.roles, true);
+                append_preferences();
+            }
+        }
+    </script>
+    
     <script>
-        
         var keycloak;
+        var hostname = "example.com"
 
         function display_error(type, title, message)
         {
@@ -98,7 +114,7 @@
             console.log(message);
 
             if(message.includes('backend') && message.includes('unavailable') || message.includes('Authentification'))
-                footer += message + '<br><br><a href onclick="location.reload()">Reload the Page!</button><br>';
+                footer += message + '<br><br><a href onclick="location.reload()">Reload the Page?</button><br>';
 
             if(type == 'error')
                 footer += '<a href="https://github.com/jkbngl/trainingsplan/issues/new">If you think this is not correct please open a github issue!</a>'
@@ -116,6 +132,7 @@
         document.addEventListener('DOMContentLoaded',function(){
             try
             {
+                //document.write("<script type='text/javascript' src='http://"+ document.location.host + ":8081/auth/js/keycloak.js'><\/scr" + "ipt>");
 
                 swal.fire({
                     title: 'Loading your data...',
@@ -127,38 +144,38 @@
                     }
                 });
 
-                keycloak = Keycloak();
+                //keycloak = Keycloak();
 
-                keycloak.init({ onLoad: 'login-required' })
-
-                keycloak.init().success(
-                    function(authenticated) 
-                    {
-                        // alert(authenticated ? 'authenticated' : 'not authenticated');
-                    }
-                ).error(function() {
-                    // alert('failed to initialize');
-                });
-
-                keycloak.onAuthSuccess = function() 
-                { 
-                    swal.close();
-
-                    // alert('Successfully authenticated'); 
-                    console.log('Successfully authenticated'); 
-                
-                    username = keycloak.idTokenParsed.preferred_username;
-                    username = username.toLowerCase();
-                    document.getElementById("username").innerHTML = username + ' <i class="fas fa-sign-out-alt"></i>';
-                    
-                    zoomOutMobile();
-                    cleanUpTables();
-                    receivePlanfromDB(true);
-                    check_roles(keycloak.realmAccess.roles, true);
-                    append_preferences();
-                    
-                    // console.log(username);  
-                }
+                //keycloak.init({ onLoad: 'login-required' })
+                //
+                //keycloak.init().success(
+                //    function(authenticated) 
+                //    {
+                //        // alert(authenticated ? 'authenticated' : 'not authenticated');
+                //    }
+                //).error(function() {
+                //    // alert('failed to initialize');
+                //});
+                //
+                //keycloak.onAuthSuccess = function() 
+                //{ 
+                //    swal.close();
+                //
+                //    // alert('Successfully authenticated'); 
+                //    console.log('Successfully authenticated'); 
+                //
+                //    username = keycloak.idTokenParsed.preferred_username;
+                //    username = username.toLowerCase();
+                //    document.getElementById("username").innerHTML = username + ' <i class="fas fa-sign-out-alt"></i>';
+                //    
+                //    zoomOutMobile();
+                //    cleanUpTables();
+                //    receivePlanfromDB(true);
+                //    check_roles(keycloak.realmAccess.roles, true);
+                //    append_preferences();
+                //    
+                //    // console.log(username);  
+                //}
             }
             catch(err)
             {
@@ -309,7 +326,7 @@
     function append_preferences()
     {
         var request = new XMLHttpRequest();
-        var url = 'http://jakob.ml:8080/tpbackend_1-1.0-SNAPSHOT/api/trainingsplan/get_preferences/';
+        var url = 'http://' + hostname + ':8080/tpbackend_1-1.0-SNAPSHOT/api/trainingsplan/get_preferences/';
         var xmlHttp = new XMLHttpRequest();
 
         xmlHttp.open( "GET", url + getusername(), false ); // false for synchronous request
@@ -447,7 +464,7 @@
         
         // This part sets how many plans the user already has and then in check_allowed_to_add_plan it is checked if the user is allowed to add another one
         var request = new XMLHttpRequest();
-        var url = 'http://jakob.ml:8080/tpbackend_1-1.0-SNAPSHOT/api/trainingsplan/getAmountOfPlans/';
+        var url = 'http://' + hostname + ':8080/tpbackend_1-1.0-SNAPSHOT/api/trainingsplan/getAmountOfPlans/';
         var username = getusername();
 
         try 
@@ -613,7 +630,7 @@
     function doesPlanNameExists(plannamelocal)
     {
         var request = new XMLHttpRequest();
-        var url = 'http://jakob.ml:8080/tpbackend_1-1.0-SNAPSHOT/api/trainingsplan/getPlansByUser/';
+        var url = 'http://' + hostname + ':8080/tpbackend_1-1.0-SNAPSHOT/api/trainingsplan/getPlansByUser/';
         var plan = '';
         var username = getusername();
 
@@ -797,7 +814,7 @@
         if(delete_bool)
         {
             var xhr = new XMLHttpRequest();
-            var url = "http://jakob.ml:8080/tpbackend_1-1.0-SNAPSHOT/api/trainingsplan/delete_plan";
+            var url = "http://" + hostname + ":8080/tpbackend_1-1.0-SNAPSHOT/api/trainingsplan/delete_plan";
             xhr.open("POST", url, true);
             xhr.setRequestHeader("Content-Type", "text/plain");
 
@@ -805,7 +822,7 @@
         }
         else
         {
-            showDialog('http://jakob.ml:8080/tpbackend_1-1.0-SNAPSHOT/api/trainingsplan/getPlansByUser/', 0, false, true);
+            showDialog('http://' + hostname + ':8080/tpbackend_1-1.0-SNAPSHOT/api/trainingsplan/getPlansByUser/', 0, false, true);
         }
     }
 
@@ -815,7 +832,7 @@
         if(delete_bool)
         {
             var xhr = new XMLHttpRequest();
-            var url = "http://jakob.ml:8080/tpbackend_1-1.0-SNAPSHOT/api/trainingsplan/restore_plan";
+            var url = "http://" + hostname + ":8080/tpbackend_1-1.0-SNAPSHOT/api/trainingsplan/restore_plan";
             xhr.open("POST", url, true);
             xhr.setRequestHeader("Content-Type", "text/plain");
 
@@ -823,7 +840,7 @@
         }
         else
         {
-            showDialog('http://jakob.ml:8080/tpbackend_1-1.0-SNAPSHOT/api/trainingsplan/getPlansByUser/', 1, false, false);
+            showDialog('http://' + hostname + ':8080/tpbackend_1-1.0-SNAPSHOT/api/trainingsplan/getPlansByUser/', 1, false, false);
         }
     }
 
@@ -888,7 +905,7 @@
                                     show_warning = false;
                             
                                 var xhr = new XMLHttpRequest();
-                                var url = "http://jakob.ml:8080/tpbackend_1-1.0-SNAPSHOT/api/trainingsplan/send_preferences";
+                                var url = "http://" + hostname + ":8080/tpbackend_1-1.0-SNAPSHOT/api/trainingsplan/send_preferences";
                                 xhr.open("POST", url, true);
                                 xhr.setRequestHeader("Content-Type", "text/plain");
                                 var string = JSON.stringify(preferences);
@@ -908,7 +925,7 @@
                             // OK was clicked so send it anyway what with the checkbox happened
                             var jsondata = getExercises();
                             var xhr = new XMLHttpRequest();
-                            var url = "http://jakob.ml:8080/tpbackend_1-1.0-SNAPSHOT/api/trainingsplan/sendPlan";
+                            var url = "http://" + hostname + ":8080/tpbackend_1-1.0-SNAPSHOT/api/trainingsplan/sendPlan";
                             xhr.open("POST", url, true);
                             xhr.setRequestHeader("Content-Type", "text/plain");
                             //var data = JSON.stringify(jsondata);
@@ -933,17 +950,9 @@
                 // Warning was not shown so send it here
                 if(!show_warning)
                 {
-                    /*
-                        var xhr = new XMLHttpRequest();
-                        var url = "http://jakob.ml:8080/tpbackend_1-1.0-SNAPSHOT/api/trainingsplan/send_preferences";
-                        xhr.open("POST", url, true);
-                        xhr.setRequestHeader("Content-Type", "text/plain");
-                        var string = JSON.stringify(preferences);
-                        xhr.send(string);
-                    */
                     var jsondata = getExercises();
                     var xhr = new XMLHttpRequest();
-                    var url = "http://jakob.ml:8080/tpbackend_1-1.0-SNAPSHOT/api/trainingsplan/sendPlan";
+                    var url = "http://" + hostname + ":8080/tpbackend_1-1.0-SNAPSHOT/api/trainingsplan/sendPlan";
                     xhr.open("POST", url, true);
                     xhr.setRequestHeader("Content-Type", "text/plain");
                     var data = JSON.stringify(jsondata);
@@ -1043,7 +1052,7 @@
     {
         var request = new XMLHttpRequest();
 
-        var url = 'http://jakob.ml:8080/tpbackend_1-1.0-SNAPSHOT/api/trainingsplan/getPlansByUser/';
+        var url = 'http://' + hostname + ':8080/tpbackend_1-1.0-SNAPSHOT/api/trainingsplan/getPlansByUser/';
         var username = getusername();
         var planid;
 
@@ -1058,13 +1067,13 @@
 
                 if(json.plans.length > 1 && onlogon == false) // if more than 1 day than load all plans
                 {
-                    showDialog('http://jakob.ml:8080/tpbackend_1-1.0-SNAPSHOT/api/trainingsplan/getPlansByUser/', 0, true, null);
+                    showDialog('http://' + hostname + ':8080/tpbackend_1-1.0-SNAPSHOT/api/trainingsplan/getPlansByUser/', 0, true, null);
                 }
                 else
                 {
                     if(this.response != '{"username": "' + username + '","plans": []}')
                     {
-                        plan = getPlan('http://jakob.ml:8080/tpbackend_1-1.0-SNAPSHOT/api/trainingsplan/getNewestPlan/' + username);
+                        plan = getPlan('http://' + hostname + ':8080/tpbackend_1-1.0-SNAPSHOT/api/trainingsplan/getNewestPlan/' + username);
                         var data = JSON.parse(plan);
                         printjson(data, plan);
                     }
@@ -1134,7 +1143,7 @@
 
                             if(!isNaN(parseFloat(value)) && !isNaN(value - 0))
                             {
-                                plan = getPlan('http://jakob.ml:8080/tpbackend_1-1.0-SNAPSHOT/api/trainingsplan/getPlanByUserAndPlan/' + username + '/' + value);
+                                plan = getPlan('http://' + hostname + ':8080/tpbackend_1-1.0-SNAPSHOT/api/trainingsplan/getPlanByUserAndPlan/' + username + '/' + value);
                                 var data = JSON.parse(plan);
                                 
                                 // the dialog for loading a plan from the db was active and now display the new data
@@ -1193,7 +1202,7 @@
     function getPlanID()
     {
         var request = new XMLHttpRequest();
-        var url = 'http://jakob.ml:8080/tpbackend_1-1.0-SNAPSHOT/api/trainingsplan/getPlanIdByUsernameAndPlanname/';
+        var url = 'http://' + hostname + ':8080/tpbackend_1-1.0-SNAPSHOT/api/trainingsplan/getPlanIdByUsernameAndPlanname/';
         var username = getusername();
 
         var xmlHttp = new XMLHttpRequest();
@@ -1213,7 +1222,7 @@
         {
             try{
                 setTimeout(function(){
-                    var url = 'http://jakob.ml:8080/tpbackend_1-1.0-SNAPSHOT/api/trainingsplan/getPlanByUserAndPlan/' + username + '/' + currentPlanId;
+                    var url = 'http://' + hostname + ':8080/tpbackend_1-1.0-SNAPSHOT/api/trainingsplan/getPlanByUserAndPlan/' + username + '/' + currentPlanId;
 
                     var xmlHttp = new XMLHttpRequest();
                     xmlHttp.open( "GET", url, false ); // false for synchronous request
@@ -1238,7 +1247,7 @@
         var request = new XMLHttpRequest();
         var username = getusername();
 
-        var url = 'http://jakob.ml:8080/tpbackend_1-1.0-SNAPSHOT/api/trainingsplan/getAmountOfPlans/' + username + '/' + num;
+        var url = 'http://' + hostname + ':8080/tpbackend_1-1.0-SNAPSHOT/api/trainingsplan/getAmountOfPlans/' + username + '/' + num;
 
         var xmlHttp = new XMLHttpRequest();
         xmlHttp.open( "GET", url, false ); // false for synchronous request

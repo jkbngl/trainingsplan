@@ -29,46 +29,16 @@
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@8"></script>
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@sweetalert2/theme-dark@1/dark.css">
 
-    <script src="http://jakob.ml/auth/js/keycloak.js"></script> 
-    <script>
-        var keycloak;
+    <script type="text/javascript"> 
+        var JSLink = "http://" + document.location.host + ":8081/auth/js/keycloak.js";
+        var JSElement = document.createElement('script');
+        JSElement.src = JSLink;
+        JSElement.onload = OnceLoaded;
+        document.getElementsByTagName('head')[0].appendChild(JSElement);
 
-        function display_error(type, title, message)
-        {
-            var footer = '<hr style="height: 2px; background-color:#666;"><br>';
-
-            console.log(message);
-
-            if(message.includes('backend') && message.includes('unavailable') || message.includes('Authentification'))
-                footer += message + '<br><br><a href onclick="location.reload()">Reload the Page?</button><br>';
-
-            if(type == 'error')
-                footer += '<a href="https://github.com/jkbngl/trainingsplan/issues/new">If you think this is not correct please open a github issue!</a>'
-                
-            footer += '<br><br><hr style="height: 2px; background-color:#666;"><br>';
-
-            Swal.fire({
-              type: type,
-              customClass: mobile_swal,
-              title: title,
-              html: footer
-            })
-        }
-
-        document.addEventListener('DOMContentLoaded',function(){
-            try
-            {
-                swal.fire({
-                    title: 'Loading your data...',
-                    customClass: mobile_swal,
-                    allowEscapeKey: false,
-                    allowOutsideClick: false,
-                    onOpen: () => {
-                      swal.showLoading();
-                    }
-                });
-
-                keycloak = Keycloak();
+        function OnceLoaded() {
+            hostname = document.location.host;
+            keycloak = Keycloak();
 
                 keycloak.init({ onLoad: 'login-required' })
 
@@ -120,6 +90,98 @@
                     else
                         ;
                 }
+        }
+    </script>
+    <script>
+        var keycloak;
+
+        function display_error(type, title, message)
+        {
+            var footer = '<hr style="height: 2px; background-color:#666;"><br>';
+
+            console.log(message);
+
+            if(message.includes('backend') && message.includes('unavailable') || message.includes('Authentification'))
+                footer += message + '<br><br><a href onclick="location.reload()">Reload the Page?</button><br>';
+
+            if(type == 'error')
+                footer += '<a href="https://github.com/jkbngl/trainingsplan/issues/new">If you think this is not correct please open a github issue!</a>'
+                
+            footer += '<br><br><hr style="height: 2px; background-color:#666;"><br>';
+
+            Swal.fire({
+              type: type,
+              customClass: mobile_swal,
+              title: title,
+              html: footer
+            })
+        }
+
+        document.addEventListener('DOMContentLoaded',function(){
+            try
+            {
+                swal.fire({
+                    title: 'Loading your data...',
+                    customClass: mobile_swal,
+                    allowEscapeKey: false,
+                    allowOutsideClick: false,
+                    onOpen: () => {
+                      swal.showLoading();
+                    }
+                });
+
+                // keycloak = Keycloak();
+// 
+                // keycloak.init({ onLoad: 'login-required' })
+// 
+                // keycloak.init().success(
+                //     function(authenticated) 
+                //     {
+                //         // alert(authenticated ? 'authenticated' : 'not authenticated');
+                //     }
+                // ).error(function() {
+                //     // alert('failed to initialize');
+                // });
+// 
+                // keycloak.onAuthSuccess = function() 
+                // { 
+                //     swal.close();
+                //     // alert('Successfully authenticated'); 
+                //     console.log('Successfully authenticated'); 
+                // 
+                //     username = keycloak.idTokenParsed.preferred_username;
+                //     username = username.toLowerCase();
+                //     check_roles(keycloak.realmAccess.roles);
+                // 
+                //     document.getElementById("username").innerHTML = username + ' <i class="fas fa-sign-out-alt"></i>';
+// 
+                //     var available_ex = get_available_ex();            
+                //     append_combo(available_ex);
+                //     data = append_preferences();
+                // 
+                //     // Check if the preferences for the small changes to the ui are stored
+                //     // TODO rename cookie variables
+                //     if(!document.getElementById("simplify-ui").checked)
+                //         checkCookie(); 
+// 
+                //     if(data.check_chart_type == 'f' /* || typeof data.check_chart_type == 'undefined'*/)
+                //     {
+                //         chart_type = 'line';
+                //         chart = create_chart(chart_type);
+                //     }    
+                //     else
+                //     {
+                //         // if undefined as above, make bar chart default and make it checked
+                //         //document.getElementById("chart-type").checked = true;
+                //         chart_type = 'bar';
+                //         chart = create_chart(chart_type);
+                //     }
+                // 
+                //     if( isMobile.any() ) 
+                //         customize_mobile();
+                //     else
+                //         ;
+                //}
             }
             catch(err)
             {

@@ -1889,7 +1889,7 @@
                type: 'success',
                showCancelButton: true,
                confirmButtonText: "Confirm!",
-               cancelButtonText: "Dont show again!",
+               cancelButtonText: "UNSET!",
                closeOnConfirm: false,
                closeOnCancel: false,
                input: 'checkbox',
@@ -1898,26 +1898,29 @@
             }).then(
                 function(dismiss)
                 {
-                    // 1 = OK + unchecked
-                    // 0 = OK + checked
-                    // cancel = other button
-                    // backdropped = dont clicked or clicked outside
+                    // 1 = CONFIRM + UNCHECKED
+                    // 0 = CONFIRM + CHECKED
+                    // cancel = CANCEL button
+                    // backdropped = dont clicked or clicked outside - BACKDROPPED
                     console.log(dismiss);
 
                     if(dismiss.value == true)
                     {
                         console.log("CONFIRM + CHECKED");
-                        set_cookie("show_warning_cookie", 90, true);
+                        set_cookie("show_warning_cookie", 90, false);
 
                     }
                     else if(dismiss.dismiss == 'cancel')
                     {
-                        console.log("CANCEL");
-                        set_cookie("show_warning_cookie", 7, false);
+                        console.log("UNSET");
+                        document.getElementById("simplify-ui").checked = false;
+                        simplify_ui();
+                        // set_cookie("show_warning_cookie", 7, false);
                     }
                     else if(dismiss.value == false)
                     {
                         console.log("CONFIRM + UNCHECKED");
+                        set_cookie("show_warning_cookie", 7, true);
                     }
                     else
                     {

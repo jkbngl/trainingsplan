@@ -1894,10 +1894,14 @@
                closeOnCancel: false,
                input: 'checkbox',
                inputPlaceholder: 'Dont show again',
-               timer: 4000,
+               timer: 5000,
             }).then(
                 function(dismiss)
                 {
+                    // 1 = OK + unchecked
+                    // 0 = OK + checked
+                    // cancel = other button
+                    // backdropped = dont clicked or clicked outside
                     console.log(dismiss);
 
                     if(dismiss.value == true)

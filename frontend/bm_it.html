@@ -28,7 +28,50 @@
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@sweetalert2/theme-dark@1/dark.css">
 
 
-    <script src="http://jakob.ml:8081/auth/js/keycloak.js"></script> 
+    <!--<script src="http://jakob.ml:8081/auth/js/keycloak.js"></script> -->
+    <script type="text/javascript"> 
+        var JSLink = "http://" + document.location.host + ":8081/auth/js/keycloak.js";
+        var JSElement = document.createElement('script');
+        JSElement.src = JSLink;
+        JSElement.onload = OnceLoaded;
+        document.getElementsByTagName('head')[0].appendChild(JSElement);
+
+        function OnceLoaded() {
+            hostname = document.location.host;
+            keycloak = Keycloak();
+
+            keycloak.init({ onLoad: 'login-required' })
+            keycloak.init().success(
+                function(authenticated) 
+                {
+                    // alert(authenticated ? 'authenticated' : 'not authenticated');
+                }
+            ).error(function() {
+                // alert('failed to initialize');
+            });
+            keycloak.onAuthSuccess = function() 
+            { 
+                swal.close();
+                console.log('Successfully authenticated');
+            
+                username = keycloak.idTokenParsed.preferred_username;
+                username = username.toLowerCase();
+                check_roles(keycloak.realmAccess.roles);
+            
+                document.getElementById("username").innerHTML = username + ' <i class="fas fa-sign-out-alt"></i>';
+                build_page();                                        
+            
+                if( isMobile.any() ) 
+                    customize_mobile();
+                else
+                    ;
+                // Initialisation on startup
+                setTimeout(function (){
+                    chart.update();
+                }, 199); 
+            }
+        }
+    </script>
     <script>
         var keycloak;
         function display_error(type, title, message)
@@ -60,37 +103,37 @@
                       swal.showLoading();
                     }
                 });
-                keycloak = Keycloak();
-                keycloak.init({ onLoad: 'login-required' })
-                keycloak.init().success(
-                    function(authenticated) 
-                    {
-                        // alert(authenticated ? 'authenticated' : 'not authenticated');
-                    }
-                ).error(function() {
-                    // alert('failed to initialize');
-                });
-                keycloak.onAuthSuccess = function() 
-                { 
-                    swal.close();
-                    console.log('Successfully authenticated');
-                
-                    username = keycloak.idTokenParsed.preferred_username;
-                    username = username.toLowerCase();
-                    check_roles(keycloak.realmAccess.roles);
-                
-                    document.getElementById("username").innerHTML = username + ' <i class="fas fa-sign-out-alt"></i>';
-                    build_page();                                        
-                
-                    if( isMobile.any() ) 
-                        customize_mobile();
-                    else
-                        ;
-                    // Initialisation on startup
-                    setTimeout(function (){
-                        chart.update();
-                    }, 199); 
-                }
+                //keycloak = Keycloak();
+                //keycloak.init({ onLoad: 'login-required' })
+                //keycloak.init().success(
+                //    function(authenticated) 
+                //    {
+                //        // alert(authenticated ? 'authenticated' : 'not authenticated');
+                //    }
+                //).error(function() {
+                //    // alert('failed to initialize');
+                //});
+                //keycloak.onAuthSuccess = function() 
+                //{ 
+                //    swal.close();
+                //    console.log('Successfully authenticated');
+                //
+                //    username = keycloak.idTokenParsed.preferred_username;
+                //    username = username.toLowerCase();
+                //    check_roles(keycloak.realmAccess.roles);
+                //
+                //    document.getElementById("username").innerHTML = username + ' <i class="fas fa-sign-out-alt"></i>';
+                //    build_page();                                        
+                //
+                //    if( isMobile.any() ) 
+                //        customize_mobile();
+                //    else
+                //        ;
+                //    // Initialisation on startup
+                //    setTimeout(function (){
+                //        chart.update();
+                //    }, 199); 
+                //}
             }
             catch(err)
             {
@@ -453,7 +496,7 @@
         try
         {
             var xhr = new XMLHttpRequest();
-            var url = "http://jakob.ml:8080/tpbackend_1-1.0-SNAPSHOT/api/trainingsplan/send_bm_values";
+            var url = "http://" + hostname + ":8080/tpbackend_1-1.0-SNAPSHOT/api/trainingsplan/send_bm_values";
             xhr.open("POST", url, true);
             xhr.setRequestHeader("Content-Type", "text/plain");
             var string = JSON.stringify(jsonData);
@@ -741,7 +784,7 @@
             try
             {
                 var request = new XMLHttpRequest();
-                var url = 'http://jakob.ml:8080/tpbackend_1-1.0-SNAPSHOT/api/trainingsplan/get_uoms/';
+                var url = 'http://' + hostname + ':8080/tpbackend_1-1.0-SNAPSHOT/api/trainingsplan/get_uoms/';
                 var xmlHttp = new XMLHttpRequest();
                 xmlHttp.open( "GET", url, false ); // false for synchronous request
                 xmlHttp.send( null );
@@ -768,7 +811,7 @@
         {
             try
             {
-                var url = 'http://jakob.ml:8080/tpbackend_1-1.0-SNAPSHOT/api/trainingsplan/get_tods/';
+                var url = 'http://' + hostname + ':8080/tpbackend_1-1.0-SNAPSHOT/api/trainingsplan/get_tods/';
                 var xmlHttp = new XMLHttpRequest();
                 xmlHttp.open( "GET", url, false ); // false for synchronous request
                 xmlHttp.send( null );
@@ -1266,7 +1309,7 @@
         // might work with a changed flag
         try
         {
-            var url = 'http://jakob.ml:8080/tpbackend_1-1.0-SNAPSHOT/api/trainingsplan/get_bm_values/';
+            var url = 'http://' + hostname + ':8080/tpbackend_1-1.0-SNAPSHOT/api/trainingsplan/get_bm_values/';
             var xmlHttp = new XMLHttpRequest();
         
             xmlHttp.open( "GET", url + getusername() + "/0", false ); // false for synchronous request
@@ -1382,7 +1425,7 @@
             {
                 try
                 {
-                    var url = 'http://jakob.ml:8080/tpbackend_1-1.0-SNAPSHOT/api/trainingsplan/get_historical_bm_values/';
+                    var url = 'http://' + hostname + ':8080/tpbackend_1-1.0-SNAPSHOT/api/trainingsplan/get_historical_bm_values/';
                     var xmlHttp = new XMLHttpRequest();
                     xmlHttp.open( "GET", url + getusername() + "/" + bm_id, false ); // false for synchronous request
                     xmlHttp.send( null );
@@ -1608,7 +1651,7 @@
                     {
                         // POST, can not be replaced
                         var xhr = new XMLHttpRequest();
-                        var url = "http://jakob.ml:8080/tpbackend_1-1.0-SNAPSHOT/api/trainingsplan/restore_bm";
+                        var url = "http://" + hostname + ":8080/tpbackend_1-1.0-SNAPSHOT/api/trainingsplan/restore_bm";
                         xhr.open("POST", url, true);
                         xhr.setRequestHeader("Content-Type", "text/plain");
                         xhr.send(value);
@@ -1634,7 +1677,7 @@
         // might work with a changed flag
         try
         {
-            var url = 'http://jakob.ml:8080/tpbackend_1-1.0-SNAPSHOT/api/trainingsplan/get_bm_values/';
+            var url = 'http://' + hostname + ':8080/tpbackend_1-1.0-SNAPSHOT/api/trainingsplan/get_bm_values/';
             var xmlHttp = new XMLHttpRequest();
         
             xmlHttp.open( "GET", url + getusername() + "/1", false ); // false for synchronous request
@@ -1855,6 +1898,8 @@
             }).then(
                 function(dismiss)
                 {
+                    console.log(dismiss);
+
                     if(dismiss.value == true)
                     {
                         console.log("CONFIRM");
@@ -1868,8 +1913,7 @@
                     }
                     else
                     {
-                        console.log(dismiss);
-                        //console.log("BACKDROPPED");
+                        console.log("BACKDROPPED");
                     }
                 }, function(dismiss)
                 {

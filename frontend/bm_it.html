@@ -28,7 +28,7 @@
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@sweetalert2/theme-dark@1/dark.css">
 
 
-    <script src="http://jakob.ml/auth/js/keycloak.js"></script> 
+    <script src="http://jakob.ml:8081/auth/js/keycloak.js"></script> 
     <script>
         var keycloak;
         function display_error(type, title, message)
@@ -1849,6 +1849,8 @@
                cancelButtonText: "Dont show again!",
                closeOnConfirm: false,
                closeOnCancel: false,
+               input: 'checkbox',
+               inputPlaceholder: 'Dont show again',
                timer: 4000,
             }).then(
                 function(dismiss)

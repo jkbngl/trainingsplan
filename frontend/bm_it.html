@@ -1875,14 +1875,15 @@
             //labels[i].className += " mobile_label";
         }
 
-        console.log(get_cookie("show_warning_cookie"));
-
         // TODO Logic:
         // If the show_warning_cookie has never been set show the warning always
         // if the show_warning_cookie is true and the interface_type cookie is simple_interface
         // Else show the interface_type cookie
         if(get_cookie("show_warning_cookie") != false)
         {
+            document.getElementById("simplify-ui").checked = true;
+            simplify_ui();
+
             swal.fire({
                title: 'Simplified!',
                text: 'As you are on a mobile device we deactivated the additional inputs, you can reactivate them in the settings.',
@@ -1890,8 +1891,8 @@
                showCancelButton: true,
                confirmButtonText: "Confirm!",
                cancelButtonText: "UNSET!",
-               closeOnConfirm: false,
-               closeOnCancel: false,
+               //closeOnConfirm: false,
+               //closeOnCancel: false,
                input: 'checkbox',
                inputPlaceholder: 'Dont show again',
                timer: 5000,
@@ -1901,6 +1902,7 @@
                     // 1 = CONFIRM + UNCHECKED
                     // 0 = CONFIRM + CHECKED
                     // cancel = CANCEL button
+                    // missing cancel + checked
                     // backdropped = dont clicked or clicked outside - BACKDROPPED
                     console.log(dismiss);
 
@@ -1915,12 +1917,14 @@
                         console.log("UNSET");
                         document.getElementById("simplify-ui").checked = false;
                         simplify_ui();
-                        // set_cookie("show_warning_cookie", 7, false);
                     }
                     else if(dismiss.value == false)
                     {
                         console.log("CONFIRM + UNCHECKED");
                         set_cookie("show_warning_cookie", 7, true);
+
+                        document.getElementById("simplify-ui").checked = true;
+                        simplify_ui();
                     }
                     else
                     {
@@ -1935,11 +1939,7 @@
                     }
                 }
             );
-        }
-
-        document.getElementById("simplify-ui").checked = true;
-        simplify_ui();
-        
+        }        
     }
 
     // #67 newly added func

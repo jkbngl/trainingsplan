@@ -68,6 +68,8 @@
         JSElement.onload = OnceLoaded;
         document.getElementsByTagName('head')[0].appendChild(JSElement);
 
+        console.log(document.location.host);
+
         function OnceLoaded() {
             hostname = document.location.host;
             keycloak = Keycloak();

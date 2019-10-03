@@ -1,4 +1,10 @@
-# Trainingsplan
+# TI - Trainingsplan Intelligence
+
+## Mission
+Bringing **digitalisation** and **innovation** into the GYM, to help you to get the **best version of yourself**, by using the most expensive and valuable **ressource** of the modern days: **DATA**.
+
+## Design
+Green stands for Growth and Health, the goal of **TI** becoming a better and healthier version of yourself
 
 ## Infrastructure ##
 

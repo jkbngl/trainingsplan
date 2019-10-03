@@ -187,6 +187,15 @@
             }
         });
 
+        // To warn the user before leaving without saving
+        window.addEventListener('beforeunload', function (e) {
+            // Cancel the event
+            // e.preventDefault();
+            // Chrome requires returnValue to be set
+            if(5 == 2 - 3)
+                e.returnValue = '';
+        });
+
         function getusername()
         {   
             return username;

@@ -62,7 +62,6 @@
 
     <script type="text/javascript"> 
         
-        console.log(document.location.host);
         var JSLink = "http://" + document.location.host + ":8081/auth/js/keycloak.js";
         var JSElement = document.createElement('script');
         JSElement.src = JSLink;
@@ -72,10 +71,6 @@
         function OnceLoaded() {
             hostname = document.location.host;
             keycloak = Keycloak();
-
-            console.log(Object.keys(keycloak));
-            console.log(keycloak.createLoginUrl)
-
 
             keycloak.init({ onLoad: 'login-required' })
 
@@ -611,7 +606,7 @@
             addTable(true);
     }
 
-    function addRowWithEx(tableName, exid, exname, exweight, exreps, exsets, exmaxreps, expause, note)
+    function addRowWithEx(tableName, exid, exname, exweight, exreps, exsets, exmaxreps, expause, note, index)
     {
         var table = document.getElementById(tableName);
         var rowCount = document.getElementById(tableName).rows.length;
@@ -629,13 +624,19 @@
         cell1.val = exid;
 
         cell1.innerHTML = "<td class=\'tdinput\'> <div contenteditable='false' data-placeholder='name' onkeypress='set_edited(true)' value=" + exid + " class='title' style=\"display: table-cell; background-color: transparent; color:#7F7F7F; width:25em; min-height: 25px; text-align: center\"/>" + exname    + "</div></td>";
-        cell2.innerHTML = "<td class=\'tdinput\'> <div contenteditable='true'  data-placeholder='kilo' onkeypress='set_edited(true)' value=" + exid + " class='title' style=\"display: table-cell; background-color: transparent; color:#00ad5f; width:10em; min-height: 25px; text-align: center\"/>" + exweight  + "</div></td>";
+        cell2.innerHTML = "<td class=\'tdinput\'> <div " + ( tableName == 'myTable1' && index == 0 ? 'id="autofocus"' : '') + " contenteditable='true'   data-placeholder='kilo' onkeypress='set_edited(true)' value=" + exid + " class='title' style=\"display: table-cell; background-color: transparent; color:#00ad5f; width:10em; min-height: 25px; text-align: center\"/>" + exweight  + "</div></td>";
         cell3.innerHTML = "<td class=\'tdinput\'> <div contenteditable='true'  data-placeholder='reps' onkeypress='set_edited(true)' value=" + exid + " class='title' style=\"display: table-cell; background-color: transparent; color:#00ad5f; width:11em; min-height: 25px; text-align: center\"/>" + exreps    + "</div></td>";
         cell4.innerHTML = "<td class=\'tdinput\'> <div contenteditable='true'  data-placeholder='sets' onkeypress='set_edited(true)' value=" + exid + " class='title' style=\"display: table-cell; background-color: transparent; color:#00ad5f; width:10em; min-height: 25px; text-align: center\"/>" + exsets    + "</div></td>";
         cell5.innerHTML = "<td class=\'tdinput\'> <div contenteditable='true'  data-placeholder='maxr' onkeypress='set_edited(true)' value=" + exid + " class='title' style=\"display: table-cell; background-color: transparent; color:#00ad5f; width:10em; min-height: 25px; text-align: center\"/>" + exmaxreps + "</div></td>";
         cell6.innerHTML = "<td class=\'tdinput\'> <div contenteditable='true'  data-placeholder='time' onkeypress='set_edited(true)' value=" + exid + " class='title' style=\"display: table-cell; background-color: transparent; color:#00ad5f; width:10em; min-height: 25px; text-align: center\"/>" + expause   + "</div></td>";
         cell7.innerHTML = "<td class=\'tdinput\'> <div contenteditable='true'  data-placeholder='note' onkeypress='set_edited(true)' value=" + exid + " class='title' style=\"display: table-cell; background-color: transparent; color:#00ad5f; width:25em; min-height: 25px; text-align: center\"/>" + note + "</div></td>";
         cell8.innerHTML = "<button style='background: #222222; color: #28AD5F; font-style=bold; float: right' onclick='deleteRow(" + tableName + ", "+ rowCount + ")'>&nbsp<i class='fas fa-times-circle'></i></i></button>";
+        
+        // Strange workaroung which gets the job done
+        var div = document.getElementById('autofocus');
+        setTimeout(function() {
+            div.focus();
+        }, 0);
         
         // Needed for exctracting the data, maybe rename attribute
         row.setAttribute("id", "somerow", 0);
@@ -1308,7 +1309,8 @@
                            , json.plan[i].day[j].exercise.sets
                            , json.plan[i].day[j].exercise.maxrep
                            , json.plan[i].day[j].exercise.pause 
-                           , json.plan[i].day[j].exercise.note );
+                           , json.plan[i].day[j].exercise.note 
+                           , j);
             }
         }
 

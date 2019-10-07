@@ -400,16 +400,22 @@
         var cell7 = row.insertCell(6); // #37
         var cell8 = row.insertCell(7);
 
-        cell1.innerHTML = "<td class=\'tdinput\'> <div contenteditable='true' id='tags' onkeypress='set_edited(true)' value='defaultvaluetoignore' class='title' data-placeholder='name' style=\"table-layout:fixed; display: table-cell; background-color: transparent; color:#7F7F7F; width:25em; min-height: 25px; text-align: center\"/></div></td>";
-        cell2.innerHTML = "<td class=\'tdinput\'> <div contenteditable='true' id='tags' onkeypress='set_edited(true)' value='defaultvaluetoignore' class='title' data-placeholder='kilo' style=\"table-layout:fixed; display: table-cell; background-color: transparent; color:#7F7F7F; width:10em; min-height: 25px; text-align: center\"/></div></td>";
-        cell3.innerHTML = "<td class=\'tdinput\'> <div contenteditable='true' id='tags' onkeypress='set_edited(true)' value='defaultvaluetoignore' class='title' data-placeholder='reps' style=\"table-layout:fixed; display: table-cell; background-color: transparent; color:#7F7F7F; width:11em; min-height: 25px; text-align: center\"/></div></td>";
-        cell4.innerHTML = "<td class=\'tdinput\'> <div contenteditable='true' id='tags' onkeypress='set_edited(true)' value='defaultvaluetoignore' class='title' data-placeholder='sets' style=\"table-layout:fixed; display: table-cell; background-color: transparent; color:#7F7F7F; width:10em; min-height: 25px; text-align: center\"/></div></td>";
-        cell5.innerHTML = "<td class=\'tdinput\'> <div contenteditable='true' id='tags' onkeypress='set_edited(true)' value='defaultvaluetoignore' class='title' data-placeholder='maxr' style=\"table-layout:fixed; display: table-cell; background-color: transparent; color:#7F7F7F; width:10em; min-height: 25px; text-align: center\"/></div></td>";
-        cell6.innerHTML = "<td class=\'tdinput\'> <div contenteditable='true' id='tags' onkeypress='set_edited(true)' value='defaultvaluetoignore' class='title' data-placeholder='time' style=\"table-layout:fixed; display: table-cell; background-color: transparent; color:#7F7F7F; width:10em; min-height: 25px; text-align: center\"/></div></td>";
-        cell7.innerHTML = "<td class=\'tdinput\'> <div contenteditable='true' id='tags' onkeypress='set_edited(true)' value='defaultvaluetoignore' class='title' data-placeholder='note' style=\"table-layout:fixed; display: table-cell; background-color: transparent; color:#7F7F7F; width:25em; min-height: 25px; text-align: center\"/></div></td>";
+        cell1.innerHTML = "<td class=\'tdinput\'> <div contenteditable='true' onkeypress='set_edited(true)' value='defaultvaluetoignore' class='title' data-placeholder='name' style=\"table-layout:fixed; display: table-cell; background-color: transparent; color:#7F7F7F; width:25em; min-height: 25px; text-align: center\"/></div></td>";
+        cell2.innerHTML = "<td class=\'tdinput\'> <div contenteditable='true' " + ( tableName == 'myTable1' ? 'id="autofocus"' : '') + " onkeypress='set_edited(true)' value='defaultvaluetoignore' class='title' data-placeholder='kilo' style=\"table-layout:fixed; display: table-cell; background-color: transparent; color:#7F7F7F; width:10em; min-height: 25px; text-align: center\"/></div></td>";
+        cell3.innerHTML = "<td class=\'tdinput\'> <div contenteditable='true' onkeypress='set_edited(true)' value='defaultvaluetoignore' class='title' data-placeholder='reps' style=\"table-layout:fixed; display: table-cell; background-color: transparent; color:#7F7F7F; width:11em; min-height: 25px; text-align: center\"/></div></td>";
+        cell4.innerHTML = "<td class=\'tdinput\'> <div contenteditable='true' onkeypress='set_edited(true)' value='defaultvaluetoignore' class='title' data-placeholder='sets' style=\"table-layout:fixed; display: table-cell; background-color: transparent; color:#7F7F7F; width:10em; min-height: 25px; text-align: center\"/></div></td>";
+        cell5.innerHTML = "<td class=\'tdinput\'> <div contenteditable='true' onkeypress='set_edited(true)' value='defaultvaluetoignore' class='title' data-placeholder='maxr' style=\"table-layout:fixed; display: table-cell; background-color: transparent; color:#7F7F7F; width:10em; min-height: 25px; text-align: center\"/></div></td>";
+        cell6.innerHTML = "<td class=\'tdinput\'> <div contenteditable='true' onkeypress='set_edited(true)' value='defaultvaluetoignore' class='title' data-placeholder='time' style=\"table-layout:fixed; display: table-cell; background-color: transparent; color:#7F7F7F; width:10em; min-height: 25px; text-align: center\"/></div></td>";
+        cell7.innerHTML = "<td class=\'tdinput\'> <div contenteditable='true' onkeypress='set_edited(true)' value='defaultvaluetoignore' class='title' data-placeholder='note' style=\"table-layout:fixed; display: table-cell; background-color: transparent; color:#7F7F7F; width:25em; min-height: 25px; text-align: center\"/></div></td>";
         cell8.innerHTML = "<button style='background: #222222; color: #28AD5F; font-style=bold; float: right' onclick='deleteRow(" + tableName + ", "+ rowCount + ")'>&nbsp<i class='fas fa-times-circle'></i></i></button>";
 
         row.setAttribute("id", "somerow", 0);
+
+        // Strange workaroung which gets the job done
+        var div = document.getElementById('autofocus');
+        setTimeout(function() {
+            div.focus();
+        }, 0);
 
         // make changes for reordered buttons again active
         if( isMobile.any() ) 

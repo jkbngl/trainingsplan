@@ -972,19 +972,23 @@
                 if(!show_warning)
                 {
                     var jsondata = getExercises();
-                    var xhr = new XMLHttpRequest();
-                    var url = "http://" + hostname + ":8080/tpbackend_1-1.0-SNAPSHOT/api/trainingsplan/sendPlan";
-                    xhr.open("POST", url, true);
-                    xhr.setRequestHeader("Content-Type", "text/plain");
-                    var data = JSON.stringify(jsondata);
-                    xhr.send(jsondata);
-                    console.log("no error found - sending normal plan");
-                    console.log(jsondata);
-                
-                    console.log("DATA SEND, no warning displayed");
-                    
-                    checkIfDataIsLoadedIntoDB(xhr);
-                    
+
+                    if(!jsondata.startsWith('ERRORCODE 0'))
+                    {
+                        var xhr = new XMLHttpRequest();
+                        var url = "http://" + hostname + ":8080/tpbackend_1-1.0-SNAPSHOT/api/trainingsplan/sendPlan";
+                        xhr.open("POST", url, true);
+                        xhr.setRequestHeader("Content-Type", "text/plain");
+                        var data = JSON.stringify(jsondata);
+                        xhr.send(jsondata);
+                        console.log("no error found - sending normal plan");
+                        console.log(jsondata);
+                        
+                        console.log("DATA SEND, no warning displayed");
+                        
+                        checkIfDataIsLoadedIntoDB(xhr);
+                    }
+
                     //onSave();
                 }
             }
@@ -1325,37 +1329,8 @@
 
     function enter_plan_name()
     {
-        var txt;
         var planname = prompt("Please enter the name of your plan:", "Plan by ..." /*+ getusername()*/ );
-
-        /*
-        Swal.mixin({
-          input: 'text',
-          confirmButtonText: 'Next &rarr;',
-          showCancelButton: true,
-          progressSteps: ['1', '2', '3']
-        }).queue([
-          {
-            title: 'Question 1',
-            text: 'Chaining swal2 modals is easy'
-          },
-          'Question 2',
-          'Question 3'
-        ]).then((result) => {
-          if (result.value) {
-            Swal.fire({
-              title: 'All done!',
-              html:
-                'Your answers: <pre><code>' +
-                  JSON.stringify(result.value) +
-                '</code></pre>',
-              confirmButtonText: 'Lovely!'
-            })
-          }
-        })
-        */
-
-
+    
         if (planname == null || planname == "")
         {
             return "ERRORCODE 00003 - User cancelled the promRpt.";

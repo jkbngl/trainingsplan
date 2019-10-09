@@ -101,11 +101,19 @@
                 append_preferences();
             }
         }
+
     </script>
     
     <script>
         var keycloak;
         var hostname = "example.com"
+
+        document.onkeyup = function(e) {
+          if (e.ctrlKey && e.key == 'Enter') {
+            alert("Ctrl + Enter was pressed");
+            // TODO add save
+          }
+        };
 
         function display_error(type, title, message)
         {

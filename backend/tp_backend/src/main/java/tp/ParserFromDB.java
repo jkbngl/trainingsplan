@@ -415,14 +415,20 @@ public class ParserFromDB
         String possible_base_ex = "{\"username\": \"" + username + "\",\"base_exs\": [";
 
 
-        String query = "select  distinct on (base_ex) base_ex, e.name, e.id, p.name "
-                + "from  tp_exercise e "
-                + "join  tp_day  d on d.id = day_fk "
-                + "join  tp_plan p on p.id = d.plan_fk "
-                + "join  tp_user u on u.id = p.userid_fk "
-                + "where  base_ex > 0 "
-                + "and  username = (?) "
-                + "order by base_ex ";
+        String query = "select base_ex, name, id, planname from "
+                     + "( "
+                     + "  select  distinct on (base_ex) base_ex "
+                     + "        , e.name "
+                     + "        , e.id "
+                     + "        , p.name planname "
+                     + "  from  tp_exercise e "
+                     + "  join  tp_day  d on d.id = day_fk "
+                     + "  join  tp_plan p on p.id = d.plan_fk "
+                     + "  join  tp_user u on u.id = p.userid_fk "
+                     + "  where  base_ex > 0 "
+                     + "  and  username = (?) "
+                     + ") base_ex "
+                     + "order by name asc ";
 
         PreparedStatement pstmt = connection.prepareStatement(query);
         pstmt.setString(1, username.toLowerCase());

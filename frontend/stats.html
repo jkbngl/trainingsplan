@@ -967,9 +967,9 @@
 
             if(i > 0)
                 if(parseFloat(json.values[i].weight.match(/[\d\.]+/)) > parseFloat(json.values[i - 1].weight.match(/[\d\.]+/)))
-                    parse += '<font color="green">Weight: ' + json.values[i].weight + "</font><br>";
+                    parse += '<font color="green">Weight: ' + json.values[i].weight + ' <i class="fas fa-arrow-up"></i></font><br>';
                 else if(parseFloat(json.values[i].weight.match(/[\d\.]+/)) < parseFloat(json.values[i - 1].weight.match(/[\d\.]+/)))
-                    parse += '<font color="red">Weight: ' + json.values[i].weight + "</font><br>"; 
+                    parse += '<font color="red">Weight: ' + json.values[i].weight + ' <i class="fas fa-arrow-down"></i></font><br>';
                 else
                     parse += "Weight: " + json.values[i].weight + "<br>";
             else
@@ -977,9 +977,9 @@
 
             if(i > 0)
                 if(parseFloat(json.values[i].reps.match(/[\d\.]+/)) > parseFloat(json.values[i - 1].reps.match(/[\d\.]+/)))
-                    parse += '<font color="green">Reps: ' + json.values[i].reps + "</font><br>";
+                    parse += '<font color="green">Reps: ' + json.values[i].reps + ' <i class="fas fa-arrow-up"></i></font><br>';
                 else if(parseFloat(json.values[i].reps.match(/[\d\.]+/)) < parseFloat(json.values[i - 1].reps.match(/[\d\.]+/)))
-                    parse += '<font color="red">Reps: ' + json.values[i].reps + "</font><br>";
+                    parse += '<font color="red">Reps: ' + json.values[i].reps + ' <i class="fas fa-arrow-down"></i></font><br>';
                 else
                     parse += "Reps: " + json.values[i].reps + "<br>";
             else
@@ -988,9 +988,9 @@
             
             if(i > 0)
                 if(parseFloat(json.values[i].sets.match(/[\d\.]+/)) > parseFloat(json.values[i - 1].sets.match(/[\d\.]+/)))
-                    parse += '<font color="green">Sets: ' + json.values[i].sets + "</font><br>";
+                    parse += '<font color="green">Sets: ' + json.values[i].sets + ' <i class="fas fa-arrow-up"></i></font><br>';
                 else if(parseFloat(json.values[i].sets.match(/[\d\.]+/)) < parseFloat(json.values[i - 1].sets.match(/[\d\.]+/)))
-                    parse += '<font color="red">Sets: ' + json.values[i].sets + "</font><br>";
+                    parse += '<font color="red">Sets: ' + json.values[i].sets + ' <i class="fas fa-arrow-down"></i></font><br>';
                 else   
                     parse += "Sets: " + json.values[i].sets + "<br>";
             else
@@ -998,9 +998,9 @@
             
             if(i > 0)
                 if(parseFloat(json.values[i].max_rep.match(/[\d\.]+/)) > parseFloat(json.values[i - 1].max_rep.match(/[\d\.]+/)))
-                    parse += '<font color="green">Max Rep: ' + json.values[i].max_rep + "</font><br>";
+                    parse += '<font color="green">Max Rep: ' + json.values[i].max_rep + ' <i class="fas fa-arrow-up"></i></font><br>';
                 else if(parseFloat(json.values[i].max_rep.match(/[\d\.]+/)) < parseFloat(json.values[i - 1].max_rep.match(/[\d\.]+/)))
-                    parse += '<font color="red">Max Rep: ' + json.values[i].max_rep + "</font><br>";
+                    parse += '<font color="red">Max Rep: ' + json.values[i].max_rep + ' <i class="fas fa-arrow-down"></i></font><br>';
                 else   
                     parse += "Max Rep: " + json.values[i].max_rep + "<br>";
             else

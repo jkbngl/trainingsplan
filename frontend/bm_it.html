@@ -1358,16 +1358,16 @@
                 if(json_bm[i].value > json_bm[i - 1].value)
                 {
                     if(i > json_bm.length - n_datapoints_to_show)
-                        to_dispay += '<font color="green">' + json_bm[i].value + (json_bm[i].note.length != 0 ? "<br>Note:" + json_bm[i].note : "") + "</font><br>";
+                        to_dispay += '<font color="green">' + json_bm[i].value + ' <i class="fas fa-arrow-up"></i>' + (json_bm[i].note.length != 0 ? "<br>Note:" + json_bm[i].note : "") + "</font><br>";
                     else
-                        to_dispay += '<font style="opacity: ' + opacity_v + '" color="green">' + json_bm[i].value + (json_bm[i].note.length != 0 ? "<br>Note:" + json_bm[i].note : "") + "</font><br>";
+                        to_dispay += '<font style="opacity: ' + opacity_v + '" color="green">' + json_bm[i].value + ' <i class="fas fa-arrow-up"></i>' + (json_bm[i].note.length != 0 ? "<br>Note:" + json_bm[i].note : "") + "</font><br>";
                 }    
                 else if(json_bm[i].value < json_bm[i - 1].value)
                 {
                     if(i > json_bm.length - n_datapoints_to_show)
-                        to_dispay += '<font color="red">' + json_bm[i].value + (json_bm[i].note.length != 0 ? "<br>Note:" + json_bm[i].note : "") + "</font><br>"; 
+                        to_dispay += '<font color="red">' + json_bm[i].value + ' <i class="fas fa-arrow-down"></i>' + (json_bm[i].note.length != 0 ? "<br>Note:" + json_bm[i].note : "") + "</font><br>"; 
                     else
-                        to_dispay += '<font style="opacity: ' + opacity_v + '" color="red">' + json_bm[i].value + (json_bm[i].note.length != 0 ? "<br>Note:" + json_bm[i].note : "") + "</font><br>"; 
+                        to_dispay += '<font style="opacity: ' + opacity_v + '" color="red">' + json_bm[i].value + ' <i class="fas fa-arrow-down"></i>' + (json_bm[i].note.length != 0 ? "<br>Note:" + json_bm[i].note : "") + "</font><br>"; 
                 }
                 else
                 {

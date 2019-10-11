@@ -454,8 +454,7 @@
 
     function set_edited(value)
     {
-        if(value)
-            modified = true;
+        modified = value;
     }
 
     function check_roles(assigned_roles, full_check)
@@ -1265,6 +1264,8 @@
     {
         var request = new XMLHttpRequest();
         var username = getusername();
+
+        set_edited(false);
 
         if(currentPlanId != '')
         {

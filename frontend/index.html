@@ -862,6 +862,9 @@
             xhr.setRequestHeader("Content-Type", "text/plain");
 
             xhr.send(value_to_del);
+
+            console.log("NOW THE NEWEST PLAN SHOULD BE LOADED");
+            //onSave();
         }
         else
         {
@@ -1267,6 +1270,7 @@
 
         set_edited(false);
 
+
         if(currentPlanId != '')
         {
             try{
@@ -1276,10 +1280,13 @@
                     var xmlHttp = new XMLHttpRequest();
                     xmlHttp.open( "GET", url, false ); // false for synchronous request
                     xmlHttp.send( null );
+                    console.log("1")
                     plan = xmlHttp.responseText;
-
+                    console.log("2")
                     var data = JSON.parse(plan);
+                    console.log("3")
                     printjson(data, plan);
+                    console.log("4")
                 }, 500);
 
             }

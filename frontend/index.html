@@ -860,9 +860,10 @@
             xhr.setRequestHeader("Content-Type", "text/plain");
 
             xhr.send(value_to_del);
-
-            console.log("NOW THE NEWEST PLAN SHOULD BE LOADED");
-            //onSave();
+            
+            // If the current plan is deleted, reload the newest one
+            if(value_to_del == currentPlanId)
+                receivePlanfromDB(true);
         }
         else
         {
@@ -1113,7 +1114,7 @@
             {
                 var json = JSON.parse(this.response);
 
-                if(json.plans.length > 1 && onlogon == false) // if more than 1 day than load all plans
+                if(json.plans.length > 1 && onlogon == false) // if more than 1 plan than load all plans
                 {
                     showDialog('http://' + hostname + ':8080/tpbackend_1-1.0-SNAPSHOT/api/trainingsplan/getPlansByUser/', 0, true, null);
                 }
@@ -1268,6 +1269,7 @@
 
         set_edited(false);
 
+        console.log(currentPlanId == '')
 
         if(currentPlanId != '')
         {
@@ -1276,15 +1278,15 @@
                     var url = 'http://' + hostname + ':8080/tpbackend_1-1.0-SNAPSHOT/api/trainingsplan/getPlanByUserAndPlan/' + username + '/' + currentPlanId;
 
                     var xmlHttp = new XMLHttpRequest();
-                    xmlHttp.open( "GET", url, false ); // false for synchronous request
+                    xmlHttp.open( "GET", url, false); // false for synchronous request
                     xmlHttp.send( null );
-                    console.log("1")
                     plan = xmlHttp.responseText;
-                    console.log("2")
                     var data = JSON.parse(plan);
-                    console.log("3")
                     printjson(data, plan);
-                    console.log("4")
+
+                    console.log(data);
+                    console.log(plan);
+
                 }, 500);
 
             }

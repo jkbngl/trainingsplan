@@ -920,6 +920,16 @@
 
         console.log(json);
 
+        let weight_opacity_faktor = document.getElementById("weight_box").checked ? 1 : .75;
+        let reps_opacity_faktor = document.getElementById("reps_box").checked ? 1 : .75;
+        let sets_opacity_faktor = document.getElementById("sets_box").checked ? 1 : .75;
+        let max_rep_opacity_faktor = document.getElementById("max_rep_box").checked ? 1 : .75;
+
+        console.log(weight_opacity_faktor);
+        console.log(reps_opacity_faktor);
+        console.log(sets_opacity_faktor);
+        console.log(max_rep_opacity_faktor);
+
         for(var i = 0; i < json.values.length; i++)
         {
             parse += (i + 1) + ". Entry on: " + json.values[i].created + "<br>";

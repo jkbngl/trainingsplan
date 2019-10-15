@@ -920,10 +920,10 @@
 
         console.log(json);
 
-        let weight_opacity_faktor = document.getElementById("weight_box").checked ? 1 : .75;
-        let reps_opacity_faktor = document.getElementById("reps_box").checked ? 1 : .75;
-        let sets_opacity_faktor = document.getElementById("sets_box").checked ? 1 : .75;
-        let max_rep_opacity_faktor = document.getElementById("max_rep_box").checked ? 1 : .75;
+        var weight_opacity_faktor = document.getElementById("weight_box").checked ? 1 : .5;
+        var reps_opacity_faktor = document.getElementById("reps_box").checked ? 1 : .5;
+        var sets_opacity_faktor = document.getElementById("sets_box").checked ? 1 : .5;
+        var max_rep_opacity_faktor = document.getElementById("max_rep_box").checked ? 1 : .5;
 
         console.log(weight_opacity_faktor);
         console.log(reps_opacity_faktor);
@@ -936,44 +936,44 @@
 
             if(i > 0)
                 if(parseFloat(json.values[i].weight.match(/[\d\.]+/)) > parseFloat(json.values[i - 1].weight.match(/[\d\.]+/)))
-                    parse += '<font color="green">Weight: ' + json.values[i].weight + ' <i class="fas fa-arrow-up"></i></font><br>';
+                    parse += '<font color="green" style="opacity:  ' + (1 * weight_opacity_faktor) + '">Weight: ' + json.values[i].weight + ' <i class="fas fa-arrow-up"></i></font><br>';
                 else if(parseFloat(json.values[i].weight.match(/[\d\.]+/)) < parseFloat(json.values[i - 1].weight.match(/[\d\.]+/)))
-                    parse += '<font color="red">Weight: ' + json.values[i].weight + ' <i class="fas fa-arrow-down"></i></font><br>';
+                    parse += '<font color="red" style="opacity: ' + (1 * weight_opacity_faktor) + '">Weight: ' + json.values[i].weight + ' <i class="fas fa-arrow-down"></i></font><br>';
                 else
-                    parse += "Weight: " + json.values[i].weight + "<br>";
+                parse += '<font style="opacity: ' + (1 * weight_opacity_faktor) + '">Weight: ' + json.values[i].weight + '</font><br>';
             else
-                parse += "Weight: " + json.values[i].weight + "<br>";
+            parse += '<font style="opacity: ' + (1 * weight_opacity_faktor) + '">Weight: ' + json.values[i].weight + '</font><br>';
 
             if(i > 0)
                 if(parseFloat(json.values[i].reps.match(/[\d\.]+/)) > parseFloat(json.values[i - 1].reps.match(/[\d\.]+/)))
-                    parse += '<font color="green">Reps: ' + json.values[i].reps + ' <i class="fas fa-arrow-up"></i></font><br>';
+                    parse += '<font color="green" style=" opacity: ' + (1 * reps_opacity_faktor) + '">Reps: ' + json.values[i].reps + ' <i class="fas fa-arrow-up"></i></font><br>';
                 else if(parseFloat(json.values[i].reps.match(/[\d\.]+/)) < parseFloat(json.values[i - 1].reps.match(/[\d\.]+/)))
-                    parse += '<font color="red">Reps: ' + json.values[i].reps + ' <i class="fas fa-arrow-down"></i></font><br>';
+                    parse += '<font color="red" style="opacity: ' + (1 * + reps_opacity_faktor) + '">Reps: ' + json.values[i].reps + ' <i class="fas fa-arrow-down"></i></font><br>';
                 else
-                    parse += "Reps: " + json.values[i].reps + "<br>";
+                    parse += '<font style="opacity: ' + (1 * reps_opacity_faktor) + '">Reps: ' + json.values[i].reps + '</font><br>';
             else
-                parse += "Reps: " + json.values[i].reps + "<br>";
+                parse += '<font style="opacity: ' + (1 * reps_opacity_faktor) + '">Reps: ' + json.values[i].reps + '</font><br>';
 
             
             if(i > 0)
                 if(parseFloat(json.values[i].sets.match(/[\d\.]+/)) > parseFloat(json.values[i - 1].sets.match(/[\d\.]+/)))
-                    parse += '<font color="green">Sets: ' + json.values[i].sets + ' <i class="fas fa-arrow-up"></i></font><br>';
+                    parse += '<font color="green"style=" opacity: ' + (1 * sets_opacity_faktor) + '">Sets: ' + json.values[i].sets + ' <i class="fas fa-arrow-up"></i></font><br>';
                 else if(parseFloat(json.values[i].sets.match(/[\d\.]+/)) < parseFloat(json.values[i - 1].sets.match(/[\d\.]+/)))
-                    parse += '<font color="red">Sets: ' + json.values[i].sets + ' <i class="fas fa-arrow-down"></i></font><br>';
+                    parse += '<font color="red"style=" opacity: ' + (1 * sets_opacity_faktor) + '">Sets: ' + json.values[i].sets + ' <i class="fas fa-arrow-down"></i></font><br>';
                 else   
-                    parse += "Sets: " + json.values[i].sets + "<br>";
+                    parse += '<font style="opacity: ' + (1 * sets_opacity_faktor) + '">Sets: ' + json.values[i].sets + '</font><br>';
             else
-                parse += "Sets: " + json.values[i].sets + "<br>";
+                parse += '<font style="opacity: ' + (1 * sets_opacity_faktor) + '">Sets: ' + json.values[i].sets + '</font><br>';
             
             if(i > 0)
                 if(parseFloat(json.values[i].max_rep.match(/[\d\.]+/)) > parseFloat(json.values[i - 1].max_rep.match(/[\d\.]+/)))
-                    parse += '<font color="green">Max Rep: ' + json.values[i].max_rep + ' <i class="fas fa-arrow-up"></i></font><br>';
+                    parse += '<font color="green" style="opacity:  ' + (1 * max_rep_opacity_faktor) + '">Max Rep: ' + json.values[i].max_rep + ' <i class="fas fa-arrow-up"></i></font><br>';
                 else if(parseFloat(json.values[i].max_rep.match(/[\d\.]+/)) < parseFloat(json.values[i - 1].max_rep.match(/[\d\.]+/)))
-                    parse += '<font color="red">Max Rep: ' + json.values[i].max_rep + ' <i class="fas fa-arrow-down"></i></font><br>';
+                    parse += '<font color="red" style="opacity:  ' + (1 * max_rep_opacity_faktor) + '">Max Rep: ' + json.values[i].max_rep + ' <i class="fas fa-arrow-down"></i></font><br>';
                 else   
-                    parse += "Max Rep: " + json.values[i].max_rep + "<br>";
+                    parse += '<font style="opacity: ' + (100 * max_rep_opacity_faktor) + '">Max Rep: ' + json.values[i].max_rep + '</font><br>';
             else
-                parse += "Max Rep: " + json.values[i].max_rep + "<br>";
+                parse += '<font style="opacity: ' + (100 * max_rep_opacity_faktor) + '">Max Rep: ' + json.values[i].max_rep + '</font><br>';
 
             parse += "<br>"
 

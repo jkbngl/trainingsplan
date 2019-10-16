@@ -905,6 +905,8 @@
             var json = JSON.parse(values);
 
             document.getElementById("additional-info").innerHTML += '<button id="' + json.base_ex + '" class="button" style="top: 10px; width:80%; margin-left: 10%;">' + ex_name + '</button>'
+
+            // #133 find a way to dynamically set this attribute
             document.getElementById(json.base_ex).setAttribute( "onClick", "Swal.fire({html: '" + parse_base_ex(values, ex_name) + "', customClass: mobile_swal});");
 
             // Needs to be called here to style the progress dialog which is created dynamically

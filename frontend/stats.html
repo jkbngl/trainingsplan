@@ -546,7 +546,8 @@
             }
             else if(roles.includes("bm_it_access") != true)
             {
-                document.getElementById("bm-it-button").style.display = "none";
+                document.getElementById("bm-it-button").innerHTML = document.getElementById("bm-it-button").innerHTML + ' <i class="fas fa-lock"></i>'
+                // document.getElementById("bm-it-button").style.display = "none";
             }
             else
             {

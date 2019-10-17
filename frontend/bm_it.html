@@ -1627,7 +1627,8 @@
             }
             else if(roles.includes("stats_access") != true)
             {
-                document.getElementById("stats-button").style.display = "none";
+                document.getElementById("stats-button").innerHTML = document.getElementById("stats-button").innerHTML + ' <i class="fas fa-lock"></i>'
+                //document.getElementById("stats-button").style.display = "none";
             }
             else
             {

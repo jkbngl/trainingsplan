@@ -477,20 +477,27 @@
 
             if(!superaccount)
             {
-                document.getElementById("stats-button").style.display = "none";         // Remove the stats button
-                document.getElementById("bm-button").style.display = "none";         // Remove the stats button
+                document.getElementById("stats-button").innerHTML = document.getElementById("stats-button").innerHTML + ' <i class="fas fa-lock"></i>'
+                //document.getElementById("stats-button").style.display = "none";         // Remove the stats button
+                document.getElementById("bm-button").innerHTML = document.getElementById("bm-button").innerHTML + ' <i class="fas fa-lock"></i>'
+                //document.getElementById("bm-button").style.display = "none";         // Remove the stats button
                 document.getElementById("logout-button").style.marginTop = "20%";       // Add a matching margin to the button instead of stats which is not existent
                 maximum_allowed_plans = 2;                                              // Allow only two plans per not super user
             }
 
             if(roles.indexOf("bm_it_access") > -1 && !superaccount)
             {
-                document.getElementById("bm-button").style.display = "inline";         // Add the bm button
+                let text = document.getElementById("bm-button").innerHTML.replace(' <i class="fas fa-lock"></i>','');
+                document.getElementById("bm-button").innerHTML = text;
+
+                //document.getElementById("bm-button").style.display = "inline";         // Add the bm button
             }
 
             if(roles.indexOf("stats_access") > -1 && !superaccount)
             {
-                document.getElementById("stats-button").style.display = "inline";      // Add the stats button
+                let text = document.getElementById("stats-button").innerHTML.replace(' <i class="fas fa-lock"></i>','');
+                document.getElementById("stats-button").innerHTML = text;
+                // document.getElementById("stats-button").style.display = "inline";      // Add the stats button
             }
 
             // if(document.getElementById("stats-button").style.display == "none" && document.getElementById("bm-button").style.display == "inline")

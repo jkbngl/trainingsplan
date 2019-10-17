@@ -972,9 +972,9 @@
                 else if(parseFloat(json.values[i].max_rep.match(/[\d\.]+/)) < parseFloat(json.values[i - 1].max_rep.match(/[\d\.]+/)))
                     parse += '<font color="red" style="opacity:  ' + (1 * max_rep_opacity_faktor + color_factor) + '">Max Rep: ' + json.values[i].max_rep + ' <i class="fas fa-arrow-down"></i></font><br>';
                 else   
-                    parse += '<font style="opacity: ' + (100 * max_rep_opacity_faktor) + '">Max Rep: ' + json.values[i].max_rep + '</font><br>';
+                    parse += '<font style="opacity: ' + (1 * max_rep_opacity_faktor) + '">Max Rep: ' + json.values[i].max_rep + '</font><br>';
             else
-                parse += '<font style="opacity: ' + (100 * max_rep_opacity_faktor) + '">Max Rep: ' + json.values[i].max_rep + '</font><br>';
+                parse += '<font style="opacity: ' + (1 * max_rep_opacity_faktor) + '">Max Rep: ' + json.values[i].max_rep + '</font><br>';
 
             parse += "<br>"
 

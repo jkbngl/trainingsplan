@@ -889,11 +889,16 @@
             xhr.setRequestHeader("Content-Type", "text/plain");
 
             xhr.send(value_to_restore);
+
+            // #120
+            console.log("LOAD: " + value_to_restore)
         }
         else
         {
             showDialog('http://' + hostname + ':8080/tpbackend_1-1.0-SNAPSHOT/api/trainingsplan/getPlansByUser/', 1, false, false);
         }
+
+
     }
 
     function loadPlanIntoDB()
@@ -1110,8 +1115,8 @@
 
         var url = 'http://' + hostname + ':8080/tpbackend_1-1.0-SNAPSHOT/api/trainingsplan/getPlansByUser/';
         var username = getusername();
+        
         var planid;
-
         var plan;
 
         request.open('GET', url + username + '/2', true);

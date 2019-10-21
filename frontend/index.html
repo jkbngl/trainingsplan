@@ -639,7 +639,7 @@
             addTable(true);
     }
 
-    function addRowWithEx(tableName, exid, exname, exweight, exreps, exsets, exmaxreps, expause, note, index)
+    function addRowWithEx(tableName, exid, exname, exweight, exreps, exsets, exmaxreps, expause, note, date, index)
     {
         var table = document.getElementById(tableName);
         var rowCount = document.getElementById(tableName).rows.length;
@@ -656,7 +656,7 @@
 
         cell1.val = exid;
 
-        cell1.innerHTML = "<td class=\'tdinput\'> <div contenteditable='false' data-placeholder='name' onkeypress='set_edited(true)' value=" + exid + " class='title' style=\"display: table-cell; background-color: transparent; color:#7F7F7F; width:25em; min-height: 25px; text-align: center\"/>" + exname    + "</div></td>";
+        cell1.innerHTML = "<td class=\'tdinput\'> <div onclick=\"show_last_updated_info(\'" + date /* #113 */ + "')\" contenteditable='false' data-placeholder='name' onkeypress='set_edited(true)' value=" + exid + " class='title' style=\"display: table-cell; background-color: transparent; color:#7F7F7F; width:25em; min-height: 25px; text-align: center\"/>" + exname    + " <i class=\"fas fa-info-circle\"></i></div></td>";
         cell2.innerHTML = "<td class=\'tdinput\'> <div " + ( tableName == 'myTable1' && index == 0 ? 'id="autofocus"' : '') + " contenteditable='true'   data-placeholder='kilo' onkeypress='set_edited(true)' value=" + exid + " class='title' style=\"display: table-cell; background-color: transparent; color:#00ad5f; width:10em; min-height: 25px; text-align: center\"/>" + exweight  + "</div></td>";
         cell3.innerHTML = "<td class=\'tdinput\'> <div contenteditable='true'  data-placeholder='reps' onkeypress='set_edited(true)' value=" + exid + " class='title' style=\"display: table-cell; background-color: transparent; color:#00ad5f; width:11em; min-height: 25px; text-align: center\"/>" + exreps    + "</div></td>";
         cell4.innerHTML = "<td class=\'tdinput\'> <div contenteditable='true'  data-placeholder='sets' onkeypress='set_edited(true)' value=" + exid + " class='title' style=\"display: table-cell; background-color: transparent; color:#00ad5f; width:10em; min-height: 25px; text-align: center\"/>" + exsets    + "</div></td>";
@@ -665,7 +665,7 @@
         cell7.innerHTML = "<td class=\'tdinput\'> <div contenteditable='true'  data-placeholder='note' onkeypress='set_edited(true)' value=" + exid + " class='title' style=\"display: table-cell; background-color: transparent; color:#00ad5f; width:25em; min-height: 25px; text-align: center\"/>" + note + "</div></td>";
         cell8.innerHTML = "<button style='background: #222222; color: #28AD5F; font-style=bold; float: right' onclick='deleteRow(" + tableName + ", "+ rowCount + ")'>&nbsp<i class='fas fa-times-circle'></i></i></button>";
         
-        // Strange workaroung which gets the job done
+        // Strange workaround, which gets the job done - sets autofocus on login to improve UX so that the user sees that the cells are editable
         var div = document.getElementById('autofocus');
         setTimeout(function() {
             div.focus();
@@ -673,6 +673,23 @@
         
         // Needed for exctracting the data, maybe rename attribute
         row.setAttribute("id", "somerow", 0);
+    }
+
+    // #113
+    function show_last_updated_info(date)
+    {
+        date = new Date(date).toUTCString()
+        date = date.split(' ').slice(0, 4).join(' ');
+
+        swal.fire({
+            title: 'Last update!',
+            type: 'info',
+            customClass: mobile_swal,
+            timer: 2000,
+            text: date,
+            showCancelButton: false,
+            showConfirmButton: false
+        });
     }
 
     function doesPlanNameExists(plannamelocal)
@@ -900,8 +917,6 @@
         {
             showDialog('http://' + hostname + ':8080/tpbackend_1-1.0-SNAPSHOT/api/trainingsplan/getPlansByUser/', 1, false, false);
         }
-
-
     }
 
     function loadPlanIntoDB()
@@ -912,7 +927,7 @@
             if(jsondata == 'ERRORCODE 00003' || jsondata == 'ERRORCODE 00004')
             {
                 console.log("sending dummy plan");
-                //xhr.send('{"plan":[{"username": "NoUser","planname": "NoPlan"}]}');
+                // xhr.send('{"plan":[{"username": "NoUser","planname": "NoPlan"}]}');
             }
             else
             {
@@ -1370,6 +1385,7 @@
                            , json.plan[i].day[j].exercise.maxrep
                            , json.plan[i].day[j].exercise.pause 
                            , json.plan[i].day[j].exercise.note 
+                           , json.plan[i].day[j].exercise.created
                            , j);
             }
         }

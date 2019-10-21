@@ -878,11 +878,11 @@
         }
     }
 
-    function restore_plan(value_to_restore, delete_bool)
+    function restore_plan(value_to_restore, restore_bool)
     {
         let username = getusername();
 
-        if(delete_bool)
+        if(restore_bool)
         {
             var xhr = new XMLHttpRequest();
             var url = "http://" + hostname + ":8080/tpbackend_1-1.0-SNAPSHOT/api/trainingsplan/restore_plan";

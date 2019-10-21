@@ -880,7 +880,8 @@
 
     function restore_plan(value_to_restore, delete_bool)
     {
-        
+        let username = getusername();
+
         if(delete_bool)
         {
             var xhr = new XMLHttpRequest();
@@ -890,8 +891,10 @@
 
             xhr.send(value_to_restore);
 
-            // #120
-            console.log("LOAD: " + value_to_restore)
+            // #120            
+            plan = getPlan('http://' + hostname + ':8080/tpbackend_1-1.0-SNAPSHOT/api/trainingsplan/getPlanByUserAndPlan/' + username + '/' + value_to_restore);
+            var data = JSON.parse(plan);
+            printjson(data, plan);
         }
         else
         {

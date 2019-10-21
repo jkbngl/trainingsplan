@@ -1204,6 +1204,9 @@
 
                             if(!isNaN(parseFloat(value)) && !isNaN(value - 0))
                             {
+                                // #120
+                                console.log(value)
+
                                 plan = getPlan('http://' + hostname + ':8080/tpbackend_1-1.0-SNAPSHOT/api/trainingsplan/getPlanByUserAndPlan/' + username + '/' + value);
                                 var data = JSON.parse(plan);
                                 
@@ -1329,6 +1332,7 @@
 
     function printjson(json, plaintext)
     {
+        // Needs some rework, why is json and plain needed and the plain is then converted into json?
         var json = JSON.parse(plaintext);
         var daycount = json.plan.length
 

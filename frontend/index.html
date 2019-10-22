@@ -679,15 +679,25 @@
     // #113
     function show_last_updated_info(date)
     {
-        date = new Date(date).toUTCString()
-        date = date.split(' ').slice(0, 4).join(' ');
+        var current_date = new Date();   //  07-06-2016 06:38:34
+        full_date = new Date(date); 
+        date = full_date.toUTCString().split(' ').slice(0, 4).join(' ');
+        var dif = parseInt((current_date - full_date) / (1000 * 60 * 60 * 24), 10); 
+
+        if(dif < 30)
+            dif = dif + " days ago";
+        else if(dif < 366)
+            dif = Math.round(dif / 30) + " months ago"
+        else
+            dif = "More than a year ago"
+
 
         swal.fire({
-            title: 'Last update!',
+            title: 'Last update - ' + date,
             type: 'info',
             customClass: mobile_swal,
             timer: 2000,
-            text: date,
+            text: dif,
             showCancelButton: false,
             showConfirmButton: false
         });

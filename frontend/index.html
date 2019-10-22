@@ -327,7 +327,16 @@
         }
         else
         {
-            alert("Only 5 Days are allowed at the moment");
+            // #139
+            swal.fire({
+                title: "Only 5 Days are allowed at the moment",
+                type: 'info',
+                customClass: mobile_swal,
+                timer: 3000,
+                // text: dif,
+                showCancelButton: false,
+                showConfirmButton: true
+            });
         }
         
         //$.    ();
@@ -699,7 +708,7 @@
             timer: 2000,
             text: dif,
             showCancelButton: false,
-            showConfirmButton: false
+            showConfirmButton: true
         });
     }
 

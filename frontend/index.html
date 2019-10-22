@@ -225,7 +225,7 @@
 <div class="fixed-background blue-gradient-bg"></div>
 
 
-<div id="mySidenav" class="sidenav">
+<div id="mySidenav" class="sidenav" style="z-index: 2;">
     <button id="open-nav-button" onclick="closeNav()"                      class="button" style="float:right; float:top; margin-right: 10%; margin-bottom: 15%" ><i class="fas fa-bars"></i></a>
     <button id="stats-button" onclick="window.location.href='stats.html'"  class="button" style="top: 10px; width:80%; margin-left: 10%; "><i class="fas fa-chart-line">       </i> Stats</button>
     <button id="bm-button" onclick="window.location.href='bm_it.html'"     class="button" style="top: 10px; width:80%; margin-left: 10%;">                 <i class="fas fa-weight"></i>       </i> Body Tracker</button>    
@@ -237,7 +237,7 @@
     
 </div>
 
-<div id = "headerforbuttons" style="display: flex; justify-content: space-between; position:fixed; width:100%">
+<div id = "headerforbuttons" style="display: flex; justify-content: space-between; position:fixed; width:100%; z-index: 1;">
     <button onclick="openNav()"                  class="button" id ="nav_opener" style="top: 10px;"><i class="fas fa-bars"></i></span></button>
     <button onclick="addTable(true)"             class="button" style="top: 10px;"><i class="fas fa-plus-circle"></i> Add new Day</button>
     <button onclick="loadPlanIntoDB();"          class="button" id ="saver" style="top: 10px;"><i class="far fa-save"></i></button>

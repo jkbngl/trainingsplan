@@ -256,6 +256,10 @@
             </label>
         </div>
 
+        <p style="margin-left: 10%; color:#00ad5f; font-family: Century Gothic; font-size: 125%; margin-top: 20%">Show N Datapoints:</p>
+        <input type="number" id="n-datapoints-to-show" onkeydown="set_datapoints_chart(this.value, false)" class="input_bm" placeholder="&nbsp; N Datapoints ..." style="text-align:center; background: transparent; border-radius: 10px; border: 2px solid #00ad5f; color:#00ad5f; width: 80%; font-size: 18px; font-family: Century Gothic; height: 5%; width:80%; margin-left: 10%; margin-top: 2%"> 
+        
+
         <button onclick="keycloak.logout('/trainingsplanorwhateveritdoesntworkanyway'); kc.logout()"class="button" style="margin-top: 20%; top: 10px; width:80%; margin-left: 10%; "><i class="fas fa-sign-out-alt"></i> Logout</button>
 
     
@@ -394,6 +398,36 @@
 
     // Here the class is set for the swal to use, depending on mobile or desktop, desktop leave empty - mobile is set in customize_mobile
     var mobile_swal = '';             
+
+    function set_datapoints_chart(data) 
+    {
+        if(event.key === 'Enter' || force)
+        {
+            // as it is a string + the chart starts at 0 not 1
+            let val = parseInt(data) - 1;
+            console.log(val)
+            
+            /*
+            let length = get_amount_inputs();
+            
+            // already done in on_save funx
+            // save_potential_values(); 
+            
+            // reload the whole page, with only trimmed data
+            on_save(false);
+            clear_potential(true);
+
+            for(let i = 0; i < length; i++)
+            {
+                if(document.getElementById("additional-info_" + (i + 1)).querySelector("#active_box").checked == true)
+                {
+                    show_potential(i + 1);
+                }    
+            }
+            set_cookie("n_datapoints", 90);
+            */
+        }
+    }
 
 
     function download() 

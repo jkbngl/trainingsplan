@@ -401,17 +401,14 @@
 
     function set_datapoints_chart(data) 
     {
-        if(event.key === 'Enter' || force)
+        if(event.key === 'Enter')
         {
             // as it is a string + the chart starts at 0 not 1
             let val = parseInt(data) - 1;
-            console.log(val)
+            console.log(val);
             
             /*
             let length = get_amount_inputs();
-            
-            // already done in on_save funx
-            // save_potential_values(); 
             
             // reload the whole page, with only trimmed data
             on_save(false);
@@ -755,9 +752,11 @@
             // push the data into a global object which is accessible for the function which updates the chart dynamically
             active_ex_in_chart.push(available_ex);
 
-            /*console.log(values);
-            console.log(text);
-            console.log(available_ex);*/
+            /*
+                console.log(values);
+                console.log(text);
+                console.log(available_ex);
+            */
 
             addData(values, text, available_ex);
         }
@@ -828,9 +827,12 @@
                 values[i] *= json.values[i].max_rep * mul_max_rep;
         }
 
+        let n_datapoints_to_show = document.getElementById("n-datapoints-to-show").value > 0 ? document.getElementById("n-datapoints-to-show").value : Infinity
 
-
-        return values;
+        if(n_datapoints_to_show != Infinity)
+            return values.slice(-(n_datapoints_to_show));
+        else
+            return values;
     }
 
     function addData(values, ex_name, all_ex)

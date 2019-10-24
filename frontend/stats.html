@@ -405,7 +405,24 @@
         {
             // as it is a string + the chart starts at 0 not 1
             let val = parseInt(data) - 1;
-            console.log(val);
+
+            // value of base_ex and planname
+            let value_;
+            let text_;
+            
+            // Has to be defined once, since the active_ex_in_chart if repushed on update
+            let length = active_ex_in_chart.length;
+
+            console.log(active_ex_in_chart.length);
+
+            for(let i = 0; i < length; i++)
+            {
+                ex_parsed = JSON.parse(active_ex_in_chart[i]);
+                value_ = ex_parsed.base_ex;
+                text_ = chart.data.datasets[i].label;
+                
+                display_ex(value_, text_);
+            }
             
             /*
             let length = get_amount_inputs();
@@ -721,13 +738,20 @@
         return false; 
     } 
 
-    function display_ex() {
+    function display_ex(value_, text_) {
         var values = [];
         var e = document.getElementById("select");
-        var value = e.options[e.selectedIndex].value;
-        var text = e.options[e.selectedIndex].text;
-
-        console.log(" exercise name + plan name: " + text)
+        
+        if(value_ > 0)
+        {
+            value = value_;
+            text = text_;
+        }    
+        else
+        {
+            value = e.options[e.selectedIndex].value;
+            text = e.options[e.selectedIndex].text;
+        }
 
         try
         {
@@ -738,8 +762,6 @@
             xmlHttp.open( "GET", url + value, false ); // false for synchronous request
             xmlHttp.send( null );
             available_ex = xmlHttp.responseText;
-
-            //console.log(available_ex);
 
             var weight_box = document.getElementById("weight_box");
             var reps_box = document.getElementById("reps_box");
@@ -758,6 +780,7 @@
                 console.log(available_ex);
             */
 
+            // LOOP is here
             addData(values, text, available_ex);
         }
         catch(err)
@@ -910,8 +933,6 @@
         }    
 
         num_ex++;
-
-        
 
         chart.update({
             duration: 900,

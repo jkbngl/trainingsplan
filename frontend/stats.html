@@ -281,7 +281,7 @@
         <!------------------->
         <div id="selects" style="margin-left:5%; margin-top: 3%">
             <div class="select" style="width: 80%; padding-bottom: 10px; border-bottom: 4px solid rgba(0,0,0, 0.12); border-right: 4px solid rgba(0,0,0, 0.12); ">
-                <select id= "select" onchange="closeNav(); display_ex();" class="select-text" required >
+                <select id= "select" onchange="closeNav(); display_ex(true);" class="select-text" required >
                     <option value="" selected></option>
                 </select>
                 <span class="select-highlight"></span>
@@ -381,9 +381,7 @@
 
 <script>
     // Object to store data for all actively displayed data in chart
-    var active_ex_in_chart = [
-
-    ];
+    var active_ex_in_chart = [ ];
 
     // Used to determine which color the line should have, gets set to 0 after all numbers are used and starts again at zero
     var num_ex_color = 0;
@@ -411,17 +409,20 @@
             let text_;
             
             // Has to be defined once, since the active_ex_in_chart if repushed on update
-            let length = active_ex_in_chart.length;
+            let local_active_ex_in_chart = active_ex_in_chart;
+            let local_chart = chart.data.datasets;
+            // Clear as we will refill it with the trimmed data
+            active_ex_in_chart = [];
+            num_ex = 0;
+            clear_chart();
 
-            console.log(active_ex_in_chart.length);
-
-            for(let i = 0; i < length; i++)
+            for(let i = 0; i < local_active_ex_in_chart.length; i++)
             {
-                ex_parsed = JSON.parse(active_ex_in_chart[i]);
+                ex_parsed = JSON.parse(local_active_ex_in_chart[i]);
                 value_ = ex_parsed.base_ex;
-                text_ = chart.data.datasets[i].label;
+                text_ = local_chart[i].label;
                 
-                display_ex(value_, text_);
+                display_ex(false, value_, text_);
             }
             
             /*
@@ -738,7 +739,7 @@
         return false; 
     } 
 
-    function display_ex(value_, text_) {
+    function display_ex(add_new_data_flag, value_, text_) {
         var values = [];
         var e = document.getElementById("select");
         
@@ -753,8 +754,10 @@
             text = e.options[e.selectedIndex].text;
         }
 
-        try
-        {
+        console.log(value, text)
+
+        //try
+        //{
             var request = new XMLHttpRequest();
             var url = 'http://' + hostname + ':8080/tpbackend_1-1.0-SNAPSHOT/api/trainingsplan/get_stats/';
             var xmlHttp = new XMLHttpRequest();
@@ -770,24 +773,18 @@
 
             values = get_value(available_ex, weight_box.checked, reps_box.checked, sets_box.checked, max_rep_box.checked);
 
-
-            // push the data into a global object which is accessible for the function which updates the chart dynamically
             active_ex_in_chart.push(available_ex);
 
-            /*
-                console.log(values);
-                console.log(text);
-                console.log(available_ex);
-            */
+            console.log(values);
 
             // LOOP is here
             addData(values, text, available_ex);
-        }
-        catch(err)
-        {
-            console.error(err);
-            display_error('error', 'Oops...', 'There seems to be a problem with your data (this might happen if you type text into the weight, reps, sets or maxrep fields), maybe try another exercise!')
-        }
+        //}
+        //catch(err)
+        //{
+        //    console.error(err);
+        //    display_error('error', 'Oops...', 'There seems to be a problem with your data (this might happen if you type text into the weight, reps, sets or maxrep fields), maybe try another exercise!')
+        //}
     }
 
     function get_value(json_ex, weight, reps, sets, max_rep) 
@@ -913,10 +910,14 @@
         // needs to be checked before numbers gets increased
         if(num_ex >= 1)
         {
+
             // Get longest exercise with most entries from chart and store it in a variable
             for(var i = 0; i <= num_ex; i++)
             {
                 var data = active_ex_in_chart[i];
+
+                console.log(data);
+
                 var json = JSON.parse(data);
 
                 local_labels_numbers.push(json.values.length);

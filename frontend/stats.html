@@ -268,7 +268,7 @@
     <div id = "headerforbuttons" style="display: flex; justify-content: space-between; position:fixed; width:100%">
         <button onclick="openNav()" class="button" style="top: 10px;"><i class="fas fa-bars"></i></span>
             <button onclick="window.location.href='index.html'" class="button" style="top: 10px;" ><i class="fas fa-home"></i> Home</button>
-            <button onclick="closeNav(); clear_chart(true)" class="button" style="top: 10px;" ><i class="fas fa-trash"></i> Clear</button>
+            <button onclick="closeNav(); clear_chart(true, true)" class="button" style="top: 10px;" ><i class="fas fa-trash"></i> Clear</button>
             <button onclick="keycloak.logout()" class="button" value="username ..." id="username" style="top: 10px;"></button>
     </div>​
 
@@ -756,8 +756,8 @@
 
         console.log(value, text)
 
-        //try
-        //{
+        try
+        {
             var request = new XMLHttpRequest();
             var url = 'http://' + hostname + ':8080/tpbackend_1-1.0-SNAPSHOT/api/trainingsplan/get_stats/';
             var xmlHttp = new XMLHttpRequest();
@@ -777,14 +777,13 @@
 
             console.log(values);
 
-            // LOOP is here
             addData(values, text, available_ex);
-        //}
-        //catch(err)
-        //{
-        //    console.error(err);
-        //    display_error('error', 'Oops...', 'There seems to be a problem with your data (this might happen if you type text into the weight, reps, sets or maxrep fields), maybe try another exercise!')
-        //}
+        }
+        catch(err)
+        {
+            console.error(err);
+            display_error('error', 'Oops...', 'There seems to be a problem with your data (this might happen if you type text into the weight, reps, sets or maxrep fields), maybe try another exercise!')
+        }
     }
 
     function get_value(json_ex, weight, reps, sets, max_rep) 
@@ -863,6 +862,9 @@
         console.log(all_ex);
         */
 
+        // Needed to find the maximum length of a ex to adjust the chartlength accordingly
+        let max_num;
+
         // If one ex active show dates of active
         var local_labels_date = [];
         // if multiple ex active show amount of datapoints
@@ -870,10 +872,13 @@
         
         var json_ex = JSON.parse(all_ex);
 
-        for(var i = 0; i < json_ex.values.length; i++)
+        for(var i = 0; i < values.length; i++)
         {
             local_labels_date.push(json_ex.values[i].created);
         }
+
+        // #137 problem is that not the trimmed dataset is used but the full
+        console.log(values);
 
         chart.data.labels = local_labels_date;
 
@@ -886,8 +891,6 @@
                 backgroundColor: border_color_array[num_ex_color],
                 fill: false
             });
-
-            chart.data.labels = local_labels_date;
         }
         else
         {
@@ -923,12 +926,21 @@
                 local_labels_numbers.push(json.values.length);
             }
 
-            var max_num = Math.max.apply(Math, local_labels_numbers); 
+            let n_datapoints_to_show = document.getElementById("n-datapoints-to-show").value > 0 ? document.getElementById("n-datapoints-to-show").value : Infinity;
+
+            console.log(n_datapoints_to_show)
+
+            if(n_datapoints_to_show == Infinity)
+                max_num = Math.max.apply(Math, local_labels_numbers); 
+            else
+                max_num = n_datapoints_to_show;
 
             local_labels_numbers = [];
 
             for(var i = 1; i <= max_num; i++)
                 local_labels_numbers.push(i);
+
+            console.log("LABELS: " + local_labels_numbers)
 
             chart.data.labels = local_labels_numbers;
         }    
@@ -1061,12 +1073,10 @@
         }
     }
 
-    function clear_chart(clearSelect)
+    function clear_chart(clearSelect, clear_chart_trimm)
     {
-        console.log(window.bar);
-
-
-        
+        if(clear_chart_trimm)
+            document.getElementById("n-datapoints-to-show").value = '';
         chart.destroy();
 
         /*chart.reset();

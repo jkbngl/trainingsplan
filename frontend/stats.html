@@ -1207,7 +1207,7 @@
                     labels: {
                         fontSize: 20
                     },
-                    onClick: (event, legendItem) => console.log(event, legendItem),
+                    onClick: (event, legendItem) => set_bm_as_deactivated_as_callback_from_chart(event, legendItem),
                 },
                 scales: {
                     yAxes: [{
@@ -1234,6 +1234,54 @@
         });
 
         return chart;
+    }
+
+    function set_bm_as_deactivated_as_callback_from_chart(event, bm_name)
+    {
+        /*
+        var meta_data_id = chart.getDatasetMeta(bm_name.datasetIndex).controller.chart.id;
+        // At first its undefined so set it as defined at the beginnning
+        if(chart.data.datasets[bm_name.datasetIndex]['_meta'][meta_data_id].hidden === false)
+            chart.data.datasets[bm_name.datasetIndex]['_meta'][meta_data_id].hidden = false;   // At first it is always active, so set it to hidden true, which is active
+        else
+            ;
+        if(chart.data.datasets[bm_name.datasetIndex]['_meta'][meta_data_id].hidden)
+        {
+            document.getElementById("additional-info_" + (bm_name.datasetIndex + 1)).querySelector("#active_box").checked = true;
+            if(chart.config.type == 'line')
+            {
+                chart.data.datasets[bm_name.datasetIndex]['_meta'][meta_data_id].hidden = false;
+                show_potential(bm_name.datasetIndex + 1);
+            }
+            else
+            {
+                chart.data.datasets[bm_name.datasetIndex]['_meta'][meta_data_id].hidden = false;
+                var meta = chart.getDatasetMeta(bm_name.datasetIndex);
+                meta.data[0].hidden = !meta.data[0].hidden;
+                show_potential(bm_name.datasetIndex + 1);
+            }
+        }
+        else if(!chart.data.datasets[bm_name.datasetIndex]['_meta'][meta_data_id].hidden)
+        {
+            // If the chart goes from the active state into hidden state
+            clear_potential(false, chart.data.datasets[bm_name.datasetIndex].label);
+            if(chart.config.type == 'line')
+            {
+                chart.data.datasets[bm_name.datasetIndex]['_meta'][meta_data_id].hidden = true;
+            }
+            else
+            {
+                chart.data.datasets[bm_name.datasetIndex]['_meta'][meta_data_id].hidden = true;
+                var meta = chart.getDatasetMeta(bm_name.datasetIndex);
+                meta.data[0].hidden = !meta.data[0].hidden;
+            }
+            document.getElementById("additional-info_" + (bm_name.datasetIndex + 1)).querySelector("#active_box").checked = false;
+        }
+        
+        set_labels();
+        chart.update();
+        set_cookie('active', 90);
+        */
     }
 
     function get_data_per_exercise_and_step(index, name)

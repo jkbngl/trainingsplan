@@ -1277,7 +1277,93 @@
             }
         }
         
-        //set_labels();
+        set_labels();
+        chart.update();
+    }
+
+    // #67 Newly added func
+    function set_labels()
+    {
+        // id which needs to be defined to get the metadata(hidden) of the lines/ bars
+        var meta_data_id;
+        // Amount of active to check if only one is active
+        var active_bm = 0;
+        // The name and the index of the active bm, gets overwritten when multiple are active, which does not matter as we then dont use it
+        var name_active_bm;
+        var index_active_bm;
+        // Historic data to set the labels accordingly
+        var historic_data;
+        // If there is only one bm active anymore 
+        var new_labels = [];
+        // length of longest bm 
+        var local_labels_numbers = [];
+        // depends on bar and line chart
+        var is_chart_active;
+
+        for(var i = 0; i < active_ex_in_chart.length; i++)
+        {
+            if(chart.config.type == 'line')
+            {
+                meta_data_id = chart.getDatasetMeta(i).controller.chart.id;
+                is_chart_active = chart.data.datasets[i]['_meta'][meta_data_id].hidden;
+            }
+            else
+            {
+                var meta = chart.getDatasetMeta(i);
+                is_chart_active = meta.data[0].hidden;
+            }
+            
+            if(!is_chart_active)
+            {
+                active_bm++;
+                name_active_bm = chart.data.datasets[i].label;
+
+                if(chart.config.type == 'line')
+                    index_active_bm = chart.data.datasets[i]['_meta'][meta_data_id].dataset._datasetIndex;
+                else 
+                    index_active_bm = i;
+                
+                local_labels_numbers.push(chart.data.datasets[i].data.length)
+            } 
+        }
+
+        if(active_bm == 1)
+        {
+            historic_data = JSON.parse(active_ex_in_chart[index_active_bm]);
+            
+            for(var i = 0; i < historic_data.values.length; i++)
+            {
+                var date = new Date(historic_data.values[i].created).toUTCString()
+                date = date.split(' ').slice(1, 4).join(' ')
+                new_labels.push(date);
+
+                // not needed for the moment, only in bm_it page
+                /*
+                if(i == historic_data.length - 1)
+                    new_labels.push("potential");
+                */
+            }
+
+            if(document.getElementById('n-datapoints-to-show').value.length > 0)
+            {
+                let val = parseInt(document.getElementById('n-datapoints-to-show').value) + 1;
+                
+                new_labels = new_labels.slice(-(val));
+            }
+            chart.data.labels = new_labels;
+        }
+        else
+        {
+            var max_num = Math.max.apply(Math, local_labels_numbers);
+            local_labels_numbers = [];
+                    
+            for(var k = 0; k < max_num; k++)
+                local_labels_numbers.push(k);
+            
+                local_labels_numbers.push("potential");
+            chart.data.labels = local_labels_numbers;
+        }
+
         chart.update();
     }
 

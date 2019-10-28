@@ -1073,9 +1073,9 @@
         }
     }
 
-    function clear_chart(clearSelect, clear_chart_trimm)
+    function clear_chart(clearSelect, clear_chart_trim)
     {
-        if(clear_chart_trimm)
+        if(clear_chart_trim)
             document.getElementById("n-datapoints-to-show").value = '';
         chart.destroy();
 
@@ -1117,21 +1117,17 @@
 
     function change_chart()
     {
+        // Swap the chart type
+        chart_type = chart.config.type == 'bar' ? 'line' : 'bar';
+        chart.config.type = chart_type;
+        chart.update();
+        
+        /*
         // Used to change between the two chart types
         if(document.getElementById("chart-type").checked)
             chart_type = "bar";
         else
             chart_type = "line";
-
-        // TODO
-        // write function rebuild chart, that clears chart but not data array and pushes all data back into the new chart
-        /*
-            needed:
-                - values of data which where in chart
-                - name of the exercises which where in the chart
-                - the whole json object of the exercise
-
-        */
        
         var length = chart.data.datasets.length;
         var ex_names = [];
@@ -1156,16 +1152,12 @@
         // recreate the new chart type with the same data which was in the chart
         for(var i = 0; i < length; i++)
         {
-            console.log(values[i]);
-            console.log(ex_names[i]);
-            console.log(local_active_ex_in_chart[i]);      
-            
             // data is pushed in this array when selecting from the combobox so needs to be done here manually
             // needs to be done before adding data as the function needs the data
             active_ex_in_chart.push(local_active_ex_in_chart[i]);
             addData(values[i], ex_names[i], local_active_ex_in_chart[i]);
-           
         } 
+        */
     }
 
     function create_chart(chart_type)
@@ -1182,7 +1174,10 @@
                 ]
             },
             options: {
-                line:{ fill: true},
+                line:
+                {
+                    fill: false
+                },
                 ticks: {
                     beginAtZero: false,
                     min: 0,
@@ -1360,7 +1355,7 @@
             for(var k = 0; k < max_num; k++)
                 local_labels_numbers.push(k);
             
-                
+
             // local_labels_numbers.push("potential");
             chart.data.labels = local_labels_numbers;
         }

@@ -1117,16 +1117,35 @@
 
     function change_chart()
     {
-        var meta_data_id = chart.getDatasetMeta(0).controller.chart.id;
+        var meta_data_id; 
+        let hidden_array = []
 
         for(let i = 0; i < chart.data.datasets.length; i++)
         {
-            console.log(chart.data.datasets[i]['_meta'][meta_data_id].hidden);
+            meta_data_id = chart.getDatasetMeta(i).controller.chart.id;
+            
+            if(chart.data.datasets[i]['_meta'][meta_data_id].hidden === false || chart.data.datasets[i]['_meta'][meta_data_id].hidden == false) // At first it is always active, so when null it is active
+            {
+                hidden_array.push(true);
+            }
+            else
+            {
+                hidden_array.push(false);
+            }
         }
 
         // Swap the chart type
         chart_type = chart.config.type == 'bar' ? 'line' : 'bar';
         chart.config.type = chart_type;
+        chart.update();
+        console.log(hidden_array);
+
+        for(let i = 0; i < hidden_array.length; i++)
+        {
+            meta_data_id = chart.getDatasetMeta(i).controller.chart.id;
+            chart.data.datasets[i]['_meta'][meta_data_id].hidden = hidden_array[i];
+        }
+
         chart.update();
         
         /*
@@ -1181,10 +1200,11 @@
                 ]
             },
             options: {
-                line:
+                /*line:
                 {
                     fill: false
                 },
+                */
                 ticks: {
                     beginAtZero: false,
                     min: 0,

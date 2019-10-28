@@ -1124,12 +1124,17 @@
         {
             meta_data_id = chart.getDatasetMeta(i).controller.chart.id;
             
-            if(chart.data.datasets[i]['_meta'][meta_data_id].hidden === false || chart.data.datasets[i]['_meta'][meta_data_id].hidden == false) // At first it is always active, so when null it is active
+            if(chart.data.datasets[i]['_meta'][meta_data_id].hidden == false) 
+            {
+                hidden_array.push(false);
+            }
+            else if(chart.data.datasets[i]['_meta'][meta_data_id].hidden == true)
             {
                 hidden_array.push(true);
             }
             else
             {
+                // At first it is always active - but not defined, so when null it is active
                 hidden_array.push(false);
             }
         }

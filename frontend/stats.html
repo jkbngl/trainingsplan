@@ -280,7 +280,7 @@
         
         <!------------------->
         <div id="selects" style="margin-left:5%; margin-top: 3%">
-            <div class="select" style="width: 80%; padding-bottom: 10px; border-bottom: 4px solid rgba(0,0,0, 0.12); border-right: 4px solid rgba(0,0,0, 0.12); ">
+            <div class="select" style="width: 80%; padding-bottom: 10px; border-bottom: 4px solid rgba(0,0,0, 0.12); border-right: 4px solid rgba(0,0,0, 0.12);">
                 <select id= "select" onchange="closeNav(); display_ex(true);" class="select-text" required >
                     <option value="" selected></option>
                 </select>
@@ -418,6 +418,7 @@
             // Clear as we will refill it with the trimmed data
             active_ex_in_chart = [];
             num_ex = 0;
+            num_ex_color = 0;
             
             clear_chart();
 
@@ -1102,6 +1103,7 @@
         change_div(0, 0, true);
         active_ex_in_chart = [];
         num_ex = 0;
+        num_ex_color = 0;
         // console.log(num_ex);
     }
 

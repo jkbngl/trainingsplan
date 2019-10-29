@@ -433,6 +433,9 @@
 
             // Reset which ex were active and inactive before clear and trim
             buffer_chart('part2', hidden_array);
+            set_labels();
+            chart.update();
+
 
             
             /*
@@ -938,8 +941,6 @@
 
             let n_datapoints_to_show = document.getElementById("n-datapoints-to-show").value > 0 ? document.getElementById("n-datapoints-to-show").value : Infinity;
 
-            console.log(n_datapoints_to_show)
-
             if(n_datapoints_to_show == Infinity)
                 max_num = Math.max.apply(Math, local_labels_numbers); 
             else
@@ -1390,20 +1391,17 @@
                 var date = new Date(historic_data.values[i].created).toUTCString()
                 date = date.split(' ').slice(1, 4).join(' ')
                 new_labels.push(date);
-
-                // not needed for the moment, only in bm_it page
-                /*
-                if(i == historic_data.length - 1)
-                    new_labels.push("potential");
-                */
             }
 
             if(document.getElementById('n-datapoints-to-show').value.length > 0)
             {
-                let val = parseInt(document.getElementById('n-datapoints-to-show').value) + 1;
+                let n_datapoints_to_show = document.getElementById("n-datapoints-to-show").value > 0 ? document.getElementById("n-datapoints-to-show").value : Infinity;
                 
-                new_labels = new_labels.slice(-(val));
+                console.log(new_labels)
+
+                new_labels = new_labels.slice(-(n_datapoints_to_show));
             }
+
             chart.data.labels = new_labels;
         }
         else

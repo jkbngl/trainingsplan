@@ -411,9 +411,14 @@
             // Has to be defined once, since the active_ex_in_chart if repushed on update
             let local_active_ex_in_chart = active_ex_in_chart;
             let local_chart = chart.data.datasets;
+            
+            // Buffer which ex were active and inactive before clearing the chart
+            let hidden_array = buffer_chart('part1');
+            
             // Clear as we will refill it with the trimmed data
             active_ex_in_chart = [];
             num_ex = 0;
+            
             clear_chart();
 
             for(let i = 0; i < local_active_ex_in_chart.length; i++)
@@ -424,6 +429,10 @@
                 
                 display_ex(false, value_, text_);
             }
+
+            // Reset which ex were active and inactive before clear and trim
+            buffer_chart('part2', hidden_array);
+
             
             /*
             let length = get_amount_inputs();

@@ -435,8 +435,6 @@
             buffer_chart('part2', hidden_array);
             set_labels();
             chart.update();
-
-
             
             /*
             let length = get_amount_inputs();
@@ -583,8 +581,6 @@
         }
 
         var superaccount = (roles.indexOf("friend_account") > -1) || (roles.indexOf("paid_account") > -1);
-
-        console.log(roles.includes("stats_access"))
 
         if(!superaccount)
         {
@@ -767,8 +763,6 @@
             text = e.options[e.selectedIndex].text;
         }
 
-        console.log(value, text)
-
         try
         {
             var request = new XMLHttpRequest();
@@ -787,8 +781,6 @@
             values = get_value(available_ex, weight_box.checked, reps_box.checked, sets_box.checked, max_rep_box.checked);
 
             active_ex_in_chart.push(available_ex);
-
-            console.log(values);
 
             addData(values, text, available_ex);
         }
@@ -869,12 +861,6 @@
 
     function addData(values, ex_name, all_ex)
     {
-        /*
-        console.log(values);
-        console.log(ex_name);
-        console.log(all_ex);
-        */
-
         // Needed to find the maximum length of a ex to adjust the chartlength accordingly
         let max_num;
 
@@ -889,9 +875,6 @@
         {
             local_labels_date.push(json_ex.values[i].created);
         }
-
-        // #137 problem is that not the trimmed dataset is used but the full
-        console.log(values);
 
         chart.data.labels = local_labels_date;
 
@@ -931,9 +914,6 @@
             for(var i = 0; i <= num_ex; i++)
             {
                 var data = active_ex_in_chart[i];
-
-                console.log(data);
-
                 var json = JSON.parse(data);
 
                 local_labels_numbers.push(json.values.length);
@@ -950,8 +930,6 @@
 
             for(var i = 1; i <= max_num; i++)
                 local_labels_numbers.push(i);
-
-            console.log("LABELS: " + local_labels_numbers)
 
             chart.data.labels = local_labels_numbers;
         }    
@@ -988,10 +966,6 @@
             var json = JSON.parse(values);
 
             document.getElementById("additional-info").innerHTML += '<button id="' + json.base_ex + '" class="button" style="top: 10px; width:80%; margin-left: 10%;">' + ex_name + '</button>'
-
-            console.log("133");
-            console.log(json);
-            console.log(ex_name);
             
             // #133 find a way to dynamically set this attribute
             document.getElementById(json.base_ex).setAttribute( "onClick", "Swal.fire({html: '" + parse_base_ex(json, ex_name) + "', customClass: mobile_swal});");
@@ -1067,19 +1041,13 @@
     }
 
     function recalculate_progress_dialog()
-    {
-        console.log("RECALCULATE PROGRESS DIALOG");
-        
+    {       
         //chart.data.datasets[0].label
         //active_ex_in_chart
 
         for(let i = 0; i < active_ex_in_chart.length; i++)
         {
-            var ex_data = JSON.parse(active_ex_in_chart[i])
-            console.log(ex_data.base_ex)
-            console.log(chart.data.datasets[i].label)
-            console.log(ex_data)
-
+            var ex_data = JSON.parse(active_ex_in_chart[i]);
             document.getElementById(ex_data.base_ex).setAttribute( "onClick", "Swal.fire({html: '" + parse_base_ex(ex_data, chart.data.datasets[i].label) + "', customClass: mobile_swal});");
         }
     }
@@ -1105,7 +1073,6 @@
         active_ex_in_chart = [];
         num_ex = 0;
         num_ex_color = 0;
-        // console.log(num_ex);
     }
 
     var labels = [1,2,3,4,5,6,7,8];
@@ -1158,7 +1125,6 @@
         }
         else if(part == 'part2')
         {
-            console.log(hidden_array);
             // Part 2 of buffer_chart
             for(let i = 0; i < hidden_array.length; i++)
             {
@@ -1292,10 +1258,7 @@
     }
 
     function set_bm_as_deactivated_as_callback_from_chart(event, bm_name)
-    {
-        console.log(event);
-        console.log(bm_name)
-        
+    {        
         var meta_data_id = chart.getDatasetMeta(bm_name.datasetIndex).controller.chart.id;
 
         // At first its undefined so set it as defined at the beginnning
@@ -1466,8 +1429,6 @@
         xhr.open("POST", url, true);
         xhr.setRequestHeader("Content-Type", "text/plain");
         var string = JSON.stringify(preferences);
-
-        console.log()
 
         xhr.send(string);
         //alert("Preferences saved!");
@@ -1690,9 +1651,6 @@
 
         if (partly_check_simplfied_ui != "" && partly_factor_simplfied_ui != "") 
         {
-            console.log(partly_factor_simplfied_ui);
-            console.log(partly_check_simplfied_ui);
-
             if(partly_check_simplfied_ui == "true")
                 document.getElementById("checks-checkbox-ui").checked = true;
             else
@@ -1706,13 +1664,11 @@
 
             if(partly_check_simplfied_ui == "true" && partly_factor_simplfied_ui == "true")
             {
-                console.log("0");
                 document.getElementById("simplify-ui").checked = false;
                 simplify_ui();
             }
             else if(partly_check_simplfied_ui == "true" && partly_factor_simplfied_ui == "false")
             {
-                console.log("1");
                 // document.getElementById("selects").style.width = "30%";
                 document.getElementById("selects").style.marginLeft = "10%";
             
@@ -1721,7 +1677,6 @@
             }    
             else if(partly_check_simplfied_ui == "false" && partly_factor_simplfied_ui == "true")
             {
-                console.log("2");
                 // document.getElementById("selects").style.width = "30%";
                 document.getElementById("selects").style.marginLeft = "10%";
             

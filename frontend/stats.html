@@ -1115,44 +1115,60 @@
         return "line";
     }
 
+    function buffer_chart(part, hidden_array)
+    {
+        if(part == 'part1')
+        {
+            // Part 1 of buffer_chart
+            var meta_data_id; 
+            let hidden_array = []
+
+            for(let i = 0; i < chart.data.datasets.length; i++)
+            {
+                meta_data_id = chart.getDatasetMeta(i).controller.chart.id;
+
+                if(chart.data.datasets[i]['_meta'][meta_data_id].hidden == false) 
+                {
+                    hidden_array.push(false);
+                }
+                else if(chart.data.datasets[i]['_meta'][meta_data_id].hidden == true)
+                {
+                    hidden_array.push(true);
+                }
+                else
+                {
+                    // At first it is always active - but not defined, so when null it is active
+                    hidden_array.push(false);
+                }
+            }
+
+            return hidden_array;
+        }
+        else if(part == 'part2')
+        {
+            console.log(hidden_array);
+            // Part 2 of buffer_chart
+            for(let i = 0; i < hidden_array.length; i++)
+            {
+                meta_data_id = chart.getDatasetMeta(i).controller.chart.id;
+                chart.data.datasets[i]['_meta'][meta_data_id].hidden = hidden_array[i];
+            }
+
+            chart.update();
+        }
+    }
+
     function change_chart()
     {
-        var meta_data_id; 
-        let hidden_array = []
-
-        for(let i = 0; i < chart.data.datasets.length; i++)
-        {
-            meta_data_id = chart.getDatasetMeta(i).controller.chart.id;
-            
-            if(chart.data.datasets[i]['_meta'][meta_data_id].hidden == false) 
-            {
-                hidden_array.push(false);
-            }
-            else if(chart.data.datasets[i]['_meta'][meta_data_id].hidden == true)
-            {
-                hidden_array.push(true);
-            }
-            else
-            {
-                // At first it is always active - but not defined, so when null it is active
-                hidden_array.push(false);
-            }
-        }
+        let hidden_array = buffer_chart('part1');
 
         // Swap the chart type
         chart_type = chart.config.type == 'bar' ? 'line' : 'bar';
         chart.config.type = chart_type;
         chart.update();
-        console.log(hidden_array);
 
-        for(let i = 0; i < hidden_array.length; i++)
-        {
-            meta_data_id = chart.getDatasetMeta(i).controller.chart.id;
-            chart.data.datasets[i]['_meta'][meta_data_id].hidden = hidden_array[i];
-        }
+        buffer_chart('part2', hidden_array);
 
-        chart.update();
-        
         /*
         // Used to change between the two chart types
         if(document.getElementById("chart-type").checked)

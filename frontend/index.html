@@ -403,7 +403,17 @@
         }
         else
         {
-            alert("You are not allowed to add another plan, for that you need to buy PREMIUM - current plans:" + amount_plans + " maximum allowed: " + maximum_allowed_plans);
+            // alert("You are not allowed to add another plan, for that you need to buy PREMIUM - current plans:" + amount_plans + " maximum allowed: " + maximum_allowed_plans);
+            swal.fire({
+            title: 'Forbidden - ',
+            type: 'error',
+            customClass: mobile_swal,
+            timer: 5000,
+            html: "You are not allowed to add another plan, for that contact me on github (github.com/jkbngl/trainingsplan) \
+                  <br><br> <b>Current plans:</b> <font color='red'>" + amount_plans + "</font><br><b>Maximum allowed:</b> " + maximum_allowed_plans,
+            showCancelButton: false,
+            showConfirmButton: true
+        });
         }
     }
 
@@ -1447,6 +1457,9 @@
             g = d.getElementsByTagName('body')[0],
             x = w.innerWidth || e.clientWidth || g.clientWidth,
             y = w.innerHeight|| e.clientHeight|| g.clientHeight;
+
+        console.log(typeof(x));
+        console.log(x);
 
 
         if ( viewport ) {

@@ -132,8 +132,6 @@
         {
             var footer = '<hr style="height: 2px; background-color:#666;"><br>';
 
-            console.log(message);
-
             if(message.includes('backend') && message.includes('unavailable') || message.includes('Authentification'))
                 footer += message + '<br><br><a href onclick="location.reload()">Reload the Page?</button><br>';
 
@@ -381,12 +379,8 @@
             var elem1 = document.getElementById("container" + i);
             var elem2 = document.getElementById("container" + (i + 1));
 
-            // console.log("1 - " + elem1.innerHTML);
-            // console.log("2 - " + elem2);
-
             if(document.getElementById("container" + i).innerHTML.length == 0 && document.getElementById("container" + i).innerHTML.length >= 0)
             {
-                // console.log("div " + i + " must be replaced by div " + (i + 1));
                 if(typeof(document.getElementById("container" + (i + 1))) != undefined && document.getElementById("container" + (i + 1)) != null)
                     document.getElementById("container" + i).innerHTML = document.getElementById("container" + (i + 1)).innerHTML;
             }
@@ -417,8 +411,6 @@
     {
         var table = document.getElementById(tableName);
         var rowCount = document.getElementById(tableName).rows.length;
-
-        //console.log(rowCount);
 
         var row = table.insertRow(rowCount);
         var cell1 = row.insertCell(0);
@@ -536,8 +528,6 @@
 
     function reorder_indexes(tableName, index)
     {
-        console.log("indexes of " + tableName.id + " need to be reordered - row removed: " + index);
-
         var table = document.getElementById(tableName.id);
         var num_rows = document.getElementById(tableName.id).rows.length;
 
@@ -545,7 +535,6 @@
         {
             for (var i = index; i < num_rows; i++) 
             {
-                console.log('-----------------------------------');
                 for (var j = 0, col; j < 7; j++) 
                 {
                     // this is only done in the last cell because there is the button to delete with the corresponding onclick attribute
@@ -788,7 +777,6 @@
         for(var k = 1; k <= numtables; k++)		// For multiple Tables, num of table start at 1 not 0
         {
             finaltablename = defaulttablename.concat(k);
-            //console.log(finaltablename);
 
             var table = document.getElementById(finaltablename);
             var rowlength = table.getElementsByTagName("tr").length - 1;
@@ -829,8 +817,6 @@
         if(!filteredText.includes('day'))
             filteredText = '{"plan":[{"username": "NoUser","planname": "NoPlan"}]}';
 
-        // console.log(filteredText);
-
         return filteredText;
     }
 
@@ -842,8 +828,6 @@
         for(var i = 0; i < 7; i++)
         {
             doc = new DOMParser().parseFromString(res[i], "text/html");
-            // console.log(doc.body.firstChild.nextElementSibling.innerHTML);
-            // console.log(doc.body.firstChild.nextElementSibling.getAttribute("value"));
 
             if (i == 0)
             {
@@ -983,9 +967,7 @@
                             // TODO check if something changed and only if yes send e.g. id selected_value != stored_value_from_db
                             // ^ not needed because if unchecked it is not shown again ^
                             if(accept.value != show_warning) // Can be done as 1 == true and 0 == false - this means when something was changed
-                            {
-                                console.log("changed")
-                            
+                            {                            
                                 var preferences = {}; 
                             
                                 preferences.username = getusername(); 
@@ -1008,9 +990,7 @@
                                 
                             }
                             else
-                            {
-                                console.log("not changed")
-                            
+                            {                            
                                 if(accept.value == 1)
                                     show_warning = true;
                                 else
@@ -1025,9 +1005,7 @@
                             xhr.setRequestHeader("Content-Type", "text/plain");
                             //var data = JSON.stringify(jsondata);
                             xhr.send(jsondata);
-                        
-                            console.log("sending - " + jsondata);
-                        
+                                                
                             console.log("DATA SEND with warning");
                             
                             // After all is done, reload the page with the new ids
@@ -1037,7 +1015,6 @@
                         else
                         {
                             alert("Plan - " + planname +  " not Saved!");
-                            //console.log("not sending data");
                         }
                     });
                 }
@@ -1136,7 +1113,6 @@
                     });
                 }
 
-                //console.log("waiting");
                 counter++;
                 setTimeout(check, 100); // check again in a second
             }
@@ -1237,13 +1213,10 @@
                     inputValidator: (value) => {
                         return new Promise((resolve) => 
                         {
-                            console.log(value);
-                            console.log(typeof value);
-
                             if(!isNaN(parseFloat(value)) && !isNaN(value - 0))
                             {
                                 // #120
-                                console.log(value)
+                                // console.log(value)
 
                                 plan = getPlan('http://' + hostname + ':8080/tpbackend_1-1.0-SNAPSHOT/api/trainingsplan/getPlanByUserAndPlan/' + username + '/' + value);
                                 var data = JSON.parse(plan);
@@ -1322,8 +1295,6 @@
 
         set_edited(false);
 
-        console.log(currentPlanId == '')
-
         if(currentPlanId != '')
         {
             try{
@@ -1336,10 +1307,6 @@
                     plan = xmlHttp.responseText;
                     var data = JSON.parse(plan);
                     printjson(data, plan);
-
-                    console.log(data);
-                    console.log(plan);
-
                 }, 500);
 
             }
@@ -1362,8 +1329,6 @@
         xmlHttp.open( "GET", url, false ); // false for synchronous request
         xmlHttp.send( null );
         num = xmlHttp.responseText;
-
-        console.log(num);
 
         return num;
     }
@@ -1436,8 +1401,6 @@
         {
             var day_name = 'container' + i;
             var element =  document.getElementById(day_name);
-
-            // console.log(day_name);
 
             resetDays(i);
         }
@@ -1516,7 +1479,7 @@
         else
         {
             //customize_mobile();
-            // console.log("PC DETECTED AS DEVICE");
+            ;
         }
     }
 

@@ -687,15 +687,16 @@
     // #113
     function show_last_updated_info(date)
     {
-        var current_date = new Date();   //  07-06-2016 06:38:34
-        full_date = new Date(date); 
+        let current_date = new Date();
+        let full_date = new Date(date); 
         date = full_date.toUTCString().split(' ').slice(0, 4).join(' ');
         var dif = parseInt((current_date - full_date) / (1000 * 60 * 60 * 24), 10); 
 
         if(dif < 30)
             dif = dif + " days ago";
         else if(dif < 366)
-            dif = Math.round(dif / 30) + " months ago"
+            dif = countMonths(current_date, full_date) + " months ago"
+            // dif = Math.round(dif / 30) + " months ago"
         else
             dif = "More than a year ago"
 
@@ -709,6 +710,25 @@
             showCancelButton: false,
             showConfirmButton: true
         });
+    }
+
+    
+
+    function countMonths (startDate, endDate)
+    {
+        let fm = startDate.getMonth();
+        let fy = startDate.getFullYear();
+
+        let sm = endDate.getMonth();
+        let sy = endDate.getFullYear();
+        var months = Math.abs(((fy - sy) * 12) + fm - sm);
+        var firstBefore = startDate > endDate;
+        startDate.setFullYear(sy);
+        startDate.setMonth(sm);
+        firstBefore ? startDate < endDate ? months-- : "" : endDate < startDate ? months-- : "";
+
+
+        return months;
     }
 
     function doesPlanNameExists(plannamelocal)

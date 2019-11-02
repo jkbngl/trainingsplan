@@ -34,13 +34,32 @@ Green stands for Growth and Health, the goal of **TI** is to make a better and h
 ![alt text](https://raw.githubusercontent.com/jkbngl/trainingsplan/master/pictures/background_improved.png)
 
 ## Data Input
+
+### Nothing will help you more in progressing then measuring your progress, make sure you are getting better and documenting this change in a 21th century way ####
+Add, delete and restore plans, create single training days within your plans and add as many exercises as you need to every single day, change your variables in the training (weight, reps, sets and maxreps) as you like and check what works best for you, check when you last progressed in an exercise and how the factors where when you reached your best results.
+
 ![alt text](https://raw.githubusercontent.com/jkbngl/trainingsplan/master/pictures/oOLGYnu%20-%20Imgur.png)
 
 
 ## Stats
+
+### The most important thing in the gym is progress, make sure to keep progressing with the analyses provided in the stats module ####
+Nothing is more frustrating than not progressing, the stats module allows you to analyze your training in depth by selecting factors like the weight, reps, sets and your max rep, in addition you can change the display type, trim the displayed values and change how much the single factors should affect your result!
+
 ![alt text](https://raw.githubusercontent.com/jkbngl/trainingsplan/master/pictures/new_chart_with_dates.png)
 ![alt text](https://raw.githubusercontent.com/jkbngl/trainingsplan/master/pictures/new_chart_with_dates_line.png)
 ![alt text](https://raw.githubusercontent.com/jkbngl/trainingsplan/master/pictures/barchart_with_check_progess_dialog.png)
+
+## Body Tracker
+
+### The only thing thing that mathers is the mirror and numbers, so track them ####
+Enter potentials of what the graph might look like under certain circumstances, change the display type, adjust your input values and do many more cool stuff with the body tracker module!
+
+![alt text](https://raw.githubusercontent.com/jkbngl/trainingsplan/master/pictures/Body_tracker_detail_viewpng.png)
+![alt text](https://raw.githubusercontent.com/jkbngl/trainingsplan/master/pictures/Body_tracker_potential_line.png)
+![alt text](https://raw.githubusercontent.com/jkbngl/trainingsplan/master/pictures/Body_tracker_potential_bar.png)
+![alt text](https://raw.githubusercontent.com/jkbngl/trainingsplan/master/pictures/Body_tracker_sidebar_view.png)
+![alt text](https://raw.githubusercontent.com/jkbngl/trainingsplan/master/pictures/Body_tracker_main.png)
 
 
 - - - -
@@ -49,7 +68,7 @@ Green stands for Growth and Health, the goal of **TI** is to make a better and h
 Contact me to ask for access for educational purposes or buy an access via:
 * TODO
 
-## Get access to BodyMass Input-Tool ##
+## Get access to Body Tracker ##
 
 Contact me to ask for access for educational purposes or buy an access via:
 * TODO

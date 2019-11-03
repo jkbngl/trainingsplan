@@ -1,0 +1,12 @@
+nginx:
+  image: nginx
+  container_name: nginx
+  ports:
+    - 80:80
+    - 443:443
+  restart: unless-stopped
+  volumes:
+    - ./nginx.conf.txt:/etc/nginx/nginx.conf
+    - H:\Docker\TRAININGSPLAN\tests\:/etc/nginx/www/trainingsplan/
+    - H:\Docker\nginx\favicon.ico:/etc/nginx/favicon.ico
+  command: [nginx-debug, '-g', 'daemon off;']

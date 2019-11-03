@@ -1,4 +1,4 @@
-version: '3'
+version: '3.7'
 
 volumes:
   postgres_data:
@@ -12,9 +12,9 @@ services:
       volumes:
         - postgres_data:/var/lib/postgresql/data
       environment:
-        POSTGRES_DB: keycloak
-        POSTGRES_USER: keycloak
-        POSTGRES_PASSWORD: password
+        POSTGRES_DB: <username>
+        POSTGRES_USER: <username>
+        POSTGRES_PASSWORD: <password>
   
   keycloak:
       image: jboss/keycloak
@@ -23,11 +23,11 @@ services:
       environment:
         DB_VENDOR: POSTGRES
         DB_ADDR: postgres
-        DB_DATABASE: keycloak
-        DB_USER: keycloak
+        DB_DATABASE: <password>
+        DB_USER: <username>
         DB_PASSWORD: password
-        KEYCLOAK_USER: admin
-        KEYCLOAK_PASSWORD: Pa55w0rd
+        KEYCLOAK_USER: <username>
+        KEYCLOAK_PASSWORD: <password>
       volumes:
         - ./apps/:/opt/jboss/keycloak/docs/examples/unconfigured-demo/
       ports:

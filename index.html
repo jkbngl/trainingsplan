@@ -1,0 +1,1618 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="utf-8"/>
+    <style>
+        td {
+            /*border: 1px solid #373737;*/
+            caret-color: #00ad5f;
+        }
+
+        td {
+            background-color: hsl(89, 43%, 51%);
+        }
+
+        .mobile_th th.mobile_th,  th.mobile_th {
+           font-size: 35px;
+        }
+
+        .mobile_button button.mobile_button,  button.mobile_button {
+           font-size: 35px;
+           height: 20vh;
+        }
+
+        .mobile_div div.mobile_div,  div.mobile_div {
+           font-size: 35px;
+        }
+
+        .mobile_i i.mobile_i,  i.mobile_i {
+            font-size: 35px;
+        }
+
+        .mobile_select select.mobile_select,  select.mobile_select {
+            font-size: 35px;
+        }
+
+        .mobile_label label.mobile_label,  label.mobile_label {
+           font-size: 35px;
+        }
+
+        .mobile_td td.mobile_td,  td.mobile_td {
+            border: 2px solid #373737;
+        }
+    </style>
+
+    <title>
+        trainigsplan.com
+    </title>
+    <meta name="viewport" content="initial-scale=1.0, width=device-width">
+    <meta charset="UTF-8">
+
+    <link rel="stylesheet" type="text/css" href="vendor/bootstrap/css/bootstrap.min.css">
+    <link rel="stylesheet" type="text/css" href="css/main.css">
+    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.7.1/css/all.css" integrity="sha384-fnmOCqbTlWIlj8LyTjo7mOUStjsKC4pOpQbqyi7RrhN7udi9RwhKkMHpvLbHG9Sr" crossorigin="anonymous">
+    <link rel="shortcut icon" href="./favicon.ico?">
+
+    <meta name="msapplication-TileColor" content="#ffffff">
+    <meta name="theme-color" content="#ffffff">
+
+    <!--<script src="https://cdn.jsdelivr.net/npm/sweetalert2@8"></script>-->
+    <script src="js/sweetalert.js"></script>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@sweetalert2/theme-dark@1/dark.css">
+
+    <script type="text/javascript"> 
+        
+        var JSLink = "http://" + document.location.host + ":8081/auth/js/keycloak.js";
+        var JSElement = document.createElement('script');
+        JSElement.src = JSLink;
+        JSElement.onload = OnceLoaded;
+        document.getElementsByTagName('head')[0].appendChild(JSElement);
+
+        function OnceLoaded() {
+            hostname = document.location.host;
+            keycloak = Keycloak();
+
+            keycloak.init({ onLoad: 'login-required' })
+
+            keycloak.init().success(
+                function(authenticated) 
+                {
+                    // alert(authenticated ? 'authenticated' : 'not authenticated');
+                }
+            ).error(function() {
+                console.log('failed to initialize');
+            });
+
+            keycloak.onAuthSuccess = function() 
+            { 
+                swal.close();
+
+                // alert('Successfully authenticated'); 
+                console.log('Successfully authenticated'); 
+            
+                username = keycloak.idTokenParsed.preferred_username;
+                username = username.toLowerCase();
+                document.getElementById("username").innerHTML = username + ' <i class="fas fa-sign-out-alt"></i>';
+                
+                zoomOutMobile();
+                cleanUpTables();
+                receivePlanfromDB(true);
+                check_roles(keycloak.realmAccess.roles, true);
+                append_preferences();
+            }
+        }
+
+    </script>
+    
+    <script>
+        var keycloak;
+        var hostname = "example.com"
+
+        document.onkeyup = function(e) {
+                    
+          if ((e.key == 'Control' || e.ctrlKey || e.key == 'ControlRight' )  && e.key == 'Enter') {
+            Swal.fire({
+              title: 'Save?',
+              text: "Click enter again to confirm!",
+              type: 'warning',
+              showCancelButton: true,
+              confirmButtonColor: '#3085d6',
+              cancelButtonColor: '#d33',
+              confirmButtonText: 'Save!'
+            }).then((result) => {
+              if (result.value) {
+                
+                loadPlanIntoDB();
+              }
+            })
+          }
+        };
+
+        function display_error(type, title, message)
+        {
+            var footer = '<hr style="height: 2px; background-color:#666;"><br>';
+
+            if(message.includes('backend') && message.includes('unavailable') || message.includes('Authentification'))
+                footer += message + '<br><br><a href onclick="location.reload()">Reload the Page?</button><br>';
+
+            if(type == 'error')
+                footer += '<a href="https://github.com/jkbngl/trainingsplan/issues/new">If you think this is not correct please open a github issue!</a>'
+                
+            footer += '<br><br><hr style="height: 2px; background-color:#666;"><br>';
+
+            Swal.fire({
+              type: type,
+              customClass: mobile_swal,
+              title: title,
+              html: footer
+            })
+        }
+
+        document.addEventListener('DOMContentLoaded',function(){
+            try
+            {
+                //document.write("<script type='text/javascript' src='http://"+ document.location.host + ":8081/auth/js/keycloak.js'><\/scr" + "ipt>");
+
+                swal.fire({
+                    title: 'Loading your data...',
+                    customClass: mobile_swal,
+                    allowEscapeKey: false,
+                    allowOutsideClick: false,
+                    onOpen: () => {
+                      swal.showLoading();
+                    }
+                });
+
+                //keycloak = Keycloak();
+
+                //keycloak.init({ onLoad: 'login-required' })
+                //
+                //keycloak.init().success(
+                //    function(authenticated) 
+                //    {
+                //        // alert(authenticated ? 'authenticated' : 'not authenticated');
+                //    }
+                //).error(function() {
+                //    // alert('failed to initialize');
+                //});
+                //
+                //keycloak.onAuthSuccess = function() 
+                //{ 
+                //    swal.close();
+                //
+                //    // alert('Successfully authenticated'); 
+                //    console.log('Successfully authenticated'); 
+                //
+                //    username = keycloak.idTokenParsed.preferred_username;
+                //    username = username.toLowerCase();
+                //    document.getElementById("username").innerHTML = username + ' <i class="fas fa-sign-out-alt"></i>';
+                //    
+                //    zoomOutMobile();
+                //    cleanUpTables();
+                //    receivePlanfromDB(true);
+                //    check_roles(keycloak.realmAccess.roles, true);
+                //    append_preferences();
+                //    
+                //    // console.log(username);  
+                //}
+            }
+            catch(err)
+            {
+                console.log("error - " + err);
+                display_error("error", "Ooops...", "Error with Authentification, please try again at a later point");
+                window.stop() 
+            }
+        });
+
+        // To warn the user before leaving without saving
+        window.onbeforeunload = s => modified ? "" : null;
+
+        function getusername()
+        {
+            return username;
+        }
+    </script>
+
+</head>
+<body>
+
+<!---
+<td class='tdinput'><div contenteditable='true' id='tags' value='defaultvaluetoignore' class='title ui-autocomplete-input' autocomplete='on' data-placeholder='name' style="background-color: transparent; color:#7F7F7F; width:inherit; max-width: 160px; min-width: 160px;  min-height: 25px; max-height: 25px; text-align: center"></div></td>
+-->
+
+<div class="fixed-background blue-gradient-bg"></div>
+
+
+<div id="mySidenav" class="sidenav" style="z-index: 2;">
+    <button id="open-nav-button" onclick="closeNav()"                      class="button" style="float:right; float:top; margin-right: 10%; margin-bottom: 15%" ><i class="fas fa-bars"></i></a>
+    <button id="stats-button" onclick="window.location.href='stats.html'"  class="button" style="top: 10px; width:80%; margin-left: 10%; "><i class="fas fa-chart-line">       </i> Stats</button>
+    <button id="bm-button" onclick="window.location.href='bm_it.html'"     class="button" style="top: 10px; width:80%; margin-left: 10%;">                 <i class="fas fa-weight"></i>       </i> Body Tracker</button>    
+    <button onclick="receivePlanfromDB(false)"                             class="button" style="top: 10px; width:80%; margin-left: 10%; margin-top: 30px"><i class="fas fa-spinner">          </i> Load Plan</button>
+    <button onclick="check_allowed_to_add_plan()"                          class="button" style="top: 10px; width:80%; margin-left: 10%;">                 <i class="fas fa-plus-circle">      </i> New Plan</button>
+    <button onclick="delete_plan(-1, false)"                               class="button" style="top: 10px; width:80%; margin-left: 10%; margin-top: 20%;"><i class="fas fa-trash">            </i> Delete Plans</button>
+    <button onclick="restore_plan(-1, false)"                              class="button" style="top: 10px; width:80%; margin-left: 10%;">                 <i class="fas fa-trash-restore-alt"></i> Restore Plans</button>
+    <button id="logout-button" onclick="keycloak.logout()"                 class="button" style="top: 10px; width:80%; margin-left: 10%; margin-top: 20%;"><i class="fas fa-sign-out-alt">     </i> Logout</button>
+    
+</div>
+
+<div id = "headerforbuttons" style="display: flex; justify-content: space-between; position:fixed; width:100%; z-index: 1;">
+    <button onclick="openNav()"                  class="button" id ="nav_opener" style="top: 10px;"><i class="fas fa-bars"></i></span></button>
+    <button onclick="addTable(true)"             class="button" style="top: 10px;"><i class="fas fa-plus-circle"></i> Add new Day</button>
+    <button onclick="loadPlanIntoDB();"          class="button" id ="saver" style="top: 10px;"><i class="far fa-save"></i></button>
+    <button onclick="keycloak.logout()"          class="button" value="username ..." id="username" style="top: 10px;"></button>
+</div>​
+
+<a onclick="topFunction()" id="topButton" style="display: none;" class="float">
+    <i class="fa fa-angle-up my-float"></i>
+</a>
+
+<div id="container1" style="width: 100%;"></div>
+<div id="container2" style="width: 100%;"></div>
+<div id="container3" style="width: 100%;"></div>
+<div id="container4" style="width: 100%;"></div>
+<div id="container5" style="width: 100%;"></div>
+</body>
+
+<script>
+
+    var numtables = 0;
+    var loaded = false;       // dont reload all plans by user again
+    var planname = '';       // needed to determine wheter a plan should be completely stored in db or only updated, if planname.length = 0 - new plan else update
+    var currentPlanId = ''; // Needed to send to backend which planid should be replace - going to be deprecated when no new plan is created anymore
+    var empty_values = 0;
+    var amount_plans = ''             // Needed to check the amount of plans already existent for user
+    var maximum_allowed_plans = -1;   // Needed to check if user without super account is allowed to add another plan
+    var show_warning = true;
+    var mobile_swal = '';             // Here the class is set for the swal to use, depending on mobile or desktop, desktop leave empty - mobile is set in customize_mobile
+
+    // get the first button by it's ID, and listen to the click event
+    // add an empty table to the container div
+    function addTable(addRowByDefault)
+    {
+        // column 3 2 times, maybe change at a later point
+        var basicTable1 = '<div class="limiter" id="day1"> <div class="container-table100"> <div class="wrap-table100"> <div class="table100 ver3 m-b-110"> <div class="table100-head"> <table> <thead> <tr class="row100 head" > <th class="cell100 column1" style="width:25%; text-align: center; vertical-align: text-top;">Exercise</th> <th class="cell100 column2" style="width:10%; text-align: center; vertical-align: text-top;">Weight</th> <th class="cell100 column3" style="width:10%; text-align: center;   vertical-align: text-left-top;">Reps</th> <th class="cell100 column3" style="width:10%; text-align: center;  vertical-align: text-top;">Sets</th> <th class="cell100 column4" style="width:10%; text-align: center; vertical-align: text-top;">Max</th> <th class="cell100 column5" style="width:10%; text-align: center; vertical-align: text-top; ">Pause</th> <th class="cell100 column6" style="width:25%; text-align: center; vertical-align: text-top;">Note</th> <th class="cell100 column6" style="width:3%; text-align: center; vertical-align: text-top;">&nbsp;</th></tr> </thead> </table> </div> <div class="table100-body js-pscroll" id = "test"> <table> <tbody id="myTable1"> <tr class="row100 body"> </tbody> </table> </div> </div> </div> <button id="add_Ex_Day_Day_1" onclick="addRow(\'myTable1\')" class="button"><i class="fas fa-plus-circle"></i> Add new Exercise</button> <button id="delete_Day_Day_1" onclick="deleteTable(\'1\')" class="button"><i class="fas fa-trash-alt"></i> Delete Day</button></div></div>';
+        var basicTable2 = '<div class="limiter" id="day2"> <div class="container-table100"> <div class="wrap-table100"> <div class="table100 ver3 m-b-110"> <div class="table100-head"> <table> <thead> <tr class="row100 head" > <th class="cell100 column1" style="width:25%; text-align: center; vertical-align: text-top;">Exercise</th> <th class="cell100 column2" style="width:10%; text-align: center; vertical-align: text-top;">Weight</th> <th class="cell100 column3" style="width:10%; text-align: center;   vertical-align: text-left-top;">Reps</th> <th class="cell100 column3" style="width:10%; text-align: center;  vertical-align: text-top;">Sets</th> <th class="cell100 column4" style="width:10%; text-align: center; vertical-align: text-top;">Max</th> <th class="cell100 column5" style="width:10%; text-align: center; vertical-align: text-top; ">Pause</th> <th class="cell100 column6" style="width:25%; text-align: center; vertical-align: text-top;">Note</th> <th class="cell100 column6" style="width:3%; text-align: center; vertical-align: text-top;">&nbsp;</th></tr> </thead> </table> </div> <div class="table100-body js-pscroll" id = "test"> <table> <tbody id="myTable2"> <tr class="row100 body"> </tbody> </table> </div> </div> </div> <button id="add_Ex_Day_Day_2" onclick="addRow(\'myTable2\')" class="button"><i class="fas fa-plus-circle"></i> Add new Exercise</button> <button id="delete_Day_Day_2" onclick="deleteTable(\'2\')" class="button"><i class="fas fa-trash-alt"></i> Delete Day</button></div> </div>';
+        var basicTable3 = '<div class="limiter" id="day3"> <div class="container-table100"> <div class="wrap-table100"> <div class="table100 ver3 m-b-110"> <div class="table100-head"> <table> <thead> <tr class="row100 head" > <th class="cell100 column1" style="width:25%; text-align: center; vertical-align: text-top;">Exercise</th> <th class="cell100 column2" style="width:10%; text-align: center; vertical-align: text-top;">Weight</th> <th class="cell100 column3" style="width:10%; text-align: center;   vertical-align: text-left-top;">Reps</th> <th class="cell100 column3" style="width:10%; text-align: center;  vertical-align: text-top;">Sets</th> <th class="cell100 column4" style="width:10%; text-align: center; vertical-align: text-top;">Max</th> <th class="cell100 column5" style="width:10%; text-align: center; vertical-align: text-top; ">Pause</th> <th class="cell100 column6" style="width:25%; text-align: center; vertical-align: text-top;">Note</th> <th class="cell100 column6" style="width:3%; text-align: center; vertical-align: text-top;">&nbsp;</th></tr> </thead> </table> </div> <div class="table100-body js-pscroll" id = "test"> <table> <tbody id="myTable3"> <tr class="row100 body"> </tbody> </table> </div> </div> </div> <button id="add_Ex_Day_Day_3" onclick="addRow(\'myTable3\')" class="button"><i class="fas fa-plus-circle"></i> Add new Exercise</button> <button id="delete_Day_Day_3" onclick="deleteTable(\'3\')" class="button"><i class="fas fa-trash-alt"></i> Delete Day</button></div> </div>';
+        var basicTable4 = '<div class="limiter" id="day4"> <div class="container-table100"> <div class="wrap-table100"> <div class="table100 ver3 m-b-110"> <div class="table100-head"> <table> <thead> <tr class="row100 head" > <th class="cell100 column1" style="width:25%; text-align: center; vertical-align: text-top;">Exercise</th> <th class="cell100 column2" style="width:10%; text-align: center; vertical-align: text-top;">Weight</th> <th class="cell100 column3" style="width:10%; text-align: center;   vertical-align: text-left-top;">Reps</th> <th class="cell100 column3" style="width:10%; text-align: center;  vertical-align: text-top;">Sets</th> <th class="cell100 column4" style="width:10%; text-align: center; vertical-align: text-top;">Max</th> <th class="cell100 column5" style="width:10%; text-align: center; vertical-align: text-top; ">Pause</th> <th class="cell100 column6" style="width:25%; text-align: center; vertical-align: text-top;">Note</th> <th class="cell100 column6" style="width:3%; text-align: center; vertical-align: text-top;">&nbsp;</th></tr> </thead> </table> </div> <div class="table100-body js-pscroll" id = "test"> <table> <tbody id="myTable4"> <tr class="row100 body"> </tbody> </table> </div> </div> </div> <button id="add_Ex_Day_Day_4" onclick="addRow(\'myTable4\')" class="button"><i class="fas fa-plus-circle"></i> Add new Exercise</button> <button id="delete_Day_Day_4" onclick="deleteTable(\'4\')" class="button"><i class="fas fa-trash-alt"></i> Delete Day</button></div> </div>';
+        var basicTable5 = '<div class="limiter" id="day5"> <div class="container-table100"> <div class="wrap-table100"> <div class="table100 ver3 m-b-110"> <div class="table100-head"> <table> <thead> <tr class="row100 head" > <th class="cell100 column1" style="width:25%; text-align: center; vertical-align: text-top;">Exercise</th> <th class="cell100 column2" style="width:10%; text-align: center; vertical-align: text-top;">Weight</th> <th class="cell100 column3" style="width:10%; text-align: center;   vertical-align: text-left-top;">Reps</th> <th class="cell100 column3" style="width:10%; text-align: center;  vertical-align: text-top;">Sets</th> <th class="cell100 column4" style="width:10%; text-align: center; vertical-align: text-top;">Max</th> <th class="cell100 column5" style="width:10%; text-align: center; vertical-align: text-top; ">Pause</th> <th class="cell100 column6" style="width:25%; text-align: center; vertical-align: text-top;">Note</th> <th class="cell100 column6" style="width:3%; text-align: center; vertical-align: text-top;">&nbsp;</th></tr> </thead> </table> </div> <div class="table100-body js-pscroll" id = "test"> <table> <tbody id="myTable5"> <tr class="row100 body"> </tbody> </table> </div> </div> </div> <button id="add_Ex_Day_Day_5" onclick="addRow(\'myTable5\')" class="button"><i class="fas fa-plus-circle"></i> Add new Exercise</button> <button id="delete_Day_Day_5" onclick="deleteTable(\'5\')" class="button"><i class="fas fa-trash-alt"></i> Delete Day</button></div> </div>';
+
+        repositionTables();
+
+        if(numtables < 5)
+        {
+            numtables = numtables + 1;
+            var id = numtables;			// number of tables
+            var tablename = 'container';
+            var temptablename = tablename.concat(id);
+            var tmptabletocreate = 'basicTable';
+            var tabletocreate = tmptabletocreate.concat(id);
+
+            if(id == 1)
+            {
+                document.getElementById(temptablename).innerHTML = basicTable1;
+
+                if(addRowByDefault)
+                    addRow("myTable1");
+            }
+            else if(id == 2)
+            {
+                document.getElementById(temptablename).innerHTML = basicTable2;
+
+                if(addRowByDefault)
+                    addRow("myTable2");
+            }
+            else if(id == 3)
+            {
+                document.getElementById(temptablename).innerHTML = basicTable3;
+
+                if(addRowByDefault)
+                    addRow("myTable3");
+            }
+            else if(id == 4)
+            {
+                document.getElementById(temptablename).innerHTML = basicTable4;
+
+                if(addRowByDefault)
+                    addRow("myTable4");
+            }
+            else if(id == 5)
+            {
+                document.getElementById(temptablename).innerHTML = basicTable5;
+
+                if(addRowByDefault)
+                    addRow("myTable5");
+            }
+        }
+        else
+        {
+            // #139
+            swal.fire({
+                title: "Only 5 Days are allowed at the moment",
+                type: 'info',
+                customClass: mobile_swal,
+                timer: 3000,
+                // text: dif,
+                showCancelButton: false,
+                showConfirmButton: true
+            });
+        }
+        
+        //$.    ();
+
+        // console.log("After adding: " + numtables);
+
+         // make changes for reordered buttons again active
+        if( isMobile.any() ) 
+        {
+            customize_mobile();
+        }
+        else
+        {
+            ;
+            // console.log("PC DETECTED AS DEVICE");
+        }
+
+    }
+
+    function append_preferences()
+    {
+        var request = new XMLHttpRequest();
+        var url = 'http://' + hostname + ':8080/tpbackend_1-1.0-SNAPSHOT/api/trainingsplan/get_preferences/';
+        var xmlHttp = new XMLHttpRequest();
+
+        xmlHttp.open( "GET", url + getusername(), false ); // false for synchronous request
+        xmlHttp.send( null );
+        preferences = xmlHttp.responseText;
+
+        var json = JSON.parse(preferences);
+        
+        if(json.check_dialog_save == "f")
+            show_warning = false;
+        else
+            show_warning = true;
+    }
+
+    function repositionTables()
+    {
+        for(var i = 1; i <= 5; i++)
+        {
+            var elem1 = document.getElementById("container" + i);
+            var elem2 = document.getElementById("container" + (i + 1));
+
+            if(document.getElementById("container" + i).innerHTML.length == 0 && document.getElementById("container" + i).innerHTML.length >= 0)
+            {
+                if(typeof(document.getElementById("container" + (i + 1))) != undefined && document.getElementById("container" + (i + 1)) != null)
+                    document.getElementById("container" + i).innerHTML = document.getElementById("container" + (i + 1)).innerHTML;
+            }
+        }
+    }
+
+    function check_allowed_to_add_plan()
+    {
+        check_roles(null, false);
+
+        if(maximum_allowed_plans == -1)
+        {
+            console.log("Allowed because superuser");
+            cleanUpTables(); addTable(true);  closeNav();
+        }
+        else if(amount_plans < maximum_allowed_plans)
+        {
+            console.log("Allowed because maximum amount of plans not overstepped");
+            cleanUpTables(); addTable(true);  closeNav();
+        }
+        else
+        {
+            // alert("You are not allowed to add another plan, for that you need to buy PREMIUM - current plans:" + amount_plans + " maximum allowed: " + maximum_allowed_plans);
+            swal.fire({
+            title: 'Forbidden - ',
+            type: 'error',
+            customClass: mobile_swal,
+            timer: 5000,
+            html: "You are not allowed to add another plan, for that contact me on github (github.com/jkbngl/trainingsplan) \
+                  <br><br> <b>Current plans:</b> <font color='red'>" + amount_plans + "</font><br><b>Maximum allowed:</b> " + maximum_allowed_plans,
+            showCancelButton: false,
+            showConfirmButton: true
+        });
+        }
+    }
+
+    function addRow(tableName)
+    {
+        var table = document.getElementById(tableName);
+        var rowCount = document.getElementById(tableName).rows.length;
+
+        var row = table.insertRow(rowCount);
+        var cell1 = row.insertCell(0);
+        var cell2 = row.insertCell(1);
+        var cell3 = row.insertCell(2);
+        var cell4 = row.insertCell(3);
+        var cell5 = row.insertCell(4);
+        var cell6 = row.insertCell(5);
+        var cell7 = row.insertCell(6); // #37
+        var cell8 = row.insertCell(7);
+
+        cell1.innerHTML = "<td class=\'tdinput\'> <div contenteditable='true' " + ( tableName == 'myTable1' ? 'id="autofocus"' : '') + "onkeypress='set_edited(true)' value='defaultvaluetoignore' class='title' data-placeholder='name' style=\"table-layout:fixed; display: table-cell; background-color: transparent; color:#7F7F7F; width:25em; min-height: 25px; text-align: center\"/></div></td>";
+        cell2.innerHTML = "<td class=\'tdinput\'> <div contenteditable='true' onkeypress='set_edited(true)' value='defaultvaluetoignore' class='title' data-placeholder='kilo' style=\"table-layout:fixed; display: table-cell; background-color: transparent; color:#7F7F7F; width:10em; min-height: 25px; text-align: center\"/></div></td>";
+        cell3.innerHTML = "<td class=\'tdinput\'> <div contenteditable='true' onkeypress='set_edited(true)' value='defaultvaluetoignore' class='title' data-placeholder='reps' style=\"table-layout:fixed; display: table-cell; background-color: transparent; color:#7F7F7F; width:11em; min-height: 25px; text-align: center\"/></div></td>";
+        cell4.innerHTML = "<td class=\'tdinput\'> <div contenteditable='true' onkeypress='set_edited(true)' value='defaultvaluetoignore' class='title' data-placeholder='sets' style=\"table-layout:fixed; display: table-cell; background-color: transparent; color:#7F7F7F; width:10em; min-height: 25px; text-align: center\"/></div></td>";
+        cell5.innerHTML = "<td class=\'tdinput\'> <div contenteditable='true' onkeypress='set_edited(true)' value='defaultvaluetoignore' class='title' data-placeholder='maxr' style=\"table-layout:fixed; display: table-cell; background-color: transparent; color:#7F7F7F; width:10em; min-height: 25px; text-align: center\"/></div></td>";
+        cell6.innerHTML = "<td class=\'tdinput\'> <div contenteditable='true' onkeypress='set_edited(true)' value='defaultvaluetoignore' class='title' data-placeholder='time' style=\"table-layout:fixed; display: table-cell; background-color: transparent; color:#7F7F7F; width:10em; min-height: 25px; text-align: center\"/></div></td>";
+        cell7.innerHTML = "<td class=\'tdinput\'> <div contenteditable='true' onkeypress='set_edited(true)' value='defaultvaluetoignore' class='title' data-placeholder='note' style=\"table-layout:fixed; display: table-cell; background-color: transparent; color:#7F7F7F; width:25em; min-height: 25px; text-align: center\"/></div></td>";
+        cell8.innerHTML = "<button style='background: #222222; color: #28AD5F; font-style=bold; float: right' onclick='deleteRow(" + tableName + ", "+ rowCount + ")'>&nbsp<i class='fas fa-times-circle'></i></i></button>";
+
+        row.setAttribute("id", "somerow", 0);
+
+        // Strange workaroung which gets the job done
+        var div = document.getElementById('autofocus');
+        setTimeout(function() {
+            div.focus();
+        }, 0);
+
+        // make changes for reordered buttons again active
+        if( isMobile.any() ) 
+        {
+            customize_mobile();
+        }
+        else
+        {
+            ;
+            // console.log("PC DETECTED AS DEVICE");
+        }
+    }
+
+    function set_edited(value)
+    {
+        modified = value;
+    }
+
+    function check_roles(assigned_roles, full_check)
+    {
+        if(full_check)
+        {
+            // array with all tp relevant roles in it
+            var roles = [];
+            // needed to store only the tp relevant roles in the array
+            var pos = 0;
+
+            for(var i = 0; i < assigned_roles.length; i++)
+            {
+                if(assigned_roles[i] != 'admin' && assigned_roles[i] != 'offline_access' && assigned_roles[i] != 'uma_authorization' && assigned_roles[i] != 'user')
+                {
+                    roles[pos] = assigned_roles[i];
+                    pos++;
+                }    
+            }
+
+            var superaccount = (roles.indexOf("friend_account") > -1) || (roles.indexOf("paid_account") > -1);
+
+            if(!superaccount)
+            {
+                document.getElementById("stats-button").innerHTML = document.getElementById("stats-button").innerHTML + ' <i class="fas fa-lock"></i>'
+                document.getElementById("stats-button").style.opacity = .5;
+                //document.getElementById("stats-button").style.display = "none";         // Remove the stats button
+                document.getElementById("bm-button").innerHTML = document.getElementById("bm-button").innerHTML + ' <i class="fas fa-lock"></i>'
+                document.getElementById("bm-button").style.opacity = .5
+                //document.getElementById("bm-button").style.display = "none";         // Remove the stats button
+                document.getElementById("logout-button").style.marginTop = "20%";       // Add a matching margin to the button instead of stats which is not existent
+                maximum_allowed_plans = 2;                                              // Allow only two plans per not super user
+            }
+
+            if(roles.indexOf("bm_it_access") > -1 && !superaccount)
+            {
+                let text = document.getElementById("bm-button").innerHTML.replace(' <i class="fas fa-lock"></i>','');
+                document.getElementById("bm-button").innerHTML = text;
+                document.getElementById("bm-button").style.opacity = 1;
+            }
+
+            if(roles.indexOf("stats_access") > -1 && !superaccount)
+            {
+                let text = document.getElementById("stats-button").innerHTML.replace(' <i class="fas fa-lock"></i>','');
+                document.getElementById("stats-button").innerHTML = text;
+                document.getElementById("stats-button").style.opacity = 1;
+            }
+
+            // if(document.getElementById("stats-button").style.display == "none" && document.getElementById("bm-button").style.display == "inline")
+            //     document.getElementById("bm-button").style.marginTop = "20%";
+        }
+        
+        // This part sets how many plans the user already has and then in check_allowed_to_add_plan it is checked if the user is allowed to add another one
+        var request = new XMLHttpRequest();
+        var url = 'http://' + hostname + ':8080/tpbackend_1-1.0-SNAPSHOT/api/trainingsplan/getAmountOfPlans/';
+        var username = getusername();
+
+        try 
+        {
+            var xmlHttp = new XMLHttpRequest();
+        
+            xmlHttp.open("GET", url + username + '/2', false);     // false for synchronous request
+            xmlHttp.send(null);
+            amount_plans = xmlHttp.responseText;
+        }
+        catch(err) 
+        {
+            console.log("error - " + err);    
+            display_error('error', 'Oops...', 'The backend seems to be unavailable!');
+        }
+    }
+
+    function reorder_indexes(tableName, index)
+    {
+        var table = document.getElementById(tableName.id);
+        var num_rows = document.getElementById(tableName.id).rows.length;
+
+        if(num_rows != 1)
+        {
+            for (var i = index; i < num_rows; i++) 
+            {
+                for (var j = 0, col; j < 7; j++) 
+                {
+                    // this is only done in the last cell because there is the button to delete with the corresponding onclick attribute
+                    if(j==6)
+                    {
+                        var cell = document.getElementById(tableName.id).rows[i].cells[7].innerHTML;
+                        var new_cell = '<button style="background: #222222; color: #28AD5F; font-style=bold; float: right" onclick="deleteRow(' + tableName.id + ', ' + i + ')">&nbsp;<i class="fas fa-times-circle"></i></button>'
+                        document.getElementById(tableName.id).rows[i].cells[7].innerHTML = new_cell;
+                    }
+                } 
+            }
+        }
+        else
+        {
+            var thenum = tableName.id.match(/\d+$/)[0];
+            deleteTable(thenum);
+        }
+
+        // make changes for reordered buttons again active
+        if( isMobile.any() ) 
+        {
+            customize_mobile();
+        }
+        else
+        {
+            ;
+            // console.log("PC DETECTED AS DEVICE");
+        }
+        
+    }
+
+    function deleteRow(tableName, index)
+    {
+        if(index != -1)
+        {
+            document.getElementById(tableName.id).deleteRow(index);
+
+            // TODO realign indexes of columns 
+            reorder_indexes(tableName, index);
+        }
+        else
+        {
+            var x = document.getElementById(tableName).rows.length;
+            document.getElementById(tableName).deleteRow(x - 1);
+
+            // Get the number out of String because deletetable needs the id of the table not the name e.g. 1 out of myTable1
+            var numb = tableName.match(/\d/g);
+            numb = numb.join("");
+
+            if(x - 2 == 0)
+                deleteTable(numb);
+        }
+    }
+
+    function deleteTable(id)
+    {
+        var newValue;
+        var elem = document.getElementById("day" + id);
+
+        elem.innerHTML = ' ';
+        elem.parentNode.removeChild(elem);
+
+        for(var i = id; i <= numtables; i++)    // start at the position where the table has been deleted, no need to change id of earlier tables
+        {
+            // dont set the first day as the zeroest day - doesnt exist
+            // dont reset the table I wanted to delete
+            // if the last day has changed dont set all the others back
+            if (typeof(document.getElementById("day" + i)) != 'undefined' && document.getElementById("day" + i) != null)
+            {
+                if(document.getElementById('day' + i).id != 'day1' && i != id && id != numtables)
+                {
+                    document.getElementById("day" + i).id = 'day' + (i - 1);
+                    document.getElementById("myTable" + i).id = 'myTable' + (i - 1);
+
+                    newValue = 'deleteTable(\'' + (i - 1) + '\')';
+                    document.getElementById('delete_Day_Day_' + i).setAttribute( "onClick", newValue);
+
+                    newValue = 'addRow(\'myTable' + (i - 1) + '\')';
+                    document.getElementById('add_Ex_Day_Day_' + i).setAttribute( "onClick", newValue);
+
+                    newValue = 'deleteRow(\'myTable' + (i - 1) + '\', -1)';
+                    //document.getElementById('delete_Ex_Day_Day_' + i).setAttribute( "onClick", newValue);
+
+                    document.getElementById('add_Ex_Day_Day_' + i).id = 'add_Ex_Day_Day_' + (i - 1);
+                    document.getElementById('delete_Day_Day_' + i).id = 'delete_Day_Day_' + (i - 1);
+                    //document.getElementById('delete_Ex_Day_Day_' + i).id = 'delete_Ex_Day_Day_' + (i - 1);
+                }
+                else if(numtables == 1)
+                {
+                    console.log("Detected ONLY 1 Table left!");
+
+                    for(var i = 1; i < 6; i++)
+                        document.getElementById("container" + i).innerHTML = '';
+                }
+            }
+        }
+
+        numtables = numtables - 1;
+
+        if(numtables == 0)
+            addTable(true);
+    }
+
+    function addRowWithEx(tableName, exid, exname, exweight, exreps, exsets, exmaxreps, expause, note, date, index)
+    {
+        var table = document.getElementById(tableName);
+        var rowCount = document.getElementById(tableName).rows.length;
+
+        var row = table.insertRow(rowCount);
+        var cell1 = row.insertCell(0);
+        var cell2 = row.insertCell(1);
+        var cell3 = row.insertCell(2);
+        var cell4 = row.insertCell(3);
+        var cell5 = row.insertCell(4);
+        var cell6 = row.insertCell(5);
+        var cell7 = row.insertCell(6);
+        var cell8 = row.insertCell(7);
+
+        cell1.val = exid;
+
+        cell1.innerHTML = "<td class=\'tdinput\'> <div onclick=\"show_last_updated_info(\'" + date /* #113 */ + "')\" contenteditable='false' data-placeholder='name' onkeypress='set_edited(true)' value=" + exid + " class='title' style=\"display: table-cell; background-color: transparent; color:#7F7F7F; width:25em; min-height: 25px; text-align: center\"/>" + exname    + " <i class='fas fa-info-circle'></i></div></td>";
+        cell2.innerHTML = "<td class=\'tdinput\'> <div " + ( tableName == 'myTable1' && index == 0 ? 'id="autofocus"' : '') + " contenteditable='true'   data-placeholder='kilo' onkeypress='set_edited(true)' value=" + exid + " class='title' style=\"display: table-cell; background-color: transparent; color:#00ad5f; width:10em; min-height: 25px; text-align: center\"/>" + exweight  + "</div></td>";
+        cell3.innerHTML = "<td class=\'tdinput\'> <div contenteditable='true'  data-placeholder='reps' onkeypress='set_edited(true)' value=" + exid + " class='title' style=\"display: table-cell; background-color: transparent; color:#00ad5f; width:11em; min-height: 25px; text-align: center\"/>" + exreps    + "</div></td>";
+        cell4.innerHTML = "<td class=\'tdinput\'> <div contenteditable='true'  data-placeholder='sets' onkeypress='set_edited(true)' value=" + exid + " class='title' style=\"display: table-cell; background-color: transparent; color:#00ad5f; width:10em; min-height: 25px; text-align: center\"/>" + exsets    + "</div></td>";
+        cell5.innerHTML = "<td class=\'tdinput\'> <div contenteditable='true'  data-placeholder='maxr' onkeypress='set_edited(true)' value=" + exid + " class='title' style=\"display: table-cell; background-color: transparent; color:#00ad5f; width:10em; min-height: 25px; text-align: center\"/>" + exmaxreps + "</div></td>";
+        cell6.innerHTML = "<td class=\'tdinput\'> <div contenteditable='true'  data-placeholder='time' onkeypress='set_edited(true)' value=" + exid + " class='title' style=\"display: table-cell; background-color: transparent; color:#00ad5f; width:10em; min-height: 25px; text-align: center\"/>" + expause   + "</div></td>";
+        cell7.innerHTML = "<td class=\'tdinput\'> <div contenteditable='true'  data-placeholder='note' onkeypress='set_edited(true)' value=" + exid + " class='title' style=\"display: table-cell; background-color: transparent; color:#00ad5f; width:25em; min-height: 25px; text-align: center\"/>" + note + "</div></td>";
+        cell8.innerHTML = "<button style='background: #222222; color: #28AD5F; font-style=bold; float: right' onclick='deleteRow(" + tableName + ", "+ rowCount + ")'>&nbsp<i class='fas fa-times-circle'></i></i></button>";
+        
+        // Strange workaround, which gets the job done - sets autofocus on login to improve UX so that the user sees that the cells are editable
+        var div = document.getElementById('autofocus');
+        setTimeout(function() {
+            div.focus();
+        }, 0);
+        
+        // Needed for exctracting the data, maybe rename attribute
+        row.setAttribute("id", "somerow", 0);
+    }
+
+    // #113
+    function show_last_updated_info(date)
+    {
+        let current_date = new Date();
+        let full_date = new Date(date); 
+        date = full_date.toUTCString().split(' ').slice(0, 4).join(' ');
+        var dif = parseInt((current_date - full_date) / (1000 * 60 * 60 * 24), 10); 
+
+        if(dif < 30)
+            dif = dif + " days ago";
+        else if(dif < 366)
+        {
+            let months = countMonths(current_date, full_date)
+            dif = months + (months == 1 ? " month ago" : " months ago")
+            // dif = Math.round(dif / 30) + " months ago"
+        }
+        else
+            dif = "More than a year ago"
+
+
+        swal.fire({
+            title: 'Last update - ' + date,
+            type: 'info',
+            customClass: mobile_swal,
+            timer: 2000,
+            text: dif,
+            showCancelButton: false,
+            showConfirmButton: true
+        });
+    }
+
+    
+
+    function countMonths (startDate, endDate)
+    {
+        let fm = startDate.getMonth();
+        let fy = startDate.getFullYear();
+
+        let sm = endDate.getMonth();
+        let sy = endDate.getFullYear();
+        var months = Math.abs(((fy - sy) * 12) + fm - sm);
+        var firstBefore = startDate > endDate;
+        startDate.setFullYear(sy);
+        startDate.setMonth(sm);
+        firstBefore ? startDate < endDate ? months-- : "" : endDate < startDate ? months-- : "";
+
+
+        return months;
+    }
+
+    function doesPlanNameExists(plannamelocal)
+    {
+        var request = new XMLHttpRequest();
+        var url = 'http://' + hostname + ':8080/tpbackend_1-1.0-SNAPSHOT/api/trainingsplan/getPlansByUser/';
+        var plan = '';
+        var username = getusername();
+
+        var xmlHttp = new XMLHttpRequest();
+        xmlHttp.open("GET", url + username + '/2', false);     // false for synchronous request
+        xmlHttp.send(null);
+        plans = xmlHttp.responseText;
+
+        var json = JSON.parse(plans);
+        var amountdays = json.plans.length
+
+        for(var i = 0; i < amountdays; i++)
+        {
+            if(plannamelocal == json.plans[i].name)
+            {
+                alert("A plan with the same name already exists, please choose another one!");
+                return true;
+            }
+        }
+
+        return false;
+    }
+
+    function getExercises()
+    {
+        var defaulttablename = 'myTable';
+        var finaltablename;
+        var row = document.getElementById("somerow");
+        var filteredText = '{"plan":[';
+        var localplanid;
+
+        filteredText = filteredText + '{"username": "' + getusername() + '",';
+
+        if(planname.length > 0 && currentPlanId.length == 0)
+        {
+            localplanid = getPlanID();
+
+            if(localplanid != -1)
+                currentPlanId = localplanid;
+        }
+
+        filteredText = filteredText + '"planid": "' + currentPlanId + '",';
+
+
+        if(planname.length == 0)        // new plan, not updated plan
+        {
+            plannamelocal = enter_plan_name();
+
+            if(doesPlanNameExists(plannamelocal))
+            {
+                return 'ERRORCODE 00004';
+            }   
+
+            if(!plannamelocal.includes("promRpt"))
+                planname = plannamelocal;
+            else
+                return "ERRORCODE 00003";
+
+            document.getElementById("username").innerHTML = planname + ' | '+ getusername() + ' <i class="fas fa-sign-out-alt"></i>';
+
+            filteredText = filteredText + '"planname": "' + plannamelocal + '",';
+        }
+        else
+            filteredText = filteredText + '"planname": "' + planname + '",';
+
+        if(filteredText.includes('ERRORCODE 00003'))
+        {
+            return 'ERRORCODE 00003';
+        }
+
+        for(var k = 1; k <= numtables; k++)		// For multiple Tables, num of table start at 1 not 0
+        {
+            finaltablename = defaulttablename.concat(k);
+
+            var table = document.getElementById(finaltablename);
+            var rowlength = table.getElementsByTagName("tr").length - 1;
+
+            if(k == 1)
+                filteredText = filteredText + '"day":[';
+            else
+                filteredText = filteredText + '{"day":[';
+
+            for(var j = 1; j <= rowlength; j++)
+            {
+
+                filteredText = filteredText + '{"exercise":{'
+
+                //	filteredText = filteredText + '{"exercise": {'
+
+                var rawText = document.getElementById(finaltablename).rows[j].innerHTML;
+
+                filteredText = filteredText + parse(rawText);
+
+                if(j == rowlength)
+                    filteredText = filteredText + '}';
+                else
+                    filteredText = filteredText + '},';
+            }
+
+            if(k < numtables)
+                filteredText = filteredText + ']},';
+            else // if(k == numtables)
+                filteredText = filteredText + ']}';
+
+
+            if(k < numtables)
+                filteredText = filteredText + '';
+            else // if(k == numtables)
+                filteredText = filteredText + ']}';
+        }
+
+        if(!filteredText.includes('day'))
+            filteredText = '{"plan":[{"username": "NoUser","planname": "NoPlan"}]}';
+
+        return filteredText;
+    }
+
+    function parse(raw)
+    {
+        var parsed = '';
+        var res = raw.split("</td>")
+        
+        for(var i = 0; i < 7; i++)
+        {
+            doc = new DOMParser().parseFromString(res[i], "text/html");
+
+            console.log(doc.body.firstChild.nextElementSibling.innerText);
+
+            if (i == 0)
+            {
+                parsed = parsed + "\"id\":\""   + doc.body.firstChild.nextElementSibling.getAttribute("value") + '",';
+                parsed = parsed + "\"name\":\"" + doc.body.firstChild.nextElementSibling.innerText + '",';
+            }
+            else if(i == 1)
+            {
+                parsed = parsed + "\"weight\":\"" + doc.body.firstChild.nextElementSibling.innerText + '",';
+            }
+            else if(i == 2)
+            {
+                parsed = parsed + "\"reps\":\"" + doc.body.firstChild.nextElementSibling.innerText + '",';
+            }
+            else if(i == 3)
+            {
+                parsed = parsed + "\"sets\":\"" + doc.body.firstChild.nextElementSibling.innerText + '",';
+            }
+            else if(i == 4)
+            {
+                parsed = parsed + "\"maxrep\":\"" + doc.body.firstChild.nextElementSibling.innerText + '",';
+            }
+            else if(i == 5)
+            {
+                parsed = parsed + "\"pause\":\"" + doc.body.firstChild.nextElementSibling.innerText + '",';
+            }
+            else if(i == 6)
+            {
+                parsed = parsed + "\"note\":\"" + doc.body.firstChild.nextElementSibling.innerText + '"}';
+            }
+            
+            // Count how many entries are empty to display warning message
+            if(res[i].substring(raw.indexOf('center">') + 8, res[i].indexOf('</div>')).length == 0)
+                empty_values++;
+        }
+        
+
+        return parsed;
+    }
+
+    function delete_plan(value_to_del, delete_bool)
+    {
+        if(delete_bool)
+        {
+            var xhr = new XMLHttpRequest();
+            var url = "http://" + hostname + ":8080/tpbackend_1-1.0-SNAPSHOT/api/trainingsplan/delete_plan";
+            xhr.open("POST", url, true);
+            xhr.setRequestHeader("Content-Type", "text/plain");
+
+            xhr.send(value_to_del);
+            
+            // If the current plan is deleted, reload the newest one
+            if(value_to_del == currentPlanId)
+                receivePlanfromDB(true);
+        }
+        else
+        {
+            showDialog('http://' + hostname + ':8080/tpbackend_1-1.0-SNAPSHOT/api/trainingsplan/getPlansByUser/', 0, false, true);
+        }
+    }
+
+    function restore_plan(value_to_restore, restore_bool)
+    {
+        let username = getusername();
+
+        if(restore_bool)
+        {
+            var xhr = new XMLHttpRequest();
+            var url = "http://" + hostname + ":8080/tpbackend_1-1.0-SNAPSHOT/api/trainingsplan/restore_plan";
+            xhr.open("POST", url, true);
+            xhr.setRequestHeader("Content-Type", "text/plain");
+
+            xhr.send(value_to_restore);
+
+            // #120            
+            plan = getPlan('http://' + hostname + ':8080/tpbackend_1-1.0-SNAPSHOT/api/trainingsplan/getPlanByUserAndPlan/' + username + '/' + value_to_restore);
+            var data = JSON.parse(plan);
+            printjson(data, plan);
+        }
+        else
+        {
+            showDialog('http://' + hostname + ':8080/tpbackend_1-1.0-SNAPSHOT/api/trainingsplan/getPlansByUser/', 1, false, false);
+        }
+    }
+
+    function loadPlanIntoDB()
+    {
+        var info = 'This might cause problems when later analysing your data';
+
+        try {
+            if(jsondata == 'ERRORCODE 00003' || jsondata == 'ERRORCODE 00004')
+            {
+                console.log("sending dummy plan");
+                // xhr.send('{"plan":[{"username": "NoUser","planname": "NoPlan"}]}');
+            }
+            else
+            {
+                if(empty_values <= 3 && empty_values > 0)
+                    alert_text = "Single fields are empty, are you sure you wanna save this values";
+                else if(empty_values < 10)
+                    alert_text = "Some fields are empty, are you sure you wanna save this values";
+                else
+                    alert_text = "A lot of fields are empty, are you sure you wanna save this valudes";
+                
+                
+                if(show_warning)
+                {
+                    Swal.fire({
+                      title: alert_text,
+                      customClass: mobile_swal,
+                      input: 'checkbox',
+                      inputValue: show_warning,
+                      inputPlaceholder: 'Dont show again',
+                      text: info,
+                      type: 'warning',
+                      showCancelButton: true,
+                      confirmButtonColor: '#3085d6',
+                      cancelButtonColor: '#d33'
+                    }).then((accept) => {
+                    
+                        // 1 is accept and checkbox active, 0 is accept and checkbox inactive, undefined in cancelled, no need to save checkbox data
+                        if(accept.value == 1 || accept.value == 0)
+                        {
+                            // alert("Plan - " + planname +  " successfully Saved!");
+                        
+                            // check will always be true
+                            // TODO check if something changed and only if yes send e.g. id selected_value != stored_value_from_db
+                            // ^ not needed because if unchecked it is not shown again ^
+                            if(accept.value != show_warning) // Can be done as 1 == true and 0 == false - this means when something was changed
+                            {                            
+                                var preferences = {}; 
+                            
+                                preferences.username = getusername(); 
+                                if(accept.value == 0)
+                                    preferences.check_dialog_save  = false;
+                                else
+                                    preferences.check_dialog_save  = true;
+                            
+                                if(accept.value == 1)
+                                    show_warning = true;
+                                else
+                                    show_warning = false;
+                            
+                                var xhr = new XMLHttpRequest();
+                                var url = "http://" + hostname + ":8080/tpbackend_1-1.0-SNAPSHOT/api/trainingsplan/send_preferences";
+                                xhr.open("POST", url, true);
+                                xhr.setRequestHeader("Content-Type", "text/plain");
+                                var string = JSON.stringify(preferences);
+                                xhr.send(string);
+                                
+                            }
+                            else
+                            {                            
+                                if(accept.value == 1)
+                                    show_warning = true;
+                                else
+                                    show_warning = false;
+                            }
+                        
+                            // OK was clicked so send it anyway what with the checkbox happened
+                            var jsondata = getExercises();
+                            var xhr = new XMLHttpRequest();
+                            var url = "http://" + hostname + ":8080/tpbackend_1-1.0-SNAPSHOT/api/trainingsplan/sendPlan";
+                            xhr.open("POST", url, true);
+                            xhr.setRequestHeader("Content-Type", "text/plain");
+                            //var data = JSON.stringify(jsondata);
+                            xhr.send(jsondata);
+                                                
+                            console.log("DATA SEND with warning");
+                            
+                            // After all is done, reload the page with the new ids
+                            
+                            checkIfDataIsLoadedIntoDB(xhr);
+                        }
+                        else
+                        {
+                            alert("Plan - " + planname +  " not Saved!");
+                        }
+                    });
+                }
+            
+                // Warning was not shown so send it here
+                if(!show_warning)
+                {
+                    var jsondata = getExercises();
+
+                    if(!jsondata.startsWith('ERRORCODE 0'))
+                    {
+                        var xhr = new XMLHttpRequest();
+                        var url = "http://" + hostname + ":8080/tpbackend_1-1.0-SNAPSHOT/api/trainingsplan/sendPlan";
+                        xhr.open("POST", url, true);
+                        xhr.setRequestHeader("Content-Type", "text/plain");
+                        var data = JSON.stringify(jsondata);
+                        xhr.send(jsondata);
+                        console.log("no error found - sending normal plan");
+                        console.log(jsondata);
+                        
+                        console.log("DATA SEND, no warning displayed");
+                        
+                        checkIfDataIsLoadedIntoDB(xhr);
+                    }
+
+                    //onSave();
+                }
+            }
+            // after saving set it back to zero, for next save
+            empty_values = 0;
+        }
+        catch(err) {
+            console.log("error when sending data - " + err);
+
+            display_error('error', 'Oops...', 'Error when saving your changes, please backup the fields you changed, reload the page and try again!')
+        }
+    }
+
+    function checkIfDataIsLoadedIntoDB(xhr)
+    {
+
+        swal.fire({
+          title: 'Saving your Data...',
+          allowEscapeKey: false,
+          customClass: mobile_swal,
+          allowOutsideClick: false,
+          onOpen: () => {
+            swal.showLoading();
+          }
+        });
+
+        var counter = 0;
+        var check = function(){
+            if(xhr.status == 200){
+                console.log("POST worked, data send, reload page with new data: " + xhr.status);
+                
+                swal.fire({
+                    title: 'Your plan was saved!',
+                    type: 'success',
+                    //position: 'top-end',
+                    timer: 1000,
+                    customClass: mobile_swal,
+                    showCancelButton: false,
+                    showConfirmButton: false
+                });
+                
+                onSave();
+            }
+            else if(xhr.status != 200 && xhr.status != 0)
+            {
+                swal.fire({
+                    title: 'ERROR - ' + xhr.status + "!",
+                    type: 'error',
+                    //position: 'top-end',
+                    customClass: mobile_swal,
+                    timer: 5000,
+                    showCancelButton: false,
+                    showConfirmButton: false
+                });
+            }
+            else if(counter >= 200) // After 20 (if check wait time is still 100) seconds of waiting, stop
+            {
+                display_error("error", "Ooops...", "The backend seems to be unavailable");
+            }
+            else {
+                if(counter == 50)
+                {
+                    swal.fire({
+                      title: 'This takes longer than usual, you might wanna check your internet connection!',
+                      customClass: mobile_swal,
+                      allowEscapeKey: false,
+                      allowOutsideClick: false,
+                      onOpen: () => {
+                        swal.showLoading();
+                      }
+                    });
+                }
+
+                counter++;
+                setTimeout(check, 100); // check again in a second
+            }
+        }
+        
+        // If not waiting longe than 10 seconds
+        if(counter < 100)
+            check();
+    }
+
+    function receivePlanfromDB(onlogon)
+    {
+        var request = new XMLHttpRequest();
+
+        var url = 'http://' + hostname + ':8080/tpbackend_1-1.0-SNAPSHOT/api/trainingsplan/getPlansByUser/';
+        var username = getusername();
+        
+        var planid;
+        var plan;
+
+        request.open('GET', url + username + '/2', true);
+        request.onload = function ()
+        {
+            if (request.status >= 200 && request.status < 400)
+            {
+                var json = JSON.parse(this.response);
+
+                if(json.plans.length > 1 && onlogon == false) // if more than 1 plan than load all plans
+                {
+                    showDialog('http://' + hostname + ':8080/tpbackend_1-1.0-SNAPSHOT/api/trainingsplan/getPlansByUser/', 0, true, null);
+                }
+                else
+                {
+                    if(this.response != '{"username": "' + username + '","plans": []}')
+                    {
+                        plan = getPlan('http://' + hostname + ':8080/tpbackend_1-1.0-SNAPSHOT/api/trainingsplan/getNewestPlan/' + username);
+                        var data = JSON.parse(plan);
+                        printjson(data, plan);
+                    }
+                    else
+                    {
+                        addTable(true);
+                        console.log('No plans found for user, nothing to display');
+                    }
+
+                    
+                }
+            }
+            else
+            {
+                console.log('error');
+            }
+        }
+
+        request.send();
+
+        if(isMobile.any()) 
+        {
+            console.log("MOBILE DETECTED AS DEVICE");
+            customize_mobile();
+        }
+    }
+
+    function showDialog(urlToCall, active, display_plan, delete_or_restore)
+    {        
+        var confirmButton = document.getElementById('confirm');
+        var request = new XMLHttpRequest();
+        var url = urlToCall;
+
+        var username = getusername();
+
+        request.open('GET', url + username + '/' + active, true);
+        request.onload = function ()
+        {
+            // Begin accessing JSON data here
+            if (request.status >= 200 && request.status < 400)
+            {
+                var json = JSON.parse(this.response);
+                var amountdays = get_num_plan(active);
+                var parsed_json_for_swal = {}
+
+                for(var i = 0; i < json.plans.length; i++)
+                {
+                    var columnName = json.plans[i].id;
+                    parsed_json_for_swal[columnName] = json.plans[i].date + ' - ' +  json.plans[i].name;
+                }
+
+                console.log(parsed_json_for_swal);
+                
+                const {value: fruit} = Swal.fire({
+                    title: 'Select a plan',
+                    input: 'select',
+                    inputOptions: parsed_json_for_swal,
+                    inputPlaceholder: 'Select a plan...',
+                    customClass: mobile_swal,
+                    showCancelButton: true,
+
+                    inputValidator: (value) => {
+                        return new Promise((resolve) => 
+                        {
+                            if(!isNaN(parseFloat(value)) && !isNaN(value - 0))
+                            {
+                                // #120
+                                // console.log(value)
+
+                                plan = getPlan('http://' + hostname + ':8080/tpbackend_1-1.0-SNAPSHOT/api/trainingsplan/getPlanByUserAndPlan/' + username + '/' + value);
+                                var data = JSON.parse(plan);
+                                
+                                // the dialog for loading a plan from the db was active and now display the new data
+                                if(display_plan)
+                                    printjson(data, plan);
+                                else
+                                {
+                                    // the dialog for restoring or deleting was active and now send the corresponding rest call
+                                    if(delete_or_restore)
+                                        delete_plan(value, true);
+                                    else
+                                        restore_plan(value, true);
+                                }
+                            }
+                            else
+                            {
+                                console.log("nothing selected");
+                            }
+                            
+                            // As I am not using the await keyword, close it with this
+                            swal.close();
+                        })
+                    }
+                });
+
+                closeNav();
+
+                loaded = true;      // loaded is true - which means all plans are loaded and dont add them AGAIN to dialog
+            }
+            else
+            {
+                console.log('error');
+            }
+        }
+
+        request.send();
+    }
+
+    function getPlan(urlToCall)
+    {
+        var request = new XMLHttpRequest();
+        var url = urlToCall;
+        var plan = '';
+        var username = getusername();
+
+        var xmlHttp = new XMLHttpRequest();
+        xmlHttp.open( "GET", url, false ); // false for synchronous request
+        xmlHttp.send( null );
+        plan = xmlHttp.responseText;
+
+
+        console.log(plan);
+        return plan;
+    }
+
+    function getPlanID()
+    {
+        var request = new XMLHttpRequest();
+        var url = 'http://' + hostname + ':8080/tpbackend_1-1.0-SNAPSHOT/api/trainingsplan/getPlanIdByUsernameAndPlanname/';
+        var username = getusername();
+
+        var xmlHttp = new XMLHttpRequest();
+        xmlHttp.open( "GET", url + username + '/' + planname, false ); // false for synchronous request
+        xmlHttp.send( null );
+        plan = xmlHttp.responseText;
+
+        return plan;
+    }
+
+    function onSave()
+    {
+        var request = new XMLHttpRequest();
+        var username = getusername();
+
+        set_edited(false);
+
+        if(currentPlanId != '')
+        {
+            try{
+                setTimeout(function(){
+                    var url = 'http://' + hostname + ':8080/tpbackend_1-1.0-SNAPSHOT/api/trainingsplan/getPlanByUserAndPlan/' + username + '/' + currentPlanId;
+
+                    var xmlHttp = new XMLHttpRequest();
+                    xmlHttp.open( "GET", url, false); // false for synchronous request
+                    xmlHttp.send( null );
+                    plan = xmlHttp.responseText;
+                    var data = JSON.parse(plan);
+                    printjson(data, plan);
+                }, 500);
+
+            }
+            catch(err) {
+                console.log("error when sending data - " + err);
+
+                display_error('error', 'Oops...', 'Error when saving your changes, please backup the fields you changed, reload the page and try again!')
+            }
+        }
+    }
+
+    function get_num_plan(num)
+    {
+        var request = new XMLHttpRequest();
+        var username = getusername();
+
+        var url = 'http://' + hostname + ':8080/tpbackend_1-1.0-SNAPSHOT/api/trainingsplan/getAmountOfPlans/' + username + '/' + num;
+
+        var xmlHttp = new XMLHttpRequest();
+        xmlHttp.open( "GET", url, false ); // false for synchronous request
+        xmlHttp.send( null );
+        num = xmlHttp.responseText;
+
+        return num;
+    }
+
+    function printjson(json, plaintext)
+    {
+        // Needs some rework, why is json and plain needed and the plain is then converted into json?
+        var json = JSON.parse(plaintext);
+        var daycount = json.plan.length
+
+        cleanUpTables();
+
+        for(var i = 0; i < daycount; i++)
+        {
+            var excount = json.plan[i].day.length;
+            
+            var tablenum = i + 1;
+            var table = 'myTable' + tablenum;
+
+            addTable(false);
+
+            if(i == 0)
+            {
+                document.getElementById("username").innerHTML = json.plan[i].planname + ' | '+ getusername() + ' <i class="fas fa-sign-out-alt"></i>';
+                planname = json.plan[i].planname;
+            }
+
+            if(i == 0)
+                currentPlanId = json.plan[i].planid;
+
+            for(var j = 0; j < excount; j++)
+            {
+                addRowWithEx(table
+                           , json.plan[i].day[j].exercise.id
+                           , json.plan[i].day[j].exercise.name
+                           , json.plan[i].day[j].exercise.weight
+                           , json.plan[i].day[j].exercise.reps
+                           , json.plan[i].day[j].exercise.sets
+                           , json.plan[i].day[j].exercise.maxrep
+                           , json.plan[i].day[j].exercise.pause 
+                           , json.plan[i].day[j].exercise.note 
+                           , json.plan[i].day[j].exercise.created
+                           , j);
+            }
+        }
+
+        topFunction();
+    }
+
+    function enter_plan_name()
+    {
+        var planname = prompt("Please enter the name of your plan:", "Plan by ..." /*+ getusername()*/ );
+    
+        if (planname == null || planname == "")
+        {
+            return "ERRORCODE 00003 - User cancelled the promRpt.";
+        }
+        else
+        {
+            return planname;
+        }
+    }
+
+    function cleanUpTables()
+    {
+        document.getElementById("username").innerHTML = getusername() + ' <i class="fas fa-sign-out-alt"></i>';
+        planname = '';
+
+        for(var i = 1; i < 6; i++)
+        {
+            var day_name = 'container' + i;
+            var element =  document.getElementById(day_name);
+
+            resetDays(i);
+        }
+    }
+
+    function resetDays(i)
+    {
+        var element =  document.getElementById('container' + i);
+
+        if (typeof(element) != 'undefined' && element != null)
+        {
+            var day = document.getElementById('container' + i);
+            day.innerHTML = '';
+
+            numtables = 0;
+        }
+
+        currentPlanId = '';
+    }
+
+    function openNav()
+    {
+        if( isMobile.any() ) 
+        {
+            document.getElementById("mySidenav").style.width = "400px";
+        }
+        else
+        {
+            document.getElementById("mySidenav").style.width = "250px";
+        }
+    }
+
+    function closeNav()
+    {
+        document.getElementById("mySidenav").style.width = "0";
+    }
+
+    function zoomOutMobile() {
+        var viewport = document.querySelector('meta[name="viewport"]');
+
+        var w = window,
+            d = document,
+            e = d.documentElement,
+            g = d.getElementsByTagName('body')[0],
+            x = w.innerWidth || e.clientWidth || g.clientWidth,
+            y = w.innerHeight|| e.clientHeight|| g.clientHeight;
+
+        console.log(typeof(x));
+        console.log(x);
+
+
+        if ( viewport ) {
+            viewport.content = "initial-scale=0.1";
+            viewport.content = "width=" + x + "\"";
+        }
+    }
+
+    // When the user scrolls down 20px from the top of the document, show the button
+    window.onscroll = function() {scrollFunction()};
+
+    function scrollFunction() {
+        if (document.body.scrollTop > 20 || document.documentElement.scrollTop > 20) {
+            document.getElementById("topButton").style.display = "block";
+        } else {
+            document.getElementById("topButton").style.display = "none";
+        }
+    }
+
+    // When the user clicks on the button, scroll to the top of the document
+    function topFunction() {
+        document.body.scrollTop = 0;
+        document.documentElement.scrollTop = 0;
+
+        if( isMobile.any() ) 
+        {
+            console.log("MOBILE DETECTED AS DEVICE");
+            customize_mobile();
+        }
+        else
+        {
+            //customize_mobile();
+            ;
+        }
+    }
+
+    var isMobile = {
+        Android: function() {
+            return navigator.userAgent.match(/Android/i);
+        },
+        BlackBerry: function() {
+            return navigator.userAgent.match(/BlackBerry/i);
+        },
+        iOS: function() {
+            return navigator.userAgent.match(/iPhone|iPad|iPod/i);
+        },
+        Opera: function() {
+            return navigator.userAgent.match(/Opera Mini/i);
+        },
+        Windows: function() {
+            return navigator.userAgent.match(/IEMobile/i) || navigator.userAgent.match(/WPDesktop/i);
+        },
+        any: function() {
+            return (isMobile.Android() || isMobile.BlackBerry() || isMobile.iOS() || isMobile.Opera() || isMobile.Windows());
+        }
+    };
+
+    function customize_mobile()
+    {
+        mobile_swal = 'mobile_swal';
+
+        document.getElementById("headerforbuttons").style.height = "150px";
+        document.getElementById("container1").style.marginTop = "150px";
+        
+        document.getElementById("nav_opener").style.width = "10%";
+        document.getElementById("saver").style.width = "10%";
+        document.getElementById("open-nav-button").style.height = "5%";
+        
+
+        var buttons = document.getElementsByTagName("button");
+        for(var i = 0, il = buttons.length; i < il; i++)
+        {
+            buttons[i].className += " mobile_button";
+        }
+
+        var divs = document.getElementsByTagName("div");
+        for(var i = 0, il = divs.length; i < il; i++)
+        {
+            divs[i].className += " mobile_div";
+        }
+
+        var ths = document.getElementsByTagName("th");
+        for(var i = 0, il = ths.length; i < il; i++)
+        {
+            ths[i].className += " mobile_th";
+        }
+
+        var is = document.getElementsByTagName("i");
+        for(var i = 0, il = is.length; i < il; i++)
+        {
+            is[i].className += " mobile_i";
+        }
+
+        var selects = document.getElementsByTagName("select");
+        for(var i = 0, il = selects.length; i < il; i++)
+        {
+            selects[i].className += " mobile_select";
+        }
+
+        var labels = document.getElementsByTagName("label");
+        for(var i = 0, il = labels.length; i < il; i++)
+        {
+            labels[i].className += " mobile_label";
+        }
+        
+        /*var tds = document.getElementsByTagName("td");
+        for(var i = 0, il = tds.length; i < il; i++)
+        {
+            tds[i].className += " mobile_td";
+        }
+        */
+        
+    }
+
+    /*
+    document.addEventListener('DOMContentLoaded', function()
+    {
+        zoomOutMobile();
+
+        var check = function()
+        {
+            zoomOutMobile();
+
+            if(getusername().length > 0){
+                cleanUpTables();
+                receivePlanfromDB(true);
+            }
+            else {
+                setTimeout(check, 10); // check again in 10 ms
+            }
+        }
+
+        check();
+
+        zoomOutMobile();
+    }, false);
+    */
+</script>
+</html>

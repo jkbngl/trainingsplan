@@ -665,7 +665,7 @@
 
         cell1.val = exid;
 
-        cell1.innerHTML = "<td class=\'tdinput\'> <div onclick=\"show_last_updated_info(\'" + date /* #113 */ + "')\" contenteditable='false' data-placeholder='name' onkeypress='set_edited(true)' value=" + exid + " class='title' style=\"display: table-cell; background-color: transparent; color:#7F7F7F; width:25em; min-height: 25px; text-align: center\"/>" + exname    + " <i class=\"fas fa-info-circle\"></i></div></td>";
+        cell1.innerHTML = "<td class=\'tdinput\'> <div onclick=\"show_last_updated_info(\'" + date /* #113 */ + "')\" contenteditable='false' data-placeholder='name' onkeypress='set_edited(true)' value=" + exid + " class='title' style=\"display: table-cell; background-color: transparent; color:#7F7F7F; width:25em; min-height: 25px; text-align: center\"/>" + exname    + " <i class='fas fa-info-circle'></i></div></td>";
         cell2.innerHTML = "<td class=\'tdinput\'> <div " + ( tableName == 'myTable1' && index == 0 ? 'id="autofocus"' : '') + " contenteditable='true'   data-placeholder='kilo' onkeypress='set_edited(true)' value=" + exid + " class='title' style=\"display: table-cell; background-color: transparent; color:#00ad5f; width:10em; min-height: 25px; text-align: center\"/>" + exweight  + "</div></td>";
         cell3.innerHTML = "<td class=\'tdinput\'> <div contenteditable='true'  data-placeholder='reps' onkeypress='set_edited(true)' value=" + exid + " class='title' style=\"display: table-cell; background-color: transparent; color:#00ad5f; width:11em; min-height: 25px; text-align: center\"/>" + exreps    + "</div></td>";
         cell4.innerHTML = "<td class=\'tdinput\'> <div contenteditable='true'  data-placeholder='sets' onkeypress='set_edited(true)' value=" + exid + " class='title' style=\"display: table-cell; background-color: transparent; color:#00ad5f; width:10em; min-height: 25px; text-align: center\"/>" + exsets    + "</div></td>";
@@ -692,8 +692,15 @@
         date = full_date.toUTCString().split(' ').slice(0, 4).join(' ');
         var dif = parseInt((current_date - full_date) / (1000 * 60 * 60 * 24), 10); 
 
-        if(dif < 30)
-            dif = dif + " days ago";
+        console.log(dif)
+
+        if(dif == 0)
+            dif = "today";
+        else if(dif < 30)
+        {
+            let days = dif;
+            dif = days + (days == 1 ? " day ago" : " days ago");
+        }
         else if(dif < 366)
         {
             let months = countMonths(current_date, full_date)
@@ -778,6 +785,7 @@
             if(localplanid != -1)
                 currentPlanId = localplanid;
         }
+
         filteredText = filteredText + '"planid": "' + currentPlanId + '",';
 
 
@@ -827,6 +835,7 @@
                 //	filteredText = filteredText + '{"exercise": {'
 
                 var rawText = document.getElementById(finaltablename).rows[j].innerHTML;
+
                 filteredText = filteredText + parse(rawText);
 
                 if(j == rowlength)
@@ -862,44 +871,36 @@
         {
             doc = new DOMParser().parseFromString(res[i], "text/html");
 
+            console.log(doc.body.firstChild.nextElementSibling.innerText);
+
             if (i == 0)
             {
-                /*
-                parsed = parsed + "\"id\":\""   + res[i].substring(raw.indexOf('value') + 7, raw.indexOf('class') - 2) + '",';
-                parsed = parsed + "\"name\":\"" + res[i].substring(raw.indexOf('center">') + 8, res[i].indexOf('</div>')) + '",';
-                */
                 parsed = parsed + "\"id\":\""   + doc.body.firstChild.nextElementSibling.getAttribute("value") + '",';
-                parsed = parsed + "\"name\":\"" + doc.body.firstChild.nextElementSibling.innerHTML + '",';
+                parsed = parsed + "\"name\":\"" + doc.body.firstChild.nextElementSibling.innerText + '",';
             }
             else if(i == 1)
             {
-                // parsed = parsed + "\"weight\":\"" + res[i].substring(raw.indexOf('center">') + 8, res[i].indexOf('</div>')) + '",';
-                parsed = parsed + "\"weight\":\"" + doc.body.firstChild.nextElementSibling.innerHTML + '",';
+                parsed = parsed + "\"weight\":\"" + doc.body.firstChild.nextElementSibling.innerText + '",';
             }
             else if(i == 2)
             {
-                // parsed = parsed + "\"reps\":\"" + res[i].substring(raw.indexOf('center">') + 8, res[i].indexOf('</div>')) + '",';
-                parsed = parsed + "\"reps\":\"" + doc.body.firstChild.nextElementSibling.innerHTML + '",';
+                parsed = parsed + "\"reps\":\"" + doc.body.firstChild.nextElementSibling.innerText + '",';
             }
             else if(i == 3)
             {
-                // parsed = parsed + "\"sets\":\"" + res[i].substring(raw.indexOf('center">') + 8, res[i].indexOf('</div>')) + '",';
-                parsed = parsed + "\"sets\":\"" + doc.body.firstChild.nextElementSibling.innerHTML + '",';
+                parsed = parsed + "\"sets\":\"" + doc.body.firstChild.nextElementSibling.innerText + '",';
             }
             else if(i == 4)
             {
-                // parsed = parsed + "\"maxrep\":\"" + res[i].substring(raw.indexOf('center">') + 8, res[i].indexOf('</div>')) + '",';
-                parsed = parsed + "\"maxrep\":\"" + doc.body.firstChild.nextElementSibling.innerHTML + '",';
+                parsed = parsed + "\"maxrep\":\"" + doc.body.firstChild.nextElementSibling.innerText + '",';
             }
             else if(i == 5)
             {
-                // parsed = parsed + "\"pause\":\"" + res[i].substring(raw.indexOf('center">') + 8, res[i].indexOf('</div>')) + '",';
-                parsed = parsed + "\"pause\":\"" + doc.body.firstChild.nextElementSibling.innerHTML + '",';
+                parsed = parsed + "\"pause\":\"" + doc.body.firstChild.nextElementSibling.innerText + '",';
             }
             else if(i == 6)
             {
-                // parsed = parsed + "\"note\":\"" + res[i].substring(raw.indexOf('center">') + 8, res[i].indexOf('</div>')) + '"}';
-                parsed = parsed + "\"note\":\"" + doc.body.firstChild.nextElementSibling.innerHTML + '"}';
+                parsed = parsed + "\"note\":\"" + doc.body.firstChild.nextElementSibling.innerText + '"}';
             }
             
             // Count how many entries are empty to display warning message

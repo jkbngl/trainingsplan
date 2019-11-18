@@ -695,8 +695,11 @@
         if(dif < 30)
             dif = dif + " days ago";
         else if(dif < 366)
-            dif = countMonths(current_date, full_date) + " months ago"
+        {
+            let months = countMonths(current_date, full_date)
+            dif = months + (months == 1 ? " month ago" : " months ago")
             // dif = Math.round(dif / 30) + " months ago"
+        }
         else
             dif = "More than a year ago"
 

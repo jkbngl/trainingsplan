@@ -690,9 +690,12 @@
         let current_date = new Date();
         let full_date = new Date(date); 
         date = full_date.toUTCString().split(' ').slice(0, 4).join(' ');
+
+        var minutes = (current_date - full_date) / 1000;
         var dif = parseInt((current_date - full_date) / (1000 * 60 * 60 * 24), 10); 
 
-        console.log(dif)
+        //console.log(minutes + " | " + dif + " | " + current_date + " | " + full_date);
+        console.log((full_date) + " | " + (current_date));
 
         if(dif == 0)
             dif = "today";
